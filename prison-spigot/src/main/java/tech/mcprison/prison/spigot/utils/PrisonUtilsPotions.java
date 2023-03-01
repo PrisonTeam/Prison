@@ -185,17 +185,21 @@ public class PrisonUtilsPotions
 			
 //			boolean isForceConfictRemoval = effects.contains( PotionEffectOptions.forceConfictRemoval );
 			
-			LivingEntity entity = player.getWrapper();
-			
-			addPotion( entity, potion, durationTicks, ampliferValue );
-			
-//			PotionEffect potionEffect = new PotionEffect( potion, durationTicks, ampliferValue, 
-//					isAmbient, isParticles, isIcon );
+			if ( player != null && player.getWrapper() != null ) {
+				
+				LivingEntity entity = player.getWrapper();
+				
+				addPotion( entity, potion, durationTicks, ampliferValue );
+				
+//				PotionEffect potionEffect = new PotionEffect( potion, durationTicks, ampliferValue, 
+//						isAmbient, isParticles, isIcon );
 //
-//			if ( potionEffect != null ) {
-//				player.getWrapper().addPotionEffect( potionEffect, isForceConfictRemoval );
-//			}
-			
+//				if ( potionEffect != null ) {
+//					player.getWrapper().addPotionEffect( potionEffect, isForceConfictRemoval );
+//				}
+				
+				
+			}
 		}
 	}
 	
