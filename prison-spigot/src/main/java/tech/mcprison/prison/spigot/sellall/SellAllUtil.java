@@ -318,18 +318,23 @@ public class SellAllUtil
         SpigotPlayer sPlayer = new SpigotPlayer(p);
         double multiplier = defaultMultiplier;
 
-        RankPlayer rPlayer = sPlayer.getRankPlayer();
+        if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+        	
+        	RankPlayer rPlayer = sPlayer.getRankPlayer();
 //        rPlayer.getSellAllMultiplier(); // NOTE: This actually calls this function
-        PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
-        Rank rank = pRank == null ? null : pRank.getRank();
-
-        if ( pRank != null ) {
-        	String rankName = rank.getName();
-        	String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
-        	if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
-        		multiplier = sellAllPrestigeMultipliers.get( rankName );
+        	PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
+        	Rank rank = pRank == null ? null : pRank.getRank();
+        	
+        	if ( pRank != null ) {
+        		String rankName = rank.getName();
+        		String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+        		if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
+        			multiplier = sellAllPrestigeMultipliers.get( rankName );
+        		}
         	}
+        	
         }
+        
 
 //        long tPoint2 = System.nanoTime();
         
@@ -1868,18 +1873,28 @@ public class SellAllUtil
         		amounts.add( money );
         	}
 
-            SpigotPlayer sPlayer = new SpigotPlayer(p);
-            RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
-            
-            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) {
-            	sellAllCurrency = null;
-            }
-            
-            
-            //TODO inventory access: getHashMapOfPlayerInventories() && removeSellableItems(p, p.getInventory());
-            removeSellableItems(p);
-            
-            rankPlayer.addBalance(sellAllCurrency, money);
+        	if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) {
+        		sellAllCurrency = null;
+        	}
+        	
+        	
+        	//TODO inventory access: getHashMapOfPlayerInventories() && removeSellableItems(p, p.getInventory());
+        	removeSellableItems(p);
+
+        	SpigotPlayer sPlayer = new SpigotPlayer(p);
+        	
+        	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+        		
+        		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+        		
+        		
+        		rankPlayer.addBalance(sellAllCurrency, money);
+        	}
+        	else {
+        		
+        		// Ranks are not enabled, so use a non-cached way to pay the player:
+        		sPlayer.addBalance(sellAllCurrency, money);
+        	}
 
             if (isSellAllDelayEnabled){
                 addToDelay(p);

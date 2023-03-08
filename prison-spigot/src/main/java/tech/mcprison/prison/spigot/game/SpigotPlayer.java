@@ -32,12 +32,15 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -668,6 +671,42 @@ public class SpigotPlayer
 	@Override
 	public PlayerCachePlayerData getPlayerCachePlayerData() {
 		return PlayerCache.getInstance().getOnlinePlayer( this );
+	}
+	
+	
+	/**
+	 * <p>Based upon the RankPlayer's addBalance, except that this does not cache any
+	 * of the transactions, so it could possibly lead to lag due to the economy plugin
+	 * not have good performance on many rapid payments.
+	 * </p>
+	 * 
+	 * @param currency
+	 * @param amount
+	 * @return
+	 */
+	public boolean addBalance( String currency, double amount ) {
+		boolean results = false;
+		
+		if ( currency == null || currency.trim().isEmpty() || "default".equalsIgnoreCase( currency ) ) {
+			// No currency specified, so use the default currency:
+			
+			EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+			
+			if ( economy != null ) {
+				results = economy.addBalance( this, amount );
+			}
+			
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				results = currencyEcon.addBalance( this, amount, currency );
+//				addCachedRankPlayerBalance( currency, amount );
+			}
+		}
+		return results;
 	}
 	
 	public boolean enableFlying( Mine mine, float flightSpeed ) {

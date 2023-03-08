@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-03-07
 
 
+* **Get part of sellall to work if ranks are disabled.  The command /sellall sell works, but the other sellall commands need to be tested and fixed.**
+
+
 * **Bug fix: bstats and topn was using the wrong function to check to see if ranks were enabled.**
 
 

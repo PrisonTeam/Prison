@@ -1087,10 +1087,14 @@ public class SpigotPrison
             
             
             // If sellall is enabled, then allow it to initialize.
-            if (isSellAllEnabled){
+//            if (isSellAllEnabled){
             	SellAllUtil.get();
-            }
+//            }
 
+            // Load sellAll if enabled
+//            if (isSellAllEnabled){
+            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
+//            }
 
         } 
         else {
@@ -1120,10 +1124,6 @@ public class SpigotPrison
         		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
         	}
         	
-        	// Load sellAll if enabled
-        	if (isSellAllEnabled){
-        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
-        	}
             
         }
 
