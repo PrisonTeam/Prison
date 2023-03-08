@@ -1455,23 +1455,40 @@ public class PlayerManager
     	Player player = identifier.getPlayer();
     	
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		RankPlayer rankPlayer = pm.getPlayer( player );
-    	
-    	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
-    	
-    	
-    	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
-    	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
-    	PlaceholderAttributeText attributeText = identifier.getAttributeText();
+		RankPlayer rankPlayer = null;
 		
-//		int sequence = identifier.getSequence();
+		try {
+			rankPlayer = pm.getPlayer( player );
+		} 
+		catch (Exception e) {
+			
+			String msg = String.format(
+					"PlayerManager: failed to getPlayer(): %s [%s]",
+					player == null ? "-null-" : player.getName(), 
+					e.getMessage()
+					);
+			
+			Output.get().logError( msg );
+		}
     	
 
 		String results = null;
-		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 		
 
 		if ( rankPlayer != null ) {
+			
+			PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
+			
+			
+			PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
+			PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
+			PlaceholderAttributeText attributeText = identifier.getAttributeText();
+			
+//			int sequence = identifier.getSequence();
+			
+			
+			
+			PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 			
 			String ladderName = placeHolderKey.getData();
 			
