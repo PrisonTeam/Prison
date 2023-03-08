@@ -92,5 +92,11 @@ public class SpigotVariousGuiMessages
 		.sendTo( sender );
 	}
 	
+	public void sellallGUIIsDisabledMsg( CommandSender sender ) {
+		PrisonSellall.getInstance().getSellallMessages()
+		.getLocalizable( "sellall_spigot_utils__sellall_gui_is_disabled" )
+		.sendTo( sender );
+	}
+	
 	
 }

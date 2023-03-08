@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-03-07
 
 
+* **A sellall gui message that was supposed to say that the gui was not enabled only said sellall was not enabled.  Added a  new message to clearly state it's the gui that is not enabled.**
+
+
 * **Get part of sellall to work if ranks are disabled.  The command /sellall sell works, but the other sellall commands need to be tested and fixed.**
 
 
