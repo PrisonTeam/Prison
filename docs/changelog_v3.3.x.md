@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14b 2023-03-07
+# 3.3.0-alpha.14b 2023-03-17
+
+
+* **Fixed an issue that if the prison config files are manually modified and as a result, the block events cannot be parsed, this fix prevents a null value being inserted in to the loaded block events.**
+For example, a trailing comma would produce a null block event because the parser that prison uses will read the comma, then with nothing else following it, it injects a null in to the collection of raw data for the block events.  Then when that raw data is parsed, it passed along that null as a valid block event.  The fix, prevents any of the nulls from being added to the active block events.
 
 
 * **A sellall gui message that was supposed to say that the gui was not enabled only said sellall was not enabled.  Added a  new message to clearly state it's the gui that is not enabled.**
