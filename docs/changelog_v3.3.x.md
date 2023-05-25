@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-03-17
 
 
+* **Simple example illustrating the weakness of doubles with large values.**
+
+
 * **Update nbt api to v2.11.2 from v2.11.1**
 
 
