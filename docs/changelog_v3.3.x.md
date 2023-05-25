@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-03-17
 
 
+* **Update nbt api to v2.11.2 from v2.11.1**
+
+
 * **Added ExaltedEconomy to the soft depends so prison will wait until it is loaded before trying to startup.** 2023-05-24
 
 
