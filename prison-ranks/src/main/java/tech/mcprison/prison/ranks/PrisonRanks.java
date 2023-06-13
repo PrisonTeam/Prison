@@ -36,6 +36,7 @@ import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -278,7 +279,9 @@ public class PrisonRanks
 		
 		// If there is a default rank on the default ladder, then
         // check to see if there are any players not in prison: add them:
-        RankLadder defaultLadder = getLadderManager().getLadder( LadderManager.LADDER_DEFAULT );
+        RankLadder defaultLadder = getLadderManager().getLadderDefault();
+        
+//        RankLadder defaultLadder = getLadderManager().getLadder( LadderManager.LADDER_DEFAULT );
         if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
         	int addedPlayers = 0;
         	int fixedPlayers = 0;
@@ -319,9 +322,11 @@ public class PrisonRanks
 				
         		Rank rankOnDefault = null;
         		
-        		if ( rankPlayerFactory.getRank( rPlayer, defaultLadder ) != null ) {
+        		PlayerRank pRank = rankPlayerFactory.getRank( rPlayer, defaultLadder );
+        		
+        		if ( pRank != null ) {
         			
-        			rankOnDefault = rankPlayerFactory.getRank( rPlayer, defaultLadder ).getRank();
+        			rankOnDefault = pRank.getRank();
         			
 //        			Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
 //        					rPlayer.getName(),

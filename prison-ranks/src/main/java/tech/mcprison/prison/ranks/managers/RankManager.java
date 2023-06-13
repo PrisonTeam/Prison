@@ -375,7 +375,11 @@ public class RankManager
             				rankPlayer.addRank(newRank);
             			}
             			
+            			rankPlayer.setDirty( true );
+            			
             			PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
+            			
+            			
 //                    try {
 //                    } catch (IOException e) {
 //                    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()

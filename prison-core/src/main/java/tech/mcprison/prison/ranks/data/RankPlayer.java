@@ -66,6 +66,11 @@ public class RankPlayer
     private UUID uid;
     
     
+    // This is used to track if a RankPlayer was saved, or needs to be saved.
+    private transient boolean enableDirty = false;
+    private transient boolean dirty = false;
+    
+    
     private TreeMap<RankLadder, PlayerRank> ladderRanks;
     
     // ranks is the storage structure used to save the player's ladder & ranks:
@@ -255,7 +260,21 @@ public class RankPlayer
     	return uid;
     }
     
-    /**
+    public boolean isEnableDirty() {
+		return enableDirty;
+	}
+	public void setEnableDirty(boolean enableDirty) {
+		this.enableDirty = enableDirty;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
+	/**
      * If the player has any names in the getNames() collection, of which they may not,
      * then getDisaplyName() will return the last one set, otherwise it will return
      * a null.

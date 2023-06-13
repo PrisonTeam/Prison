@@ -86,7 +86,7 @@ public class RankPlayerFactory
 	        return rankPlayer;
 	    }
 
-	    public Document toDocument( RankPlayer rankPlayer ) {
+	    public static Document toDocument( RankPlayer rankPlayer ) {
 	        Document ret = new Document();
 	        ret.put("uid", rankPlayer.getUUID());
 	        ret.put("ranks", rankPlayer.getRanksRefs() );
@@ -128,6 +128,7 @@ public class RankPlayerFactory
     			RankUpCommand rankupCommands = PrisonRanks.getInstance().getRankManager().getRankupCommands();
     			
     			rankupCommands.setPlayerRankFirstJoin( rankPlayer, defaultRank );
+    			rankPlayer.setDirty( true );
     			
     			
 //    			rankPlayer.addRank( defaultRank );
