@@ -92,8 +92,8 @@ dependencies {
     implementation project(':prison-sellall')
 
 
-    implementation 'org.bstats:bstats-base:3.0.0'
-    implementation 'org.bstats:bstats-bukkit:3.0.0'
+    implementation 'org.bstats:bstats-base:3.0.2'
+    implementation 'org.bstats:bstats-bukkit:3.0.2'
 //    implementation 'org.bstats:bstats-base:2.2.1'
 //    implementation 'org.bstats:bstats-bukkit:2.2.1'
     
@@ -119,7 +119,8 @@ dependencies {
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:9.2.0'
+	implementation 'com.github.cryptomorin:XSeries:9.4.0'
+	//implementation 'com.github.cryptomorin:XSeries:9.2.0'
 	//implementation 'com.github.cryptomorin:XSeries:9.0.0'
 	//implementation 'com.github.cryptomorin:XSeries:8.8.0'
     
@@ -142,7 +143,10 @@ dependencies {
 //	compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.22'
 //  compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.21.3'
 
-    compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
+
+	// https://mvnrepository.com/artifact/com.github.MilkBowl/VaultAPI
+	compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
+    //compileOnly 'net.milkbowl.vault:VaultAPI:1.7.0'
     
 //    compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT'){
 //        exclude group: 'org.spigotmc'
@@ -216,18 +220,22 @@ shadowJar {
 		include(dependency('com.google.code.gson:gson:2.10.1'))
         //include(dependency('com.google.code.gson:gson:2.8.6'))
                 
-        include(dependency('org.bstats:bstats-base:3.0.0'))
-        include(dependency('org.bstats:bstats-bukkit:3.0.0'))
+        include(dependency('org.bstats:bstats-base:3.0.2'))
+        include(dependency('org.bstats:bstats-bukkit:3.0.2'))
 //        include(dependency('org.bstats:bstats-base:2.2.1'))
 //        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
 
         include(dependency('me.clip:placeholderapi:2.11.2'))
         //include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        include(dependency('com.github.cryptomorin:XSeries:9.2.0'))
+		// https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
+        include(dependency('com.github.cryptomorin:XSeries:9.4.0'))
+        //include(dependency('com.github.cryptomorin:XSeries:9.2.0'))
         //include(dependency('com.github.cryptomorin:XSeries:9.0.0'))
         //include(dependency('com.github.cryptomorin:XSeries:8.8.0'))
         
+        
+        // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
         include(dependency('de.tr7zw:item-nbt-api-plugin:2.11.2'))
         //include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         

@@ -10,7 +10,13 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14b 2023-03-17
+# 3.3.0-alpha.14b 2023-06-13
+
+
+* **Update libraries:**
+Update bstats from v3.0.0 to v3.0.2.
+Update XSeries from v9.2.0 to v9.4.0.
+Update vaultAPI from v1.7.0 to v1.7.1.
 
 
 * **Changed config.yml to be able to bypass the add new player at prison startup.**  This would be more related to servers that already have a large player base when they switch to this plugin.
