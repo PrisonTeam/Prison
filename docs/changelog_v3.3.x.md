@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-03-17
 
 
+* **Changed config.yml to be able to bypass the add new player at prison startup.**  This would be more related to servers that already have a large player base when they switch to this plugin.
+NOTE: It's not possible to fully test all conditions where a player object may be null. Use at your own risk if you do not allow prison to scan for new players at startup.  If an error is found, please contact support ASAP in our discord server so we can get it fixed for you.
+
+
 2023-06-13 : 
 * **Update how the player objects are written when dirty.** There were some situations where the RankPlayer object would be written to the file system 2 or 3 times for one change.
 The logic of how things are nested remains the same (to minimize breakage of the code), but the RankPlayer is not utilizing a dirty flag internally so if it's saved once, it skip the other attempts to save without changes.
