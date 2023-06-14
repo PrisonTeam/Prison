@@ -257,7 +257,8 @@ shadowJar {
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
-	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
+	relocate 'de.tr7zw', 'tech.mcprison.prison.nbtapi'
+//	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 

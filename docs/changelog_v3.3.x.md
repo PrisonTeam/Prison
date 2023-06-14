@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-06-13
 
 
+* **Trying to get nbt-api setup properly with shadowing.**  It looks like it's correctly shadowed, but it's being improperly reported as not being shadowed.  I have a conversation with the developer open to figure out what's going on with this issue.
+
+
 * **Update the item-nbt-api library to v2.11.3 from v2.11.2.**
 Turned out the maven repo they actually use was not mavencentral.com, of which, has not yet pulled in the updated version.  Using the correct repo now.
 
