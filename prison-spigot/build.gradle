@@ -67,7 +67,8 @@ repositories {
   
 
     maven { 
-    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
+    	url = 'https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin'
+//    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
     	content {
     		includeGroup 'de.tr7zw'
     	}
@@ -155,10 +156,13 @@ dependencies {
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
 
  
+ // NOTE: mavenrepository.com is not the offical repo:
+ // https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
  // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
 	// https://www.spigotmc.org/resources/nbt-api.7939/
 	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.2'
+	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.3'
+//	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.2'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
 
@@ -236,7 +240,7 @@ shadowJar {
         
         
         // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-        include(dependency('de.tr7zw:item-nbt-api-plugin:2.11.2'))
+        include(dependency('de.tr7zw:item-nbt-api-plugin:2.11.3'))
         //include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))

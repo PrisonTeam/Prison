@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-06-13
 
 
+* **Update the item-nbt-api library to v2.11.3 from v2.11.2.**
+Turned out the maven repo they actually use was not mavencentral.com, of which, has not yet pulled in the updated version.  Using the correct repo now.
+
+
 * **Update libraries:**
 Update bstats from v3.0.0 to v3.0.2.
 Update XSeries from v9.2.0 to v9.4.0.
