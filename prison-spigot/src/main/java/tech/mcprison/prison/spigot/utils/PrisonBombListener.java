@@ -9,7 +9,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.mines.data.Mine;
@@ -19,6 +18,7 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -68,18 +68,23 @@ public class PrisonBombListener
         	// Check to see if this is an mine bomb by checking the NBT key-value pair,
         	// which will also identify which mine bomb it is too.
         	// NOTE: Because we're just checking, do not auto update the itemstack.
-        	NBTItem nbtItem = new NBTItem( event.getItem() );
+//        	NBTItem nbtItem = new NBTItem( event.getItem() );
         	
-        	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
+        	String bombName = PrisonNBTUtil.getNBTString( event.getItem(), MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+        	
+        	if ( bombName == null || bombName.trim().length() == 0 ) {
+//        	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
         		return;
         	}
         	
-        	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+//        	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
         	
         	if ( Output.get().isDebug() ) {
         		Output.get().logInfo( "PrisonBombListener.onInteract bombName: &7%s&r &3::  nbt: &r%s", 
         				bombName, 
-        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) );
+        				PrisonNBTUtil.nbtDebugString( event.getItem() )
+//        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
+        				);
         	}
         	
         	Player player = event.getPlayer();

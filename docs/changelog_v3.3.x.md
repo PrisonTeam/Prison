@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14b 2023-06-13
+# 3.3.0-alpha.14b 2023-06-14
+
+
+* **Fixed the way prison was using the nbt-api.**
+Now using the correct repo and the newer API functions.
 
 
 * **Trying to get nbt-api setup properly with shadowing.**  It looks like it's correctly shadowed, but it's being improperly reported as not being shadowed.  I have a conversation with the developer open to figure out what's going on with this issue.

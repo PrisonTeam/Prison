@@ -12,7 +12,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import de.tr7zw.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
@@ -268,11 +267,11 @@ public class SpigotPlayerRanksGUI
 
 
             // Before adding the button, add an NBT tag for the command and rank name:
-			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
-			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemRank.getButtonItem());
-			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
+//			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+//			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemRank.getButtonItem());
+			PrisonNBTUtil.setNBTBoolean( itemRank.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, true);
 //			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, noCommmand );
-			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_RANK_NAME, rank.getName() );
+			PrisonNBTUtil.setNBTString( itemRank.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_RANK_NAME, rank.getName() );
 			
             
             gui.addButton(itemRank);
@@ -305,10 +304,10 @@ public class SpigotPlayerRanksGUI
 			Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, rankupTitle );
 			String rankupCommand = "rankup " + (ladderName.equalsIgnoreCase("default") ? "" : ladderName);
 			
-			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
-			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(rankupButton.getButtonItem());
-			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
-			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, rankupCommand);
+//			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+//			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(rankupButton.getButtonItem());
+			PrisonNBTUtil.setNBTBoolean( rankupButton.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, true);
+			PrisonNBTUtil.setNBTString( rankupButton.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, rankupCommand);
 			
 //        		SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
 			// NOTE: Button position will be properly assigned in the setButtonNextAvilable:

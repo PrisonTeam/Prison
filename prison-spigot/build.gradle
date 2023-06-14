@@ -67,7 +67,9 @@ repositories {
   
 
     maven { 
-    	url = 'https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin'
+    	name = "CodeMC"
+    	url = uri("https://repo.codemc.io/repository/maven-public/")
+//    	url = 'https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin'
 //    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
     	content {
     		includeGroup 'de.tr7zw'
@@ -159,9 +161,10 @@ dependencies {
  // NOTE: mavenrepository.com is not the offical repo:
  // https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
  // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
+ 	// https://github.com/tr7zw/Item-NBT-API/wiki/Using-Gradle
 	// https://www.spigotmc.org/resources/nbt-api.7939/
 	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.3'
+	implementation 'de.tr7zw:item-nbt-api:2.11.3'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.2'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
@@ -240,7 +243,7 @@ shadowJar {
         
         
         // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-        include(dependency('de.tr7zw:item-nbt-api-plugin:2.11.3'))
+        include(dependency('de.tr7zw:item-nbt-api:'))
         //include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
@@ -257,7 +260,7 @@ shadowJar {
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
-	relocate 'de.tr7zw', 'tech.mcprison.prison.nbtapi'
+	relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.nbtapi'
 //	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'

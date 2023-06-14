@@ -13,13 +13,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Text;
 
 public class SpigotItemStack
@@ -29,6 +28,7 @@ public class SpigotItemStack
 //	private NBTItem nbtBukkitStack;
 //	private boolean nbtChecked = false;
 //	private org.bukkit.inventory.ItemStack bukkitStack;
+	private org.bukkit.inventory.ItemStack deserialize;
 	
 	public SpigotItemStack( org.bukkit.inventory.ItemStack bukkitStack )
 		throws PrisonItemStackNotSupportedRuntimeException {
@@ -121,10 +121,26 @@ public class SpigotItemStack
 	
     public SpigotItemStack(String displayName, int amount, PrisonBlock material, String... lore) {
         super(displayName, amount, material, lore );
+        
+        SpigotItemStack sItemStack = SpigotUtil.getSpigotItemStack( material, amount );
+        
+        this.bukkitStack = sItemStack.getBukkitStack();
+        
+        if ( bukkitStack != null ) {
+        	setupBukkitStack( bukkitStack );
+        }
     }
 
     public SpigotItemStack(int amount, PrisonBlock material, String... lore) {
     	super( amount, material, lore );
+    	
+    	SpigotItemStack sItemStack = SpigotUtil.getSpigotItemStack( material, amount );
+    	
+    	this.bukkitStack = sItemStack.getBukkitStack();
+    	
+    	if ( bukkitStack != null ) {
+    		setupBukkitStack( bukkitStack );
+    	}
     }
     
     
@@ -164,21 +180,21 @@ public class SpigotItemStack
 //    	return nbtBukkitStack != null;
 //    }
     
-    public NBTItem getNBT() {
-    	NBTItem nbtItemStack = null;
-    	
-    	if ( getBukkitStack() != null && getBukkitStack().getType() != Material.AIR  ) {
-    		try {
-				nbtItemStack = new NBTItem( getBukkitStack(), true );
-				
-				nbtDebugLog( nbtItemStack, "getNbt" );
-			} catch (Exception e) {
-				// ignore - the bukkit item stack is not compatible with the NBT library
-			}
-    	}
-    	
-    	return nbtItemStack;
-    }
+//    public NBTItem getNBT() {
+//    	NBTItem nbtItemStack = null;
+//    	
+//    	if ( getBukkitStack() != null && getBukkitStack().getType() != Material.AIR  ) {
+//    		try {
+//				nbtItemStack = new NBTItem( getBukkitStack(), true );
+//				
+//				nbtDebugLog( nbtItemStack, "getNbt" );
+//			} catch (Exception e) {
+//				// ignore - the bukkit item stack is not compatible with the NBT library
+//			}
+//    	}
+//    	
+//    	return nbtItemStack;
+//    }
     
 //    private void applyNbt( NBTItem nbtItem ) {
 //		if ( nbtItem != null && getBukkitStack() != null ) {
@@ -189,54 +205,57 @@ public class SpigotItemStack
 //		}
 //    }
     
-    private void nbtDebugLog( NBTItem nbtItem, String desc ) {
-		if ( Output.get().isDebug() ) {
-			org.bukkit.inventory.ItemStack iStack = nbtItem.getItem();
-			
-			int sysId = System.identityHashCode(iStack);
-			
-			String message = String.format( 
-					"NBT %s ItemStack for %s: %s  sysId: %d", 
-					desc,
-					iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName() ? 
-							iStack.getItemMeta().getDisplayName() :
-							iStack.getType().name(),
-					nbtItem.toString(),
-					sysId );
-			
-			Output.get().logInfo( message );
-			
-			Output.get().logInfo( "NBT: " + new NBTItem( getBukkitStack() ) );
-			
-		}
-    }
+//    private void nbtDebugLog( NBTItem nbtItem, String desc ) {
+//		if ( Output.get().isDebug() ) {
+//			org.bukkit.inventory.ItemStack iStack = nbtItem.getItem();
+//			
+//			int sysId = System.identityHashCode(iStack);
+//			
+//			String message = String.format( 
+//					"NBT %s ItemStack for %s: %s  sysId: %d", 
+//					desc,
+//					iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName() ? 
+//							iStack.getItemMeta().getDisplayName() :
+//							iStack.getType().name(),
+//					nbtItem.toString(),
+//					sysId );
+//			
+//			Output.get().logInfo( message );
+//			
+//			Output.get().logInfo( "NBT: " + new NBTItem( getBukkitStack() ) );
+//			
+//		}
+//    }
     
     public boolean hasNBTKey( String key ) {
-    	boolean results = false;
+    	boolean results = PrisonNBTUtil.hasNBTString( getBukkitStack(), key);
     	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-    		results = nbtItem.hasKey( key );
-    	}
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//    		results = nbtItem.hasKey( key );
+//    	}
     	
     	return results;
     }
     
     public String getNBTString( String key ) {
-    	String results = null;
+    	String results = PrisonNBTUtil.getNBTString( getBukkitStack(), key);
     	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-    		results = nbtItem.getString( key );
-    	}
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//    		results = nbtItem.getString( key );
+//    	}
     	return results;
     }
     public void setNBTString( String key, String value ) {
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-    		nbtItem.setString( key, value );
-    		nbtDebugLog( nbtItem, "setNBTString" );
-    	}
+    	
+    	PrisonNBTUtil.setNBTString( getBukkitStack(), key, value );
+    	
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//    		nbtItem.setString( key, value );
+//    		nbtDebugLog( nbtItem, "setNBTString" );
+//    	}
     }
     
 //    public int getNBTInt( String key ) {
@@ -430,6 +449,17 @@ public class SpigotItemStack
 		results.put( "isBlock", isBlock() );
 		
 		return results;
+	}
+	
+	public static SpigotItemStack deserialize( Map<String, Object> map )
+	{
+//		-String prisonVersion = (String) map.get( "prison_version" );
+		
+		org.bukkit.inventory.ItemStack iStack = org.bukkit.inventory.ItemStack.deserialize(map);
+		
+		SpigotItemStack sItemStack = new SpigotItemStack( iStack );
+				
+		return sItemStack;
 	}
 
 	/**

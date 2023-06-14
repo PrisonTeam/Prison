@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import de.tr7zw.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -271,11 +270,11 @@ public class SpigotPlayerMinesGUI
             				p.getName() );
             
             // Before adding the button, add an NBT tag for the command and rank name:
-			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
-			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemMine.getButtonItem());
-			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
-			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, mineTeleportCommand );
-			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_MINE_NAME, m.getName() );
+//			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+//			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemMine.getButtonItem());
+			PrisonNBTUtil.setNBTBoolean( itemMine.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, true);
+			PrisonNBTUtil.setNBTString( itemMine.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, mineTeleportCommand );
+			PrisonNBTUtil.setNBTString( itemMine.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_MINE_NAME, m.getName() );
 			
 
             // Add the button to the inventory.

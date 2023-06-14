@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 
-import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -38,6 +37,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -655,7 +655,7 @@ public class PrisonUtilsMineBombs
 	public static ItemStack getItemStackBomb( MineBombData bombData ) {
 		ItemStack sItemStack = null;
 		SpigotItemStack bombs = null;
-		NBTItem nbtItem = null;
+//		NBTItem nbtItem = null;
 		
 		XMaterial xBomb = XMaterial.matchXMaterial( bombData.getItemType() ).orElse( null );
 		
@@ -705,11 +705,12 @@ public class PrisonUtilsMineBombs
 			if ( sItemStack != null ) {
 				
 				// Set the NBT String key-value pair:
-				nbtItem = new NBTItem( sItemStack, true );
-				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+				PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+//				nbtItem = new NBTItem( sItemStack, true );
+//				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
 
-				if ( Output.get().isDebug() && nbtItem != null && nbtItem.toString() != null ) {
-					Output.get().logInfo( "getItemStackBombs ntb: %s", nbtItem.toString() );
+				if ( Output.get().isDebug() ) {
+					Output.get().logInfo( "getItemStackBombs ntb: %s", PrisonNBTUtil.nbtDebugString(sItemStack) );
 				}
 			}
 			

@@ -11,7 +11,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -348,12 +347,12 @@ public class SpigotGUIMenuTools
     	
     	if ( currentItem != null ) {
     		
-    		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
-    		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(currentItem);
+//    		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+//    		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(currentItem);
     		
     		// process if NBTs are enabled:
-    		if ( nbtItem != null && nbtUtil.hasNBTKey(nbtItem, GUI_MENU_TOOLS_NBT_ENABLED) ) {
-    			String command = nbtUtil.getNBTString(nbtItem, GUI_MENU_TOOLS_NBT_COMMAND);
+    		if ( PrisonNBTUtil.getNBTBoolean(currentItem, GUI_MENU_TOOLS_NBT_ENABLED) ) {
+    			String command = PrisonNBTUtil.getNBTString(currentItem, GUI_MENU_TOOLS_NBT_COMMAND);
     			
     			if ( command != null ) {
     				isPageAction = true;
@@ -410,18 +409,19 @@ public class SpigotGUIMenuTools
     	
     	if ( pageData != null ) {
     		
-       		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
-    		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( guiButton.getButtonItem() );
+//       		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+//    		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( guiButton.getButtonItem() );
     		
     		// process if NBTs are enabled:
-    		if ( nbtItem != null ) {
+//    		if ( nbtItem != null ) 
+    		{
     			String command = pageData.getCommandToRun() + 
     								( page <= 0 ? "" : " " + page);
 //    			String command = GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + 
 //    					( page <= 0 ? "" : " " + page);
     			
-    			nbtUtil.setNBTString(nbtItem, GUI_MENU_TOOLS_NBT_ENABLED, "true");
-    			nbtUtil.setNBTString(nbtItem, GUI_MENU_TOOLS_NBT_COMMAND, command );
+    			PrisonNBTUtil.setNBTBoolean( guiButton.getButtonItem(), GUI_MENU_TOOLS_NBT_ENABLED, true);
+    			PrisonNBTUtil.setNBTString( guiButton.getButtonItem(), GUI_MENU_TOOLS_NBT_COMMAND, command );
     			    			
     		}
     	}
