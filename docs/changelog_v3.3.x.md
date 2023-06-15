@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14b 2023-06-14
+# 3.3.0-alpha.14b 2023-06-15
+
+
+* **Totally stupid change: github's compiler forgot how to use overloaded functions so it was trying to use the wrong one.**
+Renaming the function should help it's anti-AI skill sets.
 
 
 * **Fixed the way prison was using the nbt-api.**
