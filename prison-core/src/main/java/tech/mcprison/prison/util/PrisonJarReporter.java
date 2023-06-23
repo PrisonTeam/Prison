@@ -55,7 +55,12 @@ public class PrisonJarReporter {
 		JavaSE_15("3b"),
 		JavaSE_16("3c"),
 		JavaSE_17("3d"),
-		JavaSE_18("3e")
+		JavaSE_18("3e"),
+		JavaSE_19("3f"),
+		JavaSE_20("40"),
+		JavaSE_21("41"),
+		
+		JavaSE_UnknownVersion("UnknownJavaVersion")
 		;
 		
 		private final String hex;
@@ -67,7 +72,7 @@ public class PrisonJarReporter {
 		}
 		
 		public static JavaVersion fromString( String hexString ) {
-			JavaVersion results = null;
+			JavaVersion results = JavaSE_UnknownVersion;
 			
 			if ( hexString != null && hexString.length() >= 2 ) {
 				
