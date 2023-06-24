@@ -10,7 +10,18 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14c 2023-06-20
+# 3.3.0-alpha.14c 2023-06-24
+
+
+
+* **Changes to the help for `/rankup` and `/prestige` commands to make it a little more clearer** as to what is expected with perms and to provide more details.
+Added a new config setting to disable the need to use the prestige perm `ranks.rankup.presetiges` which may make it easier to get presetiges working on most servers.
+Prestiges still requires the use of the `ranks.user` perm which is the same perm used for `/rankup`.
+
+
+* **Updated the PrisonJarReporter tool to include java versions 19, 20, and 21.**
+Also fixed a bug in which if the version signature is not known, then it was returning a null.  Now it returns an enum of type "JavaSE_UnknownVersion" which will prevent future errors.
+
 
 
 * **2023-06-20: Version 3.3.0-alpha.14c released**
