@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14c 2023-06-24
 
 
+* **I made a mistake when adding the new feature to skip player scans on startup.**
+I added a new root perm in config.yml that started with `prison-ranks` when `ranks` already existed.  Therefore, I changed the defaults in config.sys to fix this and changed the code to allow the old version of the config (the bad version) and the newer version.
+
 
 * **Changes to the help for `/rankup` and `/prestige` commands to make it a little more clearer** as to what is expected with perms and to provide more details.
 Added a new config setting to disable the need to use the prestige perm `ranks.rankup.presetiges` which may make it easier to get presetiges working on most servers.

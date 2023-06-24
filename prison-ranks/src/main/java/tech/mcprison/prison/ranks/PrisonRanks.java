@@ -275,8 +275,11 @@ public class PrisonRanks
 	public void checkAllPlayersForJoin()
 	{
 		
-		boolean addNewPlayers = Prison.get().getPlatform().getConfigBooleanTrue( 
-				"prison-ranks.startup.add-new-players-on-startup" );
+		boolean addNewPlayers = 
+				Prison.get().getPlatform().getConfigBooleanTrue( 
+								"ranks.startup.add-new-players-on-startup" ) ||
+				Prison.get().getPlatform().getConfigBooleanFalse( 
+								"prison-ranks.startup.add-new-players-on-startup" );
 		
 		if ( addNewPlayers ) {
 			
@@ -367,7 +370,7 @@ public class PrisonRanks
 		else {
 			
 			Output.get().logInfo( "Ranks: First Join Checks disabled. Enable in 'config.yml' by adding " +
-							"'prison-ranks.startup.add-new-players-on-startup: true'.");
+							"'ranks.startup.add-new-players-on-startup: true'.");
 		}
 		
 	}
