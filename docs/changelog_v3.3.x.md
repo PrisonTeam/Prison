@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14b 2023-06-15
+# 3.3.0-alpha.14c 2023-06-20
+
+
+* **2023-06-20: Version 3.3.0-alpha.14c released**
 
 
 * **Totally stupid change: github's compiler forgot how to use overloaded functions so it was trying to use the wrong one.**
