@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14c 2023-06-24
+# 3.3.0-alpha.14c 2023-06-28
+
+
+* **Bug fix: found that under a rare situation that it was trying to use an empty String with decimal formatting.**
+This was found while testing some placeholders while players were offline.
 
 
 * **I made a mistake when adding the new feature to skip player scans on startup.**

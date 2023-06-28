@@ -1705,8 +1705,8 @@ public class RankPlayer
 		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
 		String message = String.format(
-				" %-3d  %-18s %-7s %-7s %9s %9s %9s",
-					(rankPostion > 0 ? rankPostion : ""),
+				" %-3s  %-18s %-7s %-7s %9s %9s %9s",
+					(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
 					getName(),
 					prestRankTagNc,
 					defRankTagNc,
@@ -1752,8 +1752,8 @@ public class RankPlayer
 		
 		String ranks = prestRankTagNc + defRankTagNc;
 		String message = String.format(
-				" %-3d %-9s %6s %-17s %9s",
-				(rankPostion > 0 ? rankPostion : ""),
+				" %-3s %-9s %6s %-17s %9s",
+				(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
 				ranks,
 				dFmt.format( getRankScore() ),
 				getName(),

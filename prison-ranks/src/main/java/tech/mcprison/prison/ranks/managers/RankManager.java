@@ -730,10 +730,17 @@ public class RankManager
 		boolean isStatsPlayers = placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS );
 		boolean isStatsRank = placeHolder.hasFlag( PlaceholderFlags.STATSRANKS );
 		
-		if ( !( isStatsPlayers ) &&
-				rank != null && 
-				( rankPlayer != null || 
-				  rankPlayer == null && isStatsRank ) ) {
+		
+		if ( isStatsPlayers ||
+			isStatsRank || 
+			rank != null && rankPlayer != null
+				
+				) {
+			
+//		if ( !( isStatsPlayers ) &&
+//				rank != null && 
+//				( rankPlayer != null || 
+//				  rankPlayer == null && isStatsRank ) ) {
 			
 			identifier.setFoundAMatch( true );
 			
@@ -1272,6 +1279,18 @@ public class RankManager
 					break;
 			}
 			
+		}
+		else if ( Output.get().isDebug() ) {
+			String msg = String.format( 
+					"RankManager.getTranslateRanksPlaceHolder(): Failed to process a placeholder  " +
+					"isStatsPlayers: %b  isStatsRank: %b  [%s]", 
+					isStatsPlayers,
+					isStatsRank,
+					placeHolder.toString()
+					
+					);
+			
+			Output.get().logDebug( msg );
 		}
 
 		if ( attributeText != null && results != null ) {
