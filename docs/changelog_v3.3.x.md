@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14c 2023-06-28
 
 
+* **MC 1.18 new world height support.**
+Prison now supports the newer world heights as found in mc 1.18.x and newer. 
+The new range for Y is from -64 to 320.
+
+
 * **Bug fix: found that under a rare situation that it was trying to use an empty String with decimal formatting.**
 This was found while testing some placeholders while players were offline.
 

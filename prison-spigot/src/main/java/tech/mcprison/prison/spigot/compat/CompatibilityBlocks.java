@@ -64,5 +64,10 @@ public interface CompatibilityBlocks
 	public void setBlockFace( Block bBlock, BlockFace blockFace );
 	
     public ItemStack getLapisItemStack();
+    
+    
+    public int getMinY();
+    
+    public int getMaxY();
 	
 }

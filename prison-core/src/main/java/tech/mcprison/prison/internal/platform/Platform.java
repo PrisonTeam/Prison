@@ -454,5 +454,10 @@ public interface Platform {
 	
 	
 	public List<PlayerBackpack> getPlayerOldBackpacks( Player player );
+	
+	
+	public int getMinY();
+
+	public int getMaxY();
 
 }

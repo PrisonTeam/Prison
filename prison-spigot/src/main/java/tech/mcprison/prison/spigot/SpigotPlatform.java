@@ -3099,4 +3099,14 @@ public class SpigotPlatform
 		return backpacks;
 	}
 	
+	
+	@Override
+	public int getMinY() {
+		return SpigotCompatibility.getInstance().getMinY();
+	}
+
+	@Override
+	public int getMaxY() {
+		return SpigotCompatibility.getInstance().getMaxY();
+	}
 }

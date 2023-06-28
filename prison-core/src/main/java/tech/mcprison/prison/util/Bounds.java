@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.util;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 
 /**
@@ -165,6 +166,9 @@ public class Bounds {
 		int zMin = bounds.getzBlockMin();
 		int zMax = bounds.getzBlockMax();
 		
+		int worldMinY = Prison.get().getPlatform().getMinY();
+		int worldMaxY = Prison.get().getPlatform().getMaxY();
+		
 		switch ( edge )
 		{
 			case top:
@@ -172,8 +176,8 @@ public class Bounds {
 				if ( yMax < yMin ) {
 					yMax = yMin;
 				}
-				if ( yMax > 255 ) {
-					yMax = 255;
+				if ( yMax > worldMaxY ) {
+					yMax = worldMaxY;
 				}
 				break;
 				
@@ -182,8 +186,8 @@ public class Bounds {
 				if ( yMin > yMax ) {
 					yMin = yMax;
 				}
-				if ( yMin < 0 ) {
-					yMin = 0;
+				if ( yMin < worldMinY ) {
+					yMin = worldMinY;
 				}
 				break;
 				
