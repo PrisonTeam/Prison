@@ -272,6 +272,27 @@ public class RankLadder
 		return results;
 	}
 
+    /**
+     * <p>This function finds a rank with the given name.  The rank name
+     * must be an exact match, but it's case insensitive.
+     * </p>
+     * 
+     * @param rank
+     * @return
+     */
+    public Rank getRank( String rank ) {
+    	Rank results = null;
+    	
+    	for ( Rank r : ranks ) {
+			if ( r.getName().equalsIgnoreCase( rank ) ) {
+				results = r;
+				break;
+			}
+		}
+    	
+    	return results;
+    }
+    
 	/**
      * Add a rank to this ladder.
      *

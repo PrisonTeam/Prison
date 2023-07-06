@@ -10,7 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14c 2023-06-28
+# 3.3.0-alpha.14c 2023-07-06
+
+
+* **Update topN Stats.**  This is not the same as topNPlayers and this is not yet being used.
+This tracks topN on blocks mined, tokens, and the player's ranks and balances. 
+The comparator was not correct and was fixed.
 
 
 * **MC 1.18 new world height support.**

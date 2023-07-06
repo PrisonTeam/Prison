@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TopNStats
+public class TopNStatsSingleton
 {
 
-	private static TopNStats instance;
+	private static TopNStatsSingleton instance;
 	
 	List<TopNStatsData> mainList;
 
@@ -19,19 +19,19 @@ public class TopNStats
 	
 	
 	
-	private TopNStats() {
+	private TopNStatsSingleton() {
 		super();
 	
 		this.mainList = new ArrayList<>();
 	}
 	
-	public static TopNStats getInstance() {
+	public static TopNStatsSingleton getInstance() {
 		if ( instance == null ) {
-			synchronized ( TopNStats.class )
+			synchronized ( TopNStatsSingleton.class )
 			{
 				if ( instance == null ) {
 
-					instance = new TopNStats();
+					instance = new TopNStatsSingleton();
 				}
 			}
 		}
