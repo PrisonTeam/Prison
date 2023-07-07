@@ -2067,18 +2067,38 @@ public class RanksCommands
     			@Wildcard(join=true)
     			@Arg(name = "options", def = ".",
     				description = "Options: 'alt' displays a shorter format. " +
-    						"'archived' shows all of the archvied players. " + 
-    						"'forceReload' forces the reloading of all players; must be OPd or console. " +
-    						"[alt archived forceReload]") String options ){
+    						"'archived' shows the archvied players. " + 
+    						"'forceReload' forces the reloading of all players " + 
+    						"(must be OPd or console). " +
+    						"'stats' shows topN performance info. " +
+    						"'debugSave' generates a json save file under ranks directory on server (OPd or console). " +
+    						"Can use multiple options. " +
+    						"[alt archived forceReload stats debugSave]") String options ){
 
     	int page = 1;
     	int pageSize = 10;
 
     	if ( contains( "forceReload", pageNumber, pageSizeNumber, options ) ) {
     		
-    		TopNPlayers.getInstance().forceReloadAllPlayers();
+    		if ( sender.isOp() ) {
+    			TopNPlayers.getInstance().forceReloadAllPlayers();
+    			ranksTopNPlayerForcedReloadSuccess( sender );
+    		}
+    		else {
+    			
+    			ranksTopNPlayerForcedReloadFailure( sender );
+    		}
+    		
     	}
     	
+    	if ( contains( "debugSave", pageNumber, pageSizeNumber, options ) ) {
+    		
+    		if ( sender.isOp() ) {
+    			TopNPlayers.getInstance().saveToJson();
+    			TopNPlayers.getInstance().loadSaveFile();
+    			ranksTopNPlayerDebugSaved( sender );
+    		}
+    	}
     	
     	boolean alt = contains( "alt", pageNumber, pageSizeNumber, options );
 //    	if ( pageNumber.toLowerCase().contains("alt") ||
@@ -2091,6 +2111,37 @@ public class RanksCommands
     	boolean archived = contains( "archive", pageNumber, pageSizeNumber, options );
     	
 //    	boolean sort = contains( "sort", pageNumber, pageSizeNumber, options );
+    	
+    	int topNSize = TopNPlayers.getInstance().getTopNSize();
+    	int archivedSize = TopNPlayers.getInstance().getArchivedSize();
+    	
+    	
+    	if ( contains( "stats", pageNumber, pageSizeNumber, options ) ) {
+    		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.000");
+    		DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
+    		
+    		String statsBuildMs = dFmt.format( 
+    					TopNPlayers.getInstance().getStatsBuildDataNanoSec() / 1_000_000 );
+    		String statsRefreshMs = dFmt.format( 
+    					TopNPlayers.getInstance().getStatsRefreshDataNanoSec() / 1_000_000 );
+    		String statsSaveMs = dFmt.format( 
+    				TopNPlayers.getInstance().getStatsSaveDataNanoSec() / 1_000_000 );
+    		String statsLoadMs = dFmt.format( 
+    				TopNPlayers.getInstance().getStatsLoadDataNanoSec() / 1_000_000 );
+
+    		String msg = String.format(
+    				"&7topNstats:&3 topNs: %s  archives: %s  buildMs: %s  refreshMs: %s  " +
+    						"saveMs: %s  loadMs: %s ",
+    				iFmt.format(topNSize),
+    				iFmt.format(archivedSize),
+    				statsBuildMs,
+    				statsRefreshMs,
+    				statsSaveMs,
+    				statsLoadMs
+    				);
+    		sender.sendMessage(msg);
+    	}
+    	
     	
     	try {
     		page = Integer.parseInt(pageNumber);
@@ -2114,8 +2165,8 @@ public class RanksCommands
     	
     	int totalPlayers = 
     			archived ? 
-    					TopNPlayers.getInstance().getArchivedSize() :
-    					TopNPlayers.getInstance().getTopNSize();
+    					archivedSize :
+    					topNSize;
     	
 //    	int totalPlayers = PrisonRanks.getInstance().getPlayerManager().getPlayers().size();
     	int totalPages = (totalPlayers / pageSize) + (totalPlayers % pageSize == 0 ? 0 : 1);

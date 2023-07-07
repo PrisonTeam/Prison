@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14c 2023-07-06
 
 
+* **Update the topN command to eliminate the use of the save file.**
+All players are dynamically loaded by the refresh task.  Stats have been added and are not a new option for the command.
+To act as a form of debugging feature, the save of the topN data has been disconnected from the current process.
+
+
 * **Updated ItemsAdder from v3.2.5 to v3.5.0b**
 because github's build was failing to find v3.2.5 online and was killing the prison build.
 

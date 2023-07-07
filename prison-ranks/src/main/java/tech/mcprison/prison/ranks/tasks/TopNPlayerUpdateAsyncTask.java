@@ -9,6 +9,8 @@ public class TopNPlayerUpdateAsyncTask
 
 	private TopNPlayers topNPlayers;
 	
+	private boolean forceReload = true;
+	
 //	private boolean startup = true;
 	
 	public TopNPlayerUpdateAsyncTask( TopNPlayers topNPlayers ) {
@@ -23,6 +25,8 @@ public class TopNPlayerUpdateAsyncTask
 		TopNPlayerUpdateAsyncTask asyncTask = 
 							new TopNPlayerUpdateAsyncTask( topNPlayers );
 		
+		topNPlayers.setUpdaterTask( asyncTask );
+		
 		PrisonTaskSubmitter.runTaskTimerAsync( asyncTask, delayTicks, intervalTicks );
 	}
 	
@@ -35,8 +39,22 @@ public class TopNPlayerUpdateAsyncTask
 //			topNPlayers.loadSaveFile();
 //		}
 		
-		topNPlayers.refreshAndSort();
+		if ( forceReload ) {
+			topNPlayers.forceReloadAllPlayers();
 		
+			forceReload = false;
+		}
+		else {
+			
+			topNPlayers.refreshAndSort();
+		}
+	}
+
+	public boolean isForceReload() {
+		return forceReload;
+	}
+	public void setForceReload(boolean forceReload) {
+		this.forceReload = forceReload;
 	}
 	
 }

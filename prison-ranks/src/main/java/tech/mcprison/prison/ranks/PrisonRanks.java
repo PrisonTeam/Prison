@@ -41,6 +41,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -200,6 +201,7 @@ public class PrisonRanks
 
 
         // Hook up all players to the ranks:
+        //  - parameter checkPlayerBalances is set to false
         playerManager.connectPlayersToRanks( false );
         
         Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
@@ -228,7 +230,7 @@ public class PrisonRanks
         
         
         
-        // Load up all else
+        // Load up everything else
 
         new FirstJoinHandler();
         new ChatHandler();
@@ -261,7 +263,9 @@ public class PrisonRanks
         // Start up the TopNPlayer's collections after all players have been loaded:
         // NOTE: getting the instance of TopNPlayers must be done "after" player validation.
         //       So that thread needs to initiate it after done validating and fixing all players.
-//        TopNPlayers.getInstance();
+        // NOTE: Issue: player validation may take a long time, or could be disabled. So 
+        //       load topNPlayers now, and then refresh after validation.
+        TopNPlayers.getInstance();
       
         
         // Check all players to see if any need to join:

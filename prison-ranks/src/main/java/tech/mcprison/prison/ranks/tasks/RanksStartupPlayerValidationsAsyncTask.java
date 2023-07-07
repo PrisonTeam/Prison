@@ -45,7 +45,11 @@ public class RanksStartupPlayerValidationsAsyncTask
 		// NOTE: since TopN is based upon Ranks and the associated players, if Ranks module
 		//       is disabled, TopN will not run.  Make sure 100% that the PlayerManager has been
 		//       setup before trying to call TopNPlayers.getInstance() or it will never work/start.
-        TopNPlayers.getInstance();
+		if ( TopNPlayers.getInstance().getUpdaterTask() != null ) {
+			
+			// NOTE: force the reloading of all topNPlayers on the next update
+			TopNPlayers.getInstance().getUpdaterTask().setForceReload( true );
+		}
 
 		
 //		// The following can take awhile to run if there are a lot of players

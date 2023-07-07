@@ -14,6 +14,18 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.tasks.TopNPlayerUpdateAsyncTask;
 
+/**
+ * <p>This is singleton that manages the topNPlayers.
+ * </p>
+ * 
+ * <p>NOTE: This no longer saves and loads the json file.  
+ * Timing was an issue and not really sure if it was even 
+ * worth trying to bypass a full reload.
+ * </p>
+ * 
+ * @author Blue
+ *
+ */
 public class TopNPlayers
 	implements FileIOData {
 
@@ -43,6 +55,13 @@ public class TopNPlayers
 	
 	private transient boolean dirty = false;
 	
+	private transient TopNPlayerUpdateAsyncTask updaterTask;
+	
+	private long statsBuildDataNanoSec = 0L;
+	private long statsRefreshDataNanoSec = 0L;
+	private long statsSaveDataNanoSec = 0L;
+	private long statsLoadDataNanoSec = 0L;
+	
 	private TopNPlayers() {
 		super();
 		
@@ -69,7 +88,7 @@ public class TopNPlayers
 				if ( instance == null ) {
 					instance = new TopNPlayers();
 					
-					instance.loadSaveFile();
+//					instance.loadSaveFile();
 					
 					instance.launchTopNPlayerUpdateAsyncTask();
 				}
@@ -124,6 +143,11 @@ public class TopNPlayers
 	}
 	
 	/**
+	 * <p>NOTE: The saved file is no longer being loaded. It only is used for 
+	 * debugging stats testing to identify how long it would take if it was actually
+	 * being used.  But the loaded data is not saved and it is not being used.
+	 * </p>
+	 *
 	 * <p>Upon server startup, in an asynch thread, this function should be called
 	 * to load the saved data from the file system.  If there is no saved data,
 	 * then this function will access the PlayerManager and build an initial 
@@ -144,10 +168,9 @@ public class TopNPlayers
 	public void loadSaveFile() {
 		
 		// If Ranks module is not loaded, then do not try to load any save file:
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
-			// Ranks is not loaded, so reset to empties:
+		if ( PrisonRanks.getInstance().getPlayerManager() == null ) {
 			
-			// Load from file was successful!
+			// Ranks is not loaded, so reset to empties:
 			setTopNList( new ArrayList<>() );
 			setTopNMap( new TreeMap<>() );
 			setArchivedList( new ArrayList<>() );
@@ -156,44 +179,54 @@ public class TopNPlayers
 			return;
 		}
 		
+		long start = System.nanoTime();
+		
 		JsonFileIO jfio = new JsonFileIO();
 		
 		TopNPlayers temp = (TopNPlayers) jfio.readJsonFile( getSaveFile(), this );
+		temp.sortTopN();
 		
-		if ( temp != null && 
-				(temp.getTopNList().size() > 0 || 
-				 temp.getArchivedList().size() > 0 )) {
-			
-			// Load from file was successful!
-			setTopNList( temp.getTopNList() );
-			setTopNMap( temp.getTopNMap() );
-			setArchivedList( temp.getArchivedList() );
-			setArchivedMap( temp.getArchivedMap() );
-
-			// Since loading from a file, some players may now need to be archived:
-			checkArchives();
-		}
-		else  {
-			// load from file was not successful, probably because there is no file.
-			// So create a new collection of players from the PlayerManager:
-			List<RankPlayer> players = PrisonRanks.getInstance().getPlayerManager().getPlayers();
-			
-			for (RankPlayer rankPlayer : players) {
-				
-				addPlayerData( rankPlayer );
-			}
-			
-			// Do not need to check archives since the last seen date is processed 
-			// when adding the player data.
-		}
-		
-		// Sort:
-		sortTopN();
+		// The following is disabled because this is just a performance test.
 		
 		
-		if ( isDirty() ) {
-			saveToJson();
-		}
+//		if ( temp != null && 
+//				(temp.getTopNList().size() > 0 || 
+//				 temp.getArchivedList().size() > 0 )) {
+//			
+//			// Load from file was successful!
+//			setTopNList( temp.getTopNList() );
+//			setTopNMap( temp.getTopNMap() );
+//			setArchivedList( temp.getArchivedList() );
+//			setArchivedMap( temp.getArchivedMap() );
+//
+//			// Since loading from a file, some players may now need to be archived:
+//			checkArchives();
+//		}
+//		else  {
+//			// load from file was not successful, probably because there is no file.
+//			// So create a new collection of players from the PlayerManager:
+//			List<RankPlayer> players = PrisonRanks.getInstance().getPlayerManager().getPlayers();
+//			
+//			for (RankPlayer rankPlayer : players) {
+//				
+//				addPlayerData( rankPlayer );
+//			}
+//			
+//			// Do not need to check archives since the last seen date is processed 
+//			// when adding the player data.
+//		}
+//		
+//		// Sort:
+//		sortTopN();
+		
+		long end = System.nanoTime();
+		
+		setStatsLoadDataNanoSec( end - start );
+		
+		// NOTE: save is disabled since this is just for debugging purposes.
+//		if ( isDirty() ) {
+//			saveToJson();
+//		}
 	}
 	
 	/**
@@ -210,6 +243,8 @@ public class TopNPlayers
 		
 		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
+			long start = System.nanoTime();
+
 			getTopNList().clear();
 			getTopNMap().clear();
 			
@@ -230,8 +265,12 @@ public class TopNPlayers
 			
 			// Sort:
 			sortTopN();
+
+			long end = System.nanoTime();
 			
-			saveToJson();
+			setStatsBuildDataNanoSec( end - start );
+			
+//			saveToJson();
 			
 		}
 		
@@ -240,9 +279,16 @@ public class TopNPlayers
 	public void saveToJson() {
 		JsonFileIO jfio = new JsonFileIO();
 
+		long start = System.nanoTime();
+		
 		jfio.saveJsonFile( getSaveFile(), this );
+
+		long end = System.nanoTime();
+		
+		setStatsSaveDataNanoSec( end - start );
 	}
 
+	@SuppressWarnings("unused")
 	private void checkArchives() {
 		
 		ArrayList<TopNPlayersData> temp = new ArrayList<>();
@@ -337,6 +383,8 @@ public class TopNPlayers
 			return;
 		}
 		
+		long start = System.nanoTime();
+		
 		if ( !calculatedRankScores ) {
 			
 			calculateAllRankScores( getTopNList() );
@@ -408,7 +456,10 @@ public class TopNPlayers
 			
 			
 			setDirty( true );
-			
+
+			long end = System.nanoTime();
+
+			setStatsRefreshDataNanoSec( end - start );
 		}
 		
 		ArrayList<TopNPlayersData> newTopNList = new ArrayList<>();
@@ -652,4 +703,41 @@ public class TopNPlayers
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
+
+	public TopNPlayerUpdateAsyncTask getUpdaterTask() {
+		return updaterTask;
+	}
+	public void setUpdaterTask(TopNPlayerUpdateAsyncTask asyncTask) {
+
+		this.updaterTask = asyncTask;
+	}
+
+	public long getStatsBuildDataNanoSec() {
+		return statsBuildDataNanoSec;
+	}
+	public void setStatsBuildDataNanoSec(long statsBuildDataNanoSec) {
+		this.statsBuildDataNanoSec = statsBuildDataNanoSec;
+	}
+
+	public long getStatsRefreshDataNanoSec() {
+		return statsRefreshDataNanoSec;
+	}
+	public void setStatsRefreshDataNanoSec(long statsRefreshDataNanoSec) {
+		this.statsRefreshDataNanoSec = statsRefreshDataNanoSec;
+	}
+
+	public long getStatsSaveDataNanoSec() {
+		return statsSaveDataNanoSec;
+	}
+	public void setStatsSaveDataNanoSec(long statsSaveDataNanoSec) {
+		this.statsSaveDataNanoSec = statsSaveDataNanoSec;
+	}
+
+	public long getStatsLoadDataNanoSec() {
+		return statsLoadDataNanoSec;
+	}
+	public void setStatsLoadDataNanoSec(long statsLoadDataNanoSec) {
+		this.statsLoadDataNanoSec = statsLoadDataNanoSec;
+	}
+	
 }
