@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14c 2023-07-06
 
 
+* **Updated ItemsAdder from v3.2.5 to v3.5.0b**
+because github's build was failing to find v3.2.5 online and was killing the prison build.
+
+
 * **Update topN Stats.**  This is not the same as topNPlayers and this is not yet being used.
 This tracks topN on blocks mined, tokens, and the player's ranks and balances. 
 The comparator was not correct and was fixed.
