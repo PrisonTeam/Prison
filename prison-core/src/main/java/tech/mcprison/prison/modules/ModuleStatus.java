@@ -30,6 +30,10 @@ public class ModuleStatus {
    * Enums
    */
 
+    public enum Status {
+        ENABLED, DISABLED, FAILED
+    }
+
     private Status status;
 
   /*
@@ -113,8 +117,5 @@ public class ModuleStatus {
     	}
     }
 
-    public enum Status {
-        ENABLED, DISABLED, FAILED
-    }
 
 }

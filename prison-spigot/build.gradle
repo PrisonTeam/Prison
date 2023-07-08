@@ -95,6 +95,8 @@ dependencies {
     implementation project(':prison-sellall')
 
 
+	// https://mvnrepository.com/artifact/org.bstats/bstats-base
+	// https://mvnrepository.com/artifact/org.bstats/bstats-bukkit
     implementation 'org.bstats:bstats-base:3.0.2'
     implementation 'org.bstats:bstats-bukkit:3.0.2'
 //    implementation 'org.bstats:bstats-base:2.2.1'
@@ -106,6 +108,7 @@ dependencies {
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
   
     
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
 
@@ -116,7 +119,8 @@ dependencies {
     // But do not see v5.0
     compileOnly 'net.luckperms:api:5.0'
     
-    compileOnly 'me.lucko.luckperms:luckperms-api:4.2'
+    // https://mvnrepository.com/artifact/me.lucko.luckperms/luckperms-api
+    compileOnly 'me.lucko.luckperms:luckperms-api:4.4'
     
     // jitpack.io:
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
@@ -124,8 +128,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
 	implementation 'com.github.cryptomorin:XSeries:9.4.0'
 	//implementation 'com.github.cryptomorin:XSeries:9.2.0'
-	//implementation 'com.github.cryptomorin:XSeries:9.0.0'
-	//implementation 'com.github.cryptomorin:XSeries:8.8.0'
     
 
 
@@ -158,8 +160,10 @@ dependencies {
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
 
  
- // NOTE: mavenrepository.com is not the offical repo:
- // https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
+ // NOTE: mavenrepository.com is not the offical repo.
+ // NOTE: This item-nbt MUST use the API and not the plugini version!
+ // Good: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api/
+ // Bad?: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
  // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
  	// https://github.com/tr7zw/Item-NBT-API/wiki/Using-Gradle
 	// https://www.spigotmc.org/resources/nbt-api.7939/

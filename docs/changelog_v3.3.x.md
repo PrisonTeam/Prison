@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14c 2023-07-07
 
 
+* **Added comments to the prison-spigot/build.gradle configs to add more descriptive comments.**
+Checked the libraries and all are up to date.
+
+
 * **Setup the topN stats to be included in the /prison version information.**
 
 
