@@ -295,7 +295,7 @@ It now also reports any errors that may be returned.
 - DONE: work on getting CustomItems working in mines again
 
 - DONE: remove this warning message:  no longer used.
-  [18:58:51 INFO](info): | Prison |  Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_18_R1.EntityPlayer
+  18:58:51 INFO: | Prison |  Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_18_R1.EntityPlayer
 
 - DONE: RankPlayer addBalance cache for default currency
 - RankPlayer addBalance cache for custom currency - still needed!
