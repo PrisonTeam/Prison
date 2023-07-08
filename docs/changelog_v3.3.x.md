@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14c 2023-07-07
+# 3.3.0-alpha.15 2023-07-07
+
+
+**2023-07-07 v3.3.0-alpha.15 Released**
 
 
 * **Added comments to the prison-spigot/build.gradle configs to add more descriptive comments.**
