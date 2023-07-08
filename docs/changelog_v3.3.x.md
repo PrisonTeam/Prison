@@ -21,6 +21,10 @@ These change logs represent the work that has been going on within prison.
 * **2023-07-07 v3.3.0-alpha.15 Released**
 
 
+* **This doc was failing to generate github docs due to issues with non utf-8 characters.**
+Changed them to dashes.  Not sure what caused these characters to become non-compliant.
+
+
 * **Update the known issues doc...**
 
 

@@ -18,16 +18,16 @@ These are notes for personal references.  These are not intended to explain anyt
 
 
 DONE - permission for prestiges not working correctly
-Rayne — Today at 9:52 AM
+Rayne - Today at 9:52 AM
 hey @RoyalBlueRanger, so someone is trying to prestige and they can't?
 there's no errors or anything and they don't get a message it worked for me when i was op
-Rayne — Today at 10:52 AM
+Rayne - Today at 10:52 AM
 So it turns out that the ranks.rankup.prestige permission works but not the ranks.user
 - NOTE: Fixed some issues with prestiges and perms. But mostly was an issue with the help not properly explaining how important the perms are.  Also added a new feature to turn off the need for the presetige perms so all players can use it without the perms; they may still need to have ranks.user enabled.
 
 
 DONE - budderman18 reports:
-Budderman18 — 06/21/2023 11:56 AM
+Budderman18 - 06/21/2023 11:56 AM
 If your server runs any plugin using java 19 or higher (java 18 might be the case as well), prison won't be able to startup
 - NOTE: Updated NBT-api for v1.20.1.  Found out Prison's use of NBT-api was setup wrong which caused conflicts.  Now working the way it should.
 
@@ -46,8 +46,8 @@ If your server runs any plugin using java 19 or higher (java 18 might be the cas
 
 
 
-DONE: > noza3 — 2023-06-29 at 1:09 PM
-> Thanks royal blue but i’ve already fixed it. Only problem I was facing was using /mtp {minename} after creating the mines, which would say this is a virtual mine blah blah, but madog told me to do a restart which fixed the issue, so I created all of my mines, set them up properly, then restarted the server and all of the /mtp {minename} works now. Also the portal at my spawn that allows people to jump into and go to their mine works, now that I use the player command /mtp with the portal. Thanks for the help 
+DONE: > noza3 - 2023-06-29 at 1:09 PM
+> Thanks royal blue but i've already fixed it. Only problem I was facing was using /mtp {minename} after creating the mines, which would say this is a virtual mine blah blah, but madog told me to do a restart which fixed the issue, so I created all of my mines, set them up properly, then restarted the server and all of the /mtp {minename} works now. Also the portal at my spawn that allows people to jump into and go to their mine works, now that I use the player command /mtp with the portal. Thanks for the help 
 - NOTE: could not reproduce this issue.  
 
 
