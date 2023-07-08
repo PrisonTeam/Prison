@@ -1,6 +1,7 @@
 package tech.mcprison.prison.ranks.data;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -596,6 +597,38 @@ public class TopNPlayers
 			sortTopN();
 		}
 	}
+	
+    public String getTopNStats() {
+    	
+    	int topNSize = getTopNSize();
+    	int archivedSize = getArchivedSize();
+    	
+    	
+    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.000");
+    	DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
+    	
+    	String statsBuildMs = dFmt.format( 
+    			getStatsBuildDataNanoSec() / 1_000_000 );
+    	String statsRefreshMs = dFmt.format( 
+    			getStatsRefreshDataNanoSec() / 1_000_000 );
+    	String statsSaveMs = dFmt.format( 
+    			getStatsSaveDataNanoSec() / 1_000_000 );
+    	String statsLoadMs = dFmt.format( 
+    			getStatsLoadDataNanoSec() / 1_000_000 );
+    	
+    	String msg = String.format(
+    			"&7topNstats:&3 topNs: %s  archives: %s  buildMs: %s  refreshMs: %s  " +
+    					"saveMs: %s  loadMs: %s ",
+    					iFmt.format(topNSize),
+    					iFmt.format(archivedSize),
+    					statsBuildMs,
+    					statsRefreshMs,
+    					statsSaveMs,
+    					statsLoadMs
+    			);
+    		
+    	return msg;
+    }
 	
 	public int getTopNSize() {
 		return getTopNList().size();

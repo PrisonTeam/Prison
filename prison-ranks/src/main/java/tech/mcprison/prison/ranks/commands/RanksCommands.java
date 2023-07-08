@@ -2117,29 +2117,8 @@ public class RanksCommands
     	
     	
     	if ( contains( "stats", pageNumber, pageSizeNumber, options ) ) {
-    		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.000");
-    		DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
-    		
-    		String statsBuildMs = dFmt.format( 
-    					TopNPlayers.getInstance().getStatsBuildDataNanoSec() / 1_000_000 );
-    		String statsRefreshMs = dFmt.format( 
-    					TopNPlayers.getInstance().getStatsRefreshDataNanoSec() / 1_000_000 );
-    		String statsSaveMs = dFmt.format( 
-    				TopNPlayers.getInstance().getStatsSaveDataNanoSec() / 1_000_000 );
-    		String statsLoadMs = dFmt.format( 
-    				TopNPlayers.getInstance().getStatsLoadDataNanoSec() / 1_000_000 );
 
-    		String msg = String.format(
-    				"&7topNstats:&3 topNs: %s  archives: %s  buildMs: %s  refreshMs: %s  " +
-    						"saveMs: %s  loadMs: %s ",
-    				iFmt.format(topNSize),
-    				iFmt.format(archivedSize),
-    				statsBuildMs,
-    				statsRefreshMs,
-    				statsSaveMs,
-    				statsLoadMs
-    				);
-    		sender.sendMessage(msg);
+    		sender.sendMessage( TopNPlayers.getInstance().getTopNStats() );
     	}
     	
     	

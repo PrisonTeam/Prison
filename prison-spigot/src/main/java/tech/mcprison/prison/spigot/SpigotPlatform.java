@@ -103,6 +103,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
@@ -2448,6 +2449,11 @@ public class SpigotPlatform
 		{
         	display.addComponent( component );
 		}
+        
+        
+
+        display.addText("");
+        display.addText( TopNPlayers.getInstance().getTopNStats() );
         
         
         display.addText("");

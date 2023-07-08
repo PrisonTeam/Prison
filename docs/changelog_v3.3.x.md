@@ -10,7 +10,13 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14c 2023-07-06
+# 3.3.0-alpha.14c 2023-07-07
+
+
+* **Setup the topN stats to be included in the /prison version information.**
+
+
+* **Added the language files for the three new topN messages.**
 
 
 * **Update the topN command to eliminate the use of the save file.**
