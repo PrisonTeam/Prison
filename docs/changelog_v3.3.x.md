@@ -17,7 +17,14 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-07
 
 
-**2023-07-07 v3.3.0-alpha.15 Released**
+
+* **2023-07-07 v3.3.0-alpha.15 Released**
+
+
+* **Update the known issues doc...**
+
+
+* **Doc updates for the latest alpha.15 release.**
 
 
 * **Added comments to the prison-spigot/build.gradle configs to add more descriptive comments.**
