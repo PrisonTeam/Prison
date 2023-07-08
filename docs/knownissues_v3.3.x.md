@@ -2,27 +2,35 @@
 
 # Prison Known Issues and To Do's for v3.3.x
 
+These known issues are an informal list of concerns and bugs. Also includes some wish-list items too.
+
+These are notes for personal references.  These are not intended to explain anything useful, but they do track some issues and perspectives that may not be fully expressed in the change logs because initial impressions may not turn out to be the actual problem or the final course of changes and enhancements.
 
 
+# TODO Items for v3.3.0-alpha.14
 
-# TODO Items for v3.3.0-alpha.13
+
+- Reported that a freshly placed mine would not work with an /mtp command - noza3
+  (marked as done below since it could not be reproduced, but should test with a new build)
+  
+
+- Mine bomb save files - the name used for the data structure (in the hash) is ignored when loading? - FqdedStqr
+  - He changed that name and it caused problems.  Maybe change the bombs to just an array?
+
+
+- Prestige confirmations are not working - Axar
+  - Cannot prestige without a confirmation too.
+  
+
+- Auto pickup is not working when OP'd in creative mode vs survival mode. - Axar
+
+
+- New alpha release for alernos - drops and sellall are messed up - notify when published to spigotmc.org - slab
 
 
 - break one block but blocks counts register 2 - Aimatt
 
-- DONE: change BLOCKEVENTS to use MONITOR priority - PrinceHatem
-
-- DONE: add option to allow AIR when at MONITOR priority - PrinceHatem
-  - issue with when a break is canceled on RevEn such as when durability is zero.
-  
-
 - On the new cmdStats details, add nano run times for commands so we can include avg run times.
-
-
-- Add a command usage count to commands.  Then a simple report to list what commands were used, along with total command count of active commands.
-
-
-- Expand upon the config.yml command lockout so that if the player does not have access to a command, then suppress that command from all players, including command listings.  Not all commands will be able to reject access due to the nature of the commands (all access to everyone) and/or the use of alt-perms (programmatic evaluation to the commands).  - Josh-65
 
 
 - File save to new format - OmarG
@@ -30,42 +38,22 @@
   - pre-req for custom mine shapes
   
 
-- Ability to turn of TP on mine resets.  OmarG
+
+- Ability to turn off TP on mine resets.  OmarG
   - Maybe have a special value for spawn to indicate it should TP?
   - Could still have a spawn point, but just not tp during resets.
 
 
+- Custom mine shapes - Chain / darragh
 - custom mine shapes - Chain and Fiba1 and OmarG
  - Have a new command to edit and save the mine's shapes
  - edit would spawn red/yellow wool - remove blocks - save would only save the wool blocks.
  
 
-- fix gui ranks to remove italics from the rank names.  This may be the gui ranks and/or the gui prestiges.  - Bryton
-  Cannot reproduce - No italics are being added by prison.
-
-
-- DONE: Gui prestiges - option to remove the gui prestige button.  Not sure if any of the options in the config.sys really supports that.  - Bryton
-
-
-
-- Prestige - needs improvements
-    DONE: rewrote the prestige handling to exist in the ranks module. Everything is handled properly now. The GUI is passed the correct lore so no rankup logic is in the gui anymore. Prechecks are now enabled too.
-  - DONE: Confirmation does not perform any prechecks to confirm if the player can even prestige
-  - DONE: Confirmation does not reflect prestige settins. It always shows that rank and balance will be reset, even if that is disabled.
-  - DONE: It's not clear how to confirm via chat
 
 
 - when testing the block breakage with the SHIFT-click with the mine wand, I also saw that it processed the same block twice.  The first time looked as if the drop was being canceled, then the second time the event was being canceled.  Or vice-a-versa.  I don't remember setting it up both ways.
-
-
-
-- bStats:
- - DONE: Remove Plugins & Prison Ladders
- - DONE: Add: modules, Economy (integrations), Perms (integrations), Placeholder (intg)
- - DONE: Add: Language
- - Eliminate zero counts (don't report)
- - validate that plugins listed in other reports are being removed from plugins a-z.
-
+ - NOTE: This is an issue with Google Guava. I am not sure why it submits all listeners twice, but it does.
 
 
 - `/ranks player` is not including all of the info for rank multipliers like it should have.
@@ -74,7 +62,6 @@
   
   
 
-- Custom mine shapes - Chain / darragh
 
 
 
@@ -121,9 +108,6 @@
 
 
 
-- TEST: Add nbt support to gui menus.  Issue with rankup not getting the correct ladder name.
-  - Partially added and is working.  Expand to other menu options, which will be time consuming.
-
 
 - Print warnings if auto features configs prevent any drops. Include notice when drops don't occur due to autosell.
   - On server startup... not sure how to best check.
@@ -150,10 +134,6 @@
 
 
 
-- DONE?:  Archive old players - budderman18
-  - archive all player files to a zip. Remove the originals. If player logs back on, then restore the archives. Prevent startup from adding these players back.
-  - Archiving players in topN - this may address the archive needs.  Part of the issue was related to performance calculations upon startup, which the new topn does address.
-  
 
 - Placeholders - dynamic content - 
   - custom placeholders based upon other primary placeholders?
@@ -269,8 +249,6 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 
 * ShiftAndRightClickSellAll is not working
 
--> DONE: Hook in to quests - Only on block break events so may not work as expected?
-
 * Found a problem with mcMMO, Quest, and EZBlock support... only works on BlockBreakEvents.  I added logging to identify when they are called, but if an explosion has 20,000 blocks, then it will log 20,000 times!  ðŸ˜‚  So I need to figure out something before hooking it up to multi-block breaks.
 
 
@@ -283,6 +261,81 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 
 
 # Completed tasks
+
+
+
+DONE - permission for prestiges not working correctly
+Rayne — Today at 9:52 AM
+hey @RoyalBlueRanger, so someone is trying to prestige and they can't?
+there's no errors or anything and they don't get a message it worked for me when i was op
+Rayne — Today at 10:52 AM
+So it turns out that the ranks.rankup.prestige permission works but not the ranks.user
+- NOTE: Fixed some issues with prestiges and perms. But mostly was an issue with the help not properly explaining how important the perms are.  Also added a new feature to turn off the need for the presetige perms so all players can use it without the perms; they may still need to have ranks.user enabled.
+
+
+DONE - budderman18 reports:
+Budderman18 — 06/21/2023 11:56 AM
+If your server runs any plugin using java 19 or higher (java 18 might be the case as well), prison won't be able to startup
+- NOTE: Updated NBT-api for v1.20.1.  Found out Prison's use of NBT-api was setup wrong which caused conflicts.  Now working the way it should.
+
+
+
+- DONE: change BLOCKEVENTS to use MONITOR priority - PrinceHatem
+
+- DONE: add option to allow AIR when at MONITOR priority - PrinceHatem
+  - issue with when a break is canceled on RevEn such as when durability is zero.
+  
+- DONE - Add a command usage count to commands.  Then a simple report to list what commands were used, along with total command count of active commands.
+
+
+- DONE - Expand upon the config.yml command lockout so that if the player does not have access to a command, then suppress that command from all players, including command listings.  Not all commands will be able to reject access due to the nature of the commands (all access to everyone) and/or the use of alt-perms (programmatic evaluation to the commands).  - Josh-65
+
+
+
+
+DONE: > noza3 — 2023-06-29 at 1:09 PM
+> Thanks royal blue but i’ve already fixed it. Only problem I was facing was using /mtp {minename} after creating the mines, which would say this is a virtual mine blah blah, but madog told me to do a restart which fixed the issue, so I created all of my mines, set them up properly, then restarted the server and all of the /mtp {minename} works now. Also the portal at my spawn that allows people to jump into and go to their mine works, now that I use the player command /mtp with the portal. Thanks for the help 
+- NOTE: could not reproduce this issue.  
+
+
+
+- DONE - fix gui ranks to remove italics from the rank names.  This may be the gui ranks and/or the gui prestiges.  - Bryton
+  Cannot reproduce - No italics are being added by prison.
+  Changed the player gui for ranks and mines so it does not add anything extra. Can now fully control all of the lore.
+
+
+- DONE: Gui prestiges - option to remove the gui prestige button.  Not sure if any of the options in the config.sys really supports that.  - Bryton
+
+
+
+- Prestige - needs improvements
+    DONE: rewrote the prestige handling to exist in the ranks module. Everything is handled properly now. The GUI is passed the correct lore so no rankup logic is in the gui anymore. Prechecks are now enabled too.
+  - DONE: Confirmation does not perform any prechecks to confirm if the player can even prestige
+  - DONE: Confirmation does not reflect prestige settins. It always shows that rank and balance will be reset, even if that is disabled.
+  - DONE: It's not clear how to confirm via chat
+
+
+- bStats:
+ - DONE: Remove Plugins & Prison Ladders
+ - DONE: Add: modules, Economy (integrations), Perms (integrations), Placeholder (intg)
+ - DONE: Add: Language
+ - Eliminate zero counts (don't report)
+ - DONE: validate that plugins listed in other reports are being removed from plugins a-z.
+ - DONE: Removed the a-z listings of plugins.
+ 
+
+
+
+DONE - TEST: Add nbt support to gui menus.  Issue with rankup not getting the correct ladder name.
+  - Partially added and is working.  Expand to other menu options, which will be time consuming.
+
+
+- DONE?:  Archive old players - budderman18
+  - archive all player files to a zip. Remove the originals. If player logs back on, then restore the archives. Prevent startup from adding these players back.
+  - Archiving players in topN - this may address the archive needs.  Part of the issue was related to performance calculations upon startup, which the new topn does address.
+  
+
+-> DONE: Hook in to quests - Only on block break events so may not work as expected?
 
 
 
