@@ -1,15 +1,17 @@
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
-# Prison Known Issues and To Do's for v3.2.x
+# Prison Known Issues and To Do's
 
 This document is intended to keep track of known issues and also provide for
 a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
+* [Known Issues - Resolved](knownissues_v3.2.x_resolved.md)
 
 
-# To Do Items - During Alpha v3.2.5
+
+# To Do Items
 
 
 

@@ -1,8 +1,19 @@
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
-## Prison Build Logs for v3.3.x
+## Prison Change Logs for v3.3.x
 
-## Build logs
+
+## Known Issues
+
+These are internal notes that may initially record ideas and issues.  They may not 
+reflect the final actions taken as expressed in the change logs below, so these
+may be insightful in to some of the evolutionary processes.
+
+* [Known Issues - Open](knownissues_v3.2.x.md)
+* [Known Issues - Resolved](knownissues_v3.2.x_resolved.md)
+
+
+## Change logs
 
 These build logs represent the work that has been going on within prison. 
 

@@ -2,12 +2,16 @@
 
 ## Prison Build Logs for v3.3.x
 
-## Build logs
+## Change logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
  - [v3.2.0 through v3.3.0-alpha.14](prison_changelogs.md)
  
+* [Known Issues - Open](knownissues_v3.2.x.md)
+* [Known Issues - Resolved](knownissues_v3.2.x_resolved.md)
 
-These build logs represent the work that has been going on within prison. 
+
+
+These change logs represent the work that has been going on within prison. 
 
 
 # 3.3.0-alpha.15 2023-07-07

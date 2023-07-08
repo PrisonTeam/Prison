@@ -9,7 +9,9 @@
 * **[Prison README](prison_readme.md)** High level information, plus how to use with gradle builds.
 * **[Prison License](prison_license.md)** GNU General Public License
 * **[Prison Change logs](prison_changelogs.md)** Detailed changes to prison.
-* **[Prison Known Issues](knownissues_v3.3.x.md)** Known Issues and To Do's.
+* **[Prison Known Issues - Open](knownissues_v3.3.x.md)** Known Issues and To Do's.
+* **[Prison Known Issues - Resolved](knownissues_v3.3.x_resolved.md)** Resolved Known Issues and To Do's.
+
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
 
@@ -27,12 +29,12 @@
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Prison Supports Spigot 1.8 through Spigot 1.19.x
-# Prison Supports Java 1.8 though Java 19
+# Prison Supports Spigot 1.8 through Spigot 1.20.x+
+# Prison Supports Java 1.8 though Java 20+
 # Prison is created for the Spigot Platform, and works on other platforms based upon Spigot
 
 
-Prison supports Spigot 1.19.x, along with Java 17 and 18.  At this time there hasn't been any reports of incompatibilities.  Since prison is using a library to support the correct blocks for the version of the server that you are running, we are limited to when updates are released for that library.  Luckily they have had a couple of releases and we have applied them to the latest alpha releases.  So if you are wanting to maximize the new Spigot 1.19 experience, please upgrade to the latest alpha release as found on our discord server in the #alpha channel. 
+Prison supports Spigot 1.20.x, along with Java 1.8 through Java 20.  At this time there hasn't been any reports of incompatibilities.  Since prison is using a library to support the correct blocks for the version of the server that you are running, we are limited to when updates are released for that library.  Luckily they have had a couple of releases and we have applied them to the latest alpha releases.  So if you are wanting to maximize the new Spigot 1.20 experience, please upgrade to the latest alpha release as found on our discord server in the #alpha channel. 
 
 
 ### Newer features and updates in Prison:
