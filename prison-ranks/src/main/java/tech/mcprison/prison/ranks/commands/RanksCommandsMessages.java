@@ -661,4 +661,25 @@ public class RanksCommandsMessages
 	}
 
 	
+	protected void ranksTopNPlayerForcedReloadSuccess( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__topn_forced_reload_successful" )
+		.sendTo( sender );
+		
+	}
+	
+	protected void ranksTopNPlayerForcedReloadFailure( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__topn_forced_reload_failure" )
+		.sendTo( sender );
+		
+	}
+	
+	protected void ranksTopNPlayerDebugSaved( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__topn_debug_saved_success" )
+		.sendTo( sender );
+		
+	}
+	
 }

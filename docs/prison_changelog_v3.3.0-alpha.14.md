@@ -4,7 +4,7 @@
 
 ## Build logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
- - [v3.2.0 through v3.3.0-alpha.14](prison_changelogs.md)
+ - [v3.2.0 through v3.3.0-alpha.15](prison_changelogs.md)
  
 
 These build logs represent the work that has been going on within prison. 
@@ -53,6 +53,9 @@ The following are significant changes that are included in the alpha.14 release 
 
 
 * Prison support new feature: tracking command usage along with average run times: `/prison support cmdStats`. 
+
+
+* Improved some of the `/prison support submit` features to include more of the newer data that prison is using.
 
 
 * Updates to a number of libraries that prison uses: 

@@ -58,7 +58,7 @@ public class SpigotPlayerPrestigesGUI
         PrisonRanks rankPlugin;
         RankPlayer rPlayer;
         ModuleManager modMan = Prison.get().getModuleManager();
-        Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+        Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME );
         rankPlugin = (PrisonRanks) module;
 
         if (rankPlugin == null){

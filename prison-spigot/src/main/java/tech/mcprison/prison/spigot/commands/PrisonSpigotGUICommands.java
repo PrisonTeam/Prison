@@ -1,7 +1,5 @@
 package tech.mcprison.prison.spigot.commands;
 
-import java.util.Optional;
-
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
@@ -94,8 +92,9 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
         
-        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        Module ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        
+        if ( ranksModule == null || ranksModule != null && !ranksModule.isEnabled() ) {
         	
         	Output.get().sendWarn( sender, "The command '/gui prestiges' is disabled because the Ranks module is not active." );
         	return;
@@ -232,8 +231,9 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        
+        if ( module == null || module != null && !module.isEnabled() ) {
         	
         	Output.get().sendWarn( sender, "The command '/gui ranks' is disabled because the Ranks module is not active." );
         	return;
@@ -273,8 +273,8 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
         }
     	
     	
-        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        Module ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        if ( ranksModule == null || ranksModule != null && !ranksModule.isEnabled() ) {
         	
         	Output.get().sendWarn( sender, "The command '/gui admin ranks' is disabled because the Ranks module is not active." );
         	return;
@@ -351,8 +351,9 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     		}
     	}
     	
-        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        Module ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        
+        if ( ranksModule == null || ranksModule != null && !ranksModule.isEnabled() ) {
         	
         	Output.get().sendWarn( sender, "The command '/gui ladders' is disabled because the Ranks module is not active." );
         	return;

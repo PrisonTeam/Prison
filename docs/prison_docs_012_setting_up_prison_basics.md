@@ -7,7 +7,7 @@
 This document provides a quick overview on how to install Prison and get it running.
 
 
-*Documented updated: 2023-01-14*
+*Documented updated: 2023-01-28*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -196,22 +196,42 @@ But perhaps the biggest reason why I dropped support for MVdW is because it's 10
 ### Enchantment Plugins
 
 
-* **CustomItems** - Recommended - Premium Plugin - Allows for the use of custom blocks within Prison.  This provides for a great deal of customizations, including custom textures for your custom blocks. Prison supports CI at about 95% or more.  If you need additional support added for CI, please contact Blue and he will add it for you.  
+* **CustomItems** - Recommended - *A Premium Plugin* - Allows for the use of custom blocks within Prison.  This provides for a great deal of customizations, including custom textures for your custom blocks. Prison supports CI at about 95% or more.  If you need additional support added for CI, please contact Blue and he will add it for you.  
 [https://polymart.org/resource/custom-items.1](https://polymart.org/resource/custom-items.1)
 
 
-* **TokenEnchant** - Recommended - Premium Plugin - This is one of the few recommended premium plugins that we would recommend, but it works very well with prison.  It took a lot of effort to get this to work with Prison, but is perhaps the most supported one too.  Keep in mind that it is premium and they also charge for other add on features, so the initial cost may not be your final cost.  
+* **TokenEnchant** - Recommended - *A Premium Plugin* - This is one of the few recommended premium plugins that we would recommend, but it works very well with prison.  It took a lot of effort to get this to work with Prison, but is perhaps the most supported one too.  Keep in mind that it is premium and they also charge for other add on features, so the initial cost may not be your final cost.  
 [https://polymart.org/resource/tokenenchant-1-7-10-1-17.155](https://polymart.org/resource/tokenenchant-1-7-10-1-17.155)
 
 
-* **Prison Enchants** Newest supported enchantment plugin supported.  More information will be added soon.
+* **Prison Enchants** Newest supported enchantment plugin supported.  
 
 
 * **Crazy Enchantments** - Optional - Some support is provided for Crazy Enchantments, but it may not be at 100% in all areas. This is an open source project and supports Spigot 1.8 through 1.16.
 [https://www.spigotmc.org/resources/crazy-enchantments.16470/](https://www.spigotmc.org/resources/crazy-enchantments.16470/)
 
 
-* **RevEnchants** - Prison now supports RevEnchants through their ExplosiveEvent and JackHammerEvent!  To enable prison to work better with RevEnchants, you can enable it within the `autoFeaturesConfig.yml` file.  Prison supports RevEnchants v11.2 or newer.  It may work with older versions, but if there are issues, we cannot provide support if the older version of RevEnchants is missing either of the events.
+* **RevEnchants** - *A Premium Plugin* - Prison now supports RevEnchants through their ExplosiveEvent and JackHammerEvent!  To enable prison to work better with RevEnchants, you can enable it within the `autoFeaturesConfig.yml` file.  Prison supports RevEnchants v11.2 or newer.  It may work with older versions, but if there are issues, we cannot provide support if the older version of RevEnchants is missing either of the events.
+
+To use RevEnchant's block break handling, prison needs to just monitor the events so it can update the block counts.  This is an example of what settings are needed if you are using Prison's Block Events.
+
+```yaml
+    blockBreakEventPriority: ACCESSBLOCKEVENTS
+
+    RevEnchantsExplosiveEventPriority: BLOCKSEVENTS
+    RevEnchantsJackHammerEventPriority: BLOCKEVENTS
+```
+
+Or if you are not using Prison Block Events, then just MONITOR should be used for better performance.
+
+```yaml
+    blockBreakEventPriority: ACCESSMONITOR
+
+    RevEnchantsExplosiveEventPriority: MONITOR
+    RevEnchantsJackHammerEventPriority: MONITOR
+```
+
+**Please note:** These settings may also apply to the other enchantment plugins if you do not want to use Prison's block handling.
 
 
 
@@ -223,22 +243,24 @@ Warning: People have paid for this plugin only to find out after the fact that i
 If you purchase this plugin to use on your server, do so with great caution since it is not supported and it may not integrate with prison.
 [ * Not supported * Tokens * Not supported * ](https://www.spigotmc.org/resources/%E2%9A%A1%EF%B8%8F-tokens-%E2%9A%A1%EF%B8%8F-40-enchantments-%E2%AD%95-free-expansions-%E2%AD%95-25-off.79668/)
 
+**Please Note:** There is another plugin by the same name "Tokens" that strictly deals with tokens and not enchantments, which works just fine with prison.
+
 
 ### Enchantment Plugin Features Supported
 
 This table of supported Enchantment Plugins are plugins that have an event that Prison is able to hook in to for the purpose of communicating multiple block breakage.  It should be noted that all of these events are related to block breakage, and originate from the original bukkit's **BlockBreakEvent**, but the other plugins takes the single block, then applies "effects" that expands the one block breakage to multiple blocks.  These events are the mechanism for conveying the list of included blocks to Prison so Prison can do what it needs to do with the blocks.
 
 
-|     Plugin     | Event | Settings ID | Cancel <br> Events | Cancel <br/> Drops | External <br /> Hooks | 
-|       ---      |  ---  | ----------- |        :---:       |       :----:       |        :----:       |
-| Bukkit/Spigot  | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** | **Yes** |
-| Prison         | **ExplosiveBlockBreakEvent** | `ProcessPrisons_ExplosiveBlockBreakEventsPriority` | **Yes** | *No* | *No* |
-| TokenEnchant   | **TEBlockExplodeEvent** | `TokenEnchantBlockExplodeEventPriority` | **Yes** | *No* | *No* |
-| CrazyEnchants  | **BlastUseEvent** | `CrazyEnchantsBlastUseEventPriority` | **Yes** | *No* | *No* |
-| PrisonEnchants | **PEExplosionEvent** | `PrisonEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* |
-| RevEnchants    | **ExplosiveEvent** | `RevEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* |
-| RevEnchants    | **JackHammerEvent** | `RevEnchantsJackHammerEventPriority` | **Yes** | *No* | *No* |
-| Zenchantments  | **BlockShredEvent** | `ZenchantmentsBlockShredEventPriority` | **Yes** | **Yes** | **Yes** |
+|     Plugin     | Event | Settings ID | Cancel <br> Events | Cancel <br/> Drops | External <br /> Hooks | ACCESS <br /> Priority <br /> Supported |
+|       ---      |  ---  | ----------- |        :---:       |       :----:       |        :----:       |  :----:  |
+| Bukkit/Spigot  | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** | **Yes** | **Yes** |
+| Prison         | **ExplosiveBlockBreakEvent** | `ProcessPrisons_ExplosiveBlockBreakEventsPriority` | **Yes** | *No* | *No* | *No* |
+| TokenEnchant   | **TEBlockExplodeEvent** | `TokenEnchantBlockExplodeEventPriority` | **Yes** | *No* | *No* | *No* |
+| CrazyEnchants  | **BlastUseEvent** | `CrazyEnchantsBlastUseEventPriority` | **Yes** | *No* | *No* | *No* |
+| PrisonEnchants | **PEExplosionEvent** | `PrisonEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* | *No* |
+| RevEnchants    | **ExplosiveEvent** | `RevEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* | *No* |
+| RevEnchants    | **JackHammerEvent** | `RevEnchantsJackHammerEventPriority` | **Yes** | *No* | *No* | *No* |
+| Zenchantments  | **BlockShredEvent** | `ZenchantmentsBlockShredEventPriority` | **Yes** | **Yes** | **Yes** | *No* |
 
 
 
@@ -248,6 +270,8 @@ This table of supported Enchantment Plugins are plugins that have an event that 
 3. **External Hooks** refers to custom hooks in to mcMMO, EZBlock, and Quests.  See config settings within **AutoFeaturesConfig.yml**. It's strongly suggested to use **Cancel Drops** instead so you won't have to enable these features.  These provides a hacky-fix for the limitations when using **Cancel Events** and may not be perfect.
 4. Zenchantments is flexible in how it's **BlockShredEvent** works, mostly because it extends the bukkit **BlockBreakEvent**.  The events can possibly mix with normal **BlockBreakEvent**s. 
 5. It may take some effort to find the ideal priorities to use for your environment to ensure everything works as you envision it.
+6. **ACCESS Priority Supported*** only the **BlockBreakEvent** should be used with the ACCESS, ACCESSBLOCKEVENTS, or ACCESSMONITOR. All events supports the use of ACCESS, but only the first block in their list is check. Therefore it really won't be ideal.  Plus all of these events originate through the **BlockBreakEvent** so if that is checking ACCESS then it should be sufficient.
+
 
 
 ### Event Listener Priorities
@@ -255,30 +279,47 @@ This table of supported Enchantment Plugins are plugins that have an event that 
 The above listed supported Events are assigned one of the available Prison Event Priorities.  This table illustrates what features are associated with each priority, which can be somewhat complex and confusing.
 
 
-| Priority          | Access  | In <br/> Mine | In <br /> World | Ignores<br/> Canceled<br/> Events | Block<br/> Break | Block<br/> Count | Reset<br/> Threshold | Block<br/> Events | Mine<br/> Sweeper | AutoSell |
-|    ---            |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |
-| DISABLED          | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
-| ACCESS            | **Yes** | **Yes** | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
-| ACCESSBLOCKEVENTS | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| ACCESSMONITOR     | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
-| LOWEST            | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| LOW               | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| NORMAL            | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| HIGH              | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| HIGHEST           | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| BLOCKEVENTS       | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| MONITOR           | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
-| *priority temp*   | Access  | In Mine | IN Wrld | IgCanEv | Blk Brk | Blk Cnt | ResetTh | BlkEvnt | MineSwp | AutoSel |
+* **DISABED** - The event is not enabled within Prison's event monitoring.  The event will not be included in the command `/prison support listeners blockBreak` command.
+
+* **ACCESS** - Access uses the identified block within the event to identify which mine the player is in, and if the player has access to the mine.  This Prison priority will run at the bukkit priority of `LOWEST`.  If the player does not have access, then the event is canceled. If the event has more than one block in the event, and it does not specifically identify which block was broken, it will use the first block in the provided block list.  Therefore, it may make the most sense that this priority, and it's variations, are best suited to be used with the Bukkit/Spigot's **BlockBreakEvent** since all other events originate through this event.
+
+* **ACCESSBLOCKEVENTS** - Same as ACCESS in that it generates a listener that for just mine access, but it also creates another listener for BLOCKEVENTS.  This will be seen as two different listeners.
+
+* **ACCESSMONITOR** - Same as ACCESS in that it generates a listener that for just mine access, but it also creates another  listener for MONITOR.  This will be seen as two different listeners.
+
+* **LOWEST** - **HIGHEST** - These are the normal bukkit event priorities.  The lower the priority, then it will handle the event before other plugins with higher priorities.
+
+* **BLOCKEVENTS** - Same as MONITOR, but also includes the processing of the Prison Block Events and sellall (auto sell) if enabled for full inventory. This Prison priority will run at the bukkit priority of `MONITOR`.
+
+* **MONITOR** - Monitor performs no block handling within prison, but it will try to update the block counts. MONITOR will process the event even if it is canceled. 
+
+
+| Priority          | Actual <br/> Event <br/> Priority | Access  | In <br/> Mine | In <br /> World | Ignores<br/> Canceled<br/> Events | Block<br/> Break | Block<br/> Count | Reset<br/> Threshold | Block<br/> Events | Mine<br/> Sweeper | AutoSell |
+|    ---            |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |
+| DISABLED          | -note1- | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
+| ACCESS            | LOWEST  | **Yes** | **Yes** | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
+| ACCESSBLOCKEVENTS | -note1- | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| ACCESSMONITOR     | -note1- | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
+| LOWEST            | LOWEST  | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| LOW               | LOW     | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| NORMAL            | NORMAL  | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| HIGH              | HIGH    | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| HIGHEST           | HIGHEST | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| BLOCKEVENTS       | MONITOR | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| MONITOR           | MONITOR | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
+| *headers*         | EvntPri | Access  | In Mine | IN Wrld | IgCanEv | Blk Brk | Blk Cnt | ResetTh | BlkEvnt | MineSwp | AutoSel |
 
 
 **Notes:**
-1. **DISABLED** will prevent a listener from starting, and it will prevent any processing of that event.
-2. **Access** managed by Prison requires the use of Access by Rank (perferred) or Access by Perms.  It also will vary in effectives based upon the priority level in relation to other plugins, where any plugin that has a lower priority than Prison will bypass Prison's attempts to control access.
-3. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** are able to have a duel behavior because these priorities will create two different listeners, each at a different priority, and each having a different purpose.
-4. **Block Break** refers to Prison handling the whole block break processing and drops.
-5. **Mine Sweeper** should never be used unless there is no other way to count all the broken blocks.
-6. Support for outside of the mine for auto features maybe added soon.  The way it will probably be supported would be through a list of worlds in which it should be active, plus the use of WG regions too.
-7. The **MONITOR** priority, including ***BLOCKEVENTS*** will ignore all events that have been canceled and will process them anyway.  Therefore **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will fail on the "access" part if the event is canceled when Prison gets ahold of it the first time, which will deny access to the mines, but it will also still process the event under the priority of MONITOR or BLOCKEVENTS.
+1. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will run two events.  One of which will be **ACCESS** which will have an actual bukkit priority of `LOWEST`.  And the other listener will run a **BLOCKEVENTS** or **MONITOR** Prison priority which both will have an actual bukkit priority of `MONITOR`. 
+2. **DISABLED** will not have an actual event priority. **ACCESSBLOCKEVENTS** will have two processes; see actual priorities for ACCESS and BLOCKEVENTS.  **ACCESSMONITOR** will have two processes; see actual priorities for ACCESS and MONITOR.
+3. **DISABLED** will prevent a listener from starting, and it will prevent any processing of that event.
+4. **Access** managed by Prison requires the use of Access by Rank (preferred) or Access by Perms.  It also will vary in effectives based upon the priority level in relation to other plugins, where any plugin that has a lower priority than Prison will bypass Prison's attempts to control access.
+5. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** are able to have a duel behavior because these priorities will create two different listeners, each at a different priority, and each having a different purpose.
+6. **Block Break** refers to Prison handling the whole block break processing and drops.
+7. **Mine Sweeper** should never be used unless there is no other way to count all the broken blocks.
+8. Support for outside of the mine for auto features maybe added soon.  The way it will probably be supported would be through a list of worlds in which it should be active, plus the use of WG regions too.
+9. The **MONITOR** priority, including ***BLOCKEVENTS** will ignore all events that have been canceled and will process them anyway.  Therefore **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will fail on the "access" part if the event is canceled when Prison gets a hold of it the first time, which will deny access to the mines, but it will also still process the event under the priority of MONITOR or BLOCKEVENTS.
 
 
 

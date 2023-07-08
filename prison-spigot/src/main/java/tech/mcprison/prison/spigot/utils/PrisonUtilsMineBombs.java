@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 
-import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -38,6 +37,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -52,11 +52,26 @@ public class PrisonUtilsMineBombs
 	
 	private boolean enableMineBombs = false;
 	
+	private static PrisonUtilsMineBombs instance;
 	
 	
 	public PrisonUtilsMineBombs() {
 		super();
 		
+		instance = this;
+	}
+	
+	public static PrisonUtilsMineBombs getInstance() {
+		if ( instance == null ) {
+			synchronized ( PrisonUtilsMineBombs.class ) {
+				
+				if ( instance == null ) {
+					new PrisonUtilsMineBombs();
+				}
+			}
+		}
+		
+		return instance;
 	}
 	
 	/**
@@ -190,6 +205,17 @@ public class PrisonUtilsMineBombs
 			
 			mBombs.validateMineBombs();
 		}		
+	}
+	
+	/**
+	 * <p>Just a wrapper to reload mine bombs so it does not have to pass a null value.
+	 * This can also be used for initially loading the configs to force data updates.
+	 * </p>
+	 * 
+	 */
+	public void reloadPrisonMineBombs() {
+		
+		utilsMineBombsReload( null );
 	}
 	
 
@@ -629,7 +655,7 @@ public class PrisonUtilsMineBombs
 	public static ItemStack getItemStackBomb( MineBombData bombData ) {
 		ItemStack sItemStack = null;
 		SpigotItemStack bombs = null;
-		NBTItem nbtItem = null;
+//		NBTItem nbtItem = null;
 		
 		XMaterial xBomb = XMaterial.matchXMaterial( bombData.getItemType() ).orElse( null );
 		
@@ -653,6 +679,12 @@ public class PrisonUtilsMineBombs
 			if ( bombs != null ) {
 				
 				bombs.setDisplayName( bombData.getName() );
+
+				if ( bombData.getItemName() != null ) {
+					String itemName = bombData.getItemName().replace("{name}", bombData.getName() );
+					
+					bombs.setDisplayName( itemName );
+				}
 				
 				//bombs.setAmount( count );
 				
@@ -673,11 +705,12 @@ public class PrisonUtilsMineBombs
 			if ( sItemStack != null ) {
 				
 				// Set the NBT String key-value pair:
-				nbtItem = new NBTItem( sItemStack, true );
-				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+				PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+//				nbtItem = new NBTItem( sItemStack, true );
+//				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
 
-				if ( Output.get().isDebug() && nbtItem != null && nbtItem.toString() != null ) {
-					Output.get().logInfo( "getItemStackBombs ntb: %s", nbtItem.toString() );
+				if ( Output.get().isDebug() ) {
+					Output.get().logInfo( "getItemStackBombs ntb: %s", PrisonNBTUtil.nbtDebugString(sItemStack) );
 				}
 			}
 			

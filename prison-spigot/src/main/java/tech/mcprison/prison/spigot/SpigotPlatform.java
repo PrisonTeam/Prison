@@ -103,6 +103,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
@@ -236,10 +237,10 @@ public class SpigotPlatform
     @Override 
     public void getWorldLoadErrors( ChatDisplay display ) {
     
-    	Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+    	Module prisonMinesModule = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
     	
-    	if ( prisonMinesOpt.isPresent() ) {
-    		MineManager mineManager = ((PrisonMines) prisonMinesOpt.get()).getMineManager();
+    	if ( prisonMinesModule != null ) {
+    		MineManager mineManager = ((PrisonMines) prisonMinesModule).getMineManager();
     		
     		// When finished loading the mines, then if there are any worlds that
     		// could not be loaded, dump the details:
@@ -2087,7 +2088,7 @@ public class SpigotPlatform
 		}
 		
 		
-        Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ).orElseGet( null );
+        Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ); //.orElseGet( null );
         if ( minesModule != null && 
         		minesModule.getStatus().getStatus() == ModuleStatus.Status.ENABLED ) {
         	
@@ -2273,6 +2274,8 @@ public class SpigotPlatform
     		
     		boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
     		results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
+    		results.add( String.format("+.  .  Fortune Multiplier:&b %s", 
+    				afw.getInteger( AutoFeatures.fortuneMultiplierGlobal )) );
     		results.add( String.format("+.  .  Max Fortune Level:&b %s  &3(0 = no max Level)", 
     				afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
     		
@@ -2446,6 +2449,11 @@ public class SpigotPlatform
 		{
         	display.addComponent( component );
 		}
+        
+        
+
+        display.addText("");
+        display.addText( TopNPlayers.getInstance().getTopNStats() );
         
         
         display.addText("");
@@ -3097,4 +3105,14 @@ public class SpigotPlatform
 		return backpacks;
 	}
 	
+	
+	@Override
+	public int getMinY() {
+		return SpigotCompatibility.getInstance().getMinY();
+	}
+
+	@Override
+	public int getMaxY() {
+		return SpigotCompatibility.getInstance().getMaxY();
+	}
 }

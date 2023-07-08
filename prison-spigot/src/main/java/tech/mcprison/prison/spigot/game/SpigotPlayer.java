@@ -25,14 +25,22 @@ import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import com.cryptomorin.xseries.XMaterial;
+
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -665,6 +673,42 @@ public class SpigotPlayer
 		return PlayerCache.getInstance().getOnlinePlayer( this );
 	}
 	
+	
+	/**
+	 * <p>Based upon the RankPlayer's addBalance, except that this does not cache any
+	 * of the transactions, so it could possibly lead to lag due to the economy plugin
+	 * not have good performance on many rapid payments.
+	 * </p>
+	 * 
+	 * @param currency
+	 * @param amount
+	 * @return
+	 */
+	public boolean addBalance( String currency, double amount ) {
+		boolean results = false;
+		
+		if ( currency == null || currency.trim().isEmpty() || "default".equalsIgnoreCase( currency ) ) {
+			// No currency specified, so use the default currency:
+			
+			EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+			
+			if ( economy != null ) {
+				results = economy.addBalance( this, amount );
+			}
+			
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				results = currencyEcon.addBalance( this, amount, currency );
+//				addCachedRankPlayerBalance( currency, amount );
+			}
+		}
+		return results;
+	}
+	
 	public boolean enableFlying( Mine mine, float flightSpeed ) {
 		boolean enabled = false;
 		
@@ -723,7 +767,60 @@ public class SpigotPlayer
 		}
 		return sneaking;
 	}
+	
+	
+	@Override
+	public boolean isMinecraftStatisticsEnabled() {
+		return AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.isMinecraftStatsReportingEnabled );
+	}
 
+	@Override
+	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity) {
+		
+//		Statistic.BREAK_ITEM;
+//		Statistic.DROP_COUNT;
+//		Statistic.MINE_BLOCK;
+//		Statistic.PICKUP;
+		
+		XMaterial xMat = XMaterial.matchXMaterial( blockName ).orElse( null );
+//		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( block );
+		
+		if ( xMat != null ) {
+			Material mat = xMat.parseMaterial();
+			
+			if ( mat != null ) {
+				
+				getWrapper().incrementStatistic( Statistic.MINE_BLOCK, xMat.parseMaterial(), quantity );
+				
+			}
+		}
+		
+//		Statistic.MINE_BLOCK;
+//		player.setStatistic(null, count);
+//		player.incrementStatistic(null, null);
+//		player.incrementStatistic(null, null, count);
+//		player.statistic
+		
+	}
+	
+	@Override
+	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity) {
+		
+		XMaterial xMat = XMaterial.matchXMaterial( blockName ).orElse( null );
+		
+		if ( xMat != null ) {
+			Material mat = xMat.parseMaterial();
+			
+			if ( mat != null ) {
+				
+				getWrapper().incrementStatistic( Statistic.DROP_COUNT, xMat.parseMaterial(), quantity );
+				
+			}
+		}
+		
+	}
+	
+	
 	public boolean isInventoryFull() {
 		boolean results = false;
 		
@@ -737,5 +834,6 @@ public class SpigotPlayer
 		
 		return results;
 	}
-	
+
+
 }

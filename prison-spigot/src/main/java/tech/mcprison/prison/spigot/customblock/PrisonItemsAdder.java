@@ -184,6 +184,15 @@ public class PrisonItemsAdder
 	}
 
 
+	public void testCustomBlockRegistry() {
+		
+		Output.get().logInfo( "  Will list all custom blocks: ItemsAdder.getAllItems() with only isBlock():" );
+		
+		for ( String itemId : itemsAdderWrapper.getNamedspacedIdsInRegistry() ) {
+			Output.get().logInfo( "    CustomBlock namedspacedId: %s ", itemId );
+		}
+	}
+	
 
 	@Override
 	public String getPluginSourceURL() {

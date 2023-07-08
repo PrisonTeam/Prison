@@ -1,7 +1,26 @@
 package tech.mcprison.prison.cache;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 
+/**
+ * <p>This class contains the user data that is used for TopN stats.
+ * It keeps track of the player's stats for totalBlocks, tokens, balance,
+ * and their Prestiges and Default rank position.
+ * This data prevents the need to access the player's cache object.
+ * </p>
+ * 
+ * <p>For the user of the prestiges Rank object, and the default Rank object, 
+ * upon first access, it will try to look up those values and will store the
+ * Rank object in a local variable for faster access later.  Those stored 
+ * objects will not be persisted and hence why there is string field for their
+ * names.
+ * </p>
+ * 
+ * @author Blue
+ *
+ */
 public class TopNStatsData
 {
 	
@@ -16,10 +35,12 @@ public class TopNStatsData
 	
 	
 	private String topRankPrestigesName;
-	private String topRankDefaultName;
-	
 	private transient Rank topRankPrestiges;
+	private transient boolean presetigeRankCheck = false;
+	
+	private String topRankDefaultName;
 	private transient Rank topRankDefault;
+	private transient boolean defaultRankCheck = false;
 	
 	
 	private long lastSeenDate;
@@ -82,6 +103,10 @@ public class TopNStatsData
 	}
 
 	public Rank getTopRankPrestiges() {
+		if ( !presetigeRankCheck && topRankPrestiges == null ) {
+			presetigeRankCheck = true;
+			topRankPrestiges = lookupRank( RankLadder.PRESTIGES, getTopRankPrestigesName() );
+		}
 		return topRankPrestiges;
 	}
 	public void setTopRankPrestiges( Rank topRankPrestiges ) {
@@ -89,6 +114,10 @@ public class TopNStatsData
 	}
 
 	public Rank getTopRankDefault() {
+		if ( !defaultRankCheck && topRankDefault == null ) {
+			defaultRankCheck = true;
+			topRankDefault = lookupRank( RankLadder.DEFAULT, getTopRankDefaultName() );
+		}
 		return topRankDefault;
 	}
 	public void setTopRankDefault( Rank topRankDefault ) {
@@ -109,4 +138,15 @@ public class TopNStatsData
 		this.lastUpdateDate = lastUpdateDate;
 	}
 	
+	private Rank lookupRank( String ladder, String rank ) {
+		Rank results = null;
+		
+		if ( rank != null ) {
+			RankLadder rLadder = Prison.get().getPlatform().getRankLadder( ladder );
+
+			results = rLadder.getRank( rank );
+		}
+		
+		return results;
+	}
 }

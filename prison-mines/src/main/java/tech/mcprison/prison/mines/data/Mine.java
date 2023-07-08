@@ -560,7 +560,19 @@ public class Mine
         List<String> mineBlockEvents = (List<String>) document.get("mineBlockEvents");
         if ( mineBlockEvents != null ) {
         	for ( String blockEvent : mineBlockEvents ) {
-        		getBlockEvents().add( MineBlockEvent.fromSaveString( blockEvent, this.getName() ) );
+        		if ( blockEvent != null ) {
+        			
+        			MineBlockEvent bEvent = MineBlockEvent.fromSaveString( blockEvent, this.getName() );
+        			
+        			if ( bEvent != null ) {
+        				
+        				getBlockEvents().add( bEvent );
+        			}
+        			else {
+        				Output.get().logInfo( "Notice: Mine: " + getName() + ": Error trying to parse a blockEvent. "
+        						+ "BlockEvent is lost: raw BlockEvent= [" + blockEvent + "]" );
+        			}
+        		}
         	}
         }
         

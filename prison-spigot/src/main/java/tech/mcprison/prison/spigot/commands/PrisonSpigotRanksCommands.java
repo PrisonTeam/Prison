@@ -1,7 +1,5 @@
 package tech.mcprison.prison.spigot.commands;
 
-import java.util.Optional;
-
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -31,8 +29,9 @@ public class PrisonSpigotRanksCommands
 		
     	// NOTE: This command will NOT be registered if ranks module fails to load, so this is just a fallback 
 		// safety measure:
-        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        Module ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        
+        if ( ranksModule == null || ranksModule != null && !ranksModule.isEnabled() ) {
         	
         	Output.get().sendWarn( sender, "The command '/ranks' is disabled because the Ranks module is not active." );
         	return;

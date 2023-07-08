@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.customblock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,14 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.Location;
 
+/**
+ * 
+ * https://github.com/LoneDev6/API-ItemsAdder/
+ * 
+ * https://github.com/LoneDev6/API-ItemsAdder/tree/master/src/main/java/dev/lone/itemsadder/api
+ * 
+ *
+ */
 public class PrisonItemsAdderWrapper {
 	
 	private boolean supportsDrops = false;
@@ -32,6 +41,14 @@ public class PrisonItemsAdderWrapper {
 		this.plugin = SpigotPrison.getInstance();
 	}
 
+	
+	public Set<String> getNamedspacedIdsInRegistry() {
+		
+		Set<String> items = CustomBlock.getNamespacedIdsInRegistry();
+		
+		return items;
+	}
+	
 	public String getCustomBlockId( Block block ) {
 		
 		org.bukkit.block.Block spigotBlock = ((SpigotBlock) block).getWrapper();

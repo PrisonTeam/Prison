@@ -173,7 +173,7 @@ public class SpigotUtil {
 		return bukkitStack;
 	}
 	
-	public static SpigotItemStack getSpigotItemStack( XMaterial xMaterial, int amount ) {
+	public static SpigotItemStack getSpigotItemStackXMat( XMaterial xMaterial, int amount ) {
 		SpigotItemStack itemStack = null;
 		
 		try {
@@ -186,6 +186,21 @@ public class SpigotUtil {
 		return itemStack;
 	}
 
+	public static SpigotItemStack getSpigotItemStack( PrisonBlock material, int amount ) {
+		
+		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( material );
+		   
+		SpigotItemStack iStack = getSpigotItemStackXMat( xMat, amount );
+		
+		return iStack;
+	}
+	
+	public static void getSpigotBlock( ItemStack iStack ) {
+		XMaterial xmat = XMaterial.matchXMaterial( iStack );
+		
+//		SpigotCompatibility.getInstance().
+	}
+	
 
 	/*public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory(
 			Player player, SpigotItemStack itemStack ) {

@@ -56,12 +56,12 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
@@ -405,7 +405,7 @@ public class ListenersPrisonManager
                 // Get parameters.
                 buttonNameMain = SpigotPrison.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
                 parts = buttonNameMain.split(" ");
-                module = Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null);
+                module = Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME);
                 title = Text.stripColor( compat.getGUITitle(e) );
             } catch (ArrayIndexOutOfBoundsException ex){
                 Output.get().sendWarn(new SpigotPlayer(p), "An error occurred while using the GUI, please check logs.");

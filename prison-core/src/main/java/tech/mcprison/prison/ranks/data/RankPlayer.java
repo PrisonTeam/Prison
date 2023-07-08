@@ -66,6 +66,11 @@ public class RankPlayer
     private UUID uid;
     
     
+    // This is used to track if a RankPlayer was saved, or needs to be saved.
+    private transient boolean enableDirty = false;
+    private transient boolean dirty = false;
+    
+    
     private TreeMap<RankLadder, PlayerRank> ladderRanks;
     
     // ranks is the storage structure used to save the player's ladder & ranks:
@@ -255,7 +260,21 @@ public class RankPlayer
     	return uid;
     }
     
-    /**
+    public boolean isEnableDirty() {
+		return enableDirty;
+	}
+	public void setEnableDirty(boolean enableDirty) {
+		this.enableDirty = enableDirty;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
+	/**
      * If the player has any names in the getNames() collection, of which they may not,
      * then getDisaplyName() will return the last one set, otherwise it will return
      * a null.
@@ -1429,6 +1448,21 @@ public class RankPlayer
 		return false;
 	}
 	
+	@Override
+	public boolean isMinecraftStatisticsEnabled() {
+		return false;
+	}
+	
+
+	@Override
+	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity) {
+		
+	}
+    
+	@Override
+	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity) {
+		
+	}
 	
 	/**
 	 * <p>This function will return the next rank that they player will have upon
@@ -1671,8 +1705,8 @@ public class RankPlayer
 		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
 		String message = String.format(
-				" %-3d  %-18s %-7s %-7s %9s %9s %9s",
-					(rankPostion > 0 ? rankPostion : ""),
+				" %-3s  %-18s %-7s %-7s %9s %9s %9s",
+					(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
 					getName(),
 					prestRankTagNc,
 					defRankTagNc,
@@ -1718,8 +1752,8 @@ public class RankPlayer
 		
 		String ranks = prestRankTagNc + defRankTagNc;
 		String message = String.format(
-				" %-3d %-9s %6s %-17s %9s",
-				(rankPostion > 0 ? rankPostion : ""),
+				" %-3s %-9s %6s %-17s %9s",
+				(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
 				ranks,
 				dFmt.format( getRankScore() ),
 				getName(),

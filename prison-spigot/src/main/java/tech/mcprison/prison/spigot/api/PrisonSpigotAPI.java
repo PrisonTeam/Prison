@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -383,9 +382,11 @@ public class PrisonSpigotAPI {
 
 	public PrisonMines getPrisonMineManager() {
 		if ( prisonMineManager == null && !isMineModuleDisabled() ) {
-			Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-			if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
-				PrisonMines prisonMines = (PrisonMines) mmOptional.get();
+			
+			Module module = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+			
+			if (module != null && module.isEnabled() ) {
+				PrisonMines prisonMines = (PrisonMines) module;
 				this.prisonMineManager = prisonMines;
 			} else {
 				setMineModuleDisabled( true );

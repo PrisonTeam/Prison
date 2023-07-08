@@ -523,4 +523,14 @@ public class TestPlatform implements Platform {
 	public List<PlayerBackpack> getPlayerOldBackpacks( Player player ) {
 		return null;
 	}
+	
+	@Override
+	public int getMinY() {
+		return 0;
+	}
+
+	@Override
+	public int getMaxY() {
+		return 255;
+	}
 }

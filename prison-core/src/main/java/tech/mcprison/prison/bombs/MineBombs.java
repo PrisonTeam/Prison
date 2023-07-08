@@ -3,6 +3,7 @@ package tech.mcprison.prison.bombs;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -161,13 +162,14 @@ public class MineBombs
 								MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION ) {
 					
 					// Need to update the format version then save a new copy of the configs.
+					mineBombApplyVersionUpdates( configs );
 					
 					// first backup the old file by renaming it:
 					
 					int oldVersion = configs.getDataFormatVersion();
 					
 					String backupTag = "ver_" + oldVersion;
-					File backupFile = fio.getBackupFile( configFile, backupTag, ".bu" );
+					File backupFile = fio.getBackupFile( configFile, backupTag, "bu" );
 
 					boolean renamed = configFile.renameTo( backupFile );
 					
@@ -193,6 +195,36 @@ public class MineBombs
 		
 		
 	}
+	
+	/**
+	 * <p>This function will process older config data versions and apply updates to the 
+	 * various fields to bring it up to date.  For example, if a new field is added, the 
+	 * default value would be null, so this is a way to ensure there is a non-null default
+	 * value added.  Keep in mind that if the field is null, then it will not be saved in
+	 * the json file which means that when the file is edited the person won't know there 
+	 * is a new field added.
+	 * </p>
+	 * 
+	 * @param configs
+	 */
+	private void mineBombApplyVersionUpdates( MineBombsConfigData configs ) {
+	
+		// If dataFormatVersion is 0, then need to fix the new itemName field so it 
+		// is set to the new default value, otherwise it will remain null.
+		if ( configs.getDataFormatVersion() == 0 ) {
+			
+			Set<String> keys = configs.getBombs().keySet();
+			for (String key : keys) {
+				MineBombData bombData = configs.getBombs().get( key );
+				
+				// Just getting the itemName will set nulls to the default value:
+				bombData.getItemName();
+			}
+			
+		}
+	
+	}
+
 	
 	
 	/**
@@ -432,6 +464,52 @@ public class MineBombs
 		}
 		return results;
 	}
+	
+	
+	public List<Location> calculateCube( Location loc1, Location loc2 ) {
+		List<Location> results = new ArrayList<>();
+		
+		// get all x, y, & z:
+		int xLoc1 = loc1.getBlockX();
+		int xLoc2 = loc2.getBlockX();
+		int yLoc1 = loc1.getBlockY();
+		int yLoc2 = loc2.getBlockY();
+		int zLoc1 = loc1.getBlockZ();
+		int zLoc2 = loc2.getBlockZ();
+		
+		// loc1 must be less than loc2... it does not matter if x, y, or z gets
+		// switched around:
+		if ( xLoc1 > xLoc2 ) {
+			int x = xLoc1;
+			xLoc1 = xLoc2;
+			xLoc2 = x;
+		}
+		if ( yLoc1 > yLoc2 ) {
+			int y = yLoc1;
+			yLoc1 = yLoc2;
+			yLoc2 = y;
+		}
+		if ( zLoc1 > zLoc2 ) {
+			int z = zLoc1;
+			zLoc1 = zLoc2;
+			zLoc2 = z;
+		}
+		
+		for ( int x = xLoc1 ; x <= xLoc2 ; x++ ) {
+			for ( int y = yLoc1 ; y <= yLoc2; y++ ) {
+				for ( int z = zLoc1 ; z <= zLoc2 ; z++ ) {
+					
+					Location l = new Location( loc1.getWorld(), x, y, z );
+					results.add( l );
+					
+				}
+			}
+		}
+		
+		return results;
+	}
+	
+	
 	
 //	
 //	@SuppressWarnings( "unused" )

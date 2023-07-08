@@ -325,12 +325,13 @@ public class AutoManagerTokenEnchant
 		// If the event is canceled, it still needs to be processed because of the 
 		// MONITOR events:
 		// An event will be "canceled" and "ignored" if the block 
-		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, e.getPlayer(), 
-    									e.getBlock());
+    									e.getBlock(), bbPriority, true );
+    	
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
@@ -345,6 +346,8 @@ public class AutoManagerTokenEnchant
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
+		
 		
 		// Process all priorities if the event has not been canceled, and 
 		// process the MONITOR priority even if the event was canceled:
@@ -356,10 +359,13 @@ public class AutoManagerTokenEnchant
     		String triggered = checkTEBlockExplodeEventTriggered( e );
     		
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    					e.getBlock(), 
-    					e.getPlayer(),
-    					eventResults.getMine(),
-    					bbPriority, eventType, triggered,
+    					eventResults,
+//    					e.getBlock(), 
+//    					e.getPlayer(),
+//    					eventResults.getMine(),
+//    					bbPriority, 
+    					eventType, 
+    					triggered,
     					debugInfo );
     		
 
@@ -401,7 +407,7 @@ public class AutoManagerTokenEnchant
     		
 
     		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
     		else if ( pmEvent.getBbPriority().isMonitor() ) {
     			// Stop here, and prevent additional processing. 
     			// Monitors should never process the event beyond this.

@@ -7,6 +7,8 @@
 This document provides information how to setup and use prestiges.
 
 
+*Documented updated: 2023-06-24*
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 # Overview
@@ -17,13 +19,15 @@ This document should be able to provide the basic information to get the built i
 Prestiges are generally used to track how many times a player has gone through all of the default ranks.  There are many variations on how prestiges are implemented, but they area always a status symbol that sets the top players from the rest.  Some features may include resetting a player's monetary balance to zero, setting their rank back to the beginning, or some other change to make the next pass through the ranks slightly different, but usually more difficult.
   
 
+Please use the command `/prestige help` within the console for more information about this command.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Enabling Prestiges
 
-By default, prestiges are disabled and must be enabled before you can use them.  Even though the prestiges feature is disabled, prison still auto generates a prestige ladder.  
+By default, prestiges are now enabled. They may be disabled by changing the configuration setting within the
+`config.yml` file.  Even if the prestiges option is disabled, Prison will generate a prestige ladder.  
 
 
 Edit the following file:
@@ -32,22 +36,197 @@ Edit the following file:
 plugins/Prison/config.yml
 ```
 
+
+Prestiges are enabled with the settings `prestige.enabled: true`.
+
+```
+prestige:
+  enabled: true
+  resetMoney: true
+  resetDefaultLadder: true
+  confirmation-enabled: true
+  prestige-confirm-gui: true
+  force-sellall: false
+  no-prestige-value: ""
+  enable__ranks_rankup_prestiges__permission: false
+```
+
+
+
+Note: The following setting is obsolete, but still active for now.  If you have this setting in your 
+existing `config.yml` file, then you can still use it.  But please consider updating to the newer 
+settings.  You can "upgrade" by ranaming `config.yml` to something else, like `config_old.yml`, and 
+then restart your server.  A new fresh copy of the `config.yml` file will be added when the 
+server starts up.
+
 Then set the following item to `true` and then save the file and restart the server.
 
 ```
 prestiges: true
 ```
 
-<img src="images/prison_docs_107_setting_up_prestiges_02.png" alt="Example of enabled prestige setting" title="Example of enabled prestige setting" width="350" />  
+
+# Required Permission to use the `/prestige` Command
+
+In order for players to use the `/prestige` command, they must have the follow permission:
+`ranks.user`
+
+
+This permission is not related to just `/prestige`, but enables the players to use the
+`/rankup` command too.
+
+
+This permission is a core perm for the rankup commands, and therefore the Prison command handler will
+enforce this perm on all players trying to use `/prestige`.  If players do not have this perm, 
+then attempts to use the command will just end silently.
+
+
+To differentiate `/prestige` from `/rankup`, at least on controlling who can use this command, 
+there is a prestige specific permission that needs to be set:
+`ranks.rankup.prestiges`
+
+
+This prestige permission can actually be disabled. See the section below titled "Prestiges: Enable the use of the perm `ranks.rankup.prestiges`" for more information.
+
+
+
+
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
+# Other Prestige Settings
+
+
+Within the `config.yml` file, there are a few other prestiges settings that can help customize how 
+Prestiges works on your server.  Please see the config settings list above.
+
+
+### Prestiges: Reset Money
+
+`prestige.resetMoney: true`
+
+
+When enabled, the player's balance will be reset to zero.
+
+
+ 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+### Prestiges: Reset Default Ladder
+
+`prestige.resetDefaultLadder: true`
+
+
+When enabled, the player's default rank will be reset to the default rank.
+Generally that is Rank A as configured with the command `/ranks autoConfigure`.
+
+Please use the following command in the console to check for the default rank:
+`/ranks list`
+
+
+ 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+### Prestiges: Confirmation Enabled
+
+`prestige.confirmation-enabled: true`
+
+
+When enabled, the player will be required to reenter the command a second time 
+with the keyword `confirm` to provide confirmation that they want to prestige.
+This is not a GUI option.
+
+```
+/prestige
+/prestige confirm
+
+```
+
+Please see the command `/presetige help` to see more information about the command usage.
+ 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+### Prestiges: Confirmation Enabled for the GUI
+
+`prestige.prestige-confirm-gui: true`
+
+
+When enabled, the player will need to confirm the prestige through a GUI confirmation 
+dialog.
+
+ 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+### Prestiges: Force SellAll
+
+`prestige.force-sellall: false`
+
+
+When enabled, the player will be forced to go through a `/sellall` command process 
+when the prestige is successful.  This is performed before the player's money is
+reset if that option is enabled.
+
+The purpose of this setting is to clear the player's inventory and backpack so they 
+cannot sell all of it at the next higher rank which may provide far more money.
+As an example, the if the highest default rank's mine has emerald blocks, and if they 
+fill up their inventory, and backpack, then after prestiging, they sell everything
+at rank A, they may earn enough money to skip over a few of the lower default ranks.
+
+ 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+### Prestiges: No Prestige Value
+
+`prestige.no-prestige-value: ""`
+
+
+This is a value that will be used within the placeholders for players that do not
+have a prestige rank.  This will be applied to the rank's name and tag value.
+
+Example of a placeholder that would use this setting would be
+`prison_rank_laddername`.  So inserting "prestige' for the *laddername* would result in:
+`prison_rank_prestige`.
+
+
+ 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+### Prestiges: Enable the use of the perm `ranks.rankup.prestiges`
+
+`prestige.enable__ranks_rankup_prestiges__permission: false`
+
+
+When this setting is enabled, then all players who may use the `/prestige` command
+would have to have the permission `ranks.rankup.prestiges`.
+
+
+When this setting is disabled, all players will be able to use the `/prestige` 
+command without having to have a permission set.
+
+ 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+
 # The Prestige Ladder
 
 
-The prestige ladder is created by default and is named `prestiges`, even if prestiges are not enabled.  Ranks can be added to the presetige ladder, even if it is not enabled.
+The prestige ladder is created by default and is named `prestiges`, even if prestiges are not enabled.  Ranks can be added to the prestige ladder, even if it is not enabled.
 
 
 In order to use prestiges, you need to create new ranks for each prestige level.  Add them as you would for the default ladder and the normal ranks, but you need to specify the prestige ladder name within the commands.
@@ -199,8 +378,5 @@ This command is intended for players and can be enabled, or disabled, within the
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
-
 
 

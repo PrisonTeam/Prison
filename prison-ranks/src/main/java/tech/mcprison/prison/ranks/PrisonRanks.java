@@ -36,10 +36,12 @@ import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -199,6 +201,7 @@ public class PrisonRanks
 
 
         // Hook up all players to the ranks:
+        //  - parameter checkPlayerBalances is set to false
         playerManager.connectPlayersToRanks( false );
         
         Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
@@ -227,7 +230,7 @@ public class PrisonRanks
         
         
         
-        // Load up all else
+        // Load up everything else
 
         new FirstJoinHandler();
         new ChatHandler();
@@ -260,7 +263,9 @@ public class PrisonRanks
         // Start up the TopNPlayer's collections after all players have been loaded:
         // NOTE: getting the instance of TopNPlayers must be done "after" player validation.
         //       So that thread needs to initiate it after done validating and fixing all players.
-//        TopNPlayers.getInstance();
+        // NOTE: Issue: player validation may take a long time, or could be disabled. So 
+        //       load topNPlayers now, and then refresh after validation.
+        TopNPlayers.getInstance();
       
         
         // Check all players to see if any need to join:
@@ -274,85 +279,104 @@ public class PrisonRanks
 	public void checkAllPlayersForJoin()
 	{
 		
-		RankUpCommand rankupCommands = rankManager.getRankupCommands();
+		boolean addNewPlayers = 
+				Prison.get().getPlatform().getConfigBooleanTrue( 
+								"ranks.startup.add-new-players-on-startup" ) ||
+				Prison.get().getPlatform().getConfigBooleanFalse( 
+								"prison-ranks.startup.add-new-players-on-startup" );
 		
-		// If there is a default rank on the default ladder, then
-        // check to see if there are any players not in prison: add them:
-        RankLadder defaultLadder = getLadderManager().getLadder( LadderManager.LADDER_DEFAULT );
-        if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
-        	int addedPlayers = 0;
-        	int fixedPlayers = 0;
-        	
-        	for ( Player player : Prison.get().getPlatform().getOfflinePlayers() ) {
-        		
-        		// getPlayer() will add a player who does not exist:
-        		RankPlayer rPlayer = playerManager.getPlayer( player );
-        		if ( rPlayer != null ) {
-        			if ( rPlayer.checkName( player.getName() ) ) {
-        				playerManager.savePlayer( rPlayer );
-        				addedPlayers++;
-        			}
-        		}
-        	}
-        	
-        	
-        	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-        	
-        	// If any player does not have a rank on the default ladder, then add the default 
-        	// ladder and rank:
-        	Rank defaultRank = defaultLadder.getLowestRank().get();
-        	
-        	if ( defaultRank == null ) {
-        		Output.get().logInfo( 
-        				"PrisonRanks.checkAllPlayersForJoin: Warning: No default rank exists, so bypassing " +
-        					"the player checks.  There may be players online without a rank which could " + 
-        					"cause problems.  Create a default rank and then restart the server to validate and " +
-        					"repair all players.");
-        		return;
-        	}
-        	
-        	
-        	for ( RankPlayer rPlayer : playerManager.getPlayers() ) {
-        		
-        		@SuppressWarnings( "unused" )
-				String rp = rPlayer.toString();
+		if ( addNewPlayers ) {
+			
+			RankUpCommand rankupCommands = rankManager.getRankupCommands();
+			
+			// If there is a default rank on the default ladder, then
+			// check to see if there are any players not in prison: add them:
+			RankLadder defaultLadder = getLadderManager().getLadderDefault();
+//        RankLadder defaultLadder = getLadderManager().getLadder( LadderManager.LADDER_DEFAULT );
+			
+			if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
+				int addedPlayers = 0;
+				int fixedPlayers = 0;
 				
-        		Rank rankOnDefault = null;
-        		
-        		if ( rankPlayerFactory.getRank( rPlayer, defaultLadder ) != null ) {
-        			
-        			rankOnDefault = rankPlayerFactory.getRank( rPlayer, defaultLadder ).getRank();
-        			
+				for ( Player player : Prison.get().getPlatform().getOfflinePlayers() ) {
+					
+					// getPlayer() will add a player who does not exist:
+					RankPlayer rPlayer = playerManager.getPlayer( player );
+					if ( rPlayer != null ) {
+						if ( rPlayer.checkName( player.getName() ) ) {
+							playerManager.savePlayer( rPlayer );
+							addedPlayers++;
+						}
+					}
+				}
+				
+				
+				RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+				
+				// If any player does not have a rank on the default ladder, then add the default 
+				// ladder and rank:
+				Rank defaultRank = defaultLadder.getLowestRank().get();
+				
+				if ( defaultRank == null ) {
+					Output.get().logInfo( 
+							"PrisonRanks.checkAllPlayersForJoin: Warning: No default rank exists, so bypassing " +
+									"the player checks.  There may be players online without a rank which could " + 
+									"cause problems.  Create a default rank and then restart the server to validate and " +
+							"repair all players.");
+					return;
+				}
+				
+				
+				for ( RankPlayer rPlayer : playerManager.getPlayers() ) {
+					
+//        		@SuppressWarnings( "unused" )
+//				String rp = rPlayer.toString();
+					
+					Rank rankOnDefault = null;
+					
+					PlayerRank pRank = rankPlayerFactory.getRank( rPlayer, defaultLadder );
+					
+					if ( pRank != null ) {
+						
+						rankOnDefault = pRank.getRank();
+						
 //        			Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
 //        					rPlayer.getName(),
 //        					defaultLadder.getName(), 
 //        					(rankOnDefault == null ? "true" : "false"), (rankOnDefault == null ? "null" : rankOnDefault.getName()),
 //        					(rankOnDefaultStr == null ? "true" : "false"), (rankOnDefaultStr == null ? "null" : rankOnDefaultStr.getName()),
 //        					rp );
-        			
-        		}
-        		if ( rankOnDefault == null ) {
-        			
-        			rankupCommands.setPlayerRank( rPlayer, defaultRank );
-        			
-        			if ( rankPlayerFactory.getRank( rPlayer, defaultLadder ) != null ) {
-        				
-        				String message = prisonRankAddedNewPlayer( rPlayer.getName() );
-        				
-        				Output.get().logInfo( message );
-        			}
-        			
-        			fixedPlayers++;
-        		}
-        		
+						
+					}
+					if ( rankOnDefault == null ) {
+						
+						rankupCommands.setPlayerRank( rPlayer, defaultRank );
+						
+						if ( rankPlayerFactory.getRank( rPlayer, defaultLadder ) != null ) {
+							
+							String message = prisonRankAddedNewPlayer( rPlayer.getName() );
+							
+							Output.get().logInfo( message );
+						}
+						
+						fixedPlayers++;
+					}
+					
+				}
+				if ( addedPlayers > 0 || fixedPlayers > 0 ) {
+					
+					Output.get().logInfo( prisonRankAddedAndFixedPlayers( addedPlayers, fixedPlayers ) );
+				}
 			}
-        	if ( addedPlayers > 0 || fixedPlayers > 0 ) {
-        		
-        		Output.get().logInfo( prisonRankAddedAndFixedPlayers( addedPlayers, fixedPlayers ) );
-        	}
-        }
-        
-        Output.get().logInfo( "Ranks: Finished First Join Checks." );
+			
+			Output.get().logInfo( "Ranks: Finished First Join Checks." );
+		}
+		else {
+			
+			Output.get().logInfo( "Ranks: First Join Checks disabled. Enable in 'config.yml' by adding " +
+							"'ranks.startup.add-new-players-on-startup: true'.");
+		}
+		
 	}
 
 

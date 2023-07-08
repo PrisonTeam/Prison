@@ -163,11 +163,17 @@ public class PlayerManager
      * @throws IOException If the file could not be created or written to.
      * @see #savePlayer(RankPlayer) To save with the default conventional filename.
      */
-    public void savePlayer(RankPlayer player, String playerFile) throws IOException {
+    private void savePlayer(RankPlayer player, String playerFile) throws IOException {
     	
-    	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    	if ( !player.isEnableDirty() || player.isEnableDirty() && player.isDirty() ) {
+    		
+    		collection.save(playerFile, RankPlayerFactory.toDocument( player ) );
+    		
+    		player.setDirty( false );
+    	}
+//    	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     	
-        collection.save(playerFile, rankPlayerFactory.toDocument( player ) );
+//        collection.save(playerFile, RankPlayerFactory.toDocument( player ) );
 //        collection.insert(playerFile, player.toDocument());
     }
 
@@ -277,7 +283,7 @@ public class PlayerManager
     public RankPlayer getPlayer(UUID uid, String playerName) {
     	
     	RankPlayer results = null;
-    	boolean dirty = false;
+//    	boolean dirty = false;
     	
     	playerName = playerName == null ? "" : playerName.trim();
     	
@@ -297,7 +303,8 @@ public class PlayerManager
     				// This checks to see if they have a new name, if so, then adds it to the history:
     				// But the UID must match:
     				if ( uid != null && rankPlayer.getUUID().equals(uid) ) {
-    					dirty = rankPlayer.checkName( playerName );
+    					rankPlayer.setEnableDirty( true );
+    					rankPlayer.setDirty( rankPlayer.checkName( playerName ) );
     				}
     				
     				results = rankPlayer;
@@ -314,12 +321,19 @@ public class PlayerManager
     	
     	if ( results == null && playerName != null && !"console".equalsIgnoreCase( playerName ) ) {
     		results = addPlayer(uid, playerName);
-    		dirty = results != null;
+    		
+    		if ( results != null ) {
+    			
+    			results.setDirty( true );
+    		}
+    		
+//    		dirty = results != null;
     	}
     	
     	// Save if dirty (change or new):
-    	if ( dirty && results != null ) {
+    	if ( results != null ) {
     		savePlayer( results );
+    		
     	}
     	
     	return results;
@@ -379,6 +393,7 @@ public class PlayerManager
         			// We need to create a new player data file.
         			newPlayer = new RankPlayer( uid, playerName );
         			newPlayer.checkName( playerName );
+        			newPlayer.setDirty( true );
         			
         			rankPlayerFactory.firstJoin( newPlayer );
         			
@@ -1455,23 +1470,40 @@ public class PlayerManager
     	Player player = identifier.getPlayer();
     	
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		RankPlayer rankPlayer = pm.getPlayer( player );
-    	
-    	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
-    	
-    	
-    	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
-    	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
-    	PlaceholderAttributeText attributeText = identifier.getAttributeText();
+		RankPlayer rankPlayer = null;
 		
-//		int sequence = identifier.getSequence();
+		try {
+			rankPlayer = pm.getPlayer( player );
+		} 
+		catch (Exception e) {
+			
+			String msg = String.format(
+					"PlayerManager: failed to getPlayer(): %s [%s]",
+					player == null ? "-null-" : player.getName(), 
+					e.getMessage()
+					);
+			
+			Output.get().logError( msg );
+		}
     	
 
 		String results = null;
-		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 		
 
 		if ( rankPlayer != null ) {
+			
+			PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
+			
+			
+			PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
+			PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
+			PlaceholderAttributeText attributeText = identifier.getAttributeText();
+			
+//			int sequence = identifier.getSequence();
+			
+			
+			
+			PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 			
 			String ladderName = placeHolderKey.getData();
 			

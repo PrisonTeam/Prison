@@ -92,6 +92,7 @@ import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
 import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
+import tech.mcprison.prison.spigot.utils.PrisonUtilsMineBombs;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 import tech.mcprison.prison.util.Text;
 
@@ -392,17 +393,28 @@ public class SpigotPrison
 		}
 
 		
-		// Startup bStats:
-		prisonBStats.initMetricsOnEnable();
-		
-		
-	       
        // Force a backup if prison version is new:
        PrisonBackups backups = new PrisonBackups();
        backups.serverStartupVersionCheck();
 	       
 
+       // Reload guiConfigs since ranks and mines have now been loaded:
+       guiConfig.initialize();
+       
+       
+       
+       // Setup mine bombs:
+       PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();
+       
+
+       // Enable Temp spigot commands:
+       new SpigotCommand();
 		
+       // Startup bStats:
+       prisonBStats.initMetricsOnEnable();
+       
+       
+       
 		Output.get().logInfo( "Prison - Finished loading." );
 		
 		
@@ -1075,10 +1087,14 @@ public class SpigotPrison
             
             
             // If sellall is enabled, then allow it to initialize.
-            if (isSellAllEnabled){
+//            if (isSellAllEnabled){
             	SellAllUtil.get();
-            }
+//            }
 
+            // Load sellAll if enabled
+//            if (isSellAllEnabled){
+            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
+//            }
 
         } 
         else {
@@ -1108,10 +1124,6 @@ public class SpigotPrison
         		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
         	}
         	
-        	// Load sellAll if enabled
-        	if (isSellAllEnabled){
-        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
-        	}
             
         }
 

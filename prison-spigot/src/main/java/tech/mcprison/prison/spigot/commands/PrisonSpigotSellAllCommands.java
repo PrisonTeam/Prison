@@ -501,7 +501,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
             if (p.hasPermission("prison.admin")) {
             	
-            	new SpigotVariousGuiMessages().sellallIsDisabledMsg( sender );
+            	new SpigotVariousGuiMessages().sellallGUIIsDisabledMsg(sender);
 //                Output.get().sendError(sender, 
 //                		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
             }

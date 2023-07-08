@@ -7,7 +7,6 @@ import org.bukkit.block.Block;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
@@ -95,7 +94,7 @@ public class CompatibilityCache {
 	
 	
 	
-	public XMaterial getCachedXMaterial( PrisonBlock prisonBlock )
+	public XMaterial getCachedXMaterial( tech.mcprison.prison.internal.block.Block prisonBlock )
 	{
 		String key = prisonBlock.getBlockName();
 		
@@ -105,7 +104,7 @@ public class CompatibilityCache {
 		return xMat; // xMat == NULL_TOKEN ? null : xMat;
 	}
 	
-	public void putCachedXMaterial( PrisonBlock prisonBlock, XMaterial xMat )
+	public void putCachedXMaterial( tech.mcprison.prison.internal.block.Block prisonBlock, XMaterial xMat )
 	{
 		String key = prisonBlock.getBlockName();
 			

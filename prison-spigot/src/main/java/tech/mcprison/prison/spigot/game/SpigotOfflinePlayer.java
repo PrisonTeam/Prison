@@ -349,5 +349,24 @@ public class SpigotOfflinePlayer
 	public boolean isSneaking() {
 		return false;
 	}
+	
+	
+	@Override
+	public boolean isMinecraftStatisticsEnabled() {
+		return false;
+	}
+	
+
+	@Override
+	public void incrementMinecraftStatsMineBlock( tech.mcprison.prison.internal.Player player,
+			String blockName, int quantity) {
+		
+	}
     
+	@Override
+	public void incrementMinecraftStatsDropCount( tech.mcprison.prison.internal.Player player, 
+			String blockName, int quantity) {
+		
+	}
+
 }

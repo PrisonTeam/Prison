@@ -67,7 +67,10 @@ repositories {
   
 
     maven { 
-    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
+    	name = "CodeMC"
+    	url = uri("https://repo.codemc.io/repository/maven-public/")
+//    	url = 'https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin'
+//    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
     	content {
     		includeGroup 'de.tr7zw'
     	}
@@ -92,8 +95,10 @@ dependencies {
     implementation project(':prison-sellall')
 
 
-    implementation 'org.bstats:bstats-base:3.0.0'
-    implementation 'org.bstats:bstats-bukkit:3.0.0'
+	// https://mvnrepository.com/artifact/org.bstats/bstats-base
+	// https://mvnrepository.com/artifact/org.bstats/bstats-bukkit
+    implementation 'org.bstats:bstats-base:3.0.2'
+    implementation 'org.bstats:bstats-bukkit:3.0.2'
 //    implementation 'org.bstats:bstats-base:2.2.1'
 //    implementation 'org.bstats:bstats-bukkit:2.2.1'
     
@@ -103,6 +108,7 @@ dependencies {
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
   
     
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
 
@@ -113,15 +119,15 @@ dependencies {
     // But do not see v5.0
     compileOnly 'net.luckperms:api:5.0'
     
-    compileOnly 'me.lucko.luckperms:luckperms-api:4.2'
+    // https://mvnrepository.com/artifact/me.lucko.luckperms/luckperms-api
+    compileOnly 'me.lucko.luckperms:luckperms-api:4.4'
     
     // jitpack.io:
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:9.2.0'
-	//implementation 'com.github.cryptomorin:XSeries:9.0.0'
-	//implementation 'com.github.cryptomorin:XSeries:8.8.0'
+	implementation 'com.github.cryptomorin:XSeries:9.4.0'
+	//implementation 'com.github.cryptomorin:XSeries:9.2.0'
     
 
 
@@ -142,7 +148,10 @@ dependencies {
 //	compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.22'
 //  compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.21.3'
 
-    compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
+
+	// https://mvnrepository.com/artifact/com.github.MilkBowl/VaultAPI
+	compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
+    //compileOnly 'net.milkbowl.vault:VaultAPI:1.7.0'
     
 //    compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT'){
 //        exclude group: 'org.spigotmc'
@@ -151,17 +160,24 @@ dependencies {
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
 
  
+ // NOTE: mavenrepository.com is not the offical repo.
+ // NOTE: This item-nbt MUST use the API and not the plugini version!
+ // Good: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api/
+ // Bad?: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
  // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
+ 	// https://github.com/tr7zw/Item-NBT-API/wiki/Using-Gradle
 	// https://www.spigotmc.org/resources/nbt-api.7939/
 	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.1'
+	implementation 'de.tr7zw:item-nbt-api:2.11.3'
+//	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.2'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
 
 
 	// https://github.com/LoneDev6/API-ItemsAdder#-packages
 	// https://github.com/LoneDev6/API-ItemsAdder/tags
-	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.2.5'
+	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
+//	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.2.5'
 
 
 
@@ -211,21 +227,28 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency('org.apache.commons:commons-lang3:3.12.0'))
-        include(dependency('com.google.code.gson:gson:2.8.6'))
-        
-        include(dependency('org.bstats:bstats-base:3.0.0'))
-        include(dependency('org.bstats:bstats-bukkit:3.0.0'))
+
+        // https://mvnrepository.com/artifact/com.google.code.gson/gson
+		include(dependency('com.google.code.gson:gson:2.10.1'))
+        //include(dependency('com.google.code.gson:gson:2.8.6'))
+                
+        include(dependency('org.bstats:bstats-base:3.0.2'))
+        include(dependency('org.bstats:bstats-bukkit:3.0.2'))
 //        include(dependency('org.bstats:bstats-base:2.2.1'))
 //        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
 
         include(dependency('me.clip:placeholderapi:2.11.2'))
         //include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        include(dependency('com.github.cryptomorin:XSeries:9.2.0'))
+		// https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
+        include(dependency('com.github.cryptomorin:XSeries:9.4.0'))
+        //include(dependency('com.github.cryptomorin:XSeries:9.2.0'))
         //include(dependency('com.github.cryptomorin:XSeries:9.0.0'))
         //include(dependency('com.github.cryptomorin:XSeries:8.8.0'))
         
-        include(dependency('de.tr7zw:item-nbt-api-plugin:2.11.1'))
+        
+        // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
+        include(dependency('de.tr7zw:item-nbt-api:'))
         //include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
@@ -242,7 +265,8 @@ shadowJar {
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
-	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
+	relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.nbtapi'
+//	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 

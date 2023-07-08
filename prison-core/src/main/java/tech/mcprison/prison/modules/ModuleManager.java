@@ -21,7 +21,6 @@ package tech.mcprison.prison.modules;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -62,11 +61,12 @@ public class ModuleManager {
      * Register a new module.
      */
     public void registerModule(Module module) {
-        if (getModule(module.getName()).isPresent()) {
-            return; // Already added
+        if ( getModule(module.getName()) == null ) {
+        	// Module does not exist, so add it:
+        	modules.add(module);
+        	enableModule(module);
+//            return; // Already added
         }
-        modules.add(module);
-        enableModule(module);
     }
 
     private void validateVersion(Module module) {
@@ -114,8 +114,11 @@ public class ModuleManager {
      * @param module The {@link Module} to enable.
      */
     public void unregisterModule(Module module) {
+    	
         disableModule(module);
-        getModule(module.getName()).ifPresent(modules::remove);
+        
+        getModules().remove(module);
+//        getModule(module.getName()).ifPresent(modules::remove);
     }
 
     /**
@@ -144,17 +147,39 @@ public class ModuleManager {
     /**
      * Returns the {@link Module} with the specified name.
      */
-    public Optional<Module> getModule(String name) {
-        return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name))
-            .findFirst();
+    public Module getModule(String name) {
+    	Module results = null;
+    	
+    	for (Module module : getModules() ) {
+			
+    		if ( module.getName().equalsIgnoreCase(name) ) {
+    			results = module;
+    			break;
+    		}
+		}
+    	return results;
+    	
+//        return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name))
+//            .findFirst();
     }
 
     /**
      * Returns the {@link Module} with the specified package name.
      */
-    public Optional<Module> getModuleByPackageName(String name) {
-        return modules.stream().filter(module -> module.getPackageName().equalsIgnoreCase(name))
-            .findFirst();
+    public Module getModuleByPackageName(String name) {
+    	Module results = null;
+    	
+    	for (Module module : getModules() ) {
+			
+    		if ( module.getPackageName().equalsIgnoreCase(name) ) {
+    			results = module;
+    			break;
+    		}
+		}
+    	return results;
+    	
+//        return modules.stream().filter(module -> module.getPackageName().equalsIgnoreCase(name))
+//            .findFirst();
     }
 
     /**
@@ -172,47 +197,47 @@ public class ModuleManager {
         return moduleRoot;
     }
 
-    /**
-     * Returns the status of a module (enabled or error message), in the form of a color-coded string.
-     * This is meant to show to users.
-     *
-     * @deprecated Use {@link Module#getStatus()} instead.
-     */
-    @Deprecated public String getStatus(String moduleName) {
-        Optional<Module> moduleOptional = getModule(moduleName);
-        return moduleOptional.map(module -> module.getStatus().getMessage()).orElse(null);
-    }
+//    /**
+//     * Returns the status of a module (enabled or error message), in the form of a color-coded string.
+//     * This is meant to show to users.
+//     *
+//     * @deprecated Use {@link Module#getStatus()} instead.
+//     */
+//    @Deprecated public String getStatus(String moduleName) {
+//        Optional<Module> moduleOptional = getModule(moduleName);
+//        return moduleOptional.map(module -> module.getStatus().getMessage()).orElse(null);
+//    }
 
-    /**
-     * Set the status of a module.
-     *
-     * @param moduleName The name of the module.
-     * @param newStatus  The module's status. May include color codes, amp-prefixed.
-     * @deprecated Use {@link Module#getStatus()} instead.
-     */
-    @Deprecated public void setStatus(String moduleName, String newStatus) {
-        Optional<Module> moduleOptional = getModule(moduleName);
-        if (!moduleOptional.isPresent()) {
-            return;
-        }
-        Module module = moduleOptional.get();
-
-        if (newStatus.toLowerCase().contains("enabled")) {
-            module.getStatus().toEnabled();
-        } else if (newStatus.toLowerCase().contains("disabled")) {
-            module.getStatus().toDisabled();
-        } else {
-            module.getStatus().toFailed(newStatus);
-        }
-
-    }
+//    /**
+//     * Set the status of a module.
+//     *
+//     * @param moduleName The name of the module.
+//     * @param newStatus  The module's status. May include color codes, amp-prefixed.
+//     * @deprecated Use {@link Module#getStatus()} instead.
+//     */
+//    @Deprecated public void setStatus(String moduleName, String newStatus) {
+//        Optional<Module> moduleOptional = getModule(moduleName);
+//        if (!moduleOptional.isPresent()) {
+//            return;
+//        }
+//        Module module = moduleOptional.get();
+//
+//        if (newStatus.toLowerCase().contains("enabled")) {
+//            module.getStatus().toEnabled();
+//        } else if (newStatus.toLowerCase().contains("disabled")) {
+//            module.getStatus().toDisabled();
+//        } else {
+//            module.getStatus().toFailed(newStatus);
+//        }
+//
+//    }
 
 	public boolean isModuleActive(String moduleName) {
 		boolean results = false;
 		
 		if ( moduleName != null ) {
 			
-			Module module = getModule(moduleName).orElse(null);
+			Module module = getModule(moduleName);
 			if ( module != null ) {
 				results = module.getStatus().getStatus() == Status.ENABLED;
 			}

@@ -731,5 +731,17 @@ public abstract class Spigot18Blocks
 //        }
 //	    return null;
     }
+ 
+    
+    
+    @Override
+    public int getMinY() {
+    	return 0;
+    }
+    
+    @Override
+    public int getMaxY() {
+    	return 255;
+    }
     
 }

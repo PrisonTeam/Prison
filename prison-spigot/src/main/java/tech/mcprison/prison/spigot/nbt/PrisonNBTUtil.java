@@ -1,9 +1,9 @@
 package tech.mcprison.prison.spigot.nbt;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import tech.mcprison.prison.output.Output;
 
 /**
@@ -17,92 +17,173 @@ import tech.mcprison.prison.output.Output;
  * more for testing new sections of code.
  * </p>
  * 
+ * <p>References:</p>
+ * https://github.com/tr7zw/Item-NBT-API/wiki/Using-the-NBT-API
+ * 
+ * 
  * @author Blue
  *
  */
 public class PrisonNBTUtil {
 
-	private boolean enableDebugLogging = false;
+	private static boolean enableDebugLogging = false;
 	
-    public NBTItem getNBT( ItemStack bukkitStack ) {
-    	NBTItem nbtItemStack = null;
-    	
-    	if ( bukkitStack != null && bukkitStack.getType() != Material.AIR  ) {
-    		try {
-				nbtItemStack = new NBTItem( bukkitStack, true );
-				
-				if ( isEnableDebugLogging() ) {
-					nbtDebugLog( nbtItemStack, "getNbt" );
-				}
-				
-			} catch (Exception e) {
-				// ignore - the bukkit item stack is not compatible with the NBT library
-			}
-    	}
-    	
-    	return nbtItemStack;
-    }
-    
-    
-    private void nbtDebugLog( NBTItem nbtItem, String desc ) {
+	
+	public static boolean hasNBTString( ItemStack bukkitStack, String key ) {
+		String results = null;
+		
+		results = getNBTString( bukkitStack, key );
+		
+		return results != null && results.trim().length() > 0;
+	}
+	
+	public static String getNBTString( ItemStack bukkitStack, String key ) {
+		String results = null;
+		
+		results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
+		
+		return results;
+	}
+
+	public static void setNBTString( ItemStack bukkitStack, String key, String value ) {
+	
+		NBT.modify(bukkitStack, nbt -> {
+			nbt.setString(key, value);
+		});
+			 
+		if ( isEnableDebugLogging() ) {
+			nbtDebugLog( bukkitStack, "setNBTString" );
+		}
+	}
+	
+	public static boolean getNBTBoolean( ItemStack bukkitStack, String key ) {
+		boolean results = false;
+		
+		results = NBT.get(bukkitStack, nbt -> nbt.getBoolean(key));
+		
+		return results;
+	}
+	
+	public static void setNBTBoolean( ItemStack bukkitStack, String key, boolean value ) {
+		
+		NBT.modify(bukkitStack, nbt -> {
+			nbt.setBoolean(key, value);
+		});
+		
+		if ( isEnableDebugLogging() ) {
+			nbtDebugLog( bukkitStack, "setNBTBoolean" );
+		}
+	}
+
+	
+	public static void nbtDebugLog( ItemStack bukkitStack, String desc ) {
 		if ( Output.get().isDebug() ) {
-			org.bukkit.inventory.ItemStack iStack = nbtItem.getItem();
 			
-			int sysId = System.identityHashCode(iStack);
+			String nbtDebug = nbtDebugString( bukkitStack );
+			
+			int sysId = System.identityHashCode(bukkitStack);
 			
 			String message = Output.stringFormat( 
 					"NBT %s ItemStack for %s: %s  sysId: %d", 
 					desc,
-					iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName() ? 
-							iStack.getItemMeta().getDisplayName() :
-							iStack.getType().name(),
-					nbtItem.toString(),
-					sysId );
+					bukkitStack.hasItemMeta() && bukkitStack.getItemMeta().hasDisplayName() ? 
+							bukkitStack.getItemMeta().getDisplayName() :
+								bukkitStack.getType().name(),
+								nbtDebug,
+								sysId );
 			
 			Output.get().logInfo( message );
 			
 			//Output.get().logInfo( "NBT: " + new NBTItem( getBukkitStack() ) );
 			
 		}
-    }
+	}
+	
+	public static String nbtDebugString( ItemStack bukkitStack ) {
+		
+		ReadWriteNBT nbtItem = NBT.itemStackToNBT(bukkitStack);
+		return nbtItem.toString();
+	}
+	
+//    public NBTItem getNBT( ItemStack bukkitStack ) {
+//    	NBTItem nbtItemStack = null;
+//    	
+//    	if ( bukkitStack != null && bukkitStack.getType() != Material.AIR  ) {
+//    		try {
+//				nbtItemStack = new NBTItem( bukkitStack, true );
+//				
+//				if ( isEnableDebugLogging() ) {
+//					nbtDebugLog( nbtItemStack, "getNbt" );
+//				}
+//				
+//			} catch (Exception e) {
+//				// ignore - the bukkit item stack is not compatible with the NBT library
+//			}
+//    	}
+//    	
+//    	return nbtItemStack;
+//    }
     
     
-    public boolean hasNBTKey( NBTItem nbtItem, String key ) {
-    	boolean results = false;
-    	
-    	if ( nbtItem != null ) {
-    		results = nbtItem.hasKey( key );
-    	}
-    	
-    	return results;
-    }
+//    private void nbtDebugLog( NBTItem nbtItem, String desc ) {
+//		if ( Output.get().isDebug() ) {
+//			org.bukkit.inventory.ItemStack iStack = nbtItem.getItem();
+//			
+//			int sysId = System.identityHashCode(iStack);
+//			
+//			String message = Output.stringFormat( 
+//					"NBT %s ItemStack for %s: %s  sysId: %d", 
+//					desc,
+//					iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName() ? 
+//							iStack.getItemMeta().getDisplayName() :
+//							iStack.getType().name(),
+//					nbtItem.toString(),
+//					sysId );
+//			
+//			Output.get().logInfo( message );
+//			
+//			//Output.get().logInfo( "NBT: " + new NBTItem( getBukkitStack() ) );
+//			
+//		}
+//    }
     
-    public String getNBTString( NBTItem nbtItem, String key ) {
-    	String results = null;
-    	
-    	if ( nbtItem != null ) {
-    		results = nbtItem.getString( key );
-    	}
-    	return results;
-    }
     
-    public void setNBTString( NBTItem nbtItem, String key, String value ) {
+//    public boolean hasNBTKey( NBTItem nbtItem, String key ) {
+//    	boolean results = false;
+//    	
+//    	if ( nbtItem != null ) {
+//    		results = nbtItem.hasKey( key );
+//    	}
+//    	
+//    	return results;
+//    }
+    
+//    private String getNBTString( NBTItem nbtItem, String key ) {
+//    	String results = null;
+//    	
+//    	if ( nbtItem != null ) {
+//    		results = nbtItem.getString( key );
+//    	}
+//    	return results;
+//    }
+    
+//    private void setNBTString( NBTItem nbtItem, String key, String value ) {
+//
+//    	if ( nbtItem != null ) {
+//    		nbtItem.setString( key, value );
+//    		
+//    		if ( isEnableDebugLogging() ) {
+//    			nbtDebugLog( nbtItem, "setNBTString" );
+//    		}
+//    	}
+//    }
 
-    	if ( nbtItem != null ) {
-    		nbtItem.setString( key, value );
-    		
-    		if ( isEnableDebugLogging() ) {
-    			nbtDebugLog( nbtItem, "setNBTString" );
-    		}
-    	}
-    }
 
-
-	public boolean isEnableDebugLogging() {
+	public static boolean isEnableDebugLogging() {
 		return enableDebugLogging;
 	}
-	public void setEnableDebugLogging(boolean enableDebugLogging) {
-		this.enableDebugLogging = enableDebugLogging;
+	public static void setEnableDebugLogging(boolean enableDebugLogging) {
+		PrisonNBTUtil.enableDebugLogging = enableDebugLogging;
 	}
     
 }

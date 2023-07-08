@@ -255,12 +255,13 @@ public class AutoManagerBlockBreakEvents
 		// If the event is canceled, it still needs to be processed because of the 
 		// MONITOR events:
 		// An event will be "canceled" and "ignored" if the block 
-		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    						e.getPlayer(), e.getBlock() );
+    						e.getPlayer(), e.getBlock(), bbPriority, false );
+    	
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
@@ -278,6 +279,7 @@ public class AutoManagerBlockBreakEvents
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
 		
 		// Process all priorities if the event has not been canceled, and 
 		// process the MONITOR priority even if the event was canceled:
@@ -292,11 +294,14 @@ public class AutoManagerBlockBreakEvents
     		String triggered = null;
     		
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    				e.getBlock(), 
-    				e.getPlayer(),
-    				eventResults.getMine(),
-//    					sBlock, sPlayer, 
-    					bbPriority, eventType, triggered,
+    				eventResults,
+//    				e.getBlock(), 
+//    				e.getPlayer(),
+//    				eventResults.getMine(),
+////    					sBlock, sPlayer, 
+//    					bbPriority, 
+    					eventType, 
+    					triggered,
     					debugInfo );
     		
 
@@ -310,7 +315,6 @@ public class AutoManagerBlockBreakEvents
         	if ( checkIfNoAccess( pmEvent, start ) ) {
         		
         		e.setCancelled( true );
-
         		return;
         	}
     		
@@ -356,13 +360,13 @@ public class AutoManagerBlockBreakEvents
     			if ( cancelBy == EventListenerCancelBy.event ) {
     				
     				e.setCancelled( true );
-    				debugInfo.append( "(event canceled) " );
+    				debugInfo.append( "(cancelByEvent) " );
     			}
     			else if ( cancelBy == EventListenerCancelBy.drops ) {
 					try
 					{
 						e.setDropItems( false );
-						debugInfo.append( "(drop canceled) " );
+						debugInfo.append( "(cancelByDrop) " );
 					}
 					catch ( NoSuchMethodError e1 )
 					{

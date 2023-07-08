@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -14,12 +16,16 @@ import org.bukkit.plugin.PluginManager;
 
 import me.revils.revenchants.events.JackHammerEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.util.Location;
 
 public class AutoManagerRevEnchantsJackHammerEvent
 	extends AutoManagerFeatures
@@ -265,13 +271,15 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		// If the event is canceled, it still needs to be processed because of the 
 		// MONITOR events:
 		// An event will be "canceled" and "ignored" if the block 
-		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-								e.getPlayer(), e.getBlocks().get( 0 ) );
-		if ( eventResults.isIgnoreEvent() ) {
+								e.getPlayer(), e.getBlocks().get( 0 ),
+								bbPriority, true );
+    	
+    	if ( eventResults.isIgnoreEvent() ) {
 			return;
 		}
 		
@@ -285,6 +293,8 @@ public class AutoManagerRevEnchantsJackHammerEvent
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
+		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
 		
@@ -296,16 +306,19 @@ public class AutoManagerRevEnchantsJackHammerEvent
 	
 			
 			
-			Block bukkitBlock = e.getBlocks().get( 0 );
+//			Block bukkitBlock = e.getBlocks().get( 0 );
 			
 			BlockEventType eventType = BlockEventType.RevEnJackHammer;
 			String triggered = null;
 			
 	
 			pmEvent = new PrisonMinesBlockBreakEvent( 
-						bukkitBlock, e.getPlayer(),
-						eventResults.getMine(),
-						bbPriority, eventType, triggered,
+						eventResults,
+//						bukkitBlock, e.getPlayer(),
+//						eventResults.getMine(),
+//						bbPriority, 
+						eventType, 
+						triggered,
     					debugInfo );
     		
 
@@ -322,10 +335,29 @@ public class AutoManagerRevEnchantsJackHammerEvent
         		return;
         	}
         	
-			
-			for ( int i = 1; i < e.getBlocks().size(); i++ ) {
-				pmEvent.getUnprocessedRawBlocks().add( e.getBlocks().get( i ) );
+    		Location loc1 = SpigotUtil.bukkitLocationToPrison( e.getPoint1() );
+    		Location loc2 = SpigotUtil.bukkitLocationToPrison( e.getPoint2() );
+    				
+    		List<Location> blocks = MineBombs.getInstance().calculateCube( loc1, loc2 );
+    		
+    		String msg = String.format( 
+    				"(JackHammerEvent: e.blocks=%d  locationBlocks=%d  %s %s) ", 
+    					e.getBlocks().size(),
+    					blocks.size(),
+    					loc1.toWorldCoordinates(),
+    					loc2.toWorldCoordinates()
+    					);
+    		debugInfo.append( msg );
+    		
+    		for (Location loc : blocks) {
+				SpigotBlock block = (SpigotBlock) loc.getBlockAt();
+				
+				pmEvent.getUnprocessedRawBlocks().add( block.getWrapper() );
 			}
+			
+//			for ( int i = 1; i < blocks.size(); i++ ) {
+//				pmEvent.getUnprocessedRawBlocks().add( blocks.get( i ) );
+//			}
 			
 			
 			if ( !validateEvent( pmEvent ) ) {
@@ -344,7 +376,7 @@ public class AutoManagerRevEnchantsJackHammerEvent
 			
 			
     		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
     		else if ( pmEvent.getBbPriority().isMonitor() ) {
     			// Stop here, and prevent additional processing. 
     			// Monitors should never process the event beyond this.

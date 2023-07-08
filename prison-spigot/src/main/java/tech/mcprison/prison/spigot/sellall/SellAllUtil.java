@@ -17,6 +17,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
@@ -317,18 +318,23 @@ public class SellAllUtil
         SpigotPlayer sPlayer = new SpigotPlayer(p);
         double multiplier = defaultMultiplier;
 
-        RankPlayer rPlayer = sPlayer.getRankPlayer();
+        if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+        	
+        	RankPlayer rPlayer = sPlayer.getRankPlayer();
 //        rPlayer.getSellAllMultiplier(); // NOTE: This actually calls this function
-        PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
-        Rank rank = pRank == null ? null : pRank.getRank();
-
-        if ( pRank != null ) {
-        	String rankName = rank.getName();
-        	String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
-        	if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
-        		multiplier = sellAllPrestigeMultipliers.get( rankName );
+        	PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
+        	Rank rank = pRank == null ? null : pRank.getRank();
+        	
+        	if ( pRank != null ) {
+        		String rankName = rank.getName();
+        		String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+        		if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
+        			multiplier = sellAllPrestigeMultipliers.get( rankName );
+        		}
         	}
+        	
         }
+        
 
 //        long tPoint2 = System.nanoTime();
         
@@ -537,6 +543,63 @@ public class SellAllUtil
 		return results;
 	}
 
+    
+    /**
+     * <p>This gets the player's inventory, ignoring the armor slots.</p>
+     * 
+     * @param p
+     * @return
+     */
+    private List<ItemStack> getPlayerInventory( Player p ) {
+    	
+    	return getPlayerInventory( p.getInventory() );
+    	
+//    	List<ItemStack> results = new ArrayList<>();
+//    	
+//    	PlayerInventory inv = p.getInventory();
+//    	
+//    	for ( ItemStack iStack : inv.getStorageContents() ) {
+//    		if ( iStack != null ) {
+//    			results.add(iStack);
+//    		}
+//    	}
+//    	for ( ItemStack iStack : inv.getExtraContents() ) {
+//    		if ( iStack != null ) {
+//    			results.add(iStack);
+//    		}
+//    	}
+//    	
+//    	return results;
+    }
+    private List<ItemStack> getPlayerInventory( PlayerInventory inv ) {
+    	List<ItemStack> results = new ArrayList<>();
+    	
+    	for ( ItemStack iStack : inv.getContents() ) {
+    		if ( iStack != null ) {
+    			results.add(iStack);
+    		}
+    	}
+    	
+    	try {
+			for ( ItemStack iStack : inv.getExtraContents() ) {
+				if ( iStack != null ) {
+					results.add(iStack);
+				}
+			}
+		} catch (NoSuchMethodError e) {
+			// Ignore on older versions of spigot... Spigot 1.8.8 does not have this function.
+		}
+    	
+    	// then remove the armor ItemStacks:
+    	for ( ItemStack iStack : inv.getArmorContents() ) {
+    		if ( iStack != null ) {
+    			results.remove(iStack);
+    		}
+    	}
+    	
+    	return results;
+    }
+    
     /**
      * Get HashMap with all the items of a Player.
      *
@@ -573,7 +636,8 @@ public class SellAllUtil
             }
         }
 
-        xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, p.getInventory());
+        xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, getPlayerInventory( p ));
+//        xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, p.getInventory());
         return xMaterialIntegerHashMap;
     }
 
@@ -901,7 +965,8 @@ public class SellAllUtil
      * */
     public boolean addPrestigeMultiplier(String prestigeName, double multiplier){
 
-        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
+        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? 
+        		null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME) );
         if (rankPlugin == null) {
             return false;
         }
@@ -1043,22 +1108,52 @@ public class SellAllUtil
     }
 
     private HashMap<XMaterial, Integer> addInventoryToHashMap(HashMap<XMaterial, Integer> xMaterialIntegerHashMap, Inventory inv) {
-        for (ItemStack itemStack : inv.getContents()){
+    	
+    	List<ItemStack> inventory = new ArrayList<>();
+    	
+    	for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
-                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
-                
-                if ( xMaterial != null ) {
-                	
-                	if (xMaterialIntegerHashMap.containsKey(xMaterial)){
-                		xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
-                	} 
-                	else {
-                		xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
-                	}
-                }
+            	inventory.add(itemStack);
             }
-        }
-        return xMaterialIntegerHashMap;
+    	}
+    	
+    	return addInventoryToHashMap( xMaterialIntegerHashMap, inventory );
+    	
+//        for (ItemStack itemStack : inv.getContents()){
+//            if (itemStack != null){
+//                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+//                
+//                if ( xMaterial != null ) {
+//                	
+//                	if (xMaterialIntegerHashMap.containsKey(xMaterial)){
+//                		xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+//                	} 
+//                	else {
+//                		xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+//                	}
+//                }
+//            }
+//        }
+//        return xMaterialIntegerHashMap;
+    }
+    
+    private HashMap<XMaterial, Integer> addInventoryToHashMap(HashMap<XMaterial, Integer> xMaterialIntegerHashMap, List<ItemStack> inv) {
+    	for (ItemStack itemStack : inv){
+    		if (itemStack != null){
+    			XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+    			
+    			if ( xMaterial != null ) {
+    				
+    				if (xMaterialIntegerHashMap.containsKey(xMaterial)){
+    					xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+    				} 
+    				else {
+    					xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+    				}
+    			}
+    		}
+    	}
+    	return xMaterialIntegerHashMap;
     }
 
     /**
@@ -1769,6 +1864,7 @@ public class SellAllUtil
             return false;
         }
 
+        //TODO inventory access: getHashMapOfPlayerInventories() && removeSellableItems(p, p.getInventory());
         double money = getSellMoney(p);
         if (money != 0){
         	
@@ -1777,17 +1873,28 @@ public class SellAllUtil
         		amounts.add( money );
         	}
 
-            SpigotPlayer sPlayer = new SpigotPlayer(p);
-            RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
-            
-            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) {
-            	sellAllCurrency = null;
-            }
-            
-            
-            removeSellableItems(p);
-            
-            rankPlayer.addBalance(sellAllCurrency, money);
+        	if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) {
+        		sellAllCurrency = null;
+        	}
+        	
+        	
+        	//TODO inventory access: getHashMapOfPlayerInventories() && removeSellableItems(p, p.getInventory());
+        	removeSellableItems(p);
+
+        	SpigotPlayer sPlayer = new SpigotPlayer(p);
+        	
+        	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+        		
+        		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+        		
+        		
+        		rankPlayer.addBalance(sellAllCurrency, money);
+        	}
+        	else {
+        		
+        		// Ranks are not enabled, so use a non-cached way to pay the player:
+        		sPlayer.addBalance(sellAllCurrency, money);
+        	}
 
             if (isSellAllDelayEnabled){
                 addToDelay(p);

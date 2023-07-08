@@ -15,6 +15,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
 
 public class MineBlockEvent {
+	
+	public static final String ENCODED_PIPE = "$pipe$";
 
 	private double chance;
 	private String permission;
@@ -160,10 +162,12 @@ public class MineBlockEvent {
 		
 //		DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
 		
+		String cmd = getCommand().replace( "|", ENCODED_PIPE );
+		
 		return nFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 
 						"none" : getPermission())  + "|" + 
-				getCommand() + "|" + getTaskMode().name() + "|" + getEventType().name() + "|" + 
+				cmd + "|" + getTaskMode().name() + "|" + getEventType().name() + "|" + 
 				(getTriggered() == null ? "none" : getTriggered()) + "|" +
 				getPrisonBlockStrings( "," );
 	}
@@ -251,6 +255,9 @@ public class MineBlockEvent {
 			}
 			
 			String command = cpc.length >= 3 ? cpc[2] : "";
+			if ( command.contains( ENCODED_PIPE ) ) {
+				command = command.replace( ENCODED_PIPE, "|" );
+			}
 			
 			String mode = cpc.length >= 4 ? cpc[3] : "inline";
 			TaskMode taskMode = TaskMode.fromString( mode ); // defaults to inline

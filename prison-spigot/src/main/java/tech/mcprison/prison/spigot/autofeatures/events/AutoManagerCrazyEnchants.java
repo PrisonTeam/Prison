@@ -270,12 +270,14 @@ public class AutoManagerCrazyEnchants
 		// If the event is canceled, it still needs to be processed because of the 
 		// MONITOR events:
 		// An event will be "canceled" and "ignored" if the block 
-		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    										e.getPlayer(), e.getBlockList().get( 0 ) );
+    							e.getPlayer(), e.getBlockList().get( 0 ),
+    							bbPriority, true );
+    	
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
@@ -289,6 +291,8 @@ public class AutoManagerCrazyEnchants
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
+		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
 
@@ -299,17 +303,20 @@ public class AutoManagerCrazyEnchants
     			e.getBlockList().size() > 0 ) {
 
     		
-    		Block bukkitBlock = e.getBlockList().get( 0 );
+//    		Block bukkitBlock = e.getBlockList().get( 0 );
     		
     		BlockEventType eventType = BlockEventType.CEXplosion;
     		String triggered = null;
     		
 
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    				bukkitBlock, 
-    				e.getPlayer(),
-    				eventResults.getMine(),
-   					bbPriority, eventType, triggered,
+    				eventResults,
+//    				bukkitBlock, 
+//    				e.getPlayer(),
+//    				eventResults.getMine(),
+//   					bbPriority, 
+    				eventType, 
+    				triggered,
    					debugInfo );
     		
 
@@ -347,7 +354,7 @@ public class AutoManagerCrazyEnchants
     		
 
     		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
     		else if ( pmEvent.getBbPriority().isMonitor() ) {
     			// Stop here, and prevent additional processing. 
     			// Monitors should never process the event beyond this.

@@ -3,11 +3,16 @@ package tech.mcprison.prison.spigot.configs;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.cryptomorin.xseries.XMaterial;
+
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
@@ -189,6 +194,31 @@ public class GuiConfig extends SpigotConfigComponents{
         	changeCount++;
         }
         
+        if ( conf.get( "Options.Mines.MaterialType" ) == null ) {
+        	
+        	if ( PrisonMines.getInstance() != null ) {
+
+        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        		
+        		map.put("NoMineAccess", XMaterial.REDSTONE_BLOCK.name() );
+        				
+        		for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
+        			if ( mine.getPrisonBlocks().size() > 0 ) {
+        				map.put( mine.getName(), mine.getPrisonBlocks().get(0).getBlockName() );
+        			}
+        		}
+        		
+        		conf.set("Options.Mines.MaterialType", map);
+        		changeCount++;
+        	}
+        }
+        else if ( conf.get( "Options.Mines.MaterialType.NoMineAccess" ) == null ) {
+        	
+        	String noMineAccess = XMaterial.REDSTONE_BLOCK.name();
+        	
+        	conf.set("Options.Mines.MaterialType.NoMineAccess", noMineAccess );
+        	changeCount++;
+        }
         
         // Count and save
         if (changeCount > 0) {

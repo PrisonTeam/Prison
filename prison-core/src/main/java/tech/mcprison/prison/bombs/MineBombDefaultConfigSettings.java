@@ -53,6 +53,8 @@ public class MineBombDefaultConfigSettings {
 						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, "&dSmall &6Mine &eBomb &3(lore line 1)" );
 				
 				mbd.setNameTag( "&6&kABC&r&c-= &7{name}&c =-&6&kCBA" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
+				
 				
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 0 );
@@ -85,6 +87,7 @@ public class MineBombDefaultConfigSettings {
 						"but supercharged with a strange green glowing liquid.");
 				
 				mbd.setNameTag( "&6&k1 23 456&r&a-=- &7{name}&a -=-&6&k654 32 1" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 3 );
@@ -108,6 +111,10 @@ public class MineBombDefaultConfigSettings {
 			{
 				MineBombData mbd = new MineBombData( 
 						"LargeBomb", "tnt", ExplosionShape.sphereHollow.name(), 12, "Large Mine Bomb" );
+				
+				mbd.setNameTag( "&a-=- &7{name}&a -=--" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
+
 				mbd.setRadiusInner( 3 );
 				mbd.setDescription("A large mine bomb made from TNT with some strange parts " +
 						"that maybe be described as alien technology.");
@@ -136,6 +143,7 @@ public class MineBombDefaultConfigSettings {
 				mbd.setRadiusInner( 3 );
 				
 				mbd.setNameTag( "&c&k1&6&k23&e&k456&r&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&e&k654&6&k32&c&k1" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
 				mbd.setDescription("An oof-ably large mine bomb made with a minecart heaping with TNT.  " +
 						"Unlike the large mine bomb, this one obviously is built with alien technology.");
@@ -193,6 +201,7 @@ public class MineBombDefaultConfigSettings {
 //				mbd.setLoreBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
 				
 				mbd.setNameTag( "&7A &2Wimpy &cBomb" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
 				mbd.setRadiusInner( 2 );
 				mbd.setDescription("A whimpy bomb made with gunpowder and packs the punch of a " +
@@ -242,6 +251,9 @@ public class MineBombDefaultConfigSettings {
 						"A Cubic Bomb" );
 				mbd.setDescription("The most anti-round bomb you will ever be able to find. " +
 						"It's totally cubic.");
+				
+				mbd.setNameTag( "&a-=- &7{name}&a -=--" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 7 );

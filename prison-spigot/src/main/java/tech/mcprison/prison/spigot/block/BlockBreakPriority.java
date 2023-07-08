@@ -19,8 +19,9 @@ import org.bukkit.event.EventPriority;
  * nor can it run any commands through the BlockEvents. 
  * </p>
  * 
- * <p>BLOCKEVENT will run with a priority of HIGHEST, but will process the same as 
- * MONITOR with the addition of running the BlockEvents.  This will NOT break any 
+ * <p>BLOCKEVENT will run with a priority of MONItoR, but will process the same as 
+ * MONITOR with the addition of running the BlockEvents and enabling sellall on
+ * full inventory.  This will NOT break any 
  * blocks, or process any drops.
  * </p>
  *
@@ -35,11 +36,11 @@ public enum BlockBreakPriority {
 	HIGH( EventPriority.HIGH ),
 	HIGHEST( EventPriority.HIGHEST ),
 	
-	BLOCKEVENTS( EventPriority.HIGHEST ),
+	BLOCKEVENTS( EventPriority.MONITOR ),
 	MONITOR( EventPriority.MONITOR ),
 	
 	ACCESS( EventPriority.LOWEST ),
-	ACCESSBLOCKEVENTS( EventPriority.HIGHEST, ACCESS, BLOCKEVENTS ),
+	ACCESSBLOCKEVENTS( EventPriority.MONITOR, ACCESS, BLOCKEVENTS ),
 	ACCESSMONITOR( EventPriority.MONITOR, ACCESS, MONITOR ),
 	;
 	
@@ -77,6 +78,13 @@ public enum BlockBreakPriority {
 		return results;
 	}
 
+	public boolean isAccess() {
+		return this == ACCESS ||
+			   this == ACCESSBLOCKEVENTS ||
+			   this == ACCESSMONITOR
+			   ;
+	}
+	
 	public boolean isMonitor() {
 		return this == MONITOR || 
 			   this == BLOCKEVENTS ||

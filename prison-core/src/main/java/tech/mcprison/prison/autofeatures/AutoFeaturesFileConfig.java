@@ -130,7 +130,8 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 
 		    			"Use the following event priorities with the blockBreakEvents: " +
-		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, BLOCKEVENTS, MONITOR" ),
+		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, BLOCKEVENTS, MONITOR, " +
+		    			"ACESS, ACCESSBLOCKEVENTS, ACCESSMONITOR"),
 		    	
 		    	blockBreakEvents__ReadMe2(blockBreakEvents, 
 		    			"MONITOR: Processed even if event is canceled. Includes block counts, "
@@ -147,13 +148,6 @@ public class AutoFeaturesFileConfig {
 		    			+ "ACCESSMONITOR combines two priorities: ACCESS and MONITOR." ),
 		    	
 		    	
-		    	eventPriorityACCESSFailureTPToCurrentMine(blockBreakEvents, true ),
-		    	
-		    	blockBreakEvents__ReadMe4(blockBreakEvents, 
-		    			"ACCESS failure: if 'TPToCurrentMine' is enabled, then a failure with the "
-		    			+ "ACCESS priority will TP the player back to the mine that is linked to "
-		    			+ "their current rank using '/mines tp' with no mine specified." ),
-		    	
 		    	
 	    	general(options),
 	    	
@@ -166,6 +160,20 @@ public class AutoFeaturesFileConfig {
 		    	isCalculateXPEnabled(general, true),
 		    	givePlayerXPAsOrbDrops(general, false),
 		    	
+		    	ifBlockIsAlreadyCountedThenCancelEvent(general, true),
+		    	
+		    	processMonitorEventsOnlyIfPrimaryBlockIsAIR(general, true),
+		    	
+		    	
+		    	isMinecraftStatsReportingEnabled(general, true),
+		    	
+		    	
+		    	eventPriorityACCESSFailureTPToCurrentMine(general, true ),
+		    	
+		    	general__ReadMe1(general, 
+		    			"ACCESS failure: if 'TPToCurrentMine' is enabled, then a failure with the "
+		    					+ "ACCESS priority will TP the player back to the mine that is linked to "
+		    					+ "their current rank using '/mines tp' with no mine specified." ),
 		    	
 		    	
 		    inventory(options),
@@ -264,8 +272,11 @@ public class AutoFeaturesFileConfig {
     		fortuneFeature(options),
     			
 	    		isCalculateFortuneEnabled(fortuneFeature, true),
+
 	    		
+	    		fortuneMultiplierGlobal(fortuneFeature, 1.0 ),
 	    		fortuneMultiplierMax(fortuneFeature, 0 ),
+	    		fortuneBukkitDropsMultiplier(fortuneFeature, 1.0 ),
 
 	    		
 	    		isExtendBukkitFortuneCalculationsEnabled(fortuneFeature, true),

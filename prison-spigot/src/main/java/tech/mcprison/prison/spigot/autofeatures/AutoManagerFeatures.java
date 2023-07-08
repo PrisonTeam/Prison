@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -106,10 +105,8 @@ public abstract class AutoManagerFeatures
     	boolean results = false;
     	
     	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-    	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
-    	//       converted to just ACCESS at this point, and the other part will run under either
-    	//       BLOCKEVENTS or MONITOR.
-    	if ( pmEvent.getBbPriority() == BlockBreakPriority.ACCESS && pmEvent.getMine() != null && 
+    	//       with a cancel on the event.
+    	if ( pmEvent.getBbPriority().isAccess() && pmEvent.getMine() != null && 
     			!pmEvent.getMine().hasMiningAccess( pmEvent.getSpigotPlayer() )) {
     		
     		String message = String.format( "(&cACCESS fail: player %s does not have access to "
@@ -278,10 +275,10 @@ public abstract class AutoManagerFeatures
 					if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
 						cancelBy = EventListenerCancelBy.event;
 					}
-					else {
-						
-						pmEvent.getDebugInfo().append( "(event not canceled) " );
-					}
+//					else {
+//						
+//						pmEvent.getDebugInfo().append( "(event not canceled) " );
+//					}
 					
 					finalizeBreakTheBlocks( pmEvent );
 					
@@ -362,15 +359,15 @@ public abstract class AutoManagerFeatures
 		return results;
 	}
 	
-	protected short getFortune(SpigotItemStack itemInHand){
-		short results = (short) 0;
+	protected short getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
+		short fortLevel = (short) 0;
 		
 		try {
 			if ( itemInHand != null && 
 					itemInHand.getBukkitStack() != null && 
 					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
 					itemInHand.getBukkitStack().getEnchantments() != null ) {
-				results = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+				fortLevel = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 			}
 		}
 		catch ( NullPointerException e ) {
@@ -378,10 +375,27 @@ public abstract class AutoManagerFeatures
 			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
 		}
 		
+		short results = (short) fortLevel;
+//		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+		DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+		
 		int maxFortuneLevel = getInteger( AutoFeatures.fortuneMultiplierMax );
-		if ( maxFortuneLevel > 0 && results > maxFortuneLevel ) {
+		String maxFort = "";
+		if ( maxFortuneLevel > 0 && fortLevel > maxFortuneLevel ) {
 			results = (short) maxFortuneLevel;
+			maxFort = String.format(" max=%s result=%s", 
+					iFmt.format( maxFortuneLevel ),
+					iFmt.format( results ));
 		}
+		
+//		double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+//		results *= fortuneMultiplierGlobal;
+		
+		String fortInfo = String.format( "(getToolFort: fort=%s%s) ",
+				iFmt.format( fortLevel ), 
+				maxFort );
+		
+		debugInfo.append( fortInfo );
 		
 		return results;
 	}
@@ -504,7 +518,7 @@ public abstract class AutoManagerFeatures
 				.append( lorePickup ? "lore " : "" )
 				.append( permPickup ? "perm " : "" )
 				.append( configPickup ? "config " : "" )
-				.append( limit2minesPickup ? "limit2mines" : "noLimit" )
+				.append( limit2minesPickup ? "mines" : "noLimit" )
 				.append( "] ")
 				
 				.append( " Smelt [")
@@ -512,7 +526,7 @@ public abstract class AutoManagerFeatures
 				.append( loreSmelt ? "lore " : "" )
 				.append( permSmelt ? "perm " : "" )
 				.append( configSmelt ? "config " : "" )
-				.append( limit2minesSmelt ? "limit2mines" : "noLimit" )
+				.append( limit2minesSmelt ? "mines" : "noLimit" )
 				.append( "] ")
 				
 				.append( " Block [")
@@ -520,7 +534,7 @@ public abstract class AutoManagerFeatures
 				.append( loreBlock ? "lore " : "" )
 				.append( permBlock ? "perm " : "" )
 				.append( configBlock ? "config " : "" )
-				.append( limit2minesBlock ? "limit2mines" : "noLimit" )
+				.append( limit2minesBlock ? "mines" : "noLimit" )
 				.append( "] ");
 				
 			}
@@ -702,6 +716,10 @@ public abstract class AutoManagerFeatures
 		Player player = pmEvent.getPlayer();
 		SpigotItemStack itemInHand = pmEvent.getItemInHand();
 //		SpigotBlock block = pmEvent.getSpigotBlock();
+		
+		// Calculate silkTouch drops before processing drops:
+		calculateSilkTouch( pmEvent );
+		
 		List<SpigotItemStack> drops = pmEvent.getBukkitDrops();
 				
 		// The following may not be the correct drops for all versions of spigot,
@@ -718,26 +736,57 @@ public abstract class AutoManagerFeatures
 		
 		if (drops != null && drops.size() > 0 ) {
 			
-			debugInfo.append( "[autoPickupDrops]" );
+			DecimalFormat drFmt = Prison.get().getDecimalFormat("#,##0.0000");
+			double bukkitDropsMultiplier =  
+							isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ?
+									getDouble( AutoFeatures.fortuneBukkitDropsMultiplier ) :
+									1.0d;			
+			StringBuilder sb = new StringBuilder();
+			for (SpigotItemStack sItemStack : drops) {
+				if ( sb.length() > 0 ) {
+					sb.append( "," );
+				}
+				int amtBukkit = sItemStack.getAmount();
+				int amt = (int) (amtBukkit * bukkitDropsMultiplier);
+				if ( amt < 1 ) {
+					amt = 1;
+				}
+				sb.append( sItemStack.getName() ).append( ":" )
+					.append( amt );
+				if ( amt != amtBukkit ) {
+					sItemStack.setAmount( amt );
+					sb.append( "(").append( amtBukkit ).append( ")" );
+				}
+			}
+			if ( bukkitDropsMultiplier != 1.0d ) {
+				sb.insert( 0, ": " );
+				sb.insert( 0, drFmt.format( bukkitDropsMultiplier) );
+				sb.insert( 0, "bukkitDropMult=" );
+			}
+			
+			debugInfo.append( "[autoPickupDrops:: " ).append( sb ).append( "] ");
+			
+			
+			
 			
 			// Need better drop calculation that is not using the getDrops function.
 			
-			calculateSilkTouch( itemInHand, drops );
+//			calculateSilkTouch( pmEvent, itemInHand, drops );
 			
 			// Adds in additional drop items: Add Flint with gravel drops:
-			calculateDropAdditions( itemInHand, drops );
+			calculateDropAdditions( itemInHand, drops, pmEvent.getDebugInfo() );
 			
 			
 			// Add fortune to the items in the inventory
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
-				short fortuneLevel = getFortune(itemInHand);
+				short fortuneLevel = getFortune(itemInHand, debugInfo );
 
-				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
+//				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
 				
 				for ( SpigotItemStack itemStack : drops ) {
 					
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
-					calculateFortune( itemStack, fortuneLevel );
+					calculateFortune( itemStack, fortuneLevel, pmEvent.getDebugInfo() );
 				}
 			}
 			
@@ -763,13 +812,13 @@ public abstract class AutoManagerFeatures
 			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
 			
 			// PlayerCache log block breaks:
-			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
-			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
-			{
-				
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
-						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
-			}
+//			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
+//			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
+//			{
+//				
+//				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
+//						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
+//			}
 			
 			
 			DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
@@ -927,20 +976,52 @@ public abstract class AutoManagerFeatures
 //			block.clearDrops();
 //		}
 		
+		calculateSilkTouch( pmEvent );
+
 		List<SpigotItemStack> drops = pmEvent.getBukkitDrops();
 		
 		
 		if (drops != null && drops.size() > 0 ) {
 			
-			pmEvent.getDebugInfo().append( "[normalDrops]" );
+			DecimalFormat drFmt = Prison.get().getDecimalFormat("#,##0.0000");
+			double bukkitDropsMultiplier =  
+							isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ?
+									getDouble( AutoFeatures.fortuneBukkitDropsMultiplier ) :
+									1.0d;
+			
+			StringBuilder sb = new StringBuilder();
+			for (SpigotItemStack sItemStack : drops) {
+				if ( sb.length() > 0 ) {
+					sb.append( "," );
+				}
+				int amtBukkit = sItemStack.getAmount();
+				int amt = (int) (amtBukkit * bukkitDropsMultiplier);
+				if ( amt < 1 ) {
+					amt = 1;
+				}
+				sb.append( sItemStack.getName() ).append( ":" )
+					.append( amt );
+				if ( amt != amtBukkit ) {
+					sItemStack.setAmount( amt );
+					sb.append( "(").append( amtBukkit ).append( ")" );
+				}
+			}
+			if ( bukkitDropsMultiplier != 1.0d ) {
+				sb.insert( 0, ": " );
+				sb.insert( 0, drFmt.format( bukkitDropsMultiplier) );
+				sb.insert( 0, "bukkitDropMult=" );
+			}
+			
+			pmEvent.getDebugInfo().append( "[normalDrops:: " ).append( sb ).append( "] ");
+			
 
 			// Need better drop calculation that is not using the getDrops function.
-			short fortuneLevel = getFortune( pmEvent.getItemInHand() );
+			short fortuneLevel = getFortune( pmEvent.getItemInHand(), pmEvent.getDebugInfo() );
 
-			calculateSilkTouch( pmEvent.getItemInHand(), drops );
+//			calculateSilkTouch( pmEvent.getItemInHand(), drops );
 			
 			// Adds in additional drop items: Add Flint with gravel drops:
-			calculateDropAdditions( pmEvent.getItemInHand(), drops );
+			calculateDropAdditions( pmEvent.getItemInHand(), drops, pmEvent.getDebugInfo() );
 
 			
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
@@ -949,7 +1030,7 @@ public abstract class AutoManagerFeatures
 				for ( SpigotItemStack itemStack : drops ) {
 					
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
-					calculateFortune( itemStack, fortuneLevel );
+					calculateFortune( itemStack, fortuneLevel, pmEvent.getDebugInfo() );
 				}
 			}
 			
@@ -970,16 +1051,16 @@ public abstract class AutoManagerFeatures
 			}
 			
 			
-			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
+//			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
 			
-			// PlayerCache log block breaks:
-			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
-			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
-			{
-				
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
-						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
-			}
+//			// PlayerCache log block breaks:
+//			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
+//			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
+//			{
+//				
+//				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
+//						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
+//			}
 			
 			
 			
@@ -991,7 +1072,7 @@ public abstract class AutoManagerFeatures
 				count += itemStack.getAmount();
 				
 				// Since this is not auto pickup, then only autosell if set in the pmEvent:
-				if ( pmEvent.isForceAutoSell() ) {
+				if ( pmEvent.isForceAutoSell() && SellAllUtil.get() != null ) {
 					
 					Player player = pmEvent.getPlayer();
 
@@ -1014,10 +1095,15 @@ public abstract class AutoManagerFeatures
 						// Just get the calculated value for the drops... do not sell:
 						Player player = pmEvent.getPlayer();
 					
-						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
-						autosellTotal += amount;
+						pmEvent.getDebugInfo().append( "(dropping: " + itemStack.getName() + " qty: " + itemStack.getAmount() );
 						
-						pmEvent.getDebugInfo().append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						if ( SellAllUtil.get() != null ) {
+							
+							double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+							autosellTotal += amount;
+							pmEvent.getDebugInfo().append( " value: " + amount );
+						}
+						pmEvent.getDebugInfo().append( ") ");
 					}
 					
 					dropAtBlock( itemStack, pmEvent.getSpigotBlock() );
@@ -1259,7 +1345,7 @@ public abstract class AutoManagerFeatures
 						final long nanoStart = System.nanoTime();
 						
 						// bypass delay (cooldown), no sound
-						SellAllUtil.get().sellAllSell(player, false, !saNote, saNote, false, false, false, amounts );
+						sellAllUtil.sellAllSell(player, false, !saNote, saNote, false, false, false, amounts );
 						final long nanoStop = System.nanoTime();
 						long nanoTime = nanoStop - nanoStart;
 						
@@ -2296,12 +2382,36 @@ public abstract class AutoManagerFeatures
 	 * @param blocks
 	 * @param fortuneLevel
 	 */
-	protected void calculateFortune(SpigotItemStack blocks, int fortuneLevel) {
+	protected void calculateFortune(SpigotItemStack blocks, int fortuneLevelOriginal, StringBuilder debugInfo ) {
 
 		
-		if (fortuneLevel > 0) {
+		if (fortuneLevelOriginal > 0) {
 			
-			int count = blocks.getAmount();
+			StringBuilder debugSb = new StringBuilder();
+			
+			
+			DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+			DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+			
+			int blockCount = blocks.getAmount();
+			
+			// Apply max fortune level if setup:
+			int fortuneLevel = fortuneLevelOriginal;
+			
+			double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+			
+			// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
+			// A zero value for fortuneMultiplierMax indicates no max should be used.
+			int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
+			String maxFort = "";
+			if ( fortuneMultiplierMax != 0d && fortuneLevel > fortuneMultiplierMax ) {
+				fortuneLevel = fortuneMultiplierMax;
+				maxFort = String.format("max=%s ", iFmt.format( fortuneMultiplierMax ));
+			}
+			
+			
+			int count = blockCount;
+			int multiplier = 1;
 			
 			if ( isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) ) {
 				
@@ -2317,12 +2427,21 @@ public abstract class AutoManagerFeatures
 					// The count has the final value so set it as the amount:
 					blocks.setAmount( count );
 				}
-				return;
+				
+				String msg = String.format( 
+						"(calcExtdBukkitFortune: oDrops=%s mult= %sglbMult=%s drops=%s %s) ", 
+						iFmt.format( blockCount ),
+//						iFmt.format( multiplier ),
+						maxFort,
+						dFmt.format( fortuneMultiplierGlobal ),
+						iFmt.format( count ),
+						debugSb
+					);
+				debugInfo.append( msg );
 			}
 			
-			if ( isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ) ) {
+			else if ( isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ) ) {
 
-				int multiplier = 1;
 				
 				// Due to variations with gold and wood PickAxe need to use a dynamic
 				// Material name selection which will fit for the version of MC that is
@@ -2348,6 +2467,8 @@ public abstract class AutoManagerFeatures
 						xMat == XMaterial.POTATO ||
 						xMat == XMaterial.GRASS ||
 						xMat == XMaterial.WHEAT ) {
+
+					
 					multiplier = getRandom().nextInt( fortuneLevel );
 					
 					// limits slightly greater than standard:
@@ -2369,15 +2490,18 @@ public abstract class AutoManagerFeatures
 					}
 					
 					
-					// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
-					// A zero value for fortuneMultiplierMax indicates no max should be used.
-					int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
-					if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
-						multiplier = fortuneMultiplierMax;
-					}
+//					// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
+//					// A zero value for fortuneMultiplierMax indicates no max should be used.
+//					int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
+//					if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
+//						multiplier = fortuneMultiplierMax;
+//					}
 					
-					// add the multiplier to the count:
-					count += multiplier;
+					
+					
+//					// add the multiplier to the count:
+//					count *= (multiplier * fortuneMultiplierGlobal);
+					
 
 				}
 				
@@ -2434,17 +2558,41 @@ public abstract class AutoManagerFeatures
 						xMat == XMaterial.SNOW_BLOCK
 						) {
 					
-					multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
 					
-					// multiply the multiplier:
-					count *= multiplier;
+					multiplier = calculateFortuneMultiplier( fortuneLevel, debugSb );
 					
+//					// multiply the multiplier:
+//					count *= multiplier;
+					
+//					// add the multiplier to the count:
+//					count *= (multiplier * fortuneMultiplierGlobal);
+//					
 				}
 				
+				// add the multiplier to the count:
+				count *= (multiplier * fortuneMultiplierGlobal);
+				
+				// Ensure that there are no ZERO drops:
+				if ( count <= 1 ) {
+					count = 1;
+				}
+				
+				// The count has the final value so set it as the amount:
+				blocks.setAmount( count );
+				
+				
+				String msg = String.format( 
+						"(calcAltFortune: blks=%s mult=%s %sglbMult=%s drops=%s %s) ", 
+						iFmt.format( blockCount ),
+						iFmt.format( multiplier ),
+						maxFort,
+						dFmt.format( fortuneMultiplierGlobal ),
+						iFmt.format( count ),
+						debugSb
+						);
+				debugInfo.append( msg );
 			}
 
-			// The count has the final value so set it as the amount:
-			blocks.setAmount( count );
 		}
 
 	}
@@ -2514,19 +2662,25 @@ public abstract class AutoManagerFeatures
 					adjFortuneMultiplierCapped = fortuneMultiplierMax;
 				}
 				
+				double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
 				
-				bukkitExtendedFortuneBlockCount = (int) (blocks.getAmount() * adjFortuneMultiplierCapped);
+				bukkitExtendedFortuneBlockCount = (int) (blocks.getAmount() * 
+													adjFortuneMultiplierCapped *
+													fortuneMultiplierGlobal );
 				
 					
 				if ( Output.get().isDebug( DebugTarget.blockBreakFortune ) ) {
 					
 					String message = "### calculateBukkitExtendedFortuneBlockCount ### " +
 							"fortuneLevel: %d  defaultBlocks: %d  fortMult: %f  " +
+							"fortMultGlobal: %f  " +
 							"rndRngLow: %f  rndRngHigh: %f  rndFactor: %f  adjFortMult: %f  " +
 							"maxMultiplier: %f   extendedFortuneBlockCount= %d";
 					message = String.format(  message, 
 							fortuneLevel, blocks.getAmount(),
-							fortuneMultiplier, randomFactorRangeLow, randomFactorRangeHigh, 
+							fortuneMultiplier, 
+							fortuneMultiplierGlobal,
+							randomFactorRangeLow, randomFactorRangeHigh, 
 							randomFactor, adjustedFortuneMultiplier, 
 							adjFortuneMultiplierCapped, bukkitExtendedFortuneBlockCount );
 					
@@ -2606,13 +2760,26 @@ public abstract class AutoManagerFeatures
 	 *   </li>
 	 * </ul
 	 * 
+	 * 
+	 * <p>The results of this function will be the number of drops with an input value of one.
+	 * So without fortune, it's is assumed the number of drops for breaking one block will always
+	 * be one.  So the results of this function are the number of drops that should be used instead.
+	 * But since multiple blocks can be broken and processed with this function, the results of this
+	 * function should be multiplied the quantity of drops that are calculated without fortune.
+	 * For example, if the results is 3, that means that 3 items should be dropped, but if there were
+	 * 10 input blocks from an explosion event, then it needs to be multiplied by 3 for a total drop 
+	 * value of 30.
+	 * </p>
+	 * 
 	 * @param fortuneLevel
 	 * @param multiplier
-	 * @return
+	 * @return Drop quantity to apply for 1 block breakage.  
 	 */
-	private int calculateFortuneMultiplier(int fortuneLevel, int multiplier) {
+	private int calculateFortuneMultiplier(int fortuneLevel, StringBuilder debugInfo) {
 		int rnd = getRandom().nextInt( 100 );
-
+		
+		int multiplier = 1;
+		
 		switch (fortuneLevel) {
 			case 0:
 				break;
@@ -2704,6 +2871,8 @@ public abstract class AutoManagerFeatures
 				// Use a random number that is a double:
 				double rndD = getRandom().nextDouble() * 100d;
 				
+				DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+
 				if ( rndD <= threshold ) {
 					// Passed the threshold, so calculate the multiplier.
 					
@@ -2717,40 +2886,70 @@ public abstract class AutoManagerFeatures
 					// The multiplier is the floor of units. Do not round up.
 					multiplier = 1 + (int) Math.floor( units );
 					
+					
+					debugInfo.append( " [rnd: " + dFmt.format( rndD ) )
+								.append( " / threshold: " + threshold )
+								.append( " / fort: " + fortuneLevel )
+								.append( " =: " + multiplier )
+								.append( "] " );
 				}
-				
+				else {
+					
+					debugInfo.append( " [multNotApplied rnd: " + dFmt.format( rndD ) )
+								.append( " threshold: " + threshold )
+								.append( " fort: " + fortuneLevel )
+								.append( " mult: " + multiplier )
+								.append( "] " );
+				}
+
 		}
 		
 		
-		// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
-		// A zero value for fortuneMultiplierMax indicates no max should be used.
-		int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
-		if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
-			multiplier = fortuneMultiplierMax;
-		}
-		
-		
-		return multiplier;
+		return (int) multiplier;
 	}
 
 	/**
+	 * <p>If silk touch is enabled, then use block-for-block block mined is the blocks dropped.
+	 * No provision is provided for the block types.
+	 * </p>
+	 * 
 	 * <p>This function has yet to be implemented, but it should implement behavior if
 	 * silk touch is enabled for the tool.
 	 * </p>
 	 *
-	 * @param itemInHand
-	 * @param drops
+	 *	https://minecraft.fandom.com/wiki/Silk_Touch
+	 *
+	 * @param pmEvent
 	 */
-	@SuppressWarnings( "unused" )
-	private void calculateSilkTouch(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
+	private void calculateSilkTouch( PrisonMinesBlockBreakEvent pmEvent ) {
+		
+		SpigotItemStack itemInHand = pmEvent.getItemInHand();
 		
 		if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) && hasSilkTouch( itemInHand )) {
+
+			List<SpigotItemStack> stacks = new ArrayList<>();
 			
-			for (SpigotItemStack itemStack : drops) {
+			SpigotBlock sBlock = pmEvent.getSpigotBlock();
+			
+			String lore = null;
+			stacks.add( new SpigotItemStack( 1, sBlock, lore) );
+			
+			for ( SpigotBlock spBlock : pmEvent.getExplodedBlocks() ) {
 				
-				// If stack is gravel, then there is a 10% chance of dropping flint.
-				
+				stacks.add( new SpigotItemStack( 1, spBlock, lore) );
 			}
+			
+			// Merge all of the single quantity item stacks together, then 
+			// set as the new drops:
+			pmEvent.setBukkitDrops( mergeDrops( stacks ) );
+			
+			int count = 0;
+			for ( SpigotItemStack sItemStack : pmEvent.getBukkitDrops() ) {
+				count += sItemStack.getAmount();
+			}
+			String msg = String.format( "(SilkDrops: %d) " , count );
+			
+			pmEvent.getDebugInfo().append( msg );
 		}
 	}
 
@@ -2776,7 +2975,8 @@ public abstract class AutoManagerFeatures
 	 * @param itemInHand
 	 * @param drops
 	 */
-	private void calculateDropAdditions(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
+	private void calculateDropAdditions(SpigotItemStack itemInHand, List<SpigotItemStack> drops,
+						StringBuilder debugInfo ) {
 		
 		if ( isBoolean( AutoFeatures.isCalculateDropAdditionsEnabled ) ) {
 			
@@ -2787,7 +2987,7 @@ public abstract class AutoManagerFeatures
 				// If gravel and has the 10% chance whereas rnd is zero, which is 1 out of 10.
 				// But if has silk touch, then never drop flint.
 				adds.addAll( 
-						calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops ) );
+						calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops, debugInfo ) );
 			}
 			
 			if ( adds.size() > 0 ) {
@@ -2814,19 +3014,22 @@ public abstract class AutoManagerFeatures
 	 */
 	private List<SpigotItemStack> calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, 
 											SpigotItemStack itemStack,
-												   List<SpigotItemStack> drops ) {
+												   List<SpigotItemStack> drops, 
+												   StringBuilder debugInfo  ) {
 		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
 		
 		PrisonBlock gravel = SpigotUtil.getPrisonBlock( XMaterial.GRAVEL );
 		
 		if (itemStack.getMaterial().compareTo( gravel ) == 0 && !hasSilkTouch(itemInHand)) {
 
+			StringBuilder debugSb = new StringBuilder();
+			
 			int quantity = 1;
 			int threshold = 10;
 
 			// If fortune is enabled on the tool, then increase drop odds by:
 			//  1 = 14%, 2 = 25%, 3+ = 100%
-			int fortune = getFortune(itemInHand);
+			int fortune = getFortune(itemInHand, debugSb);
 			switch (fortune) {
 				case 0:
 					// No additional threshold when fortune is zero:
@@ -2860,7 +3063,14 @@ public abstract class AutoManagerFeatures
 				PrisonBlock flint = SpigotUtil.getPrisonBlock( XMaterial.FLINT );
 				SpigotItemStack flintStack = new SpigotItemStack( quantity, flint );
 				adds.add(flintStack);
+
+				debugInfo.append( "(add flint drop: qty=" )
+						.append( quantity )
+						.append( " [)" )
+						.append( debugSb )
+						.append( "])" );
 			}
+			
 		}
 		return adds;
 	}

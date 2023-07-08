@@ -156,9 +156,12 @@ public abstract class OnBlockBreakEventCore
 	
 	
 
-	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, 
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
 	
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -178,20 +181,12 @@ public abstract class OnBlockBreakEventCore
 	 * @param block
 	 * @return
 	 */
-	protected MinesEventResults ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, 
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
 		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
-		
-		if ( eventResults.isCancelEvent() ) {
-			event.setCancelled( eventResults.isCancelEvent() );
-		}
-//		return eventResults.isIgnoreEvent();
-		return eventResults;
-	}
-	
-	protected MinesEventResults ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, Block block ) {
-		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -200,9 +195,26 @@ public abstract class OnBlockBreakEventCore
 		return eventResults;
 	}
 	
-	protected MinesEventResults ignoreMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, 
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
 		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+//		return eventResults.isIgnoreEvent();
+		return eventResults;
+	}
+	
+	protected MinesEventResults ignoreMinesBlockBreakEvent( PEExplosionEvent event, Player player, 
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
+		
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -347,9 +359,9 @@ public abstract class OnBlockBreakEventCore
 //		pmEvent.setMine( mine );
 		Mine mine = pmEvent.getMine();
 		
-		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
+//		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
 		
-		debugInfo.append( sBlockHit.getLocation().toWorldCoordinates() ).append( " " );
+//		debugInfo.append( sBlockHit.getLocation().toWorldCoordinates() ).append( " " );
 		
 		
 		SpigotItemStack itemInHand = pmEvent.getItemInHand();
@@ -373,6 +385,7 @@ public abstract class OnBlockBreakEventCore
 			int unbreakable = 0;
 			int outsideOfMine = 0;
 			int alreadyMined = 0;
+			int monitorNotAir = 0;
 			int noTargetBlock = 0;
 			int blockTypeNotExpected = 0;
 			
@@ -560,6 +573,11 @@ public abstract class OnBlockBreakEventCore
 						else if ( sBlockMined.isEmpty() ) {
 							alreadyMined++;
 						}
+						else if ( pmEvent.getBbPriority().isMonitor() && sBlockMined.isEmpty() &&
+							isBoolean( AutoFeatures.processMonitorEventsOnlyIfPrimaryBlockIsAIR ) ) {
+							
+							monitorNotAir++;
+						}
 						else {
 							
 							// Get the mine's targetBlock:
@@ -670,6 +688,11 @@ public abstract class OnBlockBreakEventCore
 				debugInfo.append( "BLOCKS_ALREADY_MINED (" + alreadyMined + 
 						" ) " );
 			}
+			if ( monitorNotAir > 0 ) {
+				
+				debugInfo.append( "MONITOR_BLOCKS_NOT_AIR (" + monitorNotAir + 
+						" ) " );
+			}
 			if ( noTargetBlock > 0 ) {
 				
 				debugInfo.append( "NO_TARGET_BLOCKS (" + noTargetBlock + 
@@ -745,8 +768,13 @@ public abstract class OnBlockBreakEventCore
 			// The player does not have permission to access this mine, so do not process 
 			// 
 			
+			String accessType = mine.isMineAccessByRank() ? "Rank" : 
+				mine.isAccessPermissionEnabled() ? "Perms" : "Other?";
+			
 			pmEvent.setCancelOriginalEvent( true );
-			debugInfo.append( "ACCESS_DENIED (event canceled - Access by rank/perm/perms) " );
+			debugInfo.append( "ACCESS_DENIED (event canceled - Access by " )
+						.append( accessType )
+						.append( ") " );
 			results = false;
 		}
 		
@@ -828,13 +856,14 @@ public abstract class OnBlockBreakEventCore
 		// Performs the MONITOR block counts, zero-block, and mine sweeper:
 		else if ( results && pmEvent.getBbPriority().isMonitor() && mine != null ) {
 			
+			boolean isBlockEvents = pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS || 
+					 pmEvent.getBbPriority() == BlockBreakPriority.ACCESSBLOCKEVENTS;
 			
 			// Process BLOCKEVENTS and ACCESSBLOCKEVENTs here... 
 			// Include autosell on full inventory if isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority 
 			// is enabled. 
 			// Includes running block events, mine sweeper, and zero-block (reset-threshold) reset.
-			if ( pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS || 
-					 pmEvent.getBbPriority() == BlockBreakPriority.ACCESSBLOCKEVENTS ) {
+			if ( isBlockEvents ) {
 
 				debugInfo.append( "(BLOCKEVENTS processing) " );
 				
@@ -868,7 +897,10 @@ public abstract class OnBlockBreakEventCore
 			}
 			
 			countBlocksMined( pmEvent, sBlockHit );
-			processPrisonBlockEventCommands( pmEvent, sBlockHit );
+				
+			if ( isBlockEvents ) {
+				processPrisonBlockEventCommands( pmEvent, sBlockHit );
+			}
 			
 			debugInfo.append( "(MONITOR - singular) " );
 			
@@ -877,7 +909,10 @@ public abstract class OnBlockBreakEventCore
 				for ( SpigotBlock sBlock : pmEvent.getExplodedBlocks() ) {
     				
 					countBlocksMined( pmEvent, sBlock );
-					processPrisonBlockEventCommands( pmEvent, sBlock );
+						
+					if ( isBlockEvents ) {
+						processPrisonBlockEventCommands( pmEvent, sBlock );
+					}
     			}
 
     			debugInfo.append( "(MONITOR - " + 

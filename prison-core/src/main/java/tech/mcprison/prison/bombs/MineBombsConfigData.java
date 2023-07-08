@@ -18,7 +18,7 @@ public class MineBombsConfigData
 	 */
 	public static final int MINE_BOMB_DATA_FORMAT_VERSION = 1;
 	
-	private int dataFormatVersion = 0;
+	private int dataFormatVersion = 1;
 	
 	private Map<String, MineBombData> bombs;
 	

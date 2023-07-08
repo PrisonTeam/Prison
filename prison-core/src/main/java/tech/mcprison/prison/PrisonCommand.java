@@ -1032,6 +1032,8 @@ public class PrisonCommand
     				afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
     		display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
     				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
+    		display.addText( "&b   options.general.fortuneMultiplierGlobal %s", 
+    				afw.getMessage( AutoFeatures.fortuneMultiplierGlobal ));
     		display.addText( "&b   options.general.fortuneMultiplierMax %s", 
     				afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
     		

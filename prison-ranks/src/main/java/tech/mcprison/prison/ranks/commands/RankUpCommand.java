@@ -64,10 +64,12 @@ public class RankUpCommand
      * /rankup command
      */
 	
-    @Command(identifier = "rankupMax", 
+    @Command( identifier = "rankupMax", 
     			description = "Ranks up to the max rank that the player can afford. If the player has the " +
     					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
-    					"on the default ladder.", 
+    					"on the default ladder. " +
+    					"By default, no player has access to this command. The following perms must be used."
+    					, 
     			altPermissions = {"ranks.rankupmax.default", "ranks.rankupmax.prestige", "ranks.rankupmax.[ladderName]"},
     			onlyPlayers = false) 
     public void rankUpMax(CommandSender sender,
@@ -145,9 +147,14 @@ public class RankUpCommand
     }
 
 
-	@Command(identifier = "rankup", description = "Ranks up to the next rank. All players have access to " +
+	@Command(identifier = "rankup", 
+			description = "Ranks up to the next rank. All players have access to " +
 			"the ability to rankup on the default ladder so no perms are required, but any other ladder " +
-			"requires the correct perms.", 
+			"requires the correct perms. " +
+			"All players much have at least the perm 'ranks.user' to use this command. To use this " +
+			"command with other ladders, the users must have the correct perms as listed with this " +
+			"command's help information. "
+			, 
 			permissions = "ranks.user", 
 			altPermissions = {"ranks.rankup.default", "ranks.rankup.prestiges", "ranks.rankup.[ladderName]"}, 
 			onlyPlayers = false) 
@@ -213,10 +220,15 @@ public class RankUpCommand
     }
 	
 
-	@Command(identifier = "prestige", description = "This will prestige the player. Prestiging is generally when "
+	@Command(identifier = "prestige", 
+			description = "This will prestige the player. Prestiging is generally when "
 			+ "the player's default rank is reset to the lowest rank, their money is rest to zero, and they "
 			+ "start the mining and the ranking up process all over again. As a trade off for their reset "
-			+ "of ranks, they get a new prestige rank with the costs of the default ranks being increased.", 
+			+ "of ranks, they get a new prestige rank with the costs of the default ranks being increased. "
+			+ "All players must have the perms 'ranks.user' plus the optional perm 'ranks.rankup.prestiges' "
+			+ "if the config.yml setting 'prestige.enable__ranks_rankup_prestiges__permission` is set to a "
+			+ "value of 'true' (defaults to 'false'). "
+			+ "Examples: '/prestige', '/presetige confirm', '/prestige <playerName> confirm'.", 
 			permissions = "ranks.user", 
 			altPermissions = {"ranks.rankup.prestiges"}, 
 			onlyPlayers = false) 
@@ -264,6 +276,9 @@ public class RankUpCommand
         
         String perms = "ranks.rankup.";
         String permsLadder = perms + LadderManager.LADDER_PRESTIGES;
+        boolean hasPermsLadder = sender.hasPermission(permsLadder);
+        boolean usePerms = Prison.get().getPlatform().getConfigBooleanFalse( "enable__ranks_rankup_prestiges__permission" );
+        boolean hasAcessToPrestige = usePerms && hasPermsLadder || !usePerms;
 
 		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
 				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
@@ -326,13 +341,16 @@ public class RankUpCommand
 			return;
 		}
 		
-		if ( isPrestigesEnabled &&  
-    			sender.hasPermission( permsLadder) 
-    			) {
+		if ( isPrestigesEnabled && hasAcessToPrestige ) {
+			
     		Output.get().logDebug( DebugTarget.rankup, 
-    				"Rankup: cmd '/prestige %s%s'  Passed perm check: %s", 
+    				"Rankup: cmd '/prestige %s%s'  Has Access to '/prestiges': %b   "
+    				+ "Has perms: %b  Perms: %s", 
     				(playerName.length() == 0 ? "" : " " + playerName ),
     				(confirm == null ? "" : " " + confirm ),
+
+    				hasAcessToPrestige,
+    				hasPermsLadder,
     				permsLadder );
         
         	
@@ -707,8 +725,13 @@ public class RankUpCommand
 	}
 
 
-	@Command(identifier = "ranks promote", description = "Promotes a player to the next rank.",
-    			permissions = "ranks.promote", onlyPlayers = false) 
+	@Command(identifier = "ranks promote", 
+			description = "Promotes a player to the next rank. This is an admin command. " +
+					"This command can be used from the console. There is an " +
+					"option to charge the player for the cost of the next rank, which if enabled, will " +
+					"then be same as if the player used the command '/rankup'.",
+    		permissions = "ranks.promote", 
+    		onlyPlayers = false) 
     public void promotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
         @Arg(name = "ladder", description = "The ladder to promote on.", def = "default") String ladder,
@@ -765,7 +788,14 @@ public class RankUpCommand
     }
 
 
-    @Command(identifier = "ranks demote", description = "Demotes a player to the next lower rank.", 
+    @Command(identifier = "ranks demote",
+    		description = "Demotes a player to the next lower rank. " +
+    				"This is an admin command. This command can be used from the console. " +
+    				"There is an option to refund the rankup cost to the player, of which the " +
+    				"player will get a refund and it will be as if they did not perform a " +
+    				"'/rankup' command.  Please be aware that if an admin uses '/ranks promote' on a " +
+    				"player, then '/ranks demote <player> refund_player' the player will still get " +
+    				"the refund although they did not pay for the rank.", 
     			permissions = "ranks.demote", onlyPlayers = false) 
     public void demotePlayer(CommandSender sender,
     	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
