@@ -16,7 +16,11 @@ These build logs represent the work that has been going on within prison.
 
 The following is a highlight of changes for the alpha.15 release since the alpha.14 release.
 
--Full support for 1.20.x including the heights and blocks.
+- Full support for 1.20.x including the heights and blocks.
+
+
+- Added support for Java 20.
+
 
 - MineBombs - Added a new field specifically for use with item names which supports color codes.
 
@@ -45,7 +49,7 @@ The following is a highlight of changes for the alpha.15 release since the alpha
 
 - Fixed how NBT-api is being shadowed and used to get it to work properly with Spigot 1.20.x.
 
-- Minor fixes and enchancements: blockEvents, autoFeatures and monitor priorities, GUI Player Mine config options, prevent GUI configs from loading twice, when mining now can control non-prison placed blocks to pass through to be handled by bukkit, fix autosell when disabled, hooked up support for minecraft stats to track block mining, prevent zero drops if calcs are less than 1, fix sellall trying to sell an invalid stack, fix prison utils potion effects when no player is provided, support for ExaltedEconomy, able to bypass adding new players on startup, updated Prison's jar reporter to identify Java versions 19, 20, and 21, clearified help on `/rankup` and `/presetige`, update of how topN is being processed, added topN stats which reports some of the core info.
+- Minor fixes and enhancements: blockEvents, autoFeatures and monitor priorities, GUI Player Mine config options, prevent GUI configs from loading twice, when mining now can control non-prison placed blocks to pass through to be handled by bukkit, fix autosell when disabled, hooked up support for minecraft stats to track block mining, prevent zero drops if calcs are less than 1, fix sellall trying to sell an invalid stack, fix prison utils potion effects when no player is provided, support for ExaltedEconomy, able to bypass adding new players on startup, updated Prison's jar reporter to identify Java versions 19, 20, and 21, clarified  help on `/rankup` and `/presetige`, update of how topN is being processed, added topN stats which reports some of the core info.
 
 
 
