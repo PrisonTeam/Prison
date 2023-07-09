@@ -29,8 +29,9 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 	    description = "Leave empty if you want to open your main backpack, add an ID if you've more than one.") String id){
 
         if (sender.hasPermission("prison.admin") || sender.isOp()){
-        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand("backpack help");
-            sender.dispatchCommand(registeredCmd);
+        	sender.dispatchCommand("backpack help");
+//        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand("backpack help");
+//            sender.dispatchCommand(registeredCmd);
             return;
         }
 

@@ -91,11 +91,13 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         if (sender.hasPermission("prison.admin")) {
-            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall help" );
-            sender.dispatchCommand(registeredCmd);
+        	sender.dispatchCommand("sellall help");
+//            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall help" );
+//            sender.dispatchCommand(registeredCmd);
         } else {
-            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-            sender.dispatchCommand(registeredCmd);
+        	sender.dispatchCommand("sellall sell");
+//            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+//            sender.dispatchCommand(registeredCmd);
         }
     }
 
@@ -834,8 +836,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled()) return;
 
         if (enable.equalsIgnoreCase("null")){
-            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall toolsTrigger help" );
-            sender.dispatchCommand(registeredCmd);
+        	sender.dispatchCommand("sellall toolsTrigger help");
+//            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall toolsTrigger help" );
+//            sender.dispatchCommand(registeredCmd);
             return;
         }
 

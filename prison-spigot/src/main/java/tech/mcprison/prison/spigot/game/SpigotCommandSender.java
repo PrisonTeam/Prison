@@ -61,8 +61,16 @@ public class SpigotCommandSender implements CommandSender {
         return bukkitSender.getName();
     }
 
+    /**
+     * <p>This function will dispatch a command and run it as command sender.
+     * But before it is ran, this function looks up within the Prison command handler
+     * to see if it's commands have been remapped to another command, and if it has,
+     * it then uses the mapped command.
+     * </p>
+     */
     @Override public void dispatchCommand(String command) {
-        Bukkit.getServer().dispatchCommand(bukkitSender, command);
+    	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( command );
+        Bukkit.getServer().dispatchCommand(bukkitSender, registeredCmd);
     }
 
     @Override public boolean doesSupportColors() {

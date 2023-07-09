@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-09
 
 
+* **Fixed an issue with prison commands being remapped, but other commands within prison were not using them.**
+This tries to find the remapped command for all commands by updating the SpigotCommandSender.dispatchCommand().
+
+
 * **Fixed an issue where the setting isAutoFeaturesEnabled was not being applied to the permissions which resulted in the perms always being enabled when OPd.**
 
 
