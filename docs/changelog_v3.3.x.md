@@ -14,8 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15 2023-07-07
+# 3.3.0-alpha.15 2023-07-09
 
+
+* **Fixed an issue where the setting isAutoFeaturesEnabled was not being applied to the permissions which resulted in the perms always being enabled when OPd.**
 
 
 * **2023-07-07 v3.3.0-alpha.15 Released**

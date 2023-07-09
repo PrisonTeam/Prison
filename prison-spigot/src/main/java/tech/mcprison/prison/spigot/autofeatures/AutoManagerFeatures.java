@@ -470,11 +470,12 @@ public abstract class AutoManagerFeatures
 		boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
 		boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
 		
-		boolean permPickup = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-		boolean permSmelt = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
-		boolean permBlock = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
-		
 		boolean isAutoFeaturesEnabled = isBoolean( AutoFeatures.isAutoFeaturesEnabled );
+		
+		boolean permPickup = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		boolean permSmelt = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
+		boolean permBlock = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
+		
 		
 		boolean configPickup = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoPickupEnabled );
 		boolean configSmelt = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoSmeltEnabled );
