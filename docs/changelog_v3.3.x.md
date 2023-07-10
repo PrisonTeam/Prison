@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-10
 
 
+* **Start to setup support for WorldEdit and WorldGuard.**
+
+
 * **Setup a way to pull a config's hash keys.**
 These would be used to dynamically get all settings within a hash.
 
