@@ -42,6 +42,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -1062,6 +1063,26 @@ public class SpigotPlatform
 		return results;
 	}
 
+	/**
+	 * <p>Given the path to a hash, this will return all of the keys within 
+	 * the hash at the root level.  It will not traverse deeper.
+	 * The list of keys can then be used to access all of the values.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public List<String> getConfigHashKeys( String hashPrefix ) {
+		List<String> keys = new ArrayList<>();
+		
+		ConfigurationSection configSection = 
+						SpigotPrison.getInstance().getConfig().getConfigurationSection( hashPrefix );
+		
+		if ( configSection != null ) {
+			keys.addAll( configSection.getKeys(false) );
+		}
+		
+		return keys;
+	}
 	
 	@Override
 	public boolean isWorldExcluded( String worldName ) {

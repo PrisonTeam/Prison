@@ -89,6 +89,13 @@ public class JsonFileIO
 		return UUIDString.substring( 0, 14 );
 	}
 	
+	
+	public String toString( Object obj ) {
+		String json = getGson().toJson( obj );
+				
+		return json;
+	}
+	
 	/**
 	 * This function will save a file as a JSON format.  It will first save it as a
 	 * temp file to make sure the data can be written to the file system, then once

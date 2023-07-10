@@ -299,6 +299,19 @@ public class TestPlatform implements Platform {
 		return new ArrayList<String>();
 	}
 
+	/**
+	 * <p>Given the path to a hash, this will return all of the keys within 
+	 * the hash at the root level.  It will not traverse deeper.
+	 * The list of keys can then be used to access all of the values.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public List<String> getConfigHashKeys(String hashPrefix) {
+		return new ArrayList<String>();
+	}
+
+	
 	@Override
 	public boolean isWorldExcluded( String worldName ) {
 		return false;

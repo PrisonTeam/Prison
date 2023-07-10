@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15 2023-07-09
+# 3.3.0-alpha.15 2023-07-10
+
+
+* **Setup a way to pull a config's hash keys.**
+These would be used to dynamically get all settings within a hash.
 
 
 * **Fixed an issue with prison commands being remapped, but other commands within prison were not using them.**
