@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -130,9 +132,11 @@ public class BackpacksListeners implements Listener {
         if (materialConf != null && inHandItem != null && inHandItem.getType() == materialConf.getType() && inHandItem.hasItemMeta() && inHandItem.getItemMeta().hasDisplayName()
                 && inHandItem.getItemMeta().getDisplayName().equalsIgnoreCase(SpigotPrison.format(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Item_Title")))) {
             if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
-                Bukkit.dispatchCommand(p, "gui backpackslist");
+                Bukkit.dispatchCommand(p, 
+                		Prison.get().getCommandHandler().findRegisteredCommand( "gui backpackslist" ));
             } else {
-                Bukkit.dispatchCommand(p, "gui backpack");
+                Bukkit.dispatchCommand(p, 
+                		Prison.get().getCommandHandler().findRegisteredCommand( "gui backpack" ));
             }
             e.setCancelled(true);
         }

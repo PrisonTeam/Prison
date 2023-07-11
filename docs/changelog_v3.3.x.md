@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-10
 
 
+* **Bug fix... this is a continuation of a prior issue of prison commands not being mapped to their assigned command name by bukkit when prison's command handler registers them.**
+This was an issue with another plugin that registered `/gui` before prison was able to, so then all of prison's gui commands were mapped to `/prison:gui`.  So where this was an issue was with `/prestige` trying to run the gui presetige confirmation which was trying to kick off a GuiPlus command as a result of this improper mis-match.
+Tested to confirm it is now functional.  Changed all occurrences that I could find that also needed to be mapped.
+
+
 * **Start to setup support for WorldEdit and WorldGuard.**
 
 

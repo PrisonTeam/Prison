@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -356,7 +357,8 @@ public class SpigotGUIMenuTools
     			
     			if ( command != null ) {
     				isPageAction = true;
-    				Bukkit.dispatchCommand(p, command);
+    				Bukkit.dispatchCommand(p, 
+    						Prison.get().getCommandHandler().findRegisteredCommand( command ));
     			}
     			
     		}
@@ -390,7 +392,8 @@ public class SpigotGUIMenuTools
     				
     				if ( isMenuToolsPage && command != null ) {
     					isPageAction = true;
-    					Bukkit.dispatchCommand(p, command);
+    					Bukkit.dispatchCommand(p, 
+    							Prison.get().getCommandHandler().findRegisteredCommand( command ));
     				}
     			}
     			

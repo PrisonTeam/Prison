@@ -116,7 +116,8 @@ public class PrisonSpigotPrestigeCommands
 //            }
 //            
 //            if ( PrisonRanks.getInstance().getLadderManager().getLadder("prestiges") == null ) {
-//                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
+//                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
+//    								Prison.get().getCommandHandler().findRegisteredCommand( "ranks ladder create prestiges" ));
 //            }
 //
 //            PrisonRanks rankPlugin;
@@ -166,7 +167,8 @@ public class PrisonSpigotPrestigeCommands
 //            	}
 //            	else {
 //            		// Bypassing prestige confirmations:
-//            		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rankup prestiges");
+//            		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), 
+//    						Prison.get().getCommandHandler().findRegisteredCommand( "rankup prestiges" ));
 //            	}
 //            }
 //        }
