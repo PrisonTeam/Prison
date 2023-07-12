@@ -121,4 +121,41 @@ public interface Block {
 	public void setBlockName( String blockName );
 	
 	
+	/**
+	 * <p>The sale price is the amount that is paid to the player when they
+	 * sell their items. A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public Double getSalePrice();
+	
+	/**
+	 * <p>The sale price is the amount that is paid to the player when they
+	 * sell their items. A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @param price
+	 */
+	public void setSalePrice( Double price );
+	
+	/**
+	 * <p>The purchase price is what player pays to purchase the items.
+	 *  A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public Double getPurchasePrice();
+	
+	/**
+	 * <p>The purchase price is what player pays to purchase the items.,
+	 *  A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @param price
+	 */
+	public void setPurchasePrice( Double price );
+	
+	
 }

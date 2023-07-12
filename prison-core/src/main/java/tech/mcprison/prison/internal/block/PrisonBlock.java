@@ -43,6 +43,10 @@ public class PrisonBlock
 	
 	private Location location = null;
 	
+	private Double salePrice = null;
+	private Double purchasePrice = null;
+	
+	
 	static {
 		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
 		GLASS = new PrisonBlock( InternalBlockTypes.GLASS.name(), true );
@@ -284,6 +288,52 @@ public class PrisonBlock
 	public void setLocation( Location location ) {
 		this.location = location;
 	}
+	
+	
+	/**
+	 * <p>The sale price is the amount that is paid to the player when they
+	 * sell their items. A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public Double getSalePrice() {
+		return salePrice;
+	}
+	
+	/**
+	 * <p>The sale price is the amount that is paid to the player when they
+	 * sell their items. A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @param price
+	 */
+	public void setSalePrice( Double price ) {
+		this.salePrice = price;
+	}
+	
+	/**
+	 * <p>The purchase price is what player pays to purchase the items.
+	 *  A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public Double getPurchasePrice() {
+		return purchasePrice;
+	}
+	
+	/**
+	 * <p>The purchase price is what player pays to purchase the items.,
+	 *  A null indicates that no price was set.
+	 * </p>
+	 * 
+	 * @param price
+	 */
+	public void setPurchasePrice( Double price ) {
+		this.purchasePrice = price;
+	}
+	
 	
 	public PrisonBlock clone() {
 		return new PrisonBlock( this );

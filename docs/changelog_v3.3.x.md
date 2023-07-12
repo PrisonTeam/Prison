@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15 2023-07-11
+# 3.3.0-alpha.15 2023-07-12
+
+
+* **Add new salePrice and purchasePrice to the prison Block.**
 
 
 * **Sellall : remove the disabled worlds setting in the configs since it is obsolete and never used.**
