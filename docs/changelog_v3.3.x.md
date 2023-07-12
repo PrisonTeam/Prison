@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15 2023-07-10
+# 3.3.0-alpha.15 2023-07-11
+
+
+* **Sellall : remove the disabled worlds setting in the configs since it is obsolete and never used.**
+The correct way to disable prison in specific worlds is by using the config.yml settings for prisonCommandHandler.exclude-worlds.
 
 
 * **Bug fix... this is a continuation of a prior issue of prison commands not being mapped to their assigned command name by bukkit when prison's command handler registers them.**

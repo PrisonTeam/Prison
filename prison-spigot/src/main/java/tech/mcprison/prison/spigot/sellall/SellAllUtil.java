@@ -69,7 +69,7 @@ public class SellAllUtil
     private ArrayList<XMaterial> sellAllItemTriggers;
     
     private ArrayList<Player> activePlayerDelay = new ArrayList<>();
-    private List<String> sellAllDisabledWorlds;
+//    private List<String> sellAllDisabledWorlds;
 //    private MessagesConfig messages;
     private double defaultMultiplier;
     private int defaultSellAllDelay;
@@ -674,16 +674,20 @@ public class SellAllUtil
     	return results;
     }
 
-    /**
-     * Check if Player is in a disabled world, where he can't use sellall sell.
-     *
-     * Return True if he's in a disabled world, False if not.
-     *
-     * @return boolean.
-     * */
-    public boolean isPlayerInDisabledWorld(Player p){
-        return sellAllDisabledWorlds.contains(p.getWorld().getName());
-    }
+//    /**
+//     * WARNING: Obsolete because disabled worlds are set in config.yml and 
+//     *          the command handler shuts down in those worlds.  So it will
+//     *          never run any sellall commands in a diabled world.
+//     *          
+//     * Check if Player is in a disabled world, where he can't use sellall sell.
+//     *
+//     * Return True if he's in a disabled world, False if not.
+//     *
+//     * @return boolean.
+//     * */
+//    public boolean isPlayerInDisabledWorld(Player p){
+//        return sellAllDisabledWorlds.contains(p.getWorld().getName());
+//    }
 
     /**
      * Check if Player is waiting for the end of SellAll Sell Delay.
@@ -753,7 +757,7 @@ public class SellAllUtil
         sellAllBlocks = initSellAllBlocks();
         sellAllPrestigeMultipliers = initPrestigeMultipliers();
         sellAllItemTriggers = initSellAllItemTrigger();
-        sellAllDisabledWorlds = initSellAllDisabledWorlds();
+//        sellAllDisabledWorlds = initSellAllDisabledWorlds();
         defaultMultiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
         defaultSellAllDelay = Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
         defaultAutoSellEarningNotificationDelay = Integer.parseInt(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds"));
@@ -898,13 +902,13 @@ public class SellAllUtil
         return xMaterials;
     }
 
-    /**
-     * Get List of names of disabled worlds.
-     * If a Player is in one of these worlds, he won't be able to use SellAll.
-     * */
-    public List<String> initSellAllDisabledWorlds(){
-        return sellAllConfig.getStringList("Options.DisabledWorlds");
-    }
+//    /**
+//     * Get List of names of disabled worlds.
+//     * If a Player is in one of these worlds, he won't be able to use SellAll.
+//     * */
+//    public List<String> initSellAllDisabledWorlds(){
+//        return sellAllConfig.getStringList("Options.DisabledWorlds");
+//    }
 
     /**
      * Add a block to SellAll config.
@@ -1161,7 +1165,7 @@ public class SellAllUtil
      *
      * This will return true if everything is meet, False if even only isn't.
      * What will be checked is:
-     * - Is in a world where SellAll Sell isn't locked by config.
+     * - OBSOLETE: ~Is in a world where SellAll Sell isn't locked by config.~
      * - Check if SellAll Signs and SellAll by Sign only is enabled and Player isn't selling through a Sign right now or
      * doesn't have the bypass permission (To tell to this method if Player is selling through a sign, please set the boolean
      * parameter to true).
@@ -1179,9 +1183,9 @@ public class SellAllUtil
             return false;
         }
 
-        if (isPlayerInDisabledWorld(p)){
-            return false;
-        }
+//        if (isPlayerInDisabledWorld(p)){
+//            return false;
+//        }
 
         if (isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !isUsingSign && !p.hasPermission(permissionBypassSign)){
             return false;
