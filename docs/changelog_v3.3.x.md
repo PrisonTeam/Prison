@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-12
 
 
+* **Allow additional parameters to be passed on the gradlew.bat command; needed for additional debugging and etc...**
+
+
 * **Add new salePrice and purchasePrice to the prison Block.**
 
 
