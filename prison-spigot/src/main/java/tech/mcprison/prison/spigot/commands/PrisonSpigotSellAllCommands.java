@@ -297,7 +297,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
 
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
@@ -339,7 +339,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
 
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
@@ -373,7 +373,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
 
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
@@ -413,7 +413,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
 
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
@@ -454,7 +454,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
 
         if (!sellAllUtil.isAutoSellPerUserToggleable){
             return;
