@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-13
 
 
+* **Sellall: Expanded the functionality of the SellAllData obejcts to indicate if the items were sold.**
+
+
 * **New sellall features: 'sellall valueof' calculates the value of everything in the player's inventory that can be sold.  '/sellall valueofHand' calculates what is held in the player's hand.**
 
 

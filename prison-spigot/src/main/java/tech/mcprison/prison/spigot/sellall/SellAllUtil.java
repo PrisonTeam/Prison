@@ -659,6 +659,9 @@ public class SellAllUtil
     			SellAllData sad = sellItemStack( (SpigotItemStack)inv, multiplier );
     				
     			if ( sad != null ) {
+    				
+    				sad.setItemsSold( true );
+    				
     				soldItems.add(sad);
     				
     				removable.add(inv);
