@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-13
 
 
+* **Update the PrisonSpigotAPI to include a lot of new api endpoints for accessing sellall related functions.**
+
+
 * **Sellall: Expanded the functionality of the SellAllData obejcts to indicate if the items were sold.**
 
 

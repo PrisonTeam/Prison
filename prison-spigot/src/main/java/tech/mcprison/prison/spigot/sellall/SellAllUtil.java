@@ -606,6 +606,19 @@ public class SellAllUtil
     	return report;
     }
     
+    public List<SellAllData> getPlayerInventoryValueTransactions( SpigotPlayer sPlayer ) {
+    	
+    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
+    	
+    	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
+    	
+    	List<SellAllData> soldItems = valueOfInventoryItems( spInventory, multiplier );
+    	
+    	return soldItems;
+    }
+    
+    
+    
     public double getItemStackValue( SpigotPlayer player, SpigotItemStack itemStack ) {
     	
     	double multiplier = getPlayerMultiplier(player.getWrapper());
@@ -632,7 +645,30 @@ public class SellAllUtil
     	return report;
     }
     
-    private List<SellAllData> sellPlayerItems(Player p) {
+    public List<SellAllData> getItemStackValueTransactions( SpigotPlayer sPlayer, SpigotItemStack itemStack ) {
+    	
+    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
+    	
+    	List<SellAllData> soldItems = new ArrayList<>();
+    	
+    	SellAllData sad = sellItemStack( itemStack, multiplier );
+    	if ( sad != null ) {
+    		
+    		soldItems.add( sad );
+    	}
+    	
+    	return soldItems;
+    }
+    
+    /** 
+     * <p>This sells the players inventory, and removes what is sold.
+     * This returns the transaction logs within the SellAllData obects.
+     * </p>
+     * 
+     * @param p
+     * @return
+     */
+    public List<SellAllData> sellPlayerItems(Player p) {
     	
     	double multiplier = getPlayerMultiplier(p);
     	
@@ -642,6 +678,59 @@ public class SellAllUtil
 
     	return sellInventoryItems( spInventory, multiplier );
 	}
+
+    /**
+     * <p>This function sells the Item Stacks and returns a transaction log of items sold.
+     * This is an internal function. No messages are sent, most sellall options are bypassed,
+     * etc... Use at your own risk.
+     * </p>
+     * 
+     * <p>The parameter itemStacks will have the items sold removed.  The sold items will 
+     * be reflected in the returned transaction logs.
+     * </p>
+     * 
+     * @param p
+     * @param itemStacks
+     * @return
+     */
+    public List<SellAllData> sellPlayerItemStacks(Player p, 
+    					List<SpigotItemStack> itemStacks ) {
+    	
+    	double multiplier = getPlayerMultiplier(p);
+    	
+    	List<SellAllData> soldItems = new ArrayList<>();
+
+    	if ( itemStacks != null ) {
+    		
+    		List<tech.mcprison.prison.internal.ItemStack> removable = new ArrayList<>();
+    		
+    		// Go through all of the player's inventory and identify what can be sold.
+    		// 1. if it can be sold, then create a SellAllData "receipt"
+    		// 2. Add sad to the soldItems List
+    		// 3. Add the ItemStack to the removable List to be removed later
+    		for ( SpigotItemStack inv : itemStacks ) {
+    			
+    			SellAllData sad = sellItemStack( inv, multiplier );
+    				
+    			if ( sad != null ) {
+    				
+    				sad.setItemsSold( true );
+    				
+    				soldItems.add(sad);
+    				
+    				removable.add(inv);
+    			}
+    		}
+    		
+    		// We've identified all that could be sold, now remove them from the player's inventory
+    		for (tech.mcprison.prison.internal.ItemStack itemStack : removable) {
+    			itemStacks.remove( itemStack );
+    		}
+    	}
+    	
+		return soldItems;
+    }
+    
     
     private List<SellAllData> sellInventoryItems( tech.mcprison.prison.internal.inventory.Inventory inventory, double multiplier ) {
     	List<SellAllData> soldItems = new ArrayList<>();
@@ -701,7 +790,8 @@ public class SellAllUtil
      * the transaction amount based upon how many items are in the itemStack, 
      * times the salePrice, times the player's multiplier.
      * This function DOES NOT remove anything from any ItemStack, any Inventory,
-     * or any player's inventory.  This just generates the transaction.
+     * or any player's inventory. This function does not pay the player
+     * anything.  This just generates the transaction.
      * </p>
      * 
      * @param iStack
