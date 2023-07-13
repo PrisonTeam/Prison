@@ -891,7 +891,7 @@ public abstract class AutoManagerFeatures
 					if ( Output.get().isDebug() && isSellallEnabled ) {
 						
 						// Just get the calculated value for the drops... do not sell:
-						double amount = SellAllUtil.get().getSellMoney( player, itemStack );
+						double amount = SellAllUtil.get().getItemStackValue( (SpigotPlayer)player, itemStack );
 						autosellTotal += amount;
 						
 						debugInfo.append( "(Debug-unsold-value-check: " + itemStack.getName() + 

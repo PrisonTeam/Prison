@@ -17,14 +17,15 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
-import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
@@ -391,7 +392,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 		
     }
 
-    @Command(identifier = "sellall delaysell", description = "Like SellAll Sell command but this will be delayed for some " +
+    @Command(identifier = "sellall delaysell", 
+    		description = "Like SellAll Sell command but this will be delayed for some " +
             "seconds and if sellall sell commands are triggered during this delay, " +
             "they will sum up to the total value that will be visible in a notification at the end of the delay. " +
             "Running more of these commands before a delay have been completed won't reset it and will do the same of /sellall sell " +
@@ -573,7 +575,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             }
 
             if (sellAllUtil.addSellAllBlock(blockAdd, value)){
-                Output.get().sendInfo(sender, "&3 ITEM [" + itemID + ", " + value + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
+                Output.get().sendInfo(sender, "&3 ITEM [" + itemID + ", " + value + "] " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
             }
 
         } catch (IllegalArgumentException ex){
@@ -676,7 +678,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             }
 
             if (sellAllUtil.editPrice(blockAdd, value)){
-                Output.get().sendInfo(sender, "&3ITEM [" + itemID + ", " + value + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_edit_success));
+                Output.get().sendInfo(sender, "&3ITEM [" + itemID + ", " + value + "] " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_edit_success));
             }
 
         } catch (IllegalArgumentException ex){
@@ -826,7 +828,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall Trigger", 
+    @Command(identifier = "sellall trigger", 
     		description = "Toggle SellAll Shift+Right Click on a tool to trigger the /sellall sell command, "
     				+ "true -> Enabled or False -> Disabled.", 
     				permissions = "prison.admin", onlyPlayers = false)
@@ -871,7 +873,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall Trigger add", 
+    @Command(identifier = "sellall set trigger add", 
     		description = "Add an Item to trigger the Shift+Right Click -> /sellall sell command.", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllTriggerAdd(CommandSender sender,
@@ -912,7 +914,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall Trigger delete", 
+    @Command(identifier = "sellall set trigger delete", 
     		description = "Delete an Item from the Shift+Right Click trigger -> /sellall sell command.", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllTriggerDelete(CommandSender sender,
@@ -981,22 +983,22 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
         
-        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
+        TreeMap<String, PrisonBlock> items = new TreeMap<>( sellAllUtil.getSellAllItems() );
         DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
-        Set<XMaterial> keys = items.keySet();
+        Set<String> keys = items.keySet();
         
         int maxLenKey = 0;
         int maxLenVal = 0;
         int maxLenCode = 0;
-        for ( XMaterial key : keys ) {
-			if ( key.toString().length() > maxLenKey ) {
-				maxLenKey = key.toString().length();
+        for ( String key : keys ) {
+//			if ( key.toString().length() > maxLenKey ) {
+//				maxLenKey = key.toString().length();
+//			}
+			if ( key.length() > maxLenCode ) {
+				maxLenCode = key.length();
 			}
-			if ( key.name().length() > maxLenCode ) {
-				maxLenCode = key.name().length();
-			}
-			String val = fFmt.format( items.get( key ) );
+			String val = fFmt.format( items.get( key ).getSalePrice() );
 			if ( val.length() > maxLenVal ) {
 				maxLenVal = val.length();
 			}
@@ -1007,17 +1009,17 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
         int lines = 0;
         StringBuilder sb = new StringBuilder();
-        for ( XMaterial key : keys ) {
+        for ( String key : keys ) {
         	boolean first = sb.length() == 0;
 
-        	Double cost = items.get( key );
+        	Double cost = items.get( key ).getSalePrice();
         	
         	if ( !first ) {
         		sb.append( "    " );
         	}
         	
         	sb.append( String.format( "%-" + maxLenCode + "s %" + maxLenVal + "s", 
-        			key.name(), fFmt.format( cost ) ) );
+        			key, fFmt.format( cost ) ) );
 //        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
 //        			key.toString(), fFmt.format( cost ), key.name() ) );
         	

@@ -468,7 +468,8 @@ public class PrisonSpigotAPI {
         }
 
 		if (sellAll != null){
-			return sellAll.getSellMoney(player);
+			return sellAll.getPlayerInventoryValue( (SpigotPlayer)player );
+//			return sellAll.getSellMoney(player);
 		}
 
 		return null;
