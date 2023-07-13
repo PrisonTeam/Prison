@@ -230,7 +230,10 @@ public class SpigotPlayer
 
     @Override 
     public Inventory getInventory() {
-        return new SpigotPlayerInventory(getWrapper().getInventory());
+        return getSpigotPlayerInventory();
+    }
+    public SpigotPlayerInventory getSpigotPlayerInventory() {
+    	return new SpigotPlayerInventory(getWrapper().getInventory());
     }
 
     @Override public void updateInventory() {

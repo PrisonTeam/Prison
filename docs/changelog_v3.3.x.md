@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15 2023-07-12
+# 3.3.0-alpha.15 2023-07-13
+
+
+* **Updated Prison's PlayerInventory to include 'contents' and 'extraContents' to match the bukkit PlayerInventory object.**
+Within the SpigotPlayerInventory class, overrode the behavior of removeItem to ensure that obscure inventory locations are being removed, since there was a bug where you can get all inventory items, then remove them, and they would not remove all occurrences of the items stacks that were initially returned, such as when someone is wearing an item as a hat, or holding something in one of their hands.
 
 
 * **Allow additional parameters to be passed on the gradlew.bat command; needed for additional debugging and etc...**

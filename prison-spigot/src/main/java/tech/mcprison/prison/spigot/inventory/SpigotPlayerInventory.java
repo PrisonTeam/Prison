@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.PlayerInventory;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -31,20 +32,161 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 /**
  * Created by DMP9 on 04/02/2017.
  */
-public class SpigotPlayerInventory extends SpigotInventory implements PlayerInventory {
+public class SpigotPlayerInventory 
+	extends SpigotInventory 
+	implements PlayerInventory {
 
     public SpigotPlayerInventory(org.bukkit.inventory.PlayerInventory wrapper) {
         super(wrapper);
     }
 
-    @Override public ItemStack[] getArmorContents() {
+    /**
+     * <p>This function gets all of the player's contents from the getContents(),
+     * getExtraContents(), and getArmorContents().
+     * </p>
+     * 
+     * @return
+     */
+    public List<ItemStack> getAllContents() {
+    	List<ItemStack> results = new ArrayList<>();
+    	
+    	for ( ItemStack iStack : getContents() ) {
+    		if ( iStack != null ) {
+    			results.add(iStack);
+    		}
+    	}
+    	
+    	try {
+			for ( ItemStack iStack : getExtraContents() ) {
+				if ( iStack != null ) {
+					results.add(iStack);
+				}
+			}
+		} catch (NoSuchMethodError e) {
+			// Ignore on older versions of spigot... Spigot 1.8.8 does not have this function.
+		}
+    	
+    	// then remove the armor ItemStacks:
+    	for ( ItemStack iStack : getArmorContents() ) {
+    		if ( iStack != null ) {
+    			results.remove(iStack);
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    @Override
+    public void removeItem( ItemStack... iStack ) {
+    	if ( iStack != null ) {
+    		
+    		// Remove all items...
+    		super.removeItem(iStack);
+
+    		// But since this is a player's inventory, try to remove them from the players slots
+    		for (ItemStack itemStack : iStack) {
+    			PrisonBlock pBlock = itemStack.getMaterial();
+    			
+    			if ( isPrisonBlockEqual( pBlock, getBoots() ) ) {
+    				setBoots( new SpigotItemStack( 0, PrisonBlock.AIR ) );
+    			}
+    			if ( isPrisonBlockEqual( pBlock, getChestplate() ) ) {
+    				setChestplate( new SpigotItemStack( 0, PrisonBlock.AIR ) );
+    			}
+    			if ( isPrisonBlockEqual( pBlock, getHelmet() ) ) {
+    				setHelmet( new SpigotItemStack( 0, PrisonBlock.AIR ) );
+    			}
+    			if ( isPrisonBlockEqual( pBlock, getLeggings() ) ) {
+    				setLeggings( new SpigotItemStack( 0, PrisonBlock.AIR ) );
+    			}
+    			
+    			try {
+    				
+    				if ( isPrisonBlockEqual( pBlock, getItemInLeftHand() ) ) {
+    					setItemInLeftHand( new SpigotItemStack( 0, PrisonBlock.AIR ) );
+    				}
+    			}
+    			catch ( Exception e ) {
+    				// java 1.8 may not be able to handle this
+    			}
+    			try {
+    				
+    				if ( isPrisonBlockEqual( pBlock, getItemInRightHand() ) ) {
+    					setItemInRightHand( new SpigotItemStack( 0, PrisonBlock.AIR ) );
+    				}
+    			}
+    			catch ( Exception e ) {
+    				// java 1.8 may not be able to handle this
+    			}
+    			
+			}
+    	}
+    }
+    
+    
+    private boolean isPrisonBlockEqual( PrisonBlock pBlock, ItemStack iStack ) {
+    	boolean results = false;
+    	
+    	if ( pBlock != null && iStack != null ) {
+    		results = pBlock.equals( iStack.getMaterial() );
+    	}
+    	
+    	return results;
+    }
+    
+    @Override
+	public ItemStack[] getContents() {
+    	List<ItemStack> items = new ArrayList<>();
+        Arrays.asList(((org.bukkit.inventory.PlayerInventory) getWrapper()).getContents())
+            .forEach(x -> items.add(SpigotUtil.bukkitItemStackToPrison(x)));
+        return (ItemStack[]) items.toArray();
+    }
+    
+    @Override
+	public void setContents( ItemStack[] items ) {
+		List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
+        Arrays.asList(items).forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
+        ((org.bukkit.inventory.PlayerInventory) getWrapper())
+            .setContents((org.bukkit.inventory.ItemStack[]) stacks.toArray());
+	}
+	
+	@Override
+	public ItemStack[] getExtraContents() {
+		try {
+	    	List<ItemStack> items = new ArrayList<>();
+	        Arrays.asList(((org.bukkit.inventory.PlayerInventory) getWrapper()).getExtraContents())
+	            .forEach(x -> items.add(SpigotUtil.bukkitItemStackToPrison(x)));
+	        return (ItemStack[]) items.toArray();
+		}
+		catch ( Exception e ) {
+			return null;
+		}
+	}
+	@Override
+	public void setExtraContents( ItemStack[] items ) {
+		try {
+			List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
+			Arrays.asList(items).forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
+			((org.bukkit.inventory.PlayerInventory) getWrapper())
+			.setExtraContents((org.bukkit.inventory.ItemStack[]) stacks.toArray());
+		}
+		catch ( Exception e ) {
+			// extraContents does not exist in spigot 1.8
+		}
+	}
+	
+	
+    
+    @Override
+    public ItemStack[] getArmorContents() {
         List<ItemStack> items = new ArrayList<>();
         Arrays.asList(((org.bukkit.inventory.PlayerInventory) getWrapper()).getArmorContents())
             .forEach(x -> items.add(SpigotUtil.bukkitItemStackToPrison(x)));
         return (ItemStack[]) items.toArray();
     }
 
-    @Override public void setArmorContents(ItemStack[] items) {
+    @Override 
+    public void setArmorContents(ItemStack[] items) {
         List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
         Arrays.asList(items).forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
         ((org.bukkit.inventory.PlayerInventory) getWrapper())
@@ -119,7 +261,8 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     	}
     }
 
-    @Override public ItemStack getItemInRightHand() {
+    @Override
+    public ItemStack getItemInRightHand() {
     	
     	
     	return SpigotUtil.bukkitItemStackToPrison(
@@ -127,7 +270,8 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     						((org.bukkit.inventory.PlayerInventory) getWrapper()) ));
     }
 
-    @Override public void setItemInRightHand(ItemStack stack) {
+    @Override 
+    public void setItemInRightHand(ItemStack stack) {
     	
     	if ( stack instanceof SpigotItemStack ) {
     		
@@ -135,5 +279,5 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     						.setItemStackInMainHand( this, ((SpigotItemStack) stack) );
     	}
     }
-
+    
 }
