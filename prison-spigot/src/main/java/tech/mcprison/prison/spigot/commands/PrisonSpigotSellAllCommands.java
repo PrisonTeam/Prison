@@ -392,6 +392,128 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 		
     }
 
+    
+
+    @Command(identifier = "sellall valueof", 
+    		description = "SellAll valueof command will report the total value of the player's inventory "
+    				+ "without selling anything.", onlyPlayers = false)
+    public void sellAllValueOfCommand(CommandSender sender,
+    		@Arg(name = "player", def = "", description = "An online player name to get the value of their inventory - " +
+    				"Only console or prison commands can include this parameter") String playerName
+             ){
+
+        if (!isEnabled()) return;
+
+        Player p = getSpigotPlayer(sender);
+        
+
+        boolean isOp = sender.isOp();
+        
+        tech.mcprison.prison.internal.Player sPlayerAlt = getOnlinePlayer( sender, playerName );
+//        if ( sPlayerAlt == null ){
+//        	// If sPlayerAlt is null then the value in playerName is really intended for notification:
+//        	notification = playerName;
+//        }
+
+        if ( isOp && !sender.isPlayer() && sPlayerAlt != null ) {
+        	// Only if OP and a valid player name was provided, then OP is trying to run this
+        	// for another player
+        	
+        	if ( !sPlayerAlt.isOnline() ) {
+        		sender.sendMessage( "Player is not online." );
+        		return;
+        	}
+        	
+        	// Set the active player to who OP specified:
+        	p = ((SpigotPlayer) sPlayerAlt).getWrapper();
+        }
+        
+
+        else if (p == null){
+        	
+        	if ( getPlayer( sender, playerName ) != null ) {
+        		
+        		Output.get().sendInfo(sender, "&cSorry but the specified player must be online "
+        				+ "[/sellall valueof %s]", playerName );
+        	}
+        	else {
+        		
+        		Output.get().sendInfo(sender, "&cSorry but you can't use that from the console!");
+        	}
+            
+            
+            return;
+        }
+        
+
+        SellAllUtil sellAllUtil = SellAllUtil.get();
+        if (sellAllUtil == null){
+            return;
+        }
+
+//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+
+        if (sellAllUtil.isSellAllSellPermissionEnabled){
+            String permission = sellAllUtil.permissionSellAllSell;
+            if (permission == null || !p.hasPermission(permission)){
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                return;
+            }
+        }
+
+        SpigotPlayer sPlayer = new SpigotPlayer( p );
+
+        String report = sellAllUtil.getPlayerInventoryValueReport( sPlayer );
+
+
+        sender.sendMessage(report);
+        
+        PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+    }
+
+    @Command(identifier = "sellall valueofHand", 
+    		description = "Get the value of what is in your hand if sellable.", 
+    		onlyPlayers = true)
+    public void sellAllValueOfHandCommand(CommandSender sender){
+
+        if (!isEnabled()) return;
+
+        SellAllUtil sellAllUtil = SellAllUtil.get();
+
+        if (sellAllUtil == null){
+            return;
+        }
+
+        if (!sellAllUtil.isSellAllHandEnabled){
+            Output.get().sendWarn(sender, "The command /sellall valueofHand is disabled from the config! (SellAllHandEnabled)");
+            return;
+        }
+
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null){
+            Output.get().sendInfo(sender, "&cSorry but you can't use that from the console!");
+            return;
+        }
+
+//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+
+        if (sellAllUtil.isSellAllSellPermissionEnabled){
+            String permission = sellAllUtil.permissionSellAllSell;
+            if (permission == null || !p.hasPermission(permission)){
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                return;
+            }
+        }
+
+
+        String report = sellAllUtil.getItemStackValueReport( 
+        			new SpigotPlayer(p), new SpigotItemStack( compat.getItemInMainHand(p)) );
+
+        sender.sendMessage(report);
+    }
+
+    
     @Command(identifier = "sellall delaysell", 
     		description = "Like SellAll Sell command but this will be delayed for some " +
             "seconds and if sellall sell commands are triggered during this delay, " +

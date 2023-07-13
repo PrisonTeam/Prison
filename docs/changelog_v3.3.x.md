@@ -17,6 +17,15 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-13
 
 
+* **New sellall features: 'sellall valueof' calculates the value of everything in the player's inventory that can be sold.  '/sellall valueofHand' calculates what is held in the player's hand.**
+
+
+* **Major rewrites to sellall to utilize more of Prison's internal classes and to get away from XMaterial since it cannot handle custom blocks.**
+A lot of sellall code has been eliminated, but no loss in functionality.  Actually new functions and enhancements have been added.
+Eliminated the two step process of selling... where it first calculated the values, then after the fact, would try to remove the items with no "validation" that the items removed were the items that calculated the sales amount.
+Sellall commands: moved the '/sellall trigger add' and '/sellall trigger remove' to under the '/sell set' section since they were hidden because '/sellall trigger' was a command and many did not realize they have to use the 'help' keyword to show the others.
+
+
 * **Updated Prison's PlayerInventory to include 'contents' and 'extraContents' to match the bukkit PlayerInventory object.**
 Within the SpigotPlayerInventory class, overrode the behavior of removeItem to ensure that obscure inventory locations are being removed, since there was a bug where you can get all inventory items, then remove them, and they would not remove all occurrences of the items stacks that were initially returned, such as when someone is wearing an item as a hat, or holding something in one of their hands.
 
