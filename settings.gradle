@@ -24,3 +24,10 @@ include 'prison-spigot'
 include 'prison-mines'
 include 'prison-ranks'
 include 'prison-sellall'
+
+
+include 'prison-worldguard6'
+include 'prison-worldguard7'
+/*
+include 'prison-worldguard8'
+*/

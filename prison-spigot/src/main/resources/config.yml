@@ -271,6 +271,35 @@ prison-mines:
   access-to-prior-mines: true
   tp-to-spawn-on-mine-resets: true
   enable-suffocation-in-mines: false
+  world-guard:
+    region-mine:
+      enable: true
+      name-prefix: prison_mine_
+      permission-prefix: "g:prison.mines."
+      priority: 10
+      deny-non-members: true
+      deny-message: You must rankup to access this mine.
+      flags:
+        block-break: true
+        item-pickup: true
+        xp-drops: true
+        item-drop: true
+    region-mine-area:
+      enable: true
+      name-prefix: prison_mine_area_
+      increase-x: 15
+      increase-z: 15
+      increase-y: 9999
+      permission-prefix: "g:prison.mines."
+      priority: 10
+      deny-non-members: true
+      deny-message: You must rankup to access this mine.
+      flags:
+        block-break: false
+        item-pickup: true
+        xp-drops: true
+        item-drop: true
+    
 
 
 

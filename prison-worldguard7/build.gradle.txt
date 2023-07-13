@@ -25,14 +25,10 @@ compileTestJava.options.encoding = "UTF-8"
 
 //sourceCompatibility = 1.8
 
-
-// https://www.spigotmc.org/wiki/spigot-gradle/
-
-
-repositories {
+repositories 
+{
     mavenCentral()
-
-
+.
 	maven {
 	    url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
 	
@@ -56,13 +52,14 @@ repositories {
 	 maven { url = 'https://oss.sonatype.org/content/repositories/central' }
 	  
   // mavenLocal() // This is needed for CraftBukkit and Spigot.
-    maven { 
-    	url "https://mvnrepository.com/artifact" 
-    }
+//    maven { 
+//    	url "https://mvnrepository.com/artifact" 
+//    }
 
-    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
+    //maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
     
-    maven { url = "https://maven.enginehub.org/repo/" }
+    //maven { url = "https://maven.enginehub.org/repo/" }
+
 }
 
 
@@ -79,35 +76,34 @@ dependencies {
 
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-core
-	//   Artifact located at repo: https://maven.enginehub.org/repo/
-	implementation 'com.sk89q.worldedit:worldedit-core:6.0.1'
-	//implementation 'com.sk89q.worldedit:worldedit-core:7.2.15'
+	implementation 'com.sk89q.worldedit:worldedit-core:7.2.15'
 	
 	// https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-bukkit
-	//   Artifact located at repo: https://maven.enginehub.org/repo/
-	compileOnly 'com.sk89q.worldedit:worldedit-bukkit:6.1.5'
-	//compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.15'
+	compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.15'
 
 
-	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-legacy
-    // NOTE: although the following does exist, its unable to be pulled in so instead
-    //       the jar is included.
-	//compileOnly 'com.sk89q.worldguard:worldguard-legacy:6.1.2'
 
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-core
-	//compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.8'
+	compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.8'
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-bukkit
-	//compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
+	compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldguard.worldguard-libs/core
-	//implementation 'com.sk89q.worldguard.worldguard-libs:core:7.0.8'
+	implementation 'com.sk89q.worldguard.worldguard-libs:core:7.0.8'
 
 
   
 
-	compileOnly fileTree(dir: 'lib', include: ['*.jar'] );
+	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
+//    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
+	// 1.12.2-R0.1-SNAPSHOT works well:
+//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+	// 1.13.2 fails since deprecated functions have been removed.
+    //compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+
+
 
 
 

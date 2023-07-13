@@ -25,9 +25,45 @@ compileTestJava.options.encoding = "UTF-8"
 
 //sourceCompatibility = 1.8
 
+
+// https://www.spigotmc.org/wiki/spigot-gradle/
+
+
 repositories {
     mavenCentral()
 
+
+	maven {
+	    url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+	
+	    // As of Gradle 5.1, you can limit this to only those
+	    // dependencies you expect from it
+	    content {
+	      includeGroup 'org.bukkit'
+	      includeGroup 'org.spigotmc'
+	    }
+	 }
+	 /*
+	   As Spigot-API depends on the BungeeCord ChatComponent-API,
+	  we need to add the Sonatype OSS repository, as Gradle,
+	  in comparison to maven, doesn't want to understand the ~/.m2
+	  directory unless added using mavenLocal(). Maven usually just gets
+	  it from there, as most people have run the BuildTools at least once.
+	  This is therefore not needed if you're using the full Spigot/CraftBukkit,
+	  or if you're using the Bukkit API.
+	  */
+	 maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+	 maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+	  
+  // mavenLocal() // This is needed for CraftBukkit and Spigot.
+    maven { 
+    	url "https://mvnrepository.com/artifact" 
+    }
+
+    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
+    
+    
+    maven { url = "https://maven.enginehub.org/repo/" }
 }
 
 
@@ -39,41 +75,49 @@ dependencies {
 //    implementation project(':prison-sellall')
 
 
+    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+
+
+	// API Docs: https://docs.enginehub.org/javadoc/com.sk89q.worldedit/worldedit-core/7.2.0/
+	
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-core
-	implementation 'com.sk89q.worldedit:worldedit-core:6.0.1'
-	//implementation 'com.sk89q.worldedit:worldedit-core:7.2.15'
+	//   Artifact located at repo: https://maven.enginehub.org/repo/
+	//implementation 'com.sk89q.worldedit:worldedit-core:6.0.1'
+	implementation 'com.sk89q.worldedit:worldedit-core:7.2.15'
 	
 	// https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-bukkit
-	compileOnly 'com.sk89q.worldedit:worldedit-bukkit:6.1.4'
-	//compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.15'
+	//   Artifact located at repo: https://maven.enginehub.org/repo/
+	//compileOnly 'com.sk89q.worldedit:worldedit-bukkit:6.1.5'
+	compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.15'
 
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-legacy
-	compileOnly 'com.sk89q.worldguard:worldguard-legacy:6.1.2'
+    // NOTE: although the following does exist, its unable to be pulled in so instead
+    //       the jar is included.
+	//compileOnly 'com.sk89q.worldguard:worldguard-legacy:6.1.2'
 
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-core
-	//compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.8'
+	//   Artifact located at repo: https://maven.enginehub.org/repo/
+	// WARNING: v7.0.4 is the last release that ia java 1.8 compatible
+	compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.4'
+	//compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.5'
+	// requires java 16: compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.6'
+	// requires java 16: compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.7'
+	// requires java 17: compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.8'
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-bukkit
+	//   Artifact located at repo: https://maven.enginehub.org/repo/
+	compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.4'
 	//compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
 
 	// https://mvnrepository.com/artifact/com.sk89q.worldguard.worldguard-libs/core
+	implementation 'com.sk89q.worldguard.worldguard-libs:core:7.0.4'
 	//implementation 'com.sk89q.worldguard.worldguard-libs:core:7.0.8'
 
 
   
-
-	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
-//    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
-	// 1.12.2-R0.1-SNAPSHOT works well:
-//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-	// 1.13.2 fails since deprecated functions have been removed.
-    //compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
-
-
-
 
 
 

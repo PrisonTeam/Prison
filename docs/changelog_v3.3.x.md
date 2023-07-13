@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-13
 
 
+* **More work on getting the new worldguard sub-projejcts hooked up and functional in the build with gradle.**
+
+
 * **Update the PrisonSpigotAPI to include a lot of new api endpoints for accessing sellall related functions.**
 
 
