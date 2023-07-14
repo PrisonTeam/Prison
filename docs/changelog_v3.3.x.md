@@ -14,16 +14,27 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15 2023-07-13
+# 3.3.0-alpha.15 2023-07-14
 
 
-* **More work on getting the new worldguard sub-projejcts hooked up and functional in the build with gradle.**
+* **Prison Multi-Language Locale Manager: Updated all language files to include information about the new `*none*` keyword.**
+This keyword is case insensitive and will return an empty string for that message component if it's part of a compound message.  If the message is supposed to be sent to a player, it will be bypassed and nothing will be sent.
+
+
+* **Prison Multi-Language Locale Manager: Possibly fixed a few issues with setting messages to "blanks".  If the text of a message is removed, and set to an empty string, it should not be used.**
+There was a situation where a zn_TW language file was set to an empty string and it was falling back to the en_US version.
+I found that there was a bug with a sendMessage() function to a player that was not bypassing the message like the other functions were doing. 
+Also in the code where it was calculating the Locale variations, it was not accepting a blank as the final input.  This was fixed.
+Also, to be clear, or more specific, I added a new keyword `*none*` to serve the same purpose.  So either an empty string can be used, or that new `*none*` key word.
+
+
+* **More work on getting the new world guard sub-projects hooked up and functional in the build with gradle.**
 
 
 * **Update the PrisonSpigotAPI to include a lot of new api endpoints for accessing sellall related functions.**
 
 
-* **Sellall: Expanded the functionality of the SellAllData obejcts to indicate if the items were sold.**
+* **Sellall: Expanded the functionality of the SellAllData obejects to indicate if the items were sold.**
 
 
 * **New sellall features: 'sellall valueof' calculates the value of everything in the player's inventory that can be sold.  '/sellall valueofHand' calculates what is held in the player's hand.**
