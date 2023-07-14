@@ -245,6 +245,13 @@ public class Localizable {
             Properties props = getParent().getConfigs().get(locale);
             if (props.containsKey(getKey())) { // check if the message is defined in the locale
                 String message = (String) props.get(getKey()); // yay, it worked
+                
+                // If the entry has been marked with "*none*" or an empty String then return an empty String:
+                if ( LocaleManager.IGNORE_TEXT_NO_MESSAGE_INTENDED.equalsIgnoreCase(message) || 
+                		message != null && message.trim().length() == 0 ) {
+                	return "";
+                }
+                
                 if (replacements != null) {
                     for (int i = 0; i < replacements.length; i++) { // replace placeholder sequences
                         message = message
@@ -380,7 +387,12 @@ public class Localizable {
      * @param sender The {@link CommandSender} to send this {@link Localizable} to
      */
     public void sendTo(CommandSender sender) {
-        sendTo(sender, LogLevel.PLAIN);
+    	
+    	String message = localize();
+    	if ( message != null && !message.isEmpty() ) {
+
+    		sendTo(sender, LogLevel.PLAIN);
+    	}
     }
 
     /**

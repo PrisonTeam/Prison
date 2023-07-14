@@ -83,6 +83,8 @@ public class LocaleManager {
     private static final String DEFAULT_LOCALE = "en_US";
     private static final String LOCALE_FOLDER = "lang";
     
+    public static final String IGNORE_TEXT_NO_MESSAGE_INTENDED = "*none*";
+    
     public static final String LOCALE_ERROR__CONFIG_LANG_NOT_FOUND = "local.error.configNotFound";
     public static final String LOCALE_ERROR__FALLBACK_COUNT = "local.error.fallbackcount";
 
@@ -115,6 +117,13 @@ public class LocaleManager {
         ALTERNATIVES.put("pt_PT", Arrays.asList("pt_BR", "en_US"));
 
         ALTERNATIVES.put("ro_RO", Arrays.asList("en_US"));
+        
+        // Chinese dialects
+        ALTERNATIVES.put("zh_TW", Arrays.asList("zh_TW", "en_US"));
+        ALTERNATIVES.put("zh_CN", Arrays.asList("zh_CN", "en_US"));
+        // NOTE: many files are named with "-" dash and not underscore... so have both settings
+        ALTERNATIVES.put("zh-CN", Arrays.asList("zh-CN", "en_US"));
+        
     }
 
     private final PluginEntity module;
@@ -702,6 +711,11 @@ public class LocaleManager {
             		
             		String[] keyValue = line.split( "\\=" );
             		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
+            		
+//            		if ( IGNORE_TEXT_NO_MESSAGE_INTENDED.equalsIgnoreCase(value) ) {
+//            			value = "";
+//            		}
+            		
             		temp.put( keyValue[0], value );
             	}
             	
