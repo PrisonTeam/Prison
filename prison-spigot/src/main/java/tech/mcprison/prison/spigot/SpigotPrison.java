@@ -346,6 +346,7 @@ public class SpigotPrison
         
         
         // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
+        // Auto features will prevent this if it's disabled.
         getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
         
         

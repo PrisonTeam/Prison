@@ -15,6 +15,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import me.revils.revenchants.events.JackHammerEvent;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -54,8 +55,10 @@ public class AutoManagerRevEnchantsJackHammerEvent
 	@Override
 	public void registerEvents() {
 		
-		initialize();
-		
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 	
 	

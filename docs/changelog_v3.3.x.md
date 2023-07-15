@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-15
 
 
+* **Auto features not being fully disabled when turned off.**
+There was an issue with `/prison reload autoFeatures` enabling itself when it should have been off.
+
+
 * ** v3.3.0-alpha.15a 2023-07-15**
 
 

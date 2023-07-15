@@ -13,6 +13,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import me.pulsi_.prisonenchants.events.PEExplosionEvent;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
@@ -48,8 +49,10 @@ public class AutoManagerPrisonEnchants
 	@Override
 	public void registerEvents() {
 	
-		initialize();
-		
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 
 	/**

@@ -208,29 +208,44 @@ public class OnBlockBreakEventListener
 	private void registerEvents() {
 				
 		bbEvents = new AutoManagerBlockBreakEvents();
-		bbEvents.registerEvents();
-		
+
 		// Prison's own internal event and listener:
 		pebbEvents = new AutoManagerPrisonsExplosiveBlockBreakEvents();
-		pebbEvents.registerEvents();
-		
+
 		ceEvents = new AutoManagerCrazyEnchants();
-		ceEvents.registerEvents();
+
+		ceEvents = new AutoManagerCrazyEnchants();
 		
 		peEvents = new AutoManagerPrisonEnchants();
-		peEvents.registerEvents();
-		
+
 		teEvents = new AutoManagerTokenEnchant();
-		teEvents.registerEvents();
 		
 		zcEvents = new AutoManagerZenchantments();
-		zcEvents.registerEvents();
 		
 		reEEvents = new AutoManagerRevEnchantsExplosiveEvent();
-		reEEvents.registerEvents();
 		
 		reJHEvents = new AutoManagerRevEnchantsJackHammerEvent();
-		reJHEvents.registerEvents();
+		
+		
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			bbEvents.registerEvents();
+			
+			// Prison's own internal event and listener:
+			pebbEvents.registerEvents();
+			
+			ceEvents.registerEvents();
+			
+			peEvents.registerEvents();
+			
+			teEvents.registerEvents();
+			
+			zcEvents.registerEvents();
+			
+			reEEvents.registerEvents();
+			
+			reJHEvents.registerEvents();
+		}
 		
 		pdBlockInspector = new PrisonDebugBlockInspector();
 		pdBlockInspector.init();

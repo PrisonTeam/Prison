@@ -49,7 +49,10 @@ public class AutoManagerBlockBreakEvents
 	@Override
 	public void registerEvents() {
 	
-		initialize();
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 	
 	
