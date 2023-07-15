@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-15
 
 
+* **Prison tokens: expanded the error messages for playing not being found to the set and remove functions for the admin token commands.**
+
+
 * **Prison Tokens: bug fix: Ran in to NPE when an invalid player name is used.**
 The message text needs to be stored in the lang files.
 

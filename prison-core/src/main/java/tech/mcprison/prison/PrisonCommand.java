@@ -2015,7 +2015,7 @@ public class PrisonCommand
     		if ( !silent ) {
     			sender.sendMessage(
     					String.format(
-    							"Prison Tokens: Player name not found. [%s] (hardCodedMessag)", 
+    							"Prison Tokens add: Player name not found. [%s] (hardCodedMessag)", 
     							playerName ));
     		}
     		return;
@@ -2121,6 +2121,18 @@ public class PrisonCommand
     	
     	Player player = getPlayer( playerName );
     	
+    	
+    	if ( player == null ) {
+    		if ( !silent ) {
+    			sender.sendMessage(
+    					String.format(
+    							"Prison Tokens remove: Player name not found. [%s] (hardCodedMessag)", 
+    							playerName ));
+    		}
+    		return;
+    	}
+    	
+    	
     	if ( forcePlayer ) {
     		
     		player.getPlayerCachePlayerData().removeTokens( amount );
@@ -2194,6 +2206,17 @@ public class PrisonCommand
 //    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	Player player = getPlayer( playerName );
+    	
+    	
+    	if ( player == null ) {
+    		if ( !silent ) {
+    			sender.sendMessage(
+    					String.format(
+    							"Prison Tokens set: Player name not found. [%s] (hardCodedMessag)", 
+    							playerName ));
+    		}
+    		return;
+    	}
 
 //    	// Set to zero:
 //    	long totalTokens = player.getPlayerCachePlayerData().getTokens();
