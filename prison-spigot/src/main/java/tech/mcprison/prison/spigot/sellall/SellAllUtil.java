@@ -67,7 +67,7 @@ public class SellAllUtil
     private double defaultMultiplier;
     private int defaultSellAllDelay;
     private int defaultAutoSellEarningNotificationDelay;
-    private Sound sellAllSoundSuccess;
+    public Sound sellAllSoundSuccess;
     private Sound sellAllSoundFail;
     public String sellAllSignTag;
     public String sellAllCurrency;

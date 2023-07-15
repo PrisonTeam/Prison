@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.api;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -438,7 +439,8 @@ public class PrisonSpigotAPI {
 	 * @return BackpaacksUtil - Null if Prison Backpacks are disabled.
 	 * */
 	public BackpacksUtil getPrisonBackpacks(){
-		if (SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
+		if (SpigotPrison.getInstance().getConfig().getString("backpacks") != null && 
+				SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
 			return BackpacksUtil.get();
 		}
 		return null;
@@ -510,6 +512,196 @@ public class PrisonSpigotAPI {
 
 		return results;
 	}
+	
+	
+	
+	/**
+	 * <p>This function will use Prison internals to pay a player a given sum of money as specified 
+	 * by the amount.  If the currency is non-standard, then you can also specify it's name as a 
+	 * String value; otherwise pass a null or an empty String.  Example of non-standard currencies 
+	 * would be alternative currencies setup on ranks.
+	 * </p>
+	 * 
+	 * <p>This function will notify the player each time they are paid of the payment amount 
+	 * (notifyPlayerEarned).  It will also play a payment sound (playSoundOnSellAll), the sound can
+	 * be changed within the SellAll config file.
+	 * </p>
+	 * 
+	 * <p>If you need to delay player notifications, please use the other `payPlayer()` functions.
+	 * </p>
+	 * 
+	 * <p>Prison's internals keep track of the player's balance in the Prison's player cache.  It 
+	 * allows for rapid payments to a player, without overwhelming Vault or the Economy plugins. 
+	 * Some economy plugins will update their database with each hit, which can result in a 
+	 * serious performance drain on the system, since such I/O is blocking, and if they run those
+	 * updates in bukkit's main thread.  Since prison is caching the payments, as soon as it 
+	 * receives a payment, prison starts a count down to make the payment.  Any additional payment 
+	 * made to a player before that count down reaches zero, will be included in the transaction.
+	 * Rapid mining can create TONS of transactions per second, so Prison's payment cache is 
+	 * an important component to help weaker economy plugins from killing the server's TPS.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 * @param currency - If standard, pass null or an empty String
+	 */
+	public void payPlayer( Player player, double amount, String currency ) {
+		payPlayer( player, amount, currency, true, false, false, true );
+	}
+		
+	/**
+	 * <p>This function will use Prison internals to pay a player a given sum of money as specified 
+	 * by the amount.  This function is the same as the other one that is similar, except that it 
+	 * provides more options such as delayed notifications.  Please see the help on the other 
+	 * `payPlayer()` functions to better understand what they are doing.
+	 * </p>
+	 * 
+	 * <p>The payment amount must be greater than zero.  If the amount is zero, or less,
+	 * then this function will end silently without any notification.
+	 * </p>
+	 * 
+	 * <p>This function has additional parameters for controlling player notifications. If they 
+	 * are all set to false, then no notifications will be sent to the player (completelySilent).
+	 * </p>
+	 * 
+	 * <p>'notifyPlayerEarned': This function will notify the player each time they are paid 
+	 * of the payment amount (notifyPlayerEarned).  It will also play a payment 
+	 * sound (playSoundOnSellAll), the sound can be changed within the SellAll config file.
+	 * </p>
+	 *
+	 * <p>'notifyPlayerDelay' & SellAll Delay (cooldown): If the SellAll configuration 
+	 * `isSellAllDelayEnabled` is set to `true`, then 
+	 * the player will be subjected to a cooldown for using the sellall command/feature.
+	 * If the have tried to sell within the allocated amount of time, then they will get a
+	 * message indicating that there is a rate limit in effect for them.  They will get
+	 * this notification if the parameter 'notifyPlayerDelay' is set to `true`.
+	 * </p>
+	 * 
+	 * <p>Please NOTE: This function, `payPlayer()` only activates the cooldown timer and
+	 * the player will be paid.  What is impacted is the ability to use the functions 
+	 * `sellAllSell()`... it is then when the rate limit will kick in.  If you use the 
+	 * other function `sellPlayerItems()` or `sellPlayerItemStacks()` then the 
+	 * cooldown rate limit will be bypassed and will not inhibit any selling.
+	 * </p>
+	 * 
+	 * <p>'notifyPlayerEarningDelay': If in the SellAll config, the option 
+	 * `isAutoSellEarningNotificationDelayEnabled` is enabled, then this parameter
+	 * `notifyPlayerEarningDelay` will then add the amount the player was paid to
+	 * a delayed queue which will gather other payments the player receives during the
+	 * delayed period.  At the end of this delayed period of time, then the player
+	 * will get a message indicating the total amount of money that they earned.
+	 * This helps to reduce the amount of spam the player will get on line for their 
+	 * sales.  Please NOTE: This does not delay the player from getting paid.  If the
+	 * delay is set to 15 seconds and they mine 100 times, they will get only one 
+	 * message with the total amount that they earned; otherwise they would have been
+	 * sent 100 messages each time something was sold.
+	 * </p>
+	 *
+	 * <p>`playSoundOnSellAll`: If enabled, then a sound will be played upon a payment
+	 * to the player.  Please see the SellAll configuration file for changing 
+	 * the settings for the sound.
+	 * </p>
+	 * 
+	 * <p>`completelySilent`: This is a virtual setting that is generated when all four 
+	 * of these settings are set to false: `notifyPlayerEarned`, `notifyPlayerDelay`, 
+	 * `notifyPlayerEarningDelay`, and `playSoundOnSellAll`.  When enabled, this 
+	 * basically shuts off all notifications and the player is paid silently in the 
+	 * background.
+	 *
+	 * @param player
+	 * @param amount
+	 * @param currency
+	 * @param notifyPlayerEarned
+	 * @param notifyPlayerDelay
+	 * @param notifyPlayerEarningDelay
+	 * @param playSoundOnSellAll
+	 */
+	public void payPlayer( Player player, double amount, String currency,
+    		boolean notifyPlayerEarned, 
+    		boolean notifyPlayerDelay, 
+    		boolean notifyPlayerEarningDelay, 
+    		boolean playSoundOnSellAll ) {
+		
+		if ( amount > 0 ) {
+			
+			boolean completelySilent = notifyPlayerEarned || notifyPlayerDelay || notifyPlayerEarningDelay || playSoundOnSellAll;
+			
+			SpigotPlayer sPlayer = new SpigotPlayer( player );
+			RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+			
+			currency = currency != null && currency.equalsIgnoreCase("default") ? null : currency;
+			
+//        if (!sellInputArrayListOnly) {
+//            removeSellableItems(p);
+//        }
+			rankPlayer.addBalance(currency, amount);
+			
+			if ( getPrisonSellAll().isSellAllDelayEnabled ){
+				getPrisonSellAll().addToDelay(player);
+			}
+			
+			if (!completelySilent) {
+				if ( getPrisonSellAll().isSellAllSoundEnabled && playSoundOnSellAll) {
+					player.playSound( player.getLocation(), getPrisonSellAll().sellAllSoundSuccess, 3, 1);
+				}
+				
+				if (notifyPlayerEarningDelay && getPrisonSellAll().isAutoSellEarningNotificationDelayEnabled){
+					if (!getPrisonSellAll().isPlayerWaitingAutoSellNotification( player )){
+						getPrisonSellAll().addToAutoSellNotificationDelay( player);
+					} else {
+						getPrisonSellAll().addDelayedEarningAutoSellNotification( player, amount );
+					}
+				} 
+				else if (notifyPlayerEarned){
+					DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
+					String amt = fFmt.format( amount );
+					
+					String message = getPrisonSellAll().sellallAmountEarnedMsg( amt );
+					
+//            	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//            	new SpigotPlayer(p).setActionBar( message );
+					Output.get().send( sPlayer, message );
+					
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * <p>This function will use Prison internals to pay a player a given sum of money as specified 
+	 * by the amount.  This function is the same as the other ones with the same name and similar
+	 * parameters.  This one differs in that you can pass it a List of `SellAllData` transactions
+	 * and it will summarize them all, and pass the total amount to the other
+	 * `payPlayer()` function.  Please see the help on the other 
+	 * `payPlayer()` functions to better understand what they are doing.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param itemsSold
+	 * @param currency
+	 * @param notifyPlayerEarned
+	 * @param notifyPlayerDelay
+	 * @param notifyPlayerEarningDelay
+	 * @param playSoundOnSellAll
+	 */
+	public void payPlayer( Player player, List<SellAllData> itemsSold, String currency,
+    		boolean notifyPlayerEarned, 
+    		boolean notifyPlayerDelay, 
+    		boolean notifyPlayerEarningDelay, 
+    		boolean playSoundOnSellAll ) {
+		double amount = 0;
+		
+		for (SellAllData item : itemsSold) {
+			amount += item.getTransactionAmount();
+		}
+		
+		payPlayer(player, amount, currency, 
+				notifyPlayerEarned, 
+				notifyPlayerDelay, notifyPlayerEarningDelay, 
+				playSoundOnSellAll);
+	}
+	
 	
 	/**
 	 * <p>This function will calculate the value of all sellable items within the player's inventory 

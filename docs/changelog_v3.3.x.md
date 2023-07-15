@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-14
 
 
+* **Update the prison API to add direct support for payPlayer function (various options).**
+
+
 * **Prison Multi-Language Locale Manager: Updated all language files to include information about the new `*none*` keyword.**
 This keyword is case insensitive and will return an empty string for that message component if it's part of a compound message.  If the message is supposed to be sent to a player, it will be bypassed and nothing will be sent.
 

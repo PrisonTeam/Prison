@@ -53,7 +53,7 @@ public class SpigotVariousGuiMessages
 	}
 	
 	
-	protected String sellallAmountEarnedMsg( String earningsAmount ) {
+	public String sellallAmountEarnedMsg( String earningsAmount ) {
 		
 		return PrisonSellall.getInstance().getSellallMessages()
 				.getLocalizable( "sellall_spigot_utils__money_earned" )
