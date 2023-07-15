@@ -17,6 +17,15 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-15
 
 
+* **SellAllData: The transaction log: Enhanced the itemsSoldReport by combining (compressing) entries for the same PrisonBlock type.**
+This will make it easier to review since there will be only one entry per PrisonBlockType.
+
+
+* **Auto Features AutoSell fix: There were situations where mine bombs that are set with the setting autosell was not being sold.**
+Found a conflict with the logic of enabling autosell within the auto pickup code. There are four ways autsell could be enabled, and a couple were incorrectly mixed with their logic.
+Debug mode is now showing drop counts before and after adjustments from the fortune calculations.
+
+
 * **Prison tokens: expanded the error messages for playing not being found to the set and remove functions for the admin token commands.**
 
 

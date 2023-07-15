@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.sellall;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -63,6 +64,11 @@ public class SellAllData {
     	
     	double totalAmount = 0;
     	int itemCount = 0;
+    	int stacks = soldItems.size();
+    	
+    	// Add same blocks together:
+    	soldItems = compressSoldItems( soldItems );
+    	
     	for (SellAllData soldItem : soldItems) {
     		if ( soldItem != null ) {
     			
@@ -85,7 +91,7 @@ public class SellAllData {
     		.append( " multiplier: " )
     		.append( dFmt.format(multiplier) )
     		.append( " ItemStacks: " )
-    		.append( soldItems.size() )
+    		.append( stacks )
     		.append( " ItemCount: " )
     		.append( iFmt.format(itemCount) )
     		.append( " TotalAmount: " )
@@ -97,6 +103,31 @@ public class SellAllData {
     	return sb.toString();
 	}
 	
+	private static List<SellAllData> compressSoldItems(List<SellAllData> soldItems) {
+		List<SellAllData> results = new ArrayList<>();
+		
+		for (SellAllData sItem : soldItems) {
+			boolean found = false;
+			
+			for (SellAllData result : results) {
+				if ( sItem.getPrisonBlock().equals(result.getPrisonBlock() ) ) {
+					found = true;
+					
+					// found a match... add to the result item:
+					result.setQuantity( result.getQuantity() + sItem.getQuantity() );
+					result.setTransactionAmount( result.getTransactionAmount() + sItem.getTransactionAmount() );
+					break;
+				}
+			}
+			
+			if ( !found ) {
+				results.add(sItem);
+			}
+		}
+		
+		return results;
+	}
+
 	public PrisonBlock getPrisonBlock() {
 		return prisonBlock;
 	}
