@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15 2023-07-14
 
 
+* **Fixed a bug with using the wrong player object within auto feature's autosell.**
+
+
 * **Update the prison API to add direct support for payPlayer function (various options).**
 
 
