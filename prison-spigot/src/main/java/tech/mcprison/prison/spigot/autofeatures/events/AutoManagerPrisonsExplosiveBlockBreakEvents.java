@@ -321,6 +321,9 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			//       than one.
 			if ( e.getMineBomb() != null ) {
 				pmEvent.setCalculateDurability( false );
+				
+				// Set if forced autoSell:
+				pmEvent.setForceAutoSell( e.getMineBomb().isAutosell() );
 			}
 			
 			if ( !validateEvent( pmEvent ) ) {

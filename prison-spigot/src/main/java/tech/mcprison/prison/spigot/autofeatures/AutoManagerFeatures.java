@@ -756,7 +756,7 @@ public abstract class AutoManagerFeatures
 					.append( amt );
 				if ( amt != amtBukkit ) {
 					sItemStack.setAmount( amt );
-					sb.append( "(").append( amtBukkit ).append( ")" );
+					sb.append( "(bukkitAmt:").append( amtBukkit ).append( ")" );
 				}
 			}
 			if ( bukkitDropsMultiplier != 1.0d ) {
@@ -765,7 +765,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			debugInfo.append( "[autoPickupDrops:: " ).append( sb ).append( "] ");
+			debugInfo.append( "[autoPickupDrops:beforeFortune:: " ).append( sb ).append( "] ");
 			
 			
 			
@@ -780,15 +780,24 @@ public abstract class AutoManagerFeatures
 			
 			// Add fortune to the items in the inventory
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
+				sb.setLength(0);
 				short fortuneLevel = getFortune(itemInHand, debugInfo );
 
 //				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
 				
 				for ( SpigotItemStack itemStack : drops ) {
+					if ( sb.length() > 0 ) {
+						sb.append( "," );
+					}
 					
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
 					calculateFortune( itemStack, fortuneLevel, pmEvent.getDebugInfo() );
+					
+					sb.append( itemStack.getName() )
+						.append( ":" )
+						.append( itemStack.getAmount() );
 				}
+				debugInfo.append( "[totalDrops:afterFortune:: " ).append( sb ).append( "] ");
 			}
 			
 			
@@ -840,21 +849,31 @@ public abstract class AutoManagerFeatures
 							pmEvent.getSpigotPlayer().getWrapper() ) 
 					;
 			
+			boolean forceAutoSell = isSellallEnabled && pmEvent.isForceAutoSell();
+			
+			boolean autoSellBySettings = isSellallEnabled && isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
+			boolean autoSellByPerm = isSellallEnabled &&
+					!player.isOp() && 
+					!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+					player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
 			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
 				
 						
-				// Try to autosell if enabled:
-				if ( isSellallEnabled &&
-						
-						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
-								isPlayerAutosellEnabled || 
-						pmEvent.isForceAutoSell() || 
-						!player.isOp() && !"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
-						player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
-						isPlayerAutosellEnabled ) {
+				// Try to autosell if enabled in any of the following ways:
+				if ( isPlayerAutosellEnabled || forceAutoSell || autoSellBySettings || autoSellByPerm ) {
+					
+//				// Try to autosell if enabled:
+//				if ( isSellallEnabled &&
+//						
+//						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
+//								isPlayerAutosellEnabled || 
+//								pmEvent.isForceAutoSell() || 
+//								!player.isOp() && !"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+//								player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
+//						isPlayerAutosellEnabled ) {
 					
 					final long nanoStart = System.nanoTime();
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
