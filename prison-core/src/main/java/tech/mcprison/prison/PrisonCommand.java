@@ -2010,6 +2010,18 @@ public class PrisonCommand
     	}
     	
     	Player player = getPlayer( playerName );
+    	
+    	if ( player == null ) {
+    		if ( !silent ) {
+    			sender.sendMessage(
+    					String.format(
+    							"Prison Tokens: Player name not found. [%s] (hardCodedMessag)", 
+    							playerName ));
+    		}
+    		return;
+    	}
+    	
+    	
     	PlayerCachePlayerData pCache = player.getPlayerCachePlayerData();
     	
     	long tokenBal = pCache.getTokens();

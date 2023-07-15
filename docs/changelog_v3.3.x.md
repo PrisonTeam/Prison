@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15 2023-07-14
+# 3.3.0-alpha.15 2023-07-15
+
+
+* **Prison Tokens: bug fix: Ran in to NPE when an invalid player name is used.**
+The message text needs to be stored in the lang files.
 
 
 * **Fixed a bug with using the wrong player object within auto feature's autosell.**
