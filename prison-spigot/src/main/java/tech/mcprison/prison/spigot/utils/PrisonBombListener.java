@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.utils;
 
+import java.util.HashSet;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.mines.data.Mine;
@@ -158,6 +162,24 @@ public class PrisonBombListener
         		event.setCancelled( true );
         		return;
         	}
+        	
+        	HashSet<String> allowedMines = new HashSet<>( bomb.getAllowedMines() );
+        	HashSet<String> preventedMines = new HashSet<>( bomb.getPreventedMines() );
+        	List<String> globalPreventedMines = (List<String>) Prison.get().getPlatform()
+        			.getConfigStringArray("prison-mines.mine-bombs.prevent-usage-in-mines");
+        	preventedMines.addAll( globalPreventedMines );
+        	
+        	// Skip prevent-in-mines check if mine is within the allowedMines list:
+        	if ( !allowedMines.contains( mine.getName().toLowerCase() ) ) {
+        		
+        		if ( preventedMines.contains( mine.getName().toLowerCase() ) ) {
+        			
+        			// Mine bombs are not allowed to be used in this mine so cancel:
+        			event.setCancelled( true );
+        			return;
+        		}
+        	}
+
         	
         	// getHand() is not available with bukkit 1.8.8 so use the compatibility functions:
         	EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);

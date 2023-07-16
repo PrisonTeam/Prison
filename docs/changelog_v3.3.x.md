@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-16
 
 
+* **Added new feature to prevent mine bombs from being used in mines.**
+A specific mine bomb can have a list of included mines, which overrides any exclusions. The mine bombs can be excluded from specific mines too.
+There is also a global disallowed mine list that will apply to all mine bombs, its in the config.yml file with the setting name of:
+  prison-mines.mine-bombs.prevent-usage-in-mines
+  
+
 * **The Platform function getConfigStringArray should be a List of Strings for the return value, so updated the result type to reflect the correct setting.**
 
 

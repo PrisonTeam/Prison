@@ -180,6 +180,26 @@ public class MineBombData {
 	
 	
 	/**
+	 * <p>This is a list of mine names where a mine bomb is allowed to be used.
+	 * This setting overrides any global setting to disallow a specific mine, which
+	 * allows a specific mine bomb to be used within a mine where all other 
+	 * mine bombs are excluded.
+	 * </p>
+	 */
+	private List<String> allowedMines;
+	
+	/**
+	 * <p>This is a list of mine names where this mine bomb cannot be used.
+	 * This mine bomb specific list is combined with the global setting of  
+	 * excluded mines.  The global settings is in `config.yml` and is named
+	 * `prison-mines.mine-bombs.prevent-usage-in-mines`.
+	 * </p>
+	 */
+	private List<String> preventedMines;
+	
+	
+	
+	/**
 	 * <p>Internal just to indicated if a mine bomb is activated or not.
 	 * This has not purpose if used in a save file.
 	 * </p>
@@ -201,6 +221,9 @@ public class MineBombData {
 		
 		this.soundEffects = new TreeSet<>( new MineBombEffectsData() );
 		this.visualEffects = new TreeSet<>( new MineBombEffectsData() );
+		
+		this.allowedMines = new ArrayList<>();
+		this.preventedMines = new ArrayList<>();
 	}
 	
 	
@@ -471,6 +494,20 @@ public class MineBombData {
 	}
 	public void setAutosell( boolean autosell ) {
 		this.autosell = autosell;
+	}
+
+	public List<String> getAllowedMines() {
+		return allowedMines;
+	}
+	public void setAllowedMines(List<String> allowedMines) {
+		this.allowedMines = allowedMines;
+	}
+
+	public List<String> getPreventedMines() {
+		return preventedMines;
+	}
+	public void setPreventedMines(List<String> preventedMines) {
+		this.preventedMines = preventedMines;
 	}
 
 	public boolean isActivated() {

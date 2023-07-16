@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -353,6 +355,66 @@ public class MineBombs
 				
 				bomb.setRemovalChance( 100d );
 				isDirty = true;
+			}
+			
+			// map all names to lower case
+			if ( bomb.getAllowedMines().size() > 0 ) {
+				List<String> mines = new ArrayList<>();
+				boolean cleaned = false;
+				
+				for (String mineName : bomb.getAllowedMines() ) {
+					String cleanedMineName = mineName.toLowerCase();
+					
+					if ( !cleanedMineName.equals( mineName ) ) {
+						cleaned = true;
+					}
+
+					if ( !Prison.get().getPlatform().getMinesListString().contains(cleanName) ) {
+						Output.get().log( "MineBomb %s: invalid mine name for allowedMines: %s  Removed.", 
+								LogLevel.WARNING,
+								bomb.getName(), cleanedMineName );
+						cleaned = true;
+					}
+					else {
+						
+						mines.add(cleanedMineName);
+					}
+
+				}
+				if ( cleaned ) {
+					bomb.setAllowedMines(mines);
+					isDirty = true;
+				}
+			}
+			
+			// map all names to lower case
+			if ( bomb.getPreventedMines().size() > 0 ) {
+				List<String> mines = new ArrayList<>();
+				boolean cleaned = false;
+				
+				for (String mineName : bomb.getPreventedMines() ) {
+					String cleanedMineName = mineName.toLowerCase();
+					
+					if ( !cleanedMineName.equals( mineName ) ) {
+						cleaned = true;
+					}
+
+					if ( !Prison.get().getPlatform().getMinesListString().contains(cleanName) ) {
+						Output.get().log( "MineBomb %s: invalid mine name for prevented-Mines: %s  Removed.", 
+								LogLevel.WARNING,
+								bomb.getName(), cleanedMineName );
+						cleaned = true;
+					}
+					else {
+						
+						mines.add(cleanedMineName);
+					}
+
+				}
+				if ( cleaned ) {
+					bomb.setPreventedMines(mines);
+					isDirty = true;
+				}
 			}
 			
 		}
