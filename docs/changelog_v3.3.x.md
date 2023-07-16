@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-16
 
 
+* **If at last rank, show a message to tell the player that.**
+
+
 * **Added a few more items to the default list of items in sellall.**
 
 
