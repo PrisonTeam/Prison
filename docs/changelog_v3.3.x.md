@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-16
 
 
+* **Added a few more items to the default list of items in sellall.**
+
+
 * **Added new feature to prevent mine bombs from being used in mines.**
 A specific mine bomb can have a list of included mines, which overrides any exclusions. The mine bombs can be excluded from specific mines too.
 There is also a global disallowed mine list that will apply to all mine bombs, its in the config.yml file with the setting name of:

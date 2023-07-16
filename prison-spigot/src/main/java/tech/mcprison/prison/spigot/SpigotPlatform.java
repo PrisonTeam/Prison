@@ -2013,6 +2013,20 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.SUGAR, 13 ) );
 		blockList.add( new SellAllBlockData( XMaterial.PAPER, 13 ) );
 		
+		
+		blockList.add( new SellAllBlockData( XMaterial.SOUL_SAND, 25 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BROWN_MUSHROOM, 5 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BROWN_MUSHROOM_BLOCK, 5 ) );
+		blockList.add( new SellAllBlockData( XMaterial.RED_MUSHROOM, 5 ) );
+		blockList.add( new SellAllBlockData( XMaterial.RED_MUSHROOM_BLOCK, 5 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SLIME_BALL, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SLIME_BLOCK, 63 ) );
+		blockList.add( new SellAllBlockData( XMaterial.PACKED_ICE, 7 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.BRICK, 4 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BRICKS, 16 ) ); // 1 bricks = 4 brick
+		
+		
 		return blockList;
 	}
 	
