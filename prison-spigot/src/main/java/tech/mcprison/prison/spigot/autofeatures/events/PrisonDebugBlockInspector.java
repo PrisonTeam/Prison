@@ -324,9 +324,15 @@ public class PrisonDebugBlockInspector
     					tool.getName()
     					) );
     	
-    	output.add( "   &3Legend: &7EP&3: Event Priority  &7EC&3: Event Canceled  "
-    			+ "&7DC&3: Drops Canceled  &7EB&3: Event Block  &7Ds&3: Drops  "
-    			+ "&7ms&3: duration in ms");
+    	
+    	EventDropsStatus isNs = isDropCanceled( bbe );
+    	
+    	
+    	output.add( "   &3Legend: &7EP&3: EventPriority  &7EC&3: EventCanceled  "
+    			+ "&7DC&3: DropsCanceled  &7EB&3: EventBlock  &7Ds&3: Drops  "
+    			+ "&7ms&3: dur ms" 
+    			+ ( isNs == EventDropsStatus.notSupported ? "  &7NS&3: NotSupported" : "" )
+    			);
     	
     	
     	printEventStatus( bbe, "-initial-", "", checkBlock, targetBlock, tool, output, player, -1 );
@@ -425,7 +431,7 @@ public class PrisonDebugBlockInspector
     		dropStats = "&4" + isDropCanceled.name();
     	}
     	else if ( isDropCanceled == EventDropsStatus.notSupported ) {
-    		dropStats = "&d" + isDropCanceled.name();
+    		dropStats = "&dNS"; // + isDropCanceled.name();
     	}
     	
     	// Get a fresh copy of the block to ensure we pickup the latest status:

@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15a 2023-07-15
+# 3.3.0-alpha.15a 2023-07-16
+
+
+* **More adjustments to the PrisonDebugBlockInspector for readability.**
 
 
 * **Auto features not being fully disabled when turned off.**
