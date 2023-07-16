@@ -625,7 +625,7 @@ public class SellAllUtil
     	
     	SellAllData sad = sellItemStack( itemStack, multiplier );
     	
-    	return sad.getTransactionAmount();
+    	return sad == null ? 0 : sad.getTransactionAmount();
     }
     
     public String getItemStackValueReport( SpigotPlayer sPlayer, SpigotItemStack itemStack ) {
