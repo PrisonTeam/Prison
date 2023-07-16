@@ -249,8 +249,8 @@ public class PrisonPasteChat {
 				rawJson = reader.readLine();
 			}
 		} 
-		catch (IOException e) {
-			Output.get().logError( 
+		catch (Exception e) {
+			Output.get().logWarn( 
 					String.format( "Failure in sending paste. %s ", e.getMessage()) , e );
 		}
 		

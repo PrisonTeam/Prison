@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-16
 
 
+* **PrisonPasteChat: change the exception to just Exception so it can capture all errors.**
+The server has been down for the last two days and so other errors need to be caught.
+
+
 * **If at last rank, show a message to tell the player that.**
 
 
