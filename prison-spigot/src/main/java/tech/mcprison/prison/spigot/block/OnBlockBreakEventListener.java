@@ -247,8 +247,8 @@ public class OnBlockBreakEventListener
 			reJHEvents.registerEvents();
 		}
 		
-		pdBlockInspector = new PrisonDebugBlockInspector();
-		pdBlockInspector.init();
+		pdBlockInspector = PrisonDebugBlockInspector.getInstance();
+//		pdBlockInspector.init();
 	}
 	
 

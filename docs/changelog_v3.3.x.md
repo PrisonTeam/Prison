@@ -21,7 +21,14 @@ These change logs represent the work that has been going on within prison.
 There was an issue with `/prison reload autoFeatures` enabling itself when it should have been off.
 
 
-* ** v3.3.0-alpha.15a 2023-07-15**
+
+** v3.3.0-alpha.15a 2023-07-16**
+
+
+
+
+* **Enhance Prison's debug block inspector to fix an issue with running it multiple times for one test.**
+Reformatted the layout so each plugin is now using only one line instead of two, and added the duration of runtime in ms.
 
 
 * **SellAllData: The transaction log: Enhanced the itemsSoldReport by combining (compressing) entries for the same PrisonBlock type.**
