@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-16
 
 
+* **The Platform function getConfigStringArray should be a List of Strings for the return value, so updated the result type to reflect the correct setting.**
+
+
 * **Bug fix: If a sellall transaction is null, then it now returns a zero since nothing was sold.**
 
 

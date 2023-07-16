@@ -444,7 +444,7 @@ public interface Platform {
 	public TreeSet<String> getExcludedWorlds();
 
 
-	public List<?> getConfigStringArray( String key );
+	public List<String> getConfigStringArray( String key );
 
 
 	public int compareServerVerisonTo( String comparisonVersion );

@@ -295,7 +295,7 @@ public class TestPlatform implements Platform {
 	}
 
 	@Override
-	public List<?> getConfigStringArray( String key ) {
+	public List<String> getConfigStringArray( String key ) {
 		return new ArrayList<String>();
 	}
 

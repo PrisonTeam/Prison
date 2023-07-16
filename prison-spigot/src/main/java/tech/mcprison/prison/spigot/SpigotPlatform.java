@@ -928,9 +928,11 @@ public class SpigotPlatform
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<?> getConfigStringArray( String key ) {
-		return SpigotPrison.getInstance().getConfig().getList( key, new ArrayList<String>() );
+	public List<String> getConfigStringArray( String key ) {
+		return (List<String>) SpigotPrison.getInstance().getConfig()
+										.getList( key, new ArrayList<String>() );
 	}
 	
 	
