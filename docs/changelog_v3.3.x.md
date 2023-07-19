@@ -16,6 +16,11 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.15a 2023-07-19
 
+* **Prison Support:  Enabling the initial save file to an HTML file.**
+Color codes are working great, but needs some tweaking.
+The framework for hyperlinks are inserted in most locations... they are just double pipes surrounding 2 or 3 words.  I will generate a series of classes that will auto generate hyperlinks and table of contents based upon these encodings.
+
+
 * **Prison Support: More setup of the new SupportHyperLinkComponent, but mostly the java docs which explains it pretty well.**
 
 

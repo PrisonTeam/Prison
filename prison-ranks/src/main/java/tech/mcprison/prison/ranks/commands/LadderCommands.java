@@ -96,6 +96,10 @@ public class LadderCommands
     public void ladderList(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("Ladders");
         
+        
+        display.addSupportHyperLinkData( "Ladder List" );
+
+        
         BulletedListComponent.BulletedListBuilder list =
         					new BulletedListComponent.BulletedListBuilder();
         

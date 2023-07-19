@@ -43,6 +43,7 @@ import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.RegisteredCommand;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.discord.PrisonPasteChat;
+import tech.mcprison.prison.discord.PrisonSupportFiles;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
@@ -73,6 +74,7 @@ public class PrisonCommand
 	private List<String> prisonStartupDetails;
 	
 	private String supportName = null;
+	private PrisonSupportFiles supportFile = null;
 	private TreeMap<String, String> supportURLs;
 	
 	
@@ -1301,6 +1303,62 @@ public class PrisonCommand
     
     
     
+    @Command(identifier = "prison support saveToFile", 
+    		description = "This sets the  target of the support data to a local file.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSaveToFile(CommandSender sender,
+    		@Wildcard(join=true)
+    @Arg(name = "options", 
+    description = "Enables, or disables the support file. 'basic' will enable the support file " +
+    				"and add 'version', 'ranks', 'mines, and 'configs to the file automatically. " +
+    				"Defaults to 'enable'. [enable, basic, disable]" ) 
+    String options
+    		) {
+
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	if ( options != null && options.toLowerCase().startsWith( "disable" ) ) {
+
+    		setSupportFile( null );
+    	}
+    	else {
+    		
+    		setSupportFile( new PrisonSupportFiles() );
+    		getSupportFile().setupSupportFile( getSupportName() );
+    	}
+    	
+    	
+    	
+    	sender.sendMessage( String.format( "Save the support data to file: %b",
+    														getSupportFile() != null ) );
+    	
+    	if ( getSupportFile() != null ) {
+    		sender.sendMessage( "You can now use the support submit options and they will be save to files." );
+    		
+    		sender.sendMessage( "  Your support save file location: " +
+    				getSupportFile().getSupportFile().getAbsolutePath() );
+    		
+    		if ( options.toLowerCase().equals( "basic" ) ) {
+    			supportSubmitVersion(sender);
+    			supportSubmitRanks(sender);
+    			supportSubmitMines(sender);
+    			supportSubmitConfigs(sender);
+    		}
+    	}
+    	else {
+    		sender.sendMessage( "Support save file has been disabled. Support files have not been removed." );
+    	}
+    }
+    
+    
+    
     @Command(identifier = "prison support submit version", 
     		description = "For Prison support: This will copy the contents of '/prison version all' " +
     				"to paste.helpch.at so it can be easily shared with Prison's support staff .", 
@@ -1352,23 +1410,33 @@ public class PrisonCommand
     		text.append( Output.decodePercentEncoding(log) ).append( "\n" );
 		}
     	
+    	if ( getSupportFile() != null ) {
+    		
+    		getSupportFile().saveToSupportFile( text );
+
+    		sender.sendMessage("  - Support 'version' data was just added to the support output file." );
+    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
+    	}
+    	else {
+    		
+    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    		
+    		String helpURL = pasteChat.post( text.toString() );
+    		
+    		getSupportURLs().put( "Submit version:", helpURL );
+    		
+    		if ( helpURL != null ) {
+    			
+    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    					"paste this URL in to Prison's Discord server." );
+    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		}
+    		else {
+    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		}
+    		
+    	}
     	
-		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-		
-		String helpURL = pasteChat.post( text.toString() );
-		
-		getSupportURLs().put( "Submit version:", helpURL );
-		
-		if ( helpURL != null ) {
-			
-			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-					"paste this URL in to Prison's Discord server." );
-			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
-		}
-		else {
-			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
-		}
-		
     	
     }
 
@@ -1394,24 +1462,34 @@ public class PrisonCommand
     	
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData();
     	
-
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     	
-    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
     	
-    	getSupportURLs().put( "Submit configs:", helpURL );
-    	
-    	if ( helpURL != null ) {
+    	if ( getSupportFile() != null ) {
     		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		getSupportFile().saveToSupportFile( text );
+
+    		sender.sendMessage("  - Support 'configs' data was just added to the support output file." );
+    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
     	}
     	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		
+    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    		
+    		String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+    		
+    		getSupportURLs().put( "Submit configs:", helpURL );
+    		
+    		if ( helpURL != null ) {
+    			
+    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    					"paste this URL in to Prison's Discord server." );
+    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		}
+    		else {
+    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		}
+    		
     	}
-    	
-    	
     }
 
 
@@ -1435,22 +1513,31 @@ public class PrisonCommand
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitRanksData();
     	
     	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-    	
-    	String helpURL = pasteChat.post( text.toString() );
-    	
-    	getSupportURLs().put( "Submit ranks:", helpURL );
-    	
-    	if ( helpURL != null ) {
+    	if ( getSupportFile() != null ) {
     		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		getSupportFile().saveToSupportFile( text );
+
+    		sender.sendMessage("  - Support 'ranks' data was just added to the support output file." );
+    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
     	}
     	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		
+    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    		
+    		String helpURL = pasteChat.post( text.toString() );
+    		
+    		getSupportURLs().put( "Submit ranks:", helpURL );
+    		
+    		if ( helpURL != null ) {
+    			
+    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    					"paste this URL in to Prison's Discord server." );
+    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		}
+    		else {
+    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		}
     	}
-    	
     	
     }
 
@@ -1476,22 +1563,31 @@ public class PrisonCommand
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitMinesData();
     	
     	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-    	
-    	String helpURL = pasteChat.post( text.toString() );
-    	
-    	getSupportURLs().put( "Submit mines:", helpURL );
-    	
-    	if ( helpURL != null ) {
+    	if ( getSupportFile() != null ) {
     		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		getSupportFile().saveToSupportFile( text );
+
+    		sender.sendMessage("  - Support 'mines' data was just added to the support output file." );
+    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
     	}
     	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		
+    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    		
+    		String helpURL = pasteChat.post( text.toString() );
+    		
+    		getSupportURLs().put( "Submit mines:", helpURL );
+    		
+    		if ( helpURL != null ) {
+    			
+    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    					"paste this URL in to Prison's Discord server." );
+    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		}
+    		else {
+    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		}
     	}
-    	
     	
     }
 
@@ -2331,6 +2427,13 @@ public class PrisonCommand
 	}
 	public void setSupportName( String supportName ) {
 		this.supportName = supportName;
+	}
+
+	public PrisonSupportFiles getSupportFile() {
+		return supportFile;
+	}
+	public void setSupportFile(PrisonSupportFiles supportFile) {
+		this.supportFile = supportFile;
 	}
 
 	public TreeMap<String, String> getSupportURLs() {

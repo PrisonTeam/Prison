@@ -223,11 +223,54 @@ public class PrisonStatsUtil {
 		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+		
+		String parentDirName = file.getParentFile().getName();
+		
+		String header = "";
+		String name = "";
+		
+		if ( "ranks".equalsIgnoreCase(parentDirName) ) {
+			// Rank file names have a prefix of "ranks_" and then the rankId, followed by the suffix.
+			// Need to use the rankId to find the rank's name:
+
+			header = "Rank";
+			name = Prison.get().getPlatform().getRankByFileName( file.getName() );
+		}
+		else if ( "ladders".equalsIgnoreCase(parentDirName) ) {
+			// Ladder file names have a prefix of "ladders_" and then the ladderId, followed by the suffix.
+			// Need to use the ladderId to find the ladder's name:
+			
+			header = "Ladder";
+			name = Prison.get().getPlatform().getLadderByFileName( file.getName() );
+		}
+		else if ( "mines".equalsIgnoreCase(parentDirName) ) {
+			// The file name of the mine, minus the suffix, is the name's name.
+			
+			header = "Mine";
+			name = file.getName().replace(".json", "");
+		}
+		else {
+			header = "Config";
+			name = file.getName();
+		}
+		
+		
 		sb.append("\n");
 
 		JumboTextFont.makeJumboFontText(file.getName(), sb);
 
 		sb.append("\n");
+		
+
+		// Hyper Link codes: 
+		sb.append( "||" )
+			.append( header ) 
+			.append( " " )
+			.append( name )
+			.append( " " )
+			.append( "File" )
+			.append( "||\n" );
+			
 
 		sb.append("File Name:   ").append(file.getName()).append("\n");
 		sb.append("File Path:   ").append(file.getAbsolutePath()).append("\n");
@@ -241,7 +284,9 @@ public class PrisonStatsUtil {
 		sb.append("\n");
 
 		if (file.exists() && file.canRead()) {
+			sb.append("&-");
 			readFileToStringBulider(file, sb);
+			sb.append("\n&+");
 		} else {
 			sb.append("Warning: The file is not readable so it cannot be included.\n");
 		}
@@ -251,7 +296,7 @@ public class PrisonStatsUtil {
 
 	public void printFooter(StringBuilder sb) {
 
-		sb.append("\n\n\n");
+		sb.append("\n\n");
 		sb.append("===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n");
 		sb.append("=== # # ### # # # ### # # # ### # # # ### # # # ### # # ===\n");
 		sb.append("===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n");

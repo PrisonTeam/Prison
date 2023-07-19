@@ -676,6 +676,8 @@ public class RanksCommands
         else {
         	display = new ChatDisplay( "List ALL Ranks" );
         	
+            display.addSupportHyperLinkData( "Rank List" );
+        	
         	listAllRanksByLadders( display, hasPerm, rPlayer );
         }
         
@@ -835,6 +837,8 @@ public class RanksCommands
 	{
 		String rankHeader = ranksListHeaderMsg( ladder.getName() );
         ChatDisplay display = new ChatDisplay( rankHeader );
+        
+        display.addSupportHyperLinkData( "Ladder List %s", ladder.getName() );
         
         display.addText( "  " + PrisonRanks.getInstance().getLadderManager().printRankLadderInfoHeader() );
         display.addText( "  " + PrisonRanks.getInstance().getLadderManager().printRankLadderInfoDetail(ladder) );
@@ -1160,6 +1164,9 @@ public class RanksCommands
 		String title = rank.getTag() == null ? rank.getName() : rank.getTag();
 		
 		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( title ));
+		
+        display.addSupportHyperLinkData( "Rank %s", rank.getName() );
+
 		
 		boolean isOp = sender != null && sender.isOp();
 		boolean isConsole = sender == null || !sender.isPlayer();
