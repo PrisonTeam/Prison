@@ -16,6 +16,8 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.15a 2023-07-19
 
+* **Prison Support: More setup of the new SupportHyperLinkComponent, but mostly the java docs which explains it pretty well.**
+
 
 * **Prison Support: Setup the Platform with the function to get the related Rank name or Ladder name, based upon the save file's name.**
 This is used to reverse engineer which rank or ladder is tied to a give file, without having to read the file.
