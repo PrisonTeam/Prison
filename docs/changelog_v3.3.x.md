@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-19
 
 
+* **Prison Support: Setup the Platform with the function to get the related Rank name or Ladder name, based upon the save file's name.**
+This is used to reverse engineer which rank or ladder is tied to a give file, without having to read the file.
+
+
 * **Prison Support:  Start to setup an alternative support file target, of an html file.**
 This file will also convert minecraft color codes to html colors.
 

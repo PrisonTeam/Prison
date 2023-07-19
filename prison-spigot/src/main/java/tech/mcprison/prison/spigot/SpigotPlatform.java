@@ -2586,7 +2586,9 @@ public class SpigotPlatform
         }
 
 		
-		
+		// REMOVE!  The following will "load" the WorldGuard settings and then dump them as json to console
+        //          to confirm they were loaded properly.  Remove when done with this test1
+//        new WorldGuardSettings();
 	}
 	
 	
@@ -3151,5 +3153,28 @@ public class SpigotPlatform
 	@Override
 	public int getMaxY() {
 		return SpigotCompatibility.getInstance().getMaxY();
+	}
+	
+	@Override
+	public String getLadderByFileName(String name) {
+		String results = "";
+		
+		if ( PrisonRanks.getInstance().isEnabled() ) {
+			results = PrisonRanks.getInstance().getLadderManager().getLadderByFileName( name );
+		}
+		
+		return results;
+	}
+
+	@Override
+	public String getRankByFileName(String name) {
+		String results = "";
+		
+		if ( PrisonRanks.getInstance().isEnabled() ) {
+			
+			results = PrisonRanks.getInstance().getRankManager().getRankByFileName( name );
+		}
+		
+		return results;
 	}
 }

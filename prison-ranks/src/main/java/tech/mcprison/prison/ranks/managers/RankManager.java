@@ -1570,6 +1570,19 @@ public class RankManager
     	getTranslatedPlaceHolderKeys();
     }
 	
+    
+
+	public String getRankByFileName(String fileName) {
+		String results = "";
+		
+		for (Rank rank : loadedRanks) {
+			String rankFileName = rank.filename() + ".json";
+			if ( rankFileName.equalsIgnoreCase(fileName) ) {
+				results = rank.getName();
+			}
+		}
+		return results;
+	}
 	
 	private List<Rank> getLoadedRanks() {
 		return loadedRanks;

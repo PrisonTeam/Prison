@@ -546,4 +546,13 @@ public class TestPlatform implements Platform {
 	public int getMaxY() {
 		return 255;
 	}
+	
+	public String getLadderByFileName(String name) {
+		return "default";
+	}
+
+
+	public String getRankByFileName(String name) {
+		return "a";
+	}
 }

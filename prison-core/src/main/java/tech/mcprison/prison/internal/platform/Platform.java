@@ -469,4 +469,10 @@ public interface Platform {
 
 	public int getMaxY();
 
+
+	public String getLadderByFileName(String name);
+
+
+	public String getRankByFileName(String name);
+
 }
