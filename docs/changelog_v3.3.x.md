@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15a 2023-07-16
+# 3.3.0-alpha.15a 2023-07-19
+
+
+* **Prison Support:  Start to setup an alternative support file target, of an html file.**
+This file will also convert minecraft color codes to html colors.
 
 
 * **PrisonPasteChat: change the exception to just Exception so it can capture all errors.**
