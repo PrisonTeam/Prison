@@ -1346,10 +1346,19 @@ public class PrisonCommand
     				getSupportFile().getSupportFile().getAbsolutePath() );
     		
     		if ( options.toLowerCase().equals( "basic" ) ) {
-    			supportSubmitVersion(sender);
-    			supportSubmitRanks(sender);
-    			supportSubmitMines(sender);
-    			supportSubmitConfigs(sender);
+    			
+    			StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitBasic();
+    			
+    			getSupportFile().saveToSupportFile( text );
+
+    			sender.sendMessage("  - Support 'basic' data was just added to the support output file." );
+        		sender.sendMessage("  - Includes: version, listeners, command stats, ladders, Ranks, Mines, and all Config files." );
+        		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
+    			
+//    			supportSubmitVersion(sender);
+//    			supportSubmitRanks(sender);
+//    			supportSubmitMines(sender);
+//    			supportSubmitConfigs(sender);
     		}
     	}
     	else {
@@ -1393,22 +1402,27 @@ public class PrisonCommand
 					);
     	
     	// Include the command stats:
-    	text.append( "\n\n" );
-    	List<String> cmdStats = getCommandStats();
-    	for (String cmd : cmdStats) {
-			text.append( cmd ).append( "\n" );
-		}
+    	text.append( Prison.get().getPrisonStatsUtil().getCommandStatsDetailData() );
+//    	text.append( "\n\n" );
+//    	List<String> cmdStats = getCommandStats();
+//    	for (String cmd : cmdStats) {
+//			text.append( cmd ).append( "\n" );
+//		}
 		
     	
     	
     	// Include Prison backup logs:
-    	text.append( "\n\n" );
-    	text.append( "Prison Backup Logs:" ).append( "\n" );
-    	List<String> backupLogs = getPrisonBackupLogs();
+    	text.append( Prison.get().getPrisonStatsUtil().getPrisonBackupLogsData() );
+//    	text.append( "\n\n" );
+//    	text.append( "Prison Backup Logs:" ).append( "\n" );
+//    	List<String> backupLogs = getPrisonBackupLogs();
+//    	
+//    	for (String log : backupLogs) {
+//    		text.append( Output.decodePercentEncoding(log) ).append( "\n" );
+//		}
+
     	
-    	for (String log : backupLogs) {
-    		text.append( Output.decodePercentEncoding(log) ).append( "\n" );
-		}
+    	
     	
     	if ( getSupportFile() != null ) {
     		
@@ -1510,7 +1524,11 @@ public class PrisonCommand
     	}
     	
     	
+    	// List Ladder and rank lists:
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitRanksData();
+    	
+    	// List rank files:
+    	text.append( Prison.get().getPrisonStatsUtil().getSupportSubmitRanksFileData() );
     	
     	
     	if ( getSupportFile() != null ) {
@@ -1978,7 +1996,8 @@ public class PrisonCommand
     	
     	ChatDisplay display = new ChatDisplay("Prison Backup Logs:");
     	
-    	List<String> backupLogs = getPrisonBackupLogs();
+    	List<String> backupLogs = Prison.get().getPrisonStatsUtil().getPrisonBackupLogs();
+//    	List<String> backupLogs = getPrisonBackupLogs();
     	
     	for (String log : backupLogs) {
 			display.addText(log);
@@ -1988,11 +2007,11 @@ public class PrisonCommand
     	
     }
     
-    private List<String> getPrisonBackupLogs() {
-    	PrisonBackups prisonBackup = new PrisonBackups();
-    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
-    	return backupLogs;
-    }
+//    private List<String> getPrisonBackupLogs() {
+//    	PrisonBackups prisonBackup = new PrisonBackups();
+//    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
+//    	return backupLogs;
+//    }
 	
     
     @Command(identifier = "prison tokens balance", 

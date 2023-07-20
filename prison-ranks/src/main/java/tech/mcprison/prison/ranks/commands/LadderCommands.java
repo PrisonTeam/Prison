@@ -94,11 +94,57 @@ public class LadderCommands
     @Command(identifier = "ranks ladder list", description = "Lists all rank ladders.", 
     								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderList(CommandSender sender) {
-        ChatDisplay display = new ChatDisplay("Ladders");
         
-        
-        display.addSupportHyperLinkData( "Ladder List" );
+    	ChatDisplay display = getLadderList();
+    	
+//    	ChatDisplay display = new ChatDisplay("Ladders");
+//
+//    	display.addSupportHyperLinkData( "Ladder List" );
+//        
+//        BulletedListComponent.BulletedListBuilder list =
+//        					new BulletedListComponent.BulletedListBuilder();
+//        
+////        DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
+//        
+////        String header = String.format( 
+////        		"&d%-12s   %16s   %5s   %12s   %12s",
+////        		"Ladder",
+////        		"Rank Cost Mult",
+////        		"Ranks",
+////        		"First Rank",
+////        		"Last Rank"
+////        		);
+//        
+//        list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoHeader() );
+//        
+//        for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders()) {
+//        	
+////        	int rankCount = ladder.getRanks() == null ? 0 : ladder.getRanks().size();
+////        	
+////        	Rank firstRank = rankCount == 0 ? null : ladder.getRanks().get(0);
+////        	Rank lastRank = rankCount == 0 ? null : ladder.getRanks().get( rankCount - 1 );
+////        	
+////        	String ladderInfo = String.format(
+////        			"&7%-12s   %16s   %4d   %-12s   %-12s", 
+////        			ladder.getName(),
+////        			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
+////        			rankCount,
+////        			firstRank.getName(),
+////        			lastRank.getName()
+////        			);
+//        	
+//            list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoDetail( ladder ) );
+//        }
+//        
+//        display.addComponent(list.build());
 
+        display.send(sender);
+    }
+    
+    public ChatDisplay getLadderList() {
+    	ChatDisplay display = new ChatDisplay("Ladders");
+    	
+        display.addSupportHyperLinkData( "Ladder List" );
         
         BulletedListComponent.BulletedListBuilder list =
         					new BulletedListComponent.BulletedListBuilder();
@@ -136,8 +182,8 @@ public class LadderCommands
         }
         
         display.addComponent(list.build());
-
-        display.send(sender);
+    
+    	return display;
     }
 
 //    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 

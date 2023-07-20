@@ -98,6 +98,7 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -2880,12 +2881,17 @@ public class SpigotPlatform
 		
     	
     	ChatDisplay display = new ChatDisplay("Mines");
+    	
+    	display.addSupportHyperLinkData( "Mines List" );
+    	
+    	// get the mine list:
     	mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
   
     	StringBuilder sb = display.toStringBuilder();
     	
     	sb.append( "\n" );
     	
+    	// get the mine details for all mines:
     	mc.allMinesInfoDetails( sb );
 		
     	return sb.toString();
@@ -2894,20 +2900,31 @@ public class SpigotPlatform
 	
 	@Override
 	public String getRanksListString() {
+		StringBuilder sb = new StringBuilder();
+		
+		LadderCommands lc = 
+					PrisonRanks.getInstance().getRankManager().getLadderCommands();
 		
 		RanksCommands rc = 
 					PrisonRanks.getInstance().getRankManager().getRanksCommands();
 		
+		sb.append( "\n\n" );
 		
-		ChatDisplay display = new ChatDisplay("Ranks");
+		ChatDisplay displayLadders = lc.getLadderList();
+
+		sb.append( displayLadders.toStringBuilder() );
+		sb.append( "\n" );
+		
 		
 		RankPlayer rPlayer = null;
-		rc.listAllRanksByLadders( display, true, rPlayer );
 		
-		StringBuilder sb = display.toStringBuilder();
+		ChatDisplay displayRanks = new ChatDisplay("Ranks");
+		rc.listAllRanksByLadders( displayRanks, true, rPlayer );
 		
-    	sb.append( "\n" );
-    	
+		sb.append( displayRanks.toStringBuilder() );
+		sb.append( "\n" );
+		
+				
     	rc.listAllRanksByInfo( sb );
 //    	rc.allRanksInfoDetails( sb );
 		

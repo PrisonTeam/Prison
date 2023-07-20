@@ -10,14 +10,100 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.backups.PrisonBackups;
+import tech.mcprison.prison.commands.RegisteredCommand;
 import tech.mcprison.prison.discord.PrisonPasteChat;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 
 public class PrisonStatsUtil {
+	
+	
+	/**
+	 * <p>This will return in a StringBuilder all of the information from the following
+	 * commands.  They will be combined in one large StringBuilder object so a table of 
+	 * contents can be built from it.  This is similar to running the following 4 
+	 * commands, but are better organized with the order of the details (files last).
+	 * </p>
+	 * 
+	 * <pre>/prison support submit version</pre>
+	 * <pre>/prison support submit ranks</pre>
+	 * <pre>/prison support submit mines</pre>
+	 * <pre>/prison support submit commands</pre>
+	 * 
+	 * <p>The difference with this function, is that all of the raw files are 
+	 * included at the end, instead of being mixed in with the other non-raw file 
+	 * dumps.
+	 * </p>
+	 * 
+	 * <p>Order of reports:</p>
+	 * <ul>
+	 *   <li>Version ALL</li>
+	 *   <li>listeners ALL</li>
+	 *   <li>Command Stats</li>
+	 *   
+	 *   <li>Ladder List - Missing?</li>
+	 *   <li>Rank List</li>
+	 *   <li>Rank details</li>
+	 *   
+	 *   <li>Mine List</li>
+	 *   <li>Mine details</li>
+	 *   
+	 *   <li>Prison Backup Files</li>
+
+	 *   <li>Ladder Files</li>
+	 *   <li>Rank Files</li>
+	 *   
+	 *   <li>Mine Files</li>
+	 *   
+	 *   <li>ConfigSettings Files</li>
+	 * 
+	 * </ul>
+	 * 
+	 * @return
+	 */
+	public StringBuilder getSupportSubmitBasic() {
+		StringBuilder sb = new StringBuilder();
+		
+		// version info:
+		sb.append( getSupportSubmitVersionData() );
+		
+		// Listeners:
+		sb.append( getSupportSubmitListenersData( "all" ) );
+		
+		// Command Stats:
+		sb.append( getCommandStatsDetailData() );
+		
+		
+		// Rank Lists and Rank details:
+		sb.append( getSupportSubmitRanksData() );
+	
+		
+		// Mine lists and Mine details:
+		sb.append( getSupportSubmitMinesData() );
+		
+		
+		// Backup log files:
+		sb.append( getPrisonBackupLogsData() );
+		
+		
+		// Rank Files:
+		sb.append( getSupportSubmitRanksFileData() );
+		
+		
+		// Mine files:
+		sb.append( getSupportSubmitMinesFileData() );
+		
+
+		// Config files:
+		sb.append( getSupportSubmitConfigsData() );
+		
+		return sb;
+	}
 
 	public ChatDisplay displayVersion(String options) {
 
@@ -102,14 +188,30 @@ public class PrisonStatsUtil {
 	}
 	
 	
-
+	
 	public StringBuilder getSupportSubmitRanksData() {
+		
+		StringBuilder text = new StringBuilder();
+		
+		text.append(Prison.get().getPlatform().getRanksListString());
+		printFooter(text);
+		
+//		List<File> files = listFiles("data_storage/ranksDb/ladders/", ".json");
+//		files.addAll(listFiles("data_storage/ranksDb/ranks/", ".json"));
+//		for (File file : files) {
+//			
+//			addFileToText(file, text);
+//		}
+			
+		return text;
+	}
+
+	public StringBuilder getSupportSubmitRanksFileData() {
 		List<File> files = listFiles("data_storage/ranksDb/ladders/", ".json");
 		files.addAll(listFiles("data_storage/ranksDb/ranks/", ".json"));
 
 		StringBuilder text = new StringBuilder();
 
-		text.append(Prison.get().getPlatform().getRanksListString());
 		printFooter(text);
 
 		for (File file : files) {
@@ -121,28 +223,46 @@ public class PrisonStatsUtil {
 	}
 
 	public StringBuilder getSupportSubmitMinesData() {
-		List<File> files = listFiles("data_storage/mines/mines/", ".json");
-		Collections.sort(files);
+//		List<File> files = listFiles("data_storage/mines/mines/", ".json");
+//		Collections.sort(files);
 
 		StringBuilder text = new StringBuilder();
 
-		text.append("\n");
-		text.append("Table of contents:\n");
-		text.append("  1. Mine list - All mines including virtual mines: /mines list all\n");
-		text.append("  2. Mine info - All mines: /mines info <mineName> all\n");
-		text.append("  3. Mine files - Raw JSON dump of all mine configuration files.\n");
-		text.append("\n");
+//		text.append("\n");
+//		text.append("Table of contents:\n");
+//		text.append("  1. Mine list - All mines including virtual mines: /mines list all\n");
+//		text.append("  2. Mine info - All mines: /mines info <mineName> all\n");
+//		text.append("  3. Mine files - Raw JSON dump of all mine configuration files.\n");
+//		text.append("\n");
 
 		// Display a list of all mines, then display the /mines info <mineName> all for
 		// each:
 		text.append(Prison.get().getPlatform().getMinesListString());
+//		printFooter(text);
+
+//		// get all the file details for each mine:
+//		for (File file : files) {
+//
+//			addFileToText(file, text);
+//		}
+		
+		return text;
+	}
+	
+	public StringBuilder getSupportSubmitMinesFileData() {
+		List<File> files = listFiles("data_storage/mines/mines/", ".json");
+		Collections.sort(files);
+		
+		StringBuilder text = new StringBuilder();
+		
 		printFooter(text);
-
+		
+		// get all the file details for each mine:
 		for (File file : files) {
-
+			
 			addFileToText(file, text);
-
 		}
+		
 		return text;
 	}
 	
@@ -156,11 +276,13 @@ public class PrisonStatsUtil {
 		
     	if ( "blockBreak".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
     		
+    		sb.append( "||Listeners blockBreak||" );
     		sb.append( Prison.get().getPlatform().dumpEventListenersBlockBreakEvents() );
     	}
     	
     	if ( "chat".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
     		
+    		sb.append( "||Listeners chat||" );
     		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerChatEvents() );
     	}
     	
@@ -172,12 +294,109 @@ public class PrisonStatsUtil {
     	
     	if ( "playerInteract".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
     		
+    		sb.append( "||Listeners playerInteract||" );
     		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents() );
     	}
 
 		return sb;
 	}
 
+	
+	public StringBuilder getCommandStatsDetailData() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( "\n\n" );
+		
+		List<String> cmds = getCommandStats();
+		cmds.add( 1,  "||CommandStats List||" );
+		
+    	for (String cmd : cmds) {
+			
+    		sb.append( cmd ).append( "\n" );
+		}
+		
+		return sb;
+	}
+	
+	public void getCommandStatsData() {
+		
+		List<String> cmds = getCommandStats();
+		for (String cmd : cmds) {
+			
+			Output.get().logInfo( cmd );
+		}
+	}
+	
+	private List<String> getCommandStats() {
+		List<String> results = new ArrayList<>();
+		
+		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
+		
+    	TreeSet<RegisteredCommand> allCmds = Prison.get().getCommandHandler().getAllRegisteredCommands();
+    	
+    	results.add( "Prison Command Stats:" );
+    	results.add( 
+    			Output.stringFormat( "    &a&n%-40s&r  &a&n%7s&r  &a&n%-11s&r", 
+    					" Commands     ", " Usage ", "  Avg ms  ") );
+    	
+    	int count = 0;
+    	int totals = 0;
+    	double totalDuration = 0d;
+    	for (RegisteredCommand cmd : allCmds) {
+			
+    		if ( cmd.getUsageCount() > 0 ) {
+    			
+    			double duration = cmd.getUsageRunTimeNanos() / (double) cmd.getUsageCount() / 1000000.0d;
+    			
+    			results.add( Output.stringFormat( "    &2%-40s  &2%7s  &2%11s",
+    					cmd.getCompleteLabel(), 
+    					iFmt.format( cmd.getUsageCount() ),
+    					dFmt.format( duration )
+    					) );
+    			count++;
+    			totals += cmd.getUsageCount();
+    			totalDuration += cmd.getUsageRunTimeNanos();
+    		}
+		}
+    	
+    	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", iFmt.format( allCmds.size() )) );
+    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", iFmt.format( count )) );
+    	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", iFmt.format( totals )) );
+    	
+    	double avgDuration = totalDuration / (double) count / 1000000.0d;
+    	results.add( Output.stringFormat("  &3Average Command Duration ms:      &7%9s", dFmt.format( avgDuration )) );
+    	
+    	results.add( "  &d&oNOTE: Async Commands like '/mines reset' will not show actual runtime values. " );
+
+    	
+		return results;
+	}
+
+	
+	public StringBuilder getPrisonBackupLogsData() {
+		StringBuilder sb = new StringBuilder();
+		
+    	// Include Prison backup logs:
+		sb.append( "\n\n" );
+		sb.append( "Prison Backup Logs:" ).append( "\n" );
+    	List<String> backupLogs = getPrisonBackupLogs();
+    	
+    	for (String log : backupLogs) {
+    		sb.append( Output.decodePercentEncoding(log) ).append( "\n" );
+		}
+    	
+		return sb;
+	}
+	
+	
+    public List<String> getPrisonBackupLogs() {
+    	PrisonBackups prisonBackup = new PrisonBackups();
+    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
+    	return backupLogs;
+    }
+    
+    
 	public void readFileToStringBulider(File textFile, StringBuilder text) {
 		try (BufferedReader br = Files.newBufferedReader(textFile.toPath());) {
 			String line = br.readLine();
@@ -220,7 +439,8 @@ public class PrisonStatsUtil {
 	}
 
 	private void addFileToText(File file, StringBuilder sb) {
-		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 		SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		
@@ -271,12 +491,19 @@ public class PrisonStatsUtil {
 			.append( "File" )
 			.append( "||\n" );
 			
+		String prisonPath = Prison.get().getDataFolder().getAbsolutePath();
+		String filePath = file.getAbsolutePath().replace( prisonPath, "" );
+		
+		long fileSize = file.length();
+		double fileSizeKB = fileSize / 1024.0;
 
-		sb.append("File Name:   ").append(file.getName()).append("\n");
-		sb.append("File Path:   ").append(file.getAbsolutePath()).append("\n");
-		sb.append("File Size:   ").append(dFmt.format(file.length())).append(" bytes\n");
-		sb.append("File Date:   ").append(sdFmt.format(new Date(file.lastModified()))).append(" bytes\n");
-		sb.append("File Stats:  ").append(file.exists() ? "EXISTS " : "").append(file.canRead() ? "READABLE " : "")
+		sb.append("File Name:   ").append( file.getName() ).append("\n");
+		sb.append("Prison Path: ").append( prisonPath ).append("\n");
+		sb.append("File Path:   ").append( filePath ).append("\n");
+		sb.append("File Size:   ").append( iFmt.format( fileSize ) ).append(" bytes\n");
+		sb.append("File Size:   ").append( dFmt.format( fileSizeKB ) ).append(" KB\n");
+		sb.append("File Date:   ").append( sdFmt.format(new Date(file.lastModified())) ).append(" \n");
+		sb.append("File Stats:  ").append( file.exists() ? "EXISTS " : "" ).append(file.canRead() ? "READABLE " : "")
 				.append(file.canWrite() ? "WRITEABLE " : "").append("\n");
 
 		sb.append("\n");

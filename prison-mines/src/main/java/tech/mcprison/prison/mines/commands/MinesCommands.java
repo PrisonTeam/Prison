@@ -897,6 +897,8 @@ public class MinesCommands
         DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
+        
+        chatDisplay.addSupportHyperLinkData( "Mine %s", m.getName() );
 
         {
         	RowComponent row = new RowComponent();

@@ -16,6 +16,12 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.15a 2023-07-19
 
+
+* **Prison Support: More enhancements to the html save file.**
+Instead of calling the four `/prison support submit` commands, they are all now generated from within the same function.  This will allow the collection of all hyperlinks to generate a tabl of contents.
+Improvements to the layout of some of the items in report.
+
+
 * **Prison Support:  Enabling the initial save file to an HTML file.**
 Color codes are working great, but needs some tweaking.
 The framework for hyperlinks are inserted in most locations... they are just double pipes surrounding 2 or 3 words.  I will generate a series of classes that will auto generate hyperlinks and table of contents based upon these encodings.

@@ -313,7 +313,7 @@ public class PrisonSupportFiles {
 			.append( getSupportFile().getAbsolutePath() )
 			.append( "  " )
 			.append( dFmt.format(fileSize) )
-			.append( " KB   Added: " )
+			.append( " KB   Before HTML conversion: " )
 			.append( dFmt.format(newDataSize) )
 			.append( " KB");
 		
