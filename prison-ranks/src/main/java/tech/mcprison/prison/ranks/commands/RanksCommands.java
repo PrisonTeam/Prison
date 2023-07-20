@@ -976,7 +976,7 @@ public class RanksCommands
         	
         	if ( defaultRank ) {
         		// Swap out the default placeholder for the actual content:
-        		text = text.replace( "{def}", "&c(&9Default&c)" );
+        		text = text.replace( "{def}", "&c(&r&9Default&r&c)" );
         	}
         	
         	String rankName = rank.getName();

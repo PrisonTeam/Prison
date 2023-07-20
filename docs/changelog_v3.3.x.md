@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-20
 
 
+* **Fixed a color code conflict in the ranks list when displaying the default rank.**
+It wasn't wrong, but it was showing incorrectly.  Added a reset `&r` and that fixed it.  Almost like too much nesting got in the way.
+
+
 * **Prison Support: Support HTML file: Added a color test to prison, color matched on the console's colors to provide an accurate reproduction and match with the console.**
 Added the ability to support themes: console is the primary, with Madog being an alternative.  Can have others themes too.
 Fixed a few layout issues.  Added the ladder listing, which did not exist before.  Setup the placeholders for the hyperlinks... they will be added next along with the auto generation of a table of contents.
