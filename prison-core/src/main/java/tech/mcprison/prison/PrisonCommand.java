@@ -1349,7 +1349,7 @@ public class PrisonCommand
     			
     			StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitBasic();
     			
-    			getSupportFile().saveToSupportFile( text );
+    			getSupportFile().saveToSupportFile( text, getSupportName() );
 
     			sender.sendMessage("  - Support 'basic' data was just added to the support output file." );
         		sender.sendMessage("  - Includes: version, listeners, command stats, ladders, Ranks, Mines, and all Config files." );
@@ -1366,7 +1366,19 @@ public class PrisonCommand
     	}
     }
     
-    
+   
+    @Command(identifier = "prison support colorTest", 
+    		description = "Displays a test swatch of minecraft colors .", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportColorTest(CommandSender sender
+    		) {
+    	
+    	StringBuilder sb = Prison.get().getPrisonStatsUtil().getColorTest();
+    	
+    	for (String line : sb.toString().split("\n")) {
+			Output.get().logInfo(line);
+		}
+    }
     
     @Command(identifier = "prison support submit version", 
     		description = "For Prison support: This will copy the contents of '/prison version all' " +
@@ -1426,7 +1438,7 @@ public class PrisonCommand
     	
     	if ( getSupportFile() != null ) {
     		
-    		getSupportFile().saveToSupportFile( text );
+    		getSupportFile().saveToSupportFile( text, getSupportName() );
 
     		sender.sendMessage("  - Support 'version' data was just added to the support output file." );
     		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
@@ -1480,7 +1492,7 @@ public class PrisonCommand
     	
     	if ( getSupportFile() != null ) {
     		
-    		getSupportFile().saveToSupportFile( text );
+    		getSupportFile().saveToSupportFile( text, getSupportName() );
 
     		sender.sendMessage("  - Support 'configs' data was just added to the support output file." );
     		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
@@ -1533,7 +1545,7 @@ public class PrisonCommand
     	
     	if ( getSupportFile() != null ) {
     		
-    		getSupportFile().saveToSupportFile( text );
+    		getSupportFile().saveToSupportFile( text, getSupportName() );
 
     		sender.sendMessage("  - Support 'ranks' data was just added to the support output file." );
     		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
@@ -1583,7 +1595,7 @@ public class PrisonCommand
     	
     	if ( getSupportFile() != null ) {
     		
-    		getSupportFile().saveToSupportFile( text );
+    		getSupportFile().saveToSupportFile( text, getSupportName() );
 
     		sender.sendMessage("  - Support 'mines' data was just added to the support output file." );
     		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );

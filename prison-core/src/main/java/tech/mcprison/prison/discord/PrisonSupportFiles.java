@@ -15,7 +15,7 @@ public class PrisonSupportFiles {
 	public static final String PSFN_KEY__NAME = "{$name}";
 	public static final String PSFN_KEY__NUMBER = "{$number}";
 	public static final String PRISON_SUPPORT_FILE_NAME__PATTERN = "prison_support_" + 
-										PSFN_KEY__NAME + "_" + PSFN_KEY__NUMBER + ".htm";
+										PSFN_KEY__NAME + "_" + PSFN_KEY__NUMBER + ".html";
 	
 	public static final String SECTION_CODE = "§";
 
@@ -24,46 +24,44 @@ public class PrisonSupportFiles {
 	private boolean colorMapping = true;
 	
 	public enum ColorMaps {
-		black( "&0", "<span class=\"cc0\">", "</span>", ".cc0 { color: black; }"),
-		DarkBlue( "&1", "<span class=\"cc1\">", "</span>", ".cc1 { color: darkblue; }"),
-		DarkGreen( "&2", "<span class=\"cc2\">", "</span>", ".cc2 { color: darkgreen; }"),
-		DarkCyan( "&3", "<span class=\"cc3\">", "</span>", ".cc3 { color: darkCyan; }"),
-		DarkRed( "&4", "<span class=\"cc4\">", "</span>", ".cc4 { color: darkred; }"),
-		DarkMagenta( "&5", "<span class=\"cc5\">", "</span>", ".cc5 { color: darkmagenta; }"),
-		Orange( "&6", "<span class=\"cc6\">", "</span>", ".cc6 { color: orange; }"),
-		LightGray( "&7", "<span class=\"cc7\">", "</span>", ".cc7 { color: lightgray; }"),
-		DarkGray( "&8", "<span class=\"cc8\">", "</span>", ".cc8 { color: darkgray; }"),
+		black( "&0", "<span class=\"cc0\">", "</span>" ),
+		DarkBlue( "&1", "<span class=\"cc1\">", "</span>" ),
+		DarkGreen( "&2", "<span class=\"cc2\">", "</span>" ),
+		DarkCyan( "&3", "<span class=\"cc3\">", "</span>" ),
+		DarkRed( "&4", "<span class=\"cc4\">", "</span>" ),
+		DarkMagenta( "&5", "<span class=\"cc5\">", "</span>" ),
+		Orange( "&6", "<span class=\"cc6\">", "</span>" ),
+		LightGray( "&7", "<span class=\"cc7\">", "</span>" ),
+		DarkGray( "&8", "<span class=\"cc8\">", "</span>" ),
 
-		Blue( "&9", "<span class=\"cc9\">", "</span>", ".cc9 { color: blue; }"),
-		Green( "&a", "<span class=\"cca\">", "</span>", ".cca { color: green; }"),
-		Cyan( "&b", "<span class=\"ccb\">", "</span>", ".ccb { color: cyan; }"),
-		Red( "&c", "<span class=\"color:Red\">", "</span>", ".ccc { color: red[; }"),
-		Magenta( "&d", "<span class=\"ccd\">", "</span>", ".ccd { color: magenta; }"),
-		Yellow( "&e", "<span class=\"cce\">", "</span>", ".cce { color: yellow; }"),
-		White( "&f", "<span class=\"ccf\">", "</span>", ".ccf { color: white; }"),
+		Blue( "&9", "<span class=\"cc9\">", "</span>" ),
+		Green( "&a", "<span class=\"cca\">", "</span>" ),
+		Cyan( "&b", "<span class=\"ccb\">", "</span>" ),
+		Red( "&c", "<span class=\"ccc\">", "</span>" ),
+		Magenta( "&d", "<span class=\"ccd\">", "</span>" ),
+		Yellow( "&e", "<span class=\"cce\">", "</span>" ),
+		White( "&f", "<span class=\"ccf\">", "</span>" ),
 
 		
-		bold( "&l", "<b>", "</b>", null ),
-		strike( "&m", "<s>", "</s>", null ),
-		underline( "&n", "<u>", "</u>", null ),
-		italic( "&o", "<i>", "</i>", null ),
+		bold( "&l", "<b>", "</b>" ),
+		strike( "&m", "<s>", "</s>" ),
+		underline( "&n", "<u>", "</u>" ),
+		italic( "&o", "<i>", "</i>" ),
 
-		reset( "&r", "", "", null ),
+		reset( "&r", "", "" ),
 		
 		// Internal codes:
-		colorMappingOff( "&-", "", "", null ),
-		colorMappingOn( "&+", "", "", null )
+		colorMappingOff( "&-", "", "" ),
+		colorMappingOn( "&+", "", "" )
 		;
 		
 		private final String colorCode;
 		private final String start;
 		private final String end;
-		private final String css;
-		private ColorMaps( String colorCode, String start, String end, String css ) {
+		private ColorMaps( String colorCode, String start, String end ) {
 			this.colorCode = colorCode;
 			this.start = start;
 			this.end = end;
-			this.css = css;
 		}
 		public String getColorCode() {
 			return colorCode;
@@ -73,9 +71,6 @@ public class PrisonSupportFiles {
 		}
 		public String getEnd() {
 			return end;
-		}
-		public String getCss() {
-			return css;
 		}
 
 		public static ColorMaps match( String line ) {
@@ -121,7 +116,7 @@ public class PrisonSupportFiles {
 		return getSupportFile();
 	}
 	
-	public void saveToSupportFile( StringBuilder text ) {
+	public void saveToSupportFile( StringBuilder text, String supportName ) {
 		
 		File file = getSupportFile();
 		
@@ -131,7 +126,7 @@ public class PrisonSupportFiles {
 		}
 		
 		if ( !file.exists() ) {
-			saveSupportDataToFile( text );
+			saveSupportDataToFile( text, supportName );
 		}
 		else {
 			appendSaveSupportDataToFile( text );
@@ -151,7 +146,7 @@ public class PrisonSupportFiles {
 //	}
 	
 	
-	private void saveSupportDataToFile( StringBuilder text ) {
+	private void saveSupportDataToFile( StringBuilder text, String supportName ) {
 		File file = getSupportFile();
 		
 		try ( 
@@ -159,10 +154,13 @@ public class PrisonSupportFiles {
 				) {
 			
 			
-			bw.write( getGlobalCss() );
+			bw.write( getHtmlHead( supportName ) );
+			bw.write( getHtmlBodyStart() );
 			
 			writeBufferedWriter( bw, text );
 			
+//			bw.write( getHtmlBodyEnd() );
+
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -241,15 +239,18 @@ public class PrisonSupportFiles {
 					sb.append( line.substring(idx,idx+1));
 					i = idx;
 				}
+//				else if ( cm == ColorMaps.colorMappingOn ) {
+//					
+//					setColorMapping( true );
+//					sb.append( right.replace( cm.getColorCode(), "" ) );
+//					break;
+//				}
+//				else if ( !isColorMapping() ) {
+//					i = idx + 1;
+//				}
 				else if ( cm == ColorMaps.colorMappingOff ) {
 					
 					setColorMapping( false );
-					sb.append( right.replace( cm.getColorCode(), "" ) );
-					break;
-				}
-				else if ( cm == ColorMaps.colorMappingOn ) {
-
-					setColorMapping( true );
 					sb.append( right.replace( cm.getColorCode(), "" ) );
 					break;
 				}
@@ -263,10 +264,11 @@ public class PrisonSupportFiles {
 					sbEnd.insert(0, cm.getEnd() );
 					i = idx + 1;
 				}
+				
 			}
 			
 			sb.append( sbEnd )
-			.append( "<br />");
+			.append( "\n");
 		}
 		else {
 			ColorMaps cm = ColorMaps.match( line );
@@ -277,11 +279,11 @@ public class PrisonSupportFiles {
 				
 				// Return the line without the color code:
 				sb.append( line.replace( cm.getColorCode(), "" ) )
-					.append( "<br />");
+					.append( "\n");
 			}
 			else {
 				sb.append( line )
-					.append( "<br />");
+					.append( "\n");
 				
 			}
 		}
@@ -354,6 +356,44 @@ public class PrisonSupportFiles {
 		return file;
 	}
 
+	private String getHtmlHead( String supportName ) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append( "<!DOCTYPE html>\n" )
+			.append( "<html>\n" )
+			.append( "<head>\n" )
+			.append( "<title>Prison Support: " ) 
+			.append( 			supportName )
+			.append( "</title>\n" )
+			.append( "  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js\"></script>\n" )
+			.append( getGlobalCss() )
+			.append( "</head>\n" );
+		
+		return sb.toString();
+	}
+	
+	private String getHtmlBodyStart() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( "<body class=\"console\">\n");
+		sb.append( "  <div class=\"buttons\">\n");
+		sb.append( "    <button class=\"button\" onclick=\"$('body').attr('class', 'console')\">Console</button>");
+		sb.append( "<button class=\"button\" onclick=\"$('body').attr('class', 'madog')\">Madog</button>\n");
+		sb.append( "  </div>\n");
+		
+		return sb.toString();
+	}
+	
+	@SuppressWarnings("unused")
+	private String getHtmlBodyEnd() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append( "</body>\n" );
+		sb.append( "</html>\n" );
+
+		return sb.toString();
+	}
+	
 	private String getGlobalCss() {
 		StringBuilder sb = new StringBuilder();
 		
@@ -361,18 +401,67 @@ public class PrisonSupportFiles {
 		
 			.append( "body {\n")
 			.append( "  font-family: ui-monospaced, monospaced, \"Lucida Console\", \"Courier New\", \"Courier\";\n")
-			.append( "  color: white;\n")
-			.append( "  background-color: #494949;\n")
 			.append( "  white-space: pre;\n")
 			.append( "}\n");
+		
+		
+		sb.append( "body.console { color: white; background-color: #000000; }\n");
+		sb.append( "body.console .cc0 { color: black; }\n");
+		sb.append( "body.console .cc1 { color: #0037da; }\n");
+		sb.append( "body.console .cc2 { color: #13a10e; }\n");
+		sb.append( "body.console .cc3 { color: #3a96dd; }\n");
+		sb.append( "body.console .cc4 { color: #c50f1f; }\n");
+		sb.append( "body.console .cc5 { color: #881798; }\n");
+		sb.append( "body.console .cc6 { color: #c19c00; }\n");
+		sb.append( "body.console .cc7 { color: #cccccc; }\n");
+		sb.append( "body.console .cc8 { color: #767676; }\n");
+		sb.append( "body.console .cc9 { color: #3b78ff; }\n");
+		sb.append( "body.console .cca { color: #16c60c; }\n");
+		sb.append( "body.console .ccb { color: #61d6d6; }\n");
+		sb.append( "body.console .ccc { color: #e74856; }\n");
+		sb.append( "body.console .ccd { color: #b4009e; }\n");
+		sb.append( "body.console .cce { color: #f9f1a5; }\n");
+		sb.append( "body.console .ccf { color: #f2f2f2; }\n");
+		
+		
+		sb.append( "body.madog { color: white; background-color: #171717; }\n");
+		sb.append( "body.madog .cc0 { color: black; }\n");
+		sb.append( "body.madog .cc1 { color: darkblue; }\n");
+		sb.append( "body.madog .cc2 { color: #0F0; }\n");
+		sb.append( "body.madog .cc3 { color: #ff8f00; }\n");
+		sb.append( "body.madog .cc4 { color: darkred; }\n");
+		sb.append( "body.madog .cc5 { color: #F0F; }\n");
+		sb.append( "body.madog .cc6 { color: orange; }\n");
+		sb.append( "body.madog .cc7 { color: #aaa6a6; }\n");
+		sb.append( "body.madog .cc8 { color: darkgray; }\n");
+		sb.append( "body.madog .cc9 { color: yellow; }\n");
+		sb.append( "body.madog .cca { color: #00c3ff; }\n");
+		sb.append( "body.madog .ccb { color: cyan; }\n");
+		sb.append( "body.madog .ccc { color: red; }\n");
+		sb.append( "body.madog .ccd { color: magenta; }\n");
+		sb.append( "body.madog .cce { color: yellow; }\n");
+		sb.append( "body.madog .ccf { color: white; }\n");
+		
+		//sb.append( "body.console \n");
+		
+		sb.append( ".buttons { \n");
+		sb.append( "  position: fixed;\n" );
+		sb.append( "  top: 0;\n" );
+		sb.append( "  right: 0;\n" );
+		sb.append( "  width: 150px;\n" );
+		sb.append( "  height: 34px;\n" );
+		sb.append( "} \n");
+		sb.append( ".button { \n");
+		sb.append( "  display: inline-block; \n");
+		sb.append( "} \n");
 
 		
-		for (ColorMaps colorMap : ColorMaps.values()) {
-			if ( colorMap.getCss() != null ) {
-				
-				sb.append( colorMap.getCss() ).append( "\n" );
-			}
-		}
+//		for (ColorMaps colorMap : ColorMaps.values()) {
+//			if ( colorMap.getCss() != null ) {
+//				
+//				sb.append( colorMap.getCss() ).append( "\n" );
+//			}
+//		}
 		
 		
 		sb.append( "</style>" );

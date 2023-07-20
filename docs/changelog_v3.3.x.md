@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15a 2023-07-19
+# 3.3.0-alpha.15a 2023-07-20
+
+
+* **Prison Support: Support HTML file: Added a color test to prison, color matched on the console's colors to provide an accurate reproduction and match with the console.**
+Added the ability to support themes: console is the primary, with Madog being an alternative.  Can have others themes too.
+Fixed a few layout issues.  Added the ladder listing, which did not exist before.  Setup the placeholders for the hyperlinks... they will be added next along with the auto generation of a table of contents.
 
 
 * **Prison Support: More enhancements to the html save file.**

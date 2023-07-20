@@ -102,6 +102,9 @@ public class PrisonStatsUtil {
 		// Config files:
 		sb.append( getSupportSubmitConfigsData() );
 		
+		
+		sb.append( getColorTest() );
+		
 		return sb;
 	}
 
@@ -138,6 +141,44 @@ public class PrisonStatsUtil {
 		return text;
 	}
 
+	
+	public StringBuilder getColorTest() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append( "\n\n" );
+		sb.append( "Color Test:\n\n" );
+		sb.append( "||Color Test||\n" );
+
+		sb.append( "&0#########  &r&1#########  &r&2#########\n" );
+		sb.append( "&0### 0 ###  &r&1### 1 ###  &r&2### 2 ###\n" );
+		sb.append( "&0#########  &r&1#########  &r&2#########\n" );
+
+		sb.append( "&3#########  &r&4#########  &r&5#########\n" );
+		sb.append( "&3### 3 ###  &r&4### 4 ###  &r&5### 5 ###\n" );
+		sb.append( "&3#########  &r&4#########  &r&5#########\n" );
+		
+		sb.append( "&6#########  &r&7#########  &r&8#########\n" );
+		sb.append( "&6### 6 ###  &r&7### 7 ###  &r&8### 8 ###\n" );
+		sb.append( "&6#########  &r&7#########  &r&8#########\n" );
+		
+		sb.append( "&9#########  &r&a#########  &r&b#########\n" );
+		sb.append( "&9### 9 ###  &r&a### a ###  &r&b### b ###\n" );
+		sb.append( "&9#########  &r&a#########  &r&b#########\n" );
+		
+		sb.append( "&c#########  &r&d#########  &r&e#########\n" );
+		sb.append( "&c### c ###  &r&d### d ###  &r&e### e ###\n" );
+		sb.append( "&c#########  &r&d#########  &r&e#########\n" );
+		
+		sb.append( "&f#########  &r\n" );
+		sb.append( "&f### f ###  &r\n" );
+		sb.append( "&f#########  &r\n" );
+		
+		sb.append( "\n\n" );
+		
+		return sb;
+	}
+	
+	
 	public StringBuilder getSupportSubmitConfigsData() {
 		Prison.get().getPlatform().saveResource("plugin.yml", true);
 
