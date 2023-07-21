@@ -808,7 +808,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall multiplier list", description = "SellAll multiplier command list", 
+    @Command(identifier = "sellall multiplier list", 
+    		description = "Lists all of the SellAll Rank multipliers", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllMultiplierCommand(CommandSender sender){
 
@@ -848,7 +849,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 		}
         
         
-        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Prestige Multipliers list: &3(&b" + keys.size() + "&3)" );
+        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Rank Multipliers list: &3(&b" + keys.size() + "&3)" );
 
         int lines = 0;
         int columns = 0;
@@ -890,13 +891,30 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
     
-    @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier. Permission multipliers for player's prison.sellall.multiplier.<valueHere>, example prison.sellall.multiplier.2 will add a 2x multiplier," +
-            "There's also another kind of Multiplier called permission multipliers, they're permissions that you can give to players to give them a multiplier, remember that their format is prison.sellall.multiplier.2 (for example), and this example will give you a " +
-            "total of 3x multiplier (1x default + 2x permission = 3x).",
+    @Command(identifier = "sellall multiplier add", 
+    		description = "Add a sellall multiplier based upon the player's rank. " +
+    				"All ranks that a player has, could have their own multiplier, that can " +
+    				"be combined to help the player increase the value of what they are selling. " +
+    				"These multipliers will be combined with all other player mulitpliers to " +
+    				"adjust the sales price within sellall.  Multipliers can be from these " +
+    				"rank multipliers, and also from permission multipliers. " +
+    				"All players start off with a default value of a multiplier with a value of 1, which " +
+    				"equates to 100% of what they sell: no loss and no gain.  From there, multipliers that " +
+    				"you give to players can be integers, or doubles. They can be greater than 1, or less than " +
+    				"1, or even negative.  All multipliers are added together to provide the player's total " +
+    				"amount. " +
+    				"Permission multipliers for player's `prison.sellall.multiplier.<value>`, "
+    				+ "example `prison.sellall.multiplier.2` will add a 2x multiplier. "
+    				+ "The multiplier values do not have to integers, but can be less than one, or "
+    				+ "doubles. " +
+            "There's also another kind of Multiplier called permission multipliers, they're permissions "
+            + "that you can give to players to give them a multiplier, remember that their format is "
+            + "'prison.sellall.multiplier.2.5' (for example), and this example will give you a " +
+            "total of 3.5x multiplier (1x default + 2.5x permission = 3.5x).",
             permissions = "prison.admin", onlyPlayers = false)
     private void sellAllAddMultiplierCommand(CommandSender sender,
-                                             @Arg(name = "Prestige", description = "Prestige to hook to the multiplier.") String prestige,
-                                             @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier){
+           @Arg(name = "rank", description = "The rank name for the multiplier.") String rank,
+           @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier) {
 
         if (!isEnabled()) return;
 
@@ -910,18 +928,19 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.addPrestigeMultiplier(prestige, multiplier)){
+        if (sellAllUtil.addSellallRankMultiplier(rank, multiplier)){
             Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_add_success));
         }
         else {
-        	Output.get().sendInfo( sender, "Failed to add sellall prestige multiplier." );
+        	Output.get().sendInfo( sender, "Failed to add sellall rank multiplier." );
         }
     }
 
-    @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", 
+    @Command(identifier = "sellall multiplier delete", 
+    		description = "Remove a SellAll rank multiplier.", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllDeleteMultiplierCommand(CommandSender sender,
-                                                @Arg(name = "Prestige", description = "Prestige hooked to the multiplier.") String prestige){
+         @Arg(name = "Rank", description = "The rank name of the multiplier.") String rank){
 
         if (!isEnabled()) return;
 
@@ -935,17 +954,17 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (prestige == null){
+        if (rank == null){
             Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_command_wrong_format));
             return;
         }
 
-        if (sellAllUtil.sellAllConfig.getConfigurationSection("Multiplier." + prestige) == null){
-            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_cant_find) + " [" + prestige + "]");
+        if (sellAllUtil.sellAllConfig.getConfigurationSection("Multiplier." + rank) == null){
+            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_cant_find) + " [" + rank + "]");
             return;
         }
 
-        if (sellAllUtil.removePrestigeMultiplier(prestige)){
+        if (sellAllUtil.removeSellallRankMultiplier(rank)){
             Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_delete_success));
         }
     }

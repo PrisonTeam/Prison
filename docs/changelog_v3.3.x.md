@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15a 2023-07-20
 
 
+* **Enable all Ranks to be used with the sellall rank multiplier.**
+It used to be limited to just prestige ranks, but there has been requests to expand to all ranks.
+
+
 * **Fixed a color code conflict in the ranks list when displaying the default rank.**
 It wasn't wrong, but it was showing incorrectly.  Added a reset `&r` and that fixed it.  Almost like too much nesting got in the way.
 

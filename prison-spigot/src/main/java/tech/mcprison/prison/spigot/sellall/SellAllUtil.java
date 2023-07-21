@@ -1150,8 +1150,10 @@ public class SellAllUtil
             return prestigeMultipliers;
         }
 
+        // NOTE: They key is the same as the rank name... so no need to read the PRESTIGE_NAME or RANK_NAME:
         for (String key : sellAllConfig.getConfigurationSection("Multiplier").getKeys(false)){
-            prestigeMultipliers.put(sellAllConfig.getString("Multiplier." + key + ".PRESTIGE_NAME"), sellAllConfig.getDouble("Multiplier." + key + ".MULTIPLIER"));
+            prestigeMultipliers.put( key, 
+            		sellAllConfig.getDouble("Multiplier." + key + ".MULTIPLIER"));
         }
         return prestigeMultipliers;
     }
@@ -1264,16 +1266,16 @@ public class SellAllUtil
 //    }
 
     /**
-     * Add Multiplier to SellAll depending on the Prestige Rank (Rank from the prestiges ladder).
+     * Add Multiplier to SellAll depending on the Rank (Rank from any ladder).
      *
-     * Return true if edited with success, false if error or Prestige not found.
+     * Return true if edited with success, false if error or the rank is not found.
      *
-     * @param prestigeName - Name of the Prestige as String.
+     * @param rankName - Name of the Rank as String.
      * @param multiplier - Double value.
      *
      * @return boolean.
      * */
-    public boolean addPrestigeMultiplier(String prestigeName, double multiplier){
+    public boolean addSellallRankMultiplier(String rankName, double multiplier){
 
         PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? 
         		null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME) );
@@ -1281,22 +1283,23 @@ public class SellAllUtil
             return false;
         }
 
-        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
-        if (!isPrestigeLadder) {
-            return false;
-        }
-
-        Rank pRank = rankPlugin.getRankManager().getRank(prestigeName);
         
-        if ( pRank == null ) {
+//        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
+//        if (!isPrestigeLadder) {
+//            return false;
+//        }
+
+        Rank rank = rankPlugin.getRankManager().getRank(rankName);
+        
+        if ( rank == null ) {
         	// Invalid rank!
             return false;
         }
 
-        if ( !pRank.getLadder().isPrestiges() ) {
-        	// Rank is not in the prestiges ladder:
-        	return false;
-        }
+//        if ( !pRank.getLadder().isPrestiges() ) {
+//        	// Rank is not in the prestiges ladder:
+//        	return false;
+//        }
         
 //        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestigeName));
 //        if (!isInPrestigeLadder) {
@@ -1307,8 +1310,14 @@ public class SellAllUtil
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             
-            conf.set("Multiplier." + pRank.getName() + ".PRESTIGE_NAME", pRank.getName());
-            conf.set("Multiplier." + pRank.getName() + ".MULTIPLIER", multiplier);
+            if ( rank.getLadder().isPrestiges() ) {
+            	conf.set("Multiplier." + rank.getName() + ".PRESTIGE_NAME", rank.getName());
+            }
+            else {
+            	conf.set("Multiplier." + rank.getName() + ".RANK_NAME", rank.getName());
+            }
+            
+            conf.set("Multiplier." + rank.getName() + ".MULTIPLIER", multiplier);
             
             conf.save(sellAllFile);
         } 
@@ -1317,7 +1326,7 @@ public class SellAllUtil
             return false;
         }
         
-        sellAllPrestigeMultipliers.put( pRank.getName(), multiplier);
+        sellAllPrestigeMultipliers.put( rank.getName(), multiplier);
         updateConfig();
         
         return true;
@@ -1599,7 +1608,7 @@ public class SellAllUtil
             return false;
         }
 
-        return addPrestigeMultiplier(prestigeName, multiplier);
+        return addSellallRankMultiplier(prestigeName, multiplier);
     }
 
     /**
@@ -1656,29 +1665,29 @@ public class SellAllUtil
 //    }
 
     /**
-     * Remove a Prestige Multiplier by name.
+     * Remove a Rank Multiplier by name.
      *
      * Return true if success, false if error or not found.
      *
-     * @param prestigeName - String.
+     * @param rankName - String.
      *
      * @return boolean.
      * */
-    public boolean removePrestigeMultiplier(String prestigeName){
+    public boolean removeSellallRankMultiplier(String rankName){
 
-        if (!sellAllPrestigeMultipliers.containsKey(prestigeName)){
+        if (!sellAllPrestigeMultipliers.containsKey(rankName)){
             return false;
         }
 
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Multiplier." + prestigeName, null);
+            conf.set("Multiplier." + rankName, null);
             conf.save(sellAllFile);
         } catch (IOException e) {
             return false;
         }
-        sellAllPrestigeMultipliers.remove(prestigeName);
+        sellAllPrestigeMultipliers.remove(rankName);
         updateConfig();
         return true;
     }
