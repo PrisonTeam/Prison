@@ -8,6 +8,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
+import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineLinerData.LadderType;
@@ -192,7 +193,7 @@ public class MineLinerBuilder {
 		this.isForced = isForced;
 		
 		if ( pattern != null ) {
-			mine.enableTracer();
+			mine.enableTracer( MineResetType.clear );
 			
 			generatePattern( edge );
 		}

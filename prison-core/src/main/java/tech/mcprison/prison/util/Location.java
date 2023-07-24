@@ -38,6 +38,7 @@ public class Location {
     private Vector direction;
     
     private boolean isEdge;
+    private boolean isCorner;
 
     public Location(World world, double x, double y, double z, float pitch, float yaw, Vector direction) {
     	this.world = world;
@@ -161,6 +162,13 @@ public class Location {
 	}
 	public void setEdge( boolean isEdge ) {
 		this.isEdge = isEdge;
+	}
+	
+	public boolean isCorner() {
+		return isCorner;
+	}
+	public void setCorner(boolean isCorner) {
+		this.isCorner = isCorner;
 	}
 	
 	@Override public boolean equals(Object o) {

@@ -5,5 +5,23 @@ public enum MineResetType
 	normal,
 //	paged,
 	clear,
-	tracer;
+	tracer,
+	corners,
+	outline;
+	
+	public static MineResetType fromString( String resetType ) {
+		MineResetType results = normal;
+		
+		if ( resetType != null ) {
+			
+			for (MineResetType mrt : values() ) {
+				if ( mrt.name().equalsIgnoreCase( resetType ) ) {
+					results = mrt;
+					break;
+				}
+			}
+		}
+		
+		return results;
+	}
 }

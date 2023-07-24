@@ -596,8 +596,11 @@ public abstract class MineReset
 					boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
 									 yEdge && zEdge;
 					
+					boolean isCorner = xEdge && yEdge && zEdge;
+					
 					Location targetBlock = new Location(world, x, y, z);
 					targetBlock.setEdge( isEdge );
+					targetBlock.setCorner( isCorner );
 					
 //					MineTargetBlock mtb = null;
 					
@@ -1269,8 +1272,11 @@ public abstract class MineReset
 						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
 								yEdge && zEdge;
 						
+						boolean isCorner = xEdge && yEdge && zEdge;
+						
 						Location targetBlock = new Location(world, x, y, z);
 						targetBlock.setEdge( isEdge );
+						targetBlock.setCorner( isCorner );
 						
 						locations.add( targetBlock );
 						
@@ -1790,11 +1796,12 @@ public abstract class MineReset
 
 	/**
      * This clears the mine, then provides particle tracers around the outer corners.
+	 * @param resetType 
      */
-    public void enableTracer() {
+    public void enableTracer(MineResetType resetType) {
     	
     	// First clear the mine:
-    	clearMine( true );
+    	clearMine( resetType );
 
 //    	Prison.get().getPlatform().enableMineTracer( 
 //    				getWorldName(),
@@ -1817,7 +1824,7 @@ public abstract class MineReset
     public void adjustSize( Edges edge, int amount ) {
     	
     	// First clear the mine:
-    	clearMine( false );
+    	clearMine( MineResetType.clear );
 		
     	// if amount is zero, then just refresh the liner:
     	
@@ -1852,7 +1859,7 @@ public abstract class MineReset
 		}
 		
 		// Finally trace the mine:
-		clearMine( true );
+		clearMine( MineResetType.tracer );
     }
     
     
@@ -1863,10 +1870,10 @@ public abstract class MineReset
     }
     
     
-    public void clearMine( boolean tracer ) {
+    public void clearMine( MineResetType resetType ) {
 		
     	MineTracerBuilder tracerBuilder = new MineTracerBuilder();
-    	tracerBuilder.clearMine( (Mine) this, tracer );
+    	tracerBuilder.clearMine( (Mine) this, resetType );
     }
     
 
@@ -1885,7 +1892,7 @@ public abstract class MineReset
 		
 		MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), 
 				targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ(), 
-				targetBlock.isEdge() );
+				targetBlock.isEdge(), targetBlock.isCorner() );
 		
 		synchronized ( getMineStateMutex() ) {
 			

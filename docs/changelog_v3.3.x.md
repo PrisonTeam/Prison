@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15a 2023-07-20
+# 3.3.0-alpha.15a 2023-07-23
+
+
+* **Mines set tracer: Update the command to add options for 'clear' the whole mine, and 'corners' where it clears the whole mine but puts the tracer only in the corners.**
+The default option of 'outline' is the default value, and if 'clear' or 'corners' is not set, then it will default to the standard outline, or tracer.
 
 
 * **Enable all Ranks to be used with the sellall rank multiplier.**

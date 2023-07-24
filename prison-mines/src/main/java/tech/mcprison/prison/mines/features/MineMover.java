@@ -1,5 +1,6 @@
 package tech.mcprison.prison.mines.features;
 
+import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.util.Bounds;
@@ -14,7 +15,7 @@ public class MineMover
 	
 	public void moveMine( Mine mine, Edges edge, int amount ) {
 		
-		mine.clearMine( false );
+		mine.clearMine( MineResetType.clear );
 		
 		new MineLinerBuilder( mine, Edges.top, LinerPatterns.repair, false );
 		new MineLinerBuilder( mine, Edges.bottom, LinerPatterns.repair, false );

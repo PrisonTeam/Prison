@@ -12,6 +12,7 @@ public class MineTargetPrisonBlock
 	
 	private boolean airBroke;
 	private boolean isEdge;
+	private boolean isCorner;
 	private boolean exploded;
 	
 	private boolean mined = false;
@@ -26,7 +27,9 @@ public class MineTargetPrisonBlock
 	public MineTargetPrisonBlock( 
 				PrisonBlockStatusData prisonBlock, 
 				World world, 
-						int x, int y, int z, boolean isEdge ) {
+						int x, int y, int z, 
+						boolean isEdge,
+						boolean isCorner ) {
 		this.blockKey = new MineTargetBlockKey( world, x, y, z );
 		
 		this.prisonBlock = prisonBlock;
@@ -36,6 +39,7 @@ public class MineTargetPrisonBlock
 		}
 		
 		this.isEdge = isEdge;
+		this.isCorner = isCorner;
 	}
 
 	@Override
@@ -48,13 +52,26 @@ public class MineTargetPrisonBlock
 		
 		final PrisonBlock pBlock;
 		
-		if ( resetType == MineResetType.tracer && isEdge() )
+		if ( ( resetType == MineResetType.tracer ||
+				   resetType == MineResetType.outline )  && isEdge() )
 		{
+			// Generates the tracer along all edges of the mine
+			// NOTE: outline and tracer are the same. Outline should be 
+			//       converted to tracer, but if it's not, then handle it here
+			pBlock = PrisonBlock.PINK_STAINED_GLASS;
+		}
+		else if ( resetType == MineResetType.corners && isCorner() )
+		{
+			// Generates the trace along all the corners of the mine
 			pBlock = PrisonBlock.PINK_STAINED_GLASS;
 		}
 		else if ( resetType == MineResetType.clear || 
-				resetType == MineResetType.tracer )
+				resetType == MineResetType.tracer || 
+				resetType == MineResetType.outline || 
+				resetType == MineResetType.corners )
 		{
+			// clears the mine with all AIR, or for tracers the non edges, 
+			// or clears all of the mine except the corners.
 			pBlock = PrisonBlock.AIR;
 		}
 		else if ( getPrisonBlock() != null && 
@@ -123,6 +140,13 @@ public class MineTargetPrisonBlock
 	}
 	public void setEdge( boolean isEdge ) {
 		this.isEdge = isEdge;
+	}
+
+	public boolean isCorner() {
+		return isCorner;
+	}
+	public void setCorner(boolean isCorner) {
+		this.isCorner = isCorner;
 	}
 
 	public boolean isExploded() {

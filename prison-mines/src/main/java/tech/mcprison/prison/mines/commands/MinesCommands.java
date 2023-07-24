@@ -37,6 +37,7 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -2777,25 +2778,41 @@ public class MinesCommands
     }
     
 
-    @Command(identifier = "mines set tracer", permissions = "mines.set", 
-    				description = "Clear the mine and set a tracer around the outside")
+    @Command(identifier = "mines set tracer", 
+    		description = "Clears the mine of all blocks and sest a tracer of "
+    				+ "pink glass blocks around the outside",
+		    permissions = "mines.set")
     public void setTracerCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to set the tracer in.") String mineName) {
+        @Arg(name = "mineName", 
+        	description = "The name of the mine to set the tracer in.") String mineName,
+        @Arg(name = "options", def = "outline",
+        	description = "Options to control how the tracer is set. "
+        			+ "Defaults to 'outline' which draws a pink glass block around the edges of the mine. "
+        			+ "The option 'corners' will only place blocks within the corners of the mine. "
+        			+ "The option of 'clear' will just clear the mine and will not place any tracers. "
+        			+ "[outline corners clear]") String option ) {
     	
     	if (!performCheckMineExists(sender, mineName)) {
     		return;
     	}
 
+    	MineResetType resetType = MineResetType.fromString(option);
+    	
+    	if ( resetType != MineResetType.corners && resetType != MineResetType.clear ) {
+    		resetType = MineResetType.tracer;
+    	}
+    	
+    	
         PrisonMines pMines = PrisonMines.getInstance();
         Mine mine = pMines.getMine(mineName);
-        
+         
         
         if ( mine.isVirtual() ) {
         	sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
         	return;
         }
 
-        mine.enableTracer();
+        mine.enableTracer( resetType );
 
     }
 
