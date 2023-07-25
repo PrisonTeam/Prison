@@ -378,7 +378,7 @@ public class PrisonSupportFiles {
 		sb.append( "<body class=\"console\">\n");
 		sb.append( "  <div class=\"buttons\">\n");
 		sb.append( "    <button class=\"button\" onclick=\"$('body').attr('class', 'console')\">Console</button>");
-		sb.append( "<button class=\"button\" onclick=\"$('body').attr('class', 'madog')\">Madog</button>\n");
+		sb.append( "<button class=\"button\" onclick=\"$('body').attr('class', 'madog')\">Prison</button>\n");
 		sb.append( "  </div>\n");
 		
 		return sb.toString();

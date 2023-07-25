@@ -173,6 +173,23 @@ public class PrisonStatsUtil {
 		sb.append( "&f### f ###  &r\n" );
 		sb.append( "&f#########  &r\n" );
 		
+		
+		sb.append( "&3&l#####################&r\n" );
+		sb.append( "&3&l###   Bold & 3    ###&r\n" );
+		sb.append( "&3&l#####################&r\n" );
+		
+		sb.append( "&3&m#####################&r\n" );
+		sb.append( "&3&m###  Strike & 3   ###&r\n" );
+		sb.append( "&3&m#####################&r\n" );
+		
+		sb.append( "&3&n#####################&r\n" );
+		sb.append( "&3&n### Underline & 3 ###&r\n" );
+		sb.append( "&3&n#####################&r\n" );
+		
+		sb.append( "&3&o#####################&r\n" );
+		sb.append( "&3&o###  Italic & 3   ###&r\n" );
+		sb.append( "&3&o#####################&r\n" );
+		
 		sb.append( "\n\n" );
 		
 		return sb;

@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15a 2023-07-23
+# 3.3.0-alpha.15a 2023-07-24
+
+
+* **Prison support: Added more color related test.  Changed the color schema name from 'madog' to 'prison'.**
 
 
 * **Mines set tracer: Update the command to add options for 'clear' the whole mine, and 'corners' where it clears the whole mine but puts the tracer only in the corners.**
