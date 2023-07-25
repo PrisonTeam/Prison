@@ -7,7 +7,7 @@
 This document provides a quick overview on how to install Prison and get it running.
 
 
-*Documented updated: 2023-01-28*
+*Documented updated: 2023-07-24*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -18,9 +18,10 @@ This document provides a quick overview on how to install Prison and get it runn
 
 Download Prison from one of the following sites:
 * [spigotmc.org's Prison History Page](https://www.spigotmc.org/resources/prison.1223/history).
-* [Polymart.org](https://polymart.org/resource/prison-1-8-x-1-17.678)
+* [Polymart.org](https://polymart.org/resource/prison-1-8-x-1-20-x.678)
 * [bukkit.org](https://www.curseforge.com/minecraft/bukkit-plugins/mc-prison-v3)
 
+These sites will have stable alpha releases published to them from time to time.
 
 
 Setting up Prison is simple:
@@ -34,7 +35,7 @@ Setting up Prison is simple:
     - You can always find the latest alpha build on the Discord Server in the #alpha-versions channel:
         - [Prison Discord Server](https://discord.gg/DCJ3j6r)
 
-* Copy the prison jar file to your server's plugin directory.  
+* Copy the prison jar file to your server's `/plugin` directory.  
 
 * Remove any older prison jar file
 
@@ -43,7 +44,7 @@ Setting up Prison is simple:
 * Prison's startup information contains a lot of information.  If you ever have issues, check that information first since it probably will identify what the issues are.
 
 
-* It is strongly suggested that `/ranks autoConfigure` is ran to initially setup your Prison environment.  A great deal of configurations are setup that can save a lot of effort.  Even if you are wanting to start from scratch, it may be worth giving it a try to see how some of the more complex settings are configured.  You can always start over by deleting the `plugins/Prison/` directory.
+* It is strongly suggested that `/ranks autoConfigure` is ran to initially setup your Prison environment.  A great deal of configurations are setup that can save a lot of effort.  Even if you are wanting to start from scratch, it may be worth giving it a try to see how some of the more complex settings are configured.  You can always start over by deleting the `/plugins/Prison/` directory then restarting the server.
 
 
 * Follow Prison's documentation on customization; at this point it's ready for use. 
@@ -60,7 +61,7 @@ Setting up Prison is simple:
 There may be no hard dependencies that will prevent Prison from running, but there are some core plugins that will make it easier to use, and are even required for activation of some features within Prison.  This short list is just a suggestion, but alternatives do exist and may be outside of our ability to comment or assist in their usage.
 
 
-* **Vault** - Optional, but STRONGLY Suggested - This is perhaps the most important plugin.  This plugin provides a common way to access other plugins running on your server, but without having to write any code within Prison to support them.  Vault provides the mapping of a plugin's unique APIs to a common Vault API.  Vault helps support Economy, Permissions, and Placeholders.  Because of Vault, Prison can work flawlessly with dozens of other plugins.  Please refer to Vault's documentation for what it supports.
+* **Vault** - Optional, but **STRONGLY Suggested** - This is perhaps the most important plugin.  This plugin provides a common way to access other plugins running on your server, but without having to write any code within Prison to support them.  Vault provides the mapping of a plugin's unique APIs to a common Vault API.  Vault helps support Economy, Permissions, and Placeholders.  Because of Vault, Prison can work flawlessly with dozens of other plugins.  Please refer to Vault's documentation for what it supports.  Valut does have it's limitations, such as it can only support one currency at a time.
 
 
 * **EssentialsX** - **STRONGLY SUGGESTED**, but still Optional - Provides many of the basic commands and behaviors that you would expect from a Spigot server such as chat, warps, and even some moderation commands and commands that can be given to premium players.  EssentialsX is not Essentials, since Essentials is an older abandoned project, and EssentialsX is a forked project that is still maintained.  Unfortunately, internally it is identified as simply Essentials, but you can tell it's EssentialsX if the version is greater than 2.15.x.  
@@ -71,6 +72,8 @@ There may be no hard dependencies that will prevent Prison from running, but the
 ### Economy Plugins - Required
 
 Prison requires an active economy in order to active the Ranks plugin.  When Prison starts up, it performs many validations on the mines and ranks as they are being loaded.  With Ranks, if Prison cannot find an active economy, then it will refuse to load the Ranks module due to possible server corruption (ie... what failed that there is no economy).
+
+We say an economy is required, but it's still optional.  Without an economy, you cannot use the ranks module, but we fully understand that some servers choose to use a different ranks plugin.
 
 
 * **EssentialsX Economy** - SUGGESTED - Optional - This is a simple economy plugin that just works well.  If you don't have a specific need to use another economy plugin, then it may be best to use this one since it works so well.  The reason why we recommend this economy is because it always works.  That said, we acknowledge the reason it works well, is because it is so simple, so if there are features in other economy plugins that you want to use on your sever, then please explore using them.  But overall, if you just want an economy that is rock solid, then EssentialsX's Economy is a great choice.
@@ -163,13 +166,15 @@ All of Prison's placeholders have an alias.  An alias is a shortened name for a 
 
 **NOTE: Prison no longer supports MVdWPlaceholder** because it could not support all of the advanced features with placeholders that prison uses.  Also, since prison generates so many possible placeholders, MVdW pollutes the console log with thousands of lines of useless information stating each variant of a placeholder has been registered.  We also dropped support for this plugin because there is no way to contact the developer because they hide behind a pay-wall, and I'm not about to buy one of their other plugins to just tell them their so-called-free plugin is not working properly.
 
-But perhaps the biggest reason why I dropped support for MVdW is because it's 100% pointless.  **PlaceholderAPI** works flawlessly with MVdW so there is absolutely no reason why prison needs to support MVdW anymore.  If you need to use MVdW, then please keep using it, it works great with their other plugins.  But you can use PlaceholderAPI along with it too.  So there are zero reasons why you cannot use PlaceholderAPI, and everyone is happy.
+But perhaps the biggest reason why I dropped support for MVdW is because it's 100% pointless from Prison's perspective.  **PlaceholderAPI** works flawlessly with MVdW installed too, so there is absolutely no reason why prison needs to support MVdW anymore since everything works perfectly through PlaceholderAPI.  If you need to use MVdW, then please keep using it, it works great with their other plugins.  But you can use PlaceholderAPI along with it too.  So there are zero reasons why you cannot use PlaceholderAPI, and everyone is happy.
 
 ~~Suggested to Avoid - Prison does support this plugin, but since it is used mostly with premium plugins, we have no way to fully test this plugin to ensure it actually works correctly.  We've heard very few people have used this plugin, but we've heard it does work well. Use at your own risk.~~
 
 ~~With this plugin, all placeholders are registered with it automatically when prison starts up, and all placeholders should be used as all lower case.  Because prison has so many placeholders, with many that are expanded based upon ladders, ranks, and mine names, a modest prison server could generate and register well over 1000 placeholders.  MVdWPlaceholder appears to be very verbose so you will see a lot of logging in the console when it starts up.~~
 
-~~It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.~~
+~~It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.  Also the numerical sequence placeholders may not work either.~~
+
+~~Like it was said earlier, there is no way to contact the developers.  If we could make just one suggestion, and that would be to allow setting up placeholders by specifying a prefix that's used.  This is how PlaceholderAPI works, so with just registering once, a value of "prison_" that ensures all of prison's placeholders are routed to  us.  Also, make sure the allowable placeholders are not limited by length.  Prison use placeholder attributes that can customize how the results are modified which gives an almost limitless opportunity to customize placeholders as desired to match the server's design standards.  The third suggestion for changes is to allow the reloading of placeholders with a simple command, such as reregistering them.  As admins add ranks, ladders, or mines, or even change their names, then all of the placeholders must be reregistered so the new entries are included.~~
 
 
 
@@ -243,7 +248,9 @@ Warning: People have paid for this plugin only to find out after the fact that i
 If you purchase this plugin to use on your server, do so with great caution since it is not supported and it may not integrate with prison.
 [ * Not supported * Tokens * Not supported * ](https://www.spigotmc.org/resources/%E2%9A%A1%EF%B8%8F-tokens-%E2%9A%A1%EF%B8%8F-40-enchantments-%E2%AD%95-free-expansions-%E2%AD%95-25-off.79668/)
 
-**Please Note:** There is another plugin by the same name "Tokens" that strictly deals with tokens and not enchantments, which works just fine with prison.
+
+**Please Note:** There is another plugin by the same name "Tokens" that strictly deals with tokens and not enchantments, which works just fine with prison.  I have even personally contributed to that plugin to provide caching of the player's data to resolve an issue with ultra fast mining in prison.  Basically it used to be that if you give players tokens too quickly, it would lockup the server trying to update the save files.  Now it easily supports 100's, if not 1000's of transactions per second without any impact to the TPS.
+
 
 
 ### Enchantment Plugin Features Supported
@@ -461,15 +468,16 @@ Once entered, it will enable the following submit tools:
 `/prison support submit`  - Show the available tools.
 
 ```
+/prison support submit version
 /prison support submit configs
 /prison support submit latestLogs
 /prison support submit mines
 /prison support submit ranks
-/prison support submit version
 ```
 
-Here is an example that I generated from one of my test servers on 2021-12-03.  I have no idea how long the content remains available, but for support purposes, we only need this information for a few hours.
-  [https://paste.helpch.at/itejovejeh](https://paste.helpch.at/itejovejeh)
+Here is an example that I generated from one of my test servers on 2021-12-03.  I have no idea how long the content remains available, but for support purposes, we only need this information for a few hours.  It appears like this information is never deleted?  As such, here are two different versions which shows you how much more information has been addeed. 
+  [https://paste.helpch.at/silihuxaja](https://paste.helpch.at/silihuxaja) From Prison v3.3.0-alpha.15a
+  [https://paste.helpch.at/itejovejeh](https://paste.helpch.at/itejovejeh) From Prison v3.2.11-alpha.9
 
 
 # Prison Commands
