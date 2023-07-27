@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15a 2023-07-24
+# 3.3.0-alpha.15a 2023-07-27
+
+
+* **TopN: TopN was not being disabled correctly for when ranks were disabled.**
+This now properly checks the PrisonRanks to see if the ranks module is active or not.  The prior code was not being as detailed.
 
 
 * **Prison support: Added more color related test.  Changed the color schema name from 'madog' to 'prison'.**

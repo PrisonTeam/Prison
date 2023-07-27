@@ -130,7 +130,9 @@ public class TopNPlayers
 	 */
 	private void launchTopNPlayerUpdateAsyncTask() {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if ( PrisonRanks.getInstance() != null &&
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
 			Long delayTicks = Prison.get().getPlatform().getConfigLong( 
 					"topNPlayers.refresh.delay-ticks", DELAY_THIRTY_SECONDS_TICKS );
@@ -169,7 +171,9 @@ public class TopNPlayers
 	public void loadSaveFile() {
 		
 		// If Ranks module is not loaded, then do not try to load any save file:
-		if ( PrisonRanks.getInstance().getPlayerManager() == null ) {
+		if (  PrisonRanks.getInstance() == null || 
+				!PrisonRanks.getInstance().isEnabled() ||
+				PrisonRanks.getInstance().getPlayerManager() == null ) {
 			
 			// Ranks is not loaded, so reset to empties:
 			setTopNList( new ArrayList<>() );
@@ -242,7 +246,9 @@ public class TopNPlayers
 	 */
 	public void forceReloadAllPlayers() {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if (  PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
 			long start = System.nanoTime();
 
@@ -380,7 +386,9 @@ public class TopNPlayers
 	
 	public void refreshAndSort() {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() == null ) {
+		if ( PrisonRanks.getInstance() == null || 
+				!PrisonRanks.getInstance().isEnabled() ||
+				PrisonRanks.getInstance().getPlayerManager() == null ) {
 			return;
 		}
 		
@@ -491,7 +499,9 @@ public class TopNPlayers
 	
 	private void calculateAllRankScores( ArrayList<TopNPlayersData> topNList ) {
 
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if ( PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
 			for ( TopNPlayersData topN : topNList ) {
 				
@@ -590,7 +600,9 @@ public class TopNPlayers
 	 */
 	public void updatePlayerData( RankPlayer rPlayer ) {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if ( PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				 PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
 			addPlayerData( rPlayer);
 			
@@ -662,7 +674,9 @@ public class TopNPlayers
     private RankPlayer getTopNRankPlayer( int rankPosition, boolean archived ) {
     	RankPlayer rPlayer = null;
     	
-    	if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+    	if (  PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null ) {
     		
     		ArrayList<TopNPlayersData> tList = 
     				archived ? 
