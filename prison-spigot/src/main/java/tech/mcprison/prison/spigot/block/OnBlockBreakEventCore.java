@@ -407,6 +407,7 @@ public abstract class OnBlockBreakEventCore
 			// and the block has not been mined before, then allow the breakage by 
 			// setting bypassMatchedBlocks to true to allow normal processing:
 			if ( !matchedBlocks &&
+					targetBlock != null &&
 					!targetBlock.isMined() && 
 					sBlockHit.isAir() &&
 					pmEvent.getBbPriority().isMonitor() ) {
