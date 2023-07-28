@@ -219,6 +219,13 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandFortuneLevel( 0 );
 				mbd.setRemovalChance( 40.0d );
 				
+				mbd.getAllowedMines().add( "a" );
+				mbd.getAllowedMines().add( "b" );
+				mbd.getAllowedMines().add( "c" );
+				
+				mbd.getPreventedMines().add( "d" );
+				mbd.getPreventedMines().add( "e" );
+				
 				mbd.getSoundEffects().add( mbeSound01.clone() );
 				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
 				mbd.getSoundEffects().add( mbeSound03.clone() );

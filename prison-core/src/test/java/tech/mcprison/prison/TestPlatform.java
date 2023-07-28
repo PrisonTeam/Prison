@@ -434,6 +434,13 @@ public class TestPlatform implements Platform {
 		
 	}
 	
+
+	@Override
+	public boolean isMineNameValid(String mineName) {
+		return false;
+	}
+
+	
 	@Override
 	public String getMinesListString() {
 		return "";

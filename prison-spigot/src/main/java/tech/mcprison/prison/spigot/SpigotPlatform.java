@@ -2872,29 +2872,47 @@ public class SpigotPlatform
 		SpigotPrison.getInstance().saveResource( fileName, replace );
 	}
 	
+	@Override
+	public boolean isMineNameValid( String mineName ) {
+		boolean results = false;
+		
+		if ( PrisonMines.getInstance().isEnabled() ) {
+			
+			Mine mine = PrisonMines.getInstance().getMine(mineName);
+			
+			results = mine != null;
+		}
+		
+		return results;
+	}
 	
 	@Override
 	public String getMinesListString() {
+		String results = "";
 		
+		if ( PrisonMines.getInstance().isEnabled() ) {
+			
+			MinesCommands mc = PrisonMines.getInstance().getMinesCommands();
+			
+			
+			ChatDisplay display = new ChatDisplay("Mines");
+			
+			display.addSupportHyperLinkData( "Mines List" );
+			
+			// get the mine list:
+			mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
+			
+			StringBuilder sb = display.toStringBuilder();
+			
+			sb.append( "\n" );
+			
+			// get the mine details for all mines:
+			mc.allMinesInfoDetails( sb );
+			
+			results = sb.toString();
+		}
 		
-		MinesCommands mc = PrisonMines.getInstance().getMinesCommands();
-		
-    	
-    	ChatDisplay display = new ChatDisplay("Mines");
-    	
-    	display.addSupportHyperLinkData( "Mines List" );
-    	
-    	// get the mine list:
-    	mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
-  
-    	StringBuilder sb = display.toStringBuilder();
-    	
-    	sb.append( "\n" );
-    	
-    	// get the mine details for all mines:
-    	mc.allMinesInfoDetails( sb );
-		
-    	return sb.toString();
+    	return results;
 //    	return Text.stripColor( sb.toString() );
 	}
 	

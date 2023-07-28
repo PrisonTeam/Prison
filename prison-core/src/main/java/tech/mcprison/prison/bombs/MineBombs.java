@@ -147,9 +147,12 @@ public class MineBombs
 		
 		File configFile = getConfigFile( fio );
 		
-		if ( !configFile.exists() ) {
+		boolean configExists = configFile.exists();
+		
+		if ( !configExists ) {
 			MineBombDefaultConfigSettings defaultConfigs = new MineBombDefaultConfigSettings();
 			defaultConfigs.setupDefaultMineBombData( this );
+			
 		}
 		
 		else {
@@ -192,8 +195,25 @@ public class MineBombs
 					
 				}
 			}
-			
 		}
+
+		
+		StringBuilder sbMsg = new StringBuilder();
+		int cnt = getConfigData().getBombs().size();
+		sbMsg.append( "Prison Mine Bombs: " )
+			.append( cnt )
+			.append( "[" );
+		
+		for ( String key : getConfigData().getBombs().keySet() ) {
+			MineBombData bomb = getConfigData().getBombs().get( key );
+			
+			sbMsg.append( " " )
+				.append( bomb.getName() );
+		}
+		 
+		sbMsg.append( " ]" );
+		
+		Output.get().logInfo( sbMsg.toString() );
 		
 		
 	}
@@ -369,7 +389,7 @@ public class MineBombs
 						cleaned = true;
 					}
 
-					if ( !Prison.get().getPlatform().getMinesListString().contains(cleanName) ) {
+					if ( !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
 						Output.get().log( "MineBomb %s: invalid mine name for allowedMines: %s  Removed.", 
 								LogLevel.WARNING,
 								bomb.getName(), cleanedMineName );
@@ -399,7 +419,7 @@ public class MineBombs
 						cleaned = true;
 					}
 
-					if ( !Prison.get().getPlatform().getMinesListString().contains(cleanName) ) {
+					if ( !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
 						Output.get().log( "MineBomb %s: invalid mine name for prevented-Mines: %s  Removed.", 
 								LogLevel.WARNING,
 								bomb.getName(), cleanedMineName );

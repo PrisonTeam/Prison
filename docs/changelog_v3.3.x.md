@@ -21,6 +21,10 @@ These change logs represent the work that has been going on within prison.
 **v3.3.0-alpha.15b 2023-07-28**
 
 
+* **Mine Bombs: Found an issue with the bomb settings for allowedMines and preventMines, and fixed it.**
+There is a global setting in config.yml under the settings: `prison-mines.mine-bombs.prevent-usage-in-mines` to disable all mine bombs from working in those mines.  The bombs can then be individually added by setting adding mine names to the bomb configs settings for `allowedMines` and `preventedMines`.  If a mine is included on a bomb's allowedMines setting, it will override any global setting.
+
+
 * **Fixed an issue with BRICKS being mismatched to BRICK.  This is an XSeries bug.**
 
 

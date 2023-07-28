@@ -309,6 +309,14 @@ public class MineBombData {
 			cloned.getLore().add( l );
 		}
 		
+		for ( String mine : getAllowedMines() ) {
+			cloned.getAllowedMines().add( mine );
+		}
+		
+		for ( String mine : getPreventedMines() ) {
+			cloned.getPreventedMines().add( mine );
+		}
+		
 		
 		for ( MineBombEffectsData soundEffect : getSoundEffects() ) 
 		{

@@ -388,6 +388,8 @@ public interface Platform {
 
 	public void saveResource( String string, boolean replace );
 
+	
+	public boolean isMineNameValid(String mineName);
 
 	public String getMinesListString();
 
