@@ -275,9 +275,14 @@ public abstract class Spigot18Blocks
 				
 				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
+				// Convert items to their block representation:
 				if ( results == XMaterial.MELON_SLICE && 
 						prisonBlock.getBlockName().equalsIgnoreCase( "melon" ) ) {
 					results = XMaterial.MELON;
+				}
+				else if ( results == XMaterial.BRICK && 
+						prisonBlock.getBlockName().equalsIgnoreCase( "bricks" ) ) {
+					results = XMaterial.BRICKS;
 				}
 				
 				putCachedXMaterial( prisonBlock, results );
