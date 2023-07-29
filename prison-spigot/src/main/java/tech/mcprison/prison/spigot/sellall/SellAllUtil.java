@@ -977,6 +977,9 @@ public class SellAllUtil
 //    }
 
     /**
+     * If autosell is enabled, and if user toggleable is enabled, then
+     * it will check to see if the player has the perm or 
+     * 
      * Get AutoSell Player toggle if available.
      * If he enabled it, AutoSell will work, otherwise it won't.
      * If he never used the toggle command, this will return true, just like if he enabled it in the first place.
@@ -986,28 +989,77 @@ public class SellAllUtil
      * @return boolean.
      * */
     public boolean isPlayerAutoSellEnabled(Player p){
+    	boolean results = false;
+    	
+    	// If autosell isn't enabled, then return false
+    	if ( isAutoSellEnabled ) {
+    		
+    		results =  isSellallPlayerUserToggleEnabled( p );
+//    		if ( !isAutoSellPerUserToggleablePermEnabled ||
+//    			 isAutoSellPerUserToggleablePermEnabled && 
+//    				p.hasPermission(permissionAutoSellPerUserToggleable)){
+//    			
+//    			String settingName = "Users." + p.getUniqueId() + ".isEnabled";
+//    			
+//    			results = sellAllConfig.getString(settingName) == null ||
+//    					getBooleanValue( settingName );
+//    		}
+    	}
+    		
+    	
+//        if (isAutoSellPerUserToggleablePermEnabled && 
+//        		!p.hasPermission(permissionAutoSellPerUserToggleable)){
+//            return false;
+//        }
+//
+//        if (sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled") == null){
+//            return true;
+//        }
 
-        if (isAutoSellPerUserToggleablePermEnabled && 
-        		!p.hasPermission(permissionAutoSellPerUserToggleable)){
-            return false;
-        }
-
-        if (sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled") == null){
-            return true;
-        }
-
-        return getBooleanValue("Users." + p.getUniqueId() + ".isEnabled");
+//        return getBooleanValue("Users." + p.getUniqueId() + ".isEnabled");
+	    return results;
     }
     
-    public boolean checkIfPlayerAutosellIsActive(Player p) {
-    	boolean results = true;
+    /**
+     * <p>This function only checks to see if the user can toggle autosell
+     * on or off.  If they can, then it checks the state to see if it's on
+     * or off.  It does not matter if autosell is enabled within sellall or not,
+     * since this can be used with the auto features autosell too.
+     * </p>
+     * 
+     * 
+     * 
+     * @param p
+     * @return
+     */
+    public boolean isSellallPlayerUserToggleEnabled( Player p ) {
+    	boolean results = false;
     	
-    	if ( isAutoSellPerUserToggleable ) { 
-    		results = isPlayerAutoSellEnabled(p);
+    	if ( isAutoSellPerUserToggleable ) {
+    		
+    		if ( !isAutoSellPerUserToggleablePermEnabled ||
+       			 isAutoSellPerUserToggleablePermEnabled && 
+       				p.hasPermission(permissionAutoSellPerUserToggleable)){
+       			
+       			String settingName = "Users." + p.getUniqueId() + ".isEnabled";
+       			
+       			results = sellAllConfig.getString( settingName ) == null ||
+       					getBooleanValue( settingName );
+       		}
     	}
     	
     	return results;
     }
+    
+//    public boolean checkIfPlayerAutosellIsActive(Player p) {
+//    	boolean results = isAutoSellEnabled;
+//    	
+//    	if ( isAutoSellPerUserToggleable ) { 
+//    		results = isPlayerAutoSellEnabled(p);
+//    	}
+//    	
+//    	return results;
+//    }
 
 //    /**
 //     * WARNING: Obsolete because disabled worlds are set in config.yml and 

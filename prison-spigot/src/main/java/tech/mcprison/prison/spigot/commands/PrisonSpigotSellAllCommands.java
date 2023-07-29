@@ -607,8 +607,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.setAutoSellPlayer(p, !sellAllUtil.isPlayerAutoSellEnabled(p))){
-            if (sellAllUtil.isPlayerAutoSellEnabled(p)){
+        boolean isplayerAutosellEnabled = sellAllUtil.isPlayerAutoSellEnabled(p);
+        if (sellAllUtil.setAutoSellPlayer(p, !isplayerAutosellEnabled)){
+            if ( !isplayerAutosellEnabled ){ // Note this variable was negated then saved, so we need to check the negative:
                 Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_enabled));
             } else {
                 Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_disabled));

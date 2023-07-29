@@ -868,12 +868,19 @@ public abstract class OnBlockBreakEventCore
 
 				debugInfo.append( "(BLOCKEVENTS processing) " );
 				
-				// This is true if the player cannot toggle the autosell, and it's
-				// true if they can, and the have it enabled:
-				boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
-						SellAllUtil.get().checkIfPlayerAutosellIsActive( 
-								pmEvent.getSpigotPlayer().getWrapper() ) 
-						;
+				SellAllUtil sellAllUtil = SellAllUtil.get();
+				boolean isSellallEnabled = sellAllUtil != null && 
+						SpigotPrison.getInstance().isSellAllEnabled();
+				
+				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+				// This is to be used with other auto sell setting, but never on it's own:
+				boolean isPlayerAutosellEnabled = 
+								isSellallEnabled &&
+								(!sellAllUtil.isAutoSellPerUserToggleable ||
+										sellAllUtil.isSellallPlayerUserToggleEnabled( 
+													pmEvent.getPlayer() ));
+				
+				
 				
 				// AutoSell on full inventory when using BLOCKEVENTS:
 				if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&

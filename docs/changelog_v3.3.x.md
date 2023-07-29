@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15b 2023-07-28
+# 3.3.0-alpha.15b 2023-07-29
+
+
+* **sellall & autosell: auto sell was not working correctly within auto manager.**
+Also fixed the user toggle on auto sell so players can turn off autosell when they need to.
 
 
 * **Sellall: clean up some of the help for a few sellall features and expand on the details.  **

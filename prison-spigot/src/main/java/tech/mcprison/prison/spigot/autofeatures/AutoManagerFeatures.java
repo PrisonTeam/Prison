@@ -839,23 +839,34 @@ public abstract class AutoManagerFeatures
 			
 			long nanoTime = 0L;
 			
-			boolean isSellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
+			boolean isSellallEnabled = SellAllUtil.get() != null && 
+					SpigotPrison.getInstance().isSellAllEnabled();
 			
-			// This is true if the player cannot toggle the autosell, and it's
-			// true if they can, and the have it enabled:
-			boolean isPlayerAutosellEnabled = isSellallEnabled &&
-					SellAllUtil.get() != null && 
-					SellAllUtil.get().checkIfPlayerAutosellIsActive( 
-							pmEvent.getSpigotPlayer().getWrapper() ) 
-					;
+			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+			// This is to be used with other auto sell setting, but never on it's own:
+			boolean isPlayerAutosellEnabled = 
+							isSellallEnabled &&
+							(!SellAllUtil.get().isAutoSellPerUserToggleable ||
+							  SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+												pmEvent.getSpigotPlayer().getWrapper() ));
 			
+			
+			// In the event, forceAutoSell is enabled, which means the drops must be sold.
+			// The player's toggle cannot disable this.
 			boolean forceAutoSell = isSellallEnabled && pmEvent.isForceAutoSell();
 			
-			boolean autoSellBySettings = isSellallEnabled && isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
-			boolean autoSellByPerm = isSellallEnabled &&
-					!player.isOp() && 
-					!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
-					player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
+			
+			// AutoFeature's autosell per block break - global setting
+			boolean autoSellBySettings = 
+							isPlayerAutosellEnabled &&
+							isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
+			
+			// AutoFeature's autosell per block break - per player perms setting
+			boolean autoSellByPerm = 
+							isPlayerAutosellEnabled &&
+							!player.isOp() && 
+							!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
 			
 			for ( SpigotItemStack itemStack : drops ) {
 				
@@ -863,7 +874,7 @@ public abstract class AutoManagerFeatures
 				
 						
 				// Try to autosell if enabled in any of the following ways:
-				if ( isPlayerAutosellEnabled || forceAutoSell || autoSellBySettings || autoSellByPerm ) {
+				if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
 					
 //				// Try to autosell if enabled:
 //				if ( isSellallEnabled &&
@@ -1349,6 +1360,19 @@ public abstract class AutoManagerFeatures
 				
 				SellAllUtil sellAllUtil = SellAllUtil.get();
 				
+				boolean isSellallEnabled = sellAllUtil != null && 
+						SpigotPrison.getInstance().isSellAllEnabled();
+				
+				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+				// This is to be used with other auto sell setting, but never on it's own:
+				boolean isPlayerAutosellEnabled = 
+								isSellallEnabled &&
+								(!sellAllUtil.isAutoSellPerUserToggleable ||
+										sellAllUtil.isSellallPlayerUserToggleEnabled( 
+													player ));
+				
+
+				
 				// On inventory is full, will auto sell if auto sell is enabled in either
 				// the sellall configs, or the auto feature configs.
 				if (sellAllUtil != null && (
@@ -1356,7 +1380,7 @@ public abstract class AutoManagerFeatures
 						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
 					
 					
-					if ( sellAllUtil.checkIfPlayerAutosellIsActive(player) ) {
+					if ( isPlayerAutosellEnabled ) {
 						
 						boolean saNote = sellAllUtil.isAutoSellNotificationEnabled;
 
