@@ -17,6 +17,8 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15b 2023-07-28
 
 
+* **Sellall: clean up some of the help for a few sellall features and expand on the details.  **
+
 
 **v3.3.0-alpha.15b 2023-07-28**
 
@@ -90,6 +92,7 @@ The server has been down for the last two days and so other errors need to be ca
 A specific mine bomb can have a list of included mines, which overrides any exclusions. The mine bombs can be excluded from specific mines too.
 There is also a global disallowed mine list that will apply to all mine bombs, its in the config.yml file with the setting name of:
   prison-mines.mine-bombs.prevent-usage-in-mines
+There is a global setting in config.yml under the settings: `prison-mines.mine-bombs.prevent-usage-in-mines` to disable all mine bombs from working in those mines.  The bombs can then be individually added by setting adding mine names to the bomb configs settings for `allowedMines` and `preventedMines`.  If a mine is included on a bomb's allowedMines setting, it will override any global setting.
   
 
 * **The Platform function getConfigStringArray should be a List of Strings for the return value, so updated the result type to reflect the correct setting.**

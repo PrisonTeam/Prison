@@ -84,7 +84,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall", description = "SellAll main command", 
+    @Command(identifier = "sellall", 
+    		description = "SellAll main command", 
     		altPermissions = {"-none-", "prison.admin"},
     		onlyPlayers = false)
     private void sellAllCommands(CommandSender sender) {
@@ -164,25 +165,31 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell.", 
+    @Command(identifier = "sellall autosell", 
+    		description = "Enable SellAll AutoSell. "
+    				+ "For AutoFeatures based sellall, please see the AutoFeatures configs.", 
     		onlyPlayers = false, permissions = "prison.autosell.edit")
     private void sellAllAutoSell(CommandSender sender,
-                                 @Arg(name = "boolean", description = "True to enable or false to disable.", def = "null") String enable){
+         @Arg(name = "boolean", 
+         	description = "'True' to enable or 'false' to disable. Use 'perUserToggleable' to "
+         			+ "enable with users being able to turn on/off.  Default value is 'true'. "
+         			+ "[true false perUserToggleable]", 
+         		def = "true") String enable){
 
         if (!isEnabled()) return;
+        
+        SellAllUtil sellAllUtil = SellAllUtil.get();
+        if (sellAllUtil == null){
+        	return;
+        }
 
         if (enable.equalsIgnoreCase("perusertoggleable")){
             sellAllAutoSellPerUserToggleable(sender, enable);
             return;
         }
 
-        if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
+        if (!enable.equalsIgnoreCase("true") && !enable.equalsIgnoreCase("false") ){
             Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_boolean_input_invalid));
-            return;
-        }
-
-        SellAllUtil sellAllUtil = SellAllUtil.get();
-        if (sellAllUtil == null){
             return;
         }
 
@@ -205,20 +212,27 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable.", 
+    @Command(identifier = "sellall autosell perUserToggleable", 
+    		description = "Enable AutoSell perUserToggleable.  This will "
+    				+ "enable autosell if it's not already enabled, plus it will allow players to "
+    				+ "turn autosell on/off when they need to using the command `/sellall auto toggle`. "
+    				+ "If user toggleable is disabled through this command, it will also disable "
+    				+ "autosell, so you may need to turn it back on with `/sellall autosell true`.", 
     		onlyPlayers = false, permissions = "prison.autosell.edit")
     private void sellAllAutoSellPerUserToggleable(CommandSender sender,
-                                                  @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
+        @Arg(name = "boolean", 
+        description = "'True' to enable or 'false' to disable. [true false]", 
+        def = "") String enable){
 
         if (!isEnabled()) return;
-
-        if (!(enable.equalsIgnoreCase("true") || enable.equalsIgnoreCase("false"))){
-            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_boolean_input_invalid));
-            return;
-        }
-
+        
         SellAllUtil sellAllUtil = SellAllUtil.get();
         if (sellAllUtil == null){
+        	return;
+        }
+
+        if ( !enable.equalsIgnoreCase("true") && !enable.equalsIgnoreCase("false") ) {
+            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_boolean_input_invalid));
             return;
         }
 
@@ -246,8 +260,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		@Arg(name = "player", def = "", description = "An online player name to sell their inventory - " +
     				"Only console or prison commands can include this parameter") String playerName,
             @Arg(name = "notification", def="",
-                    description = "Notification about the sellall transaction. Defaults to normal. " +
-                    "'silent' suppresses results. [silent]") String notification ){
+                    description = "Notification behavior for the sellall transaction. Defaults to normal. " +
+                    "'silent' suppresses all notifications. [silent]") String notification ){
 
         if (!isEnabled()) return;
 
@@ -559,7 +573,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
 
-    @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", 
+    @Command(identifier = "sellall auto toggle", 
+    		description = "When `perUserToggleable` is enabled with autosell, this "
+    				+ "command allow the players to enable or disable their own use of autosell.  "
+    				+ "When using this command, autosell will be toggled on/off for the player.", 
     		altPermissions = "prison.sellall.toggle", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
 
