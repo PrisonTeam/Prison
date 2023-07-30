@@ -103,10 +103,13 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall delay", description = "SellAll delay.", 
+    @Command(identifier = "sellall set delay", 
+    		description = "Enables or disables a SellAll cooldown delay to preventh "
+    				+ "players from spamming the sellall command. "
+    				+ "See `/sellall set delayTime`.", 
     		onlyPlayers = false, permissions = "prison.sellall.delay")
     private void sellAllDelay(CommandSender sender,
-                              @Arg(name = "boolean", description = "True to enable or false to disable.", def = "null") String enable){
+           @Arg(name = "boolean", description = "True to enable or false to disable.", def = "false") String enable){
 
         if (!isEnabled()) return;
 
@@ -140,10 +143,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall set delay", description = "Edit SellAll delay.", 
+    @Command(identifier = "sellall set delayTime", 
+    		description = "This sets the sellall cooldown delay to the specified number of seconds.", 
     		onlyPlayers = false, permissions = "prison.sellall.delay")
     private void sellAllDelaySet(CommandSender sender,
-                                 @Arg(name = "delay", description = "Set delay value in seconds.", def = "0") String delay){
+            @Arg(name = "delay", 
+            description = "Set delay value in seconds. Defaults to a value of 15 seconds.", def = "15") String delay){
 
         if (!isEnabled()) return;
 
@@ -165,7 +170,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell", 
+    @Command(identifier = "sellall set autosell", 
     		description = "Enable SellAll AutoSell. "
     				+ "For AutoFeatures based sellall, please see the AutoFeatures configs.", 
     		onlyPlayers = false, permissions = "prison.autosell.edit")
@@ -212,12 +217,13 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell perUserToggleable", 
+    @Command(identifier = "sellall set autosellPerUserToggleable", 
     		description = "Enable AutoSell perUserToggleable.  This will "
     				+ "enable autosell if it's not already enabled, plus it will allow players to "
-    				+ "turn autosell on/off when they need to using the command `/sellall auto toggle`. "
+    				+ "turn autosell on/off when they need to using the "
+    				+ "command `/sellall autoSellToggle` or the alias `/autosell`. "
     				+ "If user toggleable is disabled through this command, it will also disable "
-    				+ "autosell, so you may need to turn it back on with `/sellall autosell true`.", 
+    				+ "autosell, so you may need to turn it back on with `/sellall set autosell true`.", 
     		onlyPlayers = false, permissions = "prison.autosell.edit")
     private void sellAllAutoSellPerUserToggleable(CommandSender sender,
         @Arg(name = "boolean", 
@@ -330,7 +336,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
     }
 
-    @Command(identifier = "sellall hand", description = "Sell only what is in your hand if sellable.", 
+    @Command(identifier = "sellall sellHand", 
+    		description = "Sell only what is in your hand if it is sellable.", 
     		onlyPlayers = true)
     public void sellAllSellHandCommand(CommandSender sender){
 
@@ -408,8 +415,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
     
 
-    @Command(identifier = "sellall valueof", 
-    		description = "SellAll valueof command will report the total value of the player's inventory "
+    @Command(identifier = "sellall valueOf", 
+    		description = "SellAll valueOf command will report the total value of the player's inventory "
     				+ "without selling anything.", onlyPlayers = false)
     public void sellAllValueOfCommand(CommandSender sender,
     		@Arg(name = "player", def = "", description = "An online player name to get the value of their inventory - " +
@@ -448,7 +455,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         	if ( getPlayer( sender, playerName ) != null ) {
         		
         		Output.get().sendInfo(sender, "&cSorry but the specified player must be online "
-        				+ "[/sellall valueof %s]", playerName );
+        				+ "[/sellall valueOf %s]", playerName );
         	}
         	else {
         		
@@ -485,7 +492,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
     }
 
-    @Command(identifier = "sellall valueofHand", 
+    @Command(identifier = "sellall valueOfHand", 
     		description = "Get the value of what is in your hand if sellable.", 
     		onlyPlayers = true)
     public void sellAllValueOfHandCommand(CommandSender sender){
@@ -499,7 +506,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         if (!sellAllUtil.isSellAllHandEnabled){
-            Output.get().sendWarn(sender, "The command /sellall valueofHand is disabled from the config! (SellAllHandEnabled)");
+            Output.get().sendWarn(sender, "The command `/sellall valueOfHand` is disabled from the config! (SellAllHandEnabled)");
             return;
         }
 
@@ -573,10 +580,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
 
-    @Command(identifier = "sellall auto toggle", 
+    @Command(identifier = "sellall autoSellToggle", 
+    		aliases = {"autosell"}, 
     		description = "When `perUserToggleable` is enabled with autosell, this "
     				+ "command allow the players to enable or disable their own use of autosell.  "
-    				+ "When using this command, autosell will be toggled on/off for the player.", 
+    				+ "When using this command, autosell will be toggled on/off for the player. "
+    				+ "Can also use the alias `/autosell` to toggle this setting", 
     		altPermissions = "prison.sellall.toggle", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
 
@@ -676,11 +685,16 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     	
     }
 
-    @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", 
+    @Command(identifier = "sellall items add", 
+    		description = "This will add an item to the SellAll shop. "
+    				+ "Use `/mines block search help` to find the correct names "
+    				+ "for blocks to add to the sellall shop.  Use "
+    				+ "`/mines block searchAll help` to search for items too.", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllAddCommand(CommandSender sender,
-                                   @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
-                                   @Arg(name = "Value", description = "The value of the item.") Double value){
+                   @Arg(name = "Item_ID", 
+                   		description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
+                   @Arg(name = "Value", description = "The value of the item.") Double value){
 
         if (!isEnabled()) return;
 
@@ -750,9 +764,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         Output.get().logInfo("&3 ITEM [" + itemID + ", " + value + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
     }
 
-    @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", 
+    @Command(identifier = "sellall items delete", 
+    		description = "This command will delete an item from the "
+    				+ "sellall shop. Use `/sellall list` to identify which items to revmove.", 
     		permissions = "prison.admin", onlyPlayers = false)
-    private void sellAllDeleteCommand(CommandSender sender, @Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
+    private void sellAllDeleteCommand(CommandSender sender, 
+    		@Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
 
         if (!isEnabled()) return;
 
@@ -779,11 +796,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", 
+    @Command(identifier = "sellall items edit", 
+    		description = "Edits an existing SellAll shop item.", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllEditCommand(CommandSender sender,
-                                    @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
-                                    @Arg(name = "Value", description = "The value of the item.") Double value){
+                @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
+                @Arg(name = "Value", description = "The value of the item.") Double value){
 
         if (!isEnabled()) return;
 
@@ -987,12 +1005,14 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall trigger", 
-    		description = "Toggle SellAll Shift+Right Click on a tool to trigger the /sellall sell command, "
-    				+ "true -> Enabled or False -> Disabled.", 
+    @Command(identifier = "sellall set trigger", 
+    		description = "Toggle SellAll trigger to enable/disable the Shift+Right Clicking "
+    				+ "on a tool to trigger the `/sellall sell` command "
+    				+ "true = enable, false = disable. "
+    				+ "[true false].", 
     				permissions = "prison.admin", onlyPlayers = false)
     private void sellAllToolsTriggerToggle(CommandSender sender,
-                                           @Arg(name = "Boolean", description = "Enable or disable", def = "null") String enable){
+    		@Arg(name = "Boolean", description = "Enable or disable", def = "true") String enable){
 
         if (!isEnabled()) return;
 
@@ -1113,7 +1133,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall setdefault", description = "SellAll default values ready to go.", 
+    @Command(identifier = "sellall items setdefaults", 
+    		description = "This command will setup all of the shop items with "
+    				+ "the SellAll default items.", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllSetDefaultCommand(CommandSender sender){
 
