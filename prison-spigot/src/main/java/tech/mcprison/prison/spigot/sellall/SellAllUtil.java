@@ -1438,7 +1438,8 @@ public class SellAllUtil
     public void addToDelay(Player p){
         if (!isPlayerWaitingSellAllDelay(p)){
             activePlayerDelay.add(p);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removeFromDelay(p), 20L * defaultSellAllDelay);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(
+            			SpigotPrison.getInstance(), () -> removeFromDelay(p), 20L * defaultSellAllDelay);
         }
     }
 

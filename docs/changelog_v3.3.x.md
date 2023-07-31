@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15b 2023-07-30
 
 
+* **RevEnchants: added additional logging and details if there is a failure trying to hook into the RevEnchant's events.**
+Trying to see if there is additional causedBy information.
+
+
 * **ranks autoConfigure: Major enhancements to add more prestige ranks.**
 Added a lot more informatio to the command's help: `/ranks autoConfigure help`.
 More options have been added: prestiges prestiges=x prestigesCost=x prestigesMult=x.

@@ -249,7 +249,12 @@ public class AutoManagerRevEnchantsJackHammerEvent
 			// CrazyEnchants is not loaded... so ignore.
 		}
 		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: RevEnchants JackHammerEnchants failed to load. [%s]", e.getMessage() );
+			String causedBy = e.getCause() == null ? "" : e.getCause().getMessage();
+			
+			Output.get().logInfo( "AutoManager: RevEnchants JackHammerEnchants failed to load. "
+					+ "[%s] Caused by: [%s]", 
+					e.getMessage(),
+					causedBy, e.getMessage() );
 		}
 	}
 
