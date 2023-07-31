@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15b 2023-07-30
+# 3.3.0-alpha.15c 2023-07-30
+
+
+**v3.3.0-alpha.15c 2023-07-30**
 
 
 * **RevEnchants: added additional logging and details if there is a failure trying to hook into the RevEnchant's events.**
