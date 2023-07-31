@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15b 2023-07-29
+# 3.3.0-alpha.15b 2023-07-30
+
+
+* **ranks autoConfigure: Major enhancements to add more prestige ranks.**
+Added a lot more informatio to the command's help: `/ranks autoConfigure help`.
+More options have been added: prestiges prestiges=x prestigesCost=x prestigesMult=x.
+Now able to add more prestige ranks without impacting ranks or mines.  
+Example to add up to 50 new prestige ranks: `/ranks autoConfigure force presetiges prestiges=50`
 
 
 * **Sellall: Rearrange the sellall commands so they are better organized and updated the help text so its also meaningful.**

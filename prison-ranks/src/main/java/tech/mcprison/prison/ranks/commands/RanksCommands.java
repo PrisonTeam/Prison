@@ -216,20 +216,43 @@ public class RanksCommands
     }
 
 	
-	@Command(identifier = "ranks autoConfigure", description = "Auto configures Ranks and Mines using " +
+	@Command(identifier = "ranks autoConfigure", 
+		description = "Auto configures Ranks, Mines, and Prestiges using " +
 			"single letters A through Z for both the rank and mine names. Both ranks and mines are " +
 			"generated, they will also be linked together automatically. To set the starting price use " +
-			"price=x. To set multiplier mult=x. AutoConfigure will try to merge any preexsiting ranks " +
-			"and mines, but you must use the 'force' keyword in 'options'. Force will replace all blocks " +
-			"in preexisting " +
+			"'price=x'. To set multiplier 'mult=x'. AutoConfigure will try to merge any preexsiting ranks " +
+			"and mines, but you must use the 'force' keyword in 'options' and force will " +
+			"replace all blocks in preexisting " +
 			"mines. To keep preexisting blocks, use 'forceKeepBlocks' with the 'force' option. " +
-			"Default values [full price=50000 mult=1.5]", 
+			
+			"The option 'full' will enable ranks, mines, and prestiges. No options will default to 'full'. " +
+			"The options 'ranks', 'mines', and 'prestiges' will enable each of these if they are listed. " +
+			"So using just 'mines' will only generate mines and no ranks or prestiges." +
+			
+			"The option 'prestiges=x' will set how many initial prestige ranks to create. " +
+			"The option `prestigeCost=x` sets the intial cost for P1; default value is 1_000_000_000. " +
+			"The option 'prestigeMult=x' is an additional multiplier for presetige ranks, with the " +
+			"default value of 1. The cost for each prestige rank is based upon the initial " + 
+			"presetigeCost, times the prestige level so p3 will be 3 times the cost of p1 with the "  +
+			"prestige multiplier will multipled against that value.  So for default values " +
+			" with a 1.75 multipler p3 cost = 1_000_000_000 * 3 * 1.75. " +
+			"Default values [full price=50000 mult=1.5 prestiges=25 presetigeCost=1000000000 " +
+			"prestigeMult=1] " +
+			
+			"Example of just adding more prestige ranks using the other default values: " +
+			"'/ranks autoConfigure force prestiges presetiges=1000', no ranks and no mines will " +
+			"be created. " +
+			"Warning: If trying to rerun autoConfigure with existing mines or ranks, then do a " +
+			"prison backup with this command: '/prison support backup save adding more prestiges'", 
 			onlyPlayers = false, permissions = "ranks.set", 
 			aliases = {"prison autoConfigure"} )
 	public void autoConfigureRanks(CommandSender sender, 
 			@Wildcard(join=true)
 			@Arg(name = "options", 
-				description = "Options: [full ranks mines price=x mult=x force forceKeepBlocks dontForceLinerWalls dontForceLinerBottoms]", 
+				description = "Options: [full ranks mines prestiges price=x mult=x "
+						+ "prestiges=x prestigeCost=x prestigeMult=x "
+						+ "force forceKeepBlocks "
+						+ "dontForceLinerWalls dontForceLinerBottoms]", 
 				def = "full") String options
 			) {
 		
@@ -240,6 +263,9 @@ public class RanksCommands
 		boolean forceLinersWalls = true;
 		boolean forceLinersBottom = true;
 		boolean forceKeepBlocks = false;
+		int prestigeRanks = 25;
+		long prestigeCost = 1_000_000_000;
+		double prestigeMult = 10d;
 		
 		
 		if ( options.contains( "forcekeepblocks" ) ) {
@@ -274,9 +300,13 @@ public class RanksCommands
 			autoConfigForceWarningMsg( sender );
 		}
 		
-		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx &7force forceKeepBlocks dontForceLinerWalls dontForceLinerBottoms&b]";
+		String optionHelp = "&b[&7full ranks mines prestiges price=&dx &7mult=&dx "
+				+ "&7prestiges=&dx &7prestigeCost=&dx &7prestigeMult=&dx "
+				+ "&7force forceKeepBlocks dontForceLinerWalls dontForceLinerBottoms&b]";
 		boolean ranks = false;
 		boolean mines = false;
+		boolean prestiges = false;
+
 		double startingPrice = 50000;
 		double percentMultipler = 1.5;
 		
@@ -292,6 +322,7 @@ public class RanksCommands
 		if ( options.contains( "full" ) ) {
 			ranks = true;
 			mines = true;
+			prestiges = true;
 			options = options.replace( "full", "" ).trim();
 		}
 		if ( options.contains( "ranks" ) ) {
@@ -302,6 +333,7 @@ public class RanksCommands
 			mines = true;
 			options = options.replace( "mines", "" ).trim();
 		}
+
 		
 		String priceStr = extractParameter("price=", options);
 		if ( priceStr != null ) {
@@ -329,6 +361,53 @@ public class RanksCommands
 				// Not a valid double number, or price:
 			}
 		}
+
+		String prestigesStr = extractParameter("prestiges=", options);
+		if ( prestigesStr != null ) {
+			options = options.replace( prestigesStr, "" );
+			prestigesStr = prestigesStr.replace( "prestiges=", "" ).trim();
+			
+			try {
+				prestigeRanks = Integer.parseInt( prestigesStr );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid double number, or price:
+			}
+		}
+		
+		String prestigeCostStr = extractParameter("prestigeCost=", options);
+		if ( prestigeCostStr != null ) {
+			options = options.replace( prestigeCostStr, "" );
+			prestigeCostStr = prestigeCostStr.replace( "prestigeCost=", "" ).trim();
+			
+			try {
+				prestigeCost = Long.parseLong( prestigeCostStr );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid double number, or price:
+			}
+		}
+		
+		String prestigeMultStr = extractParameter("prestigeMult=", options);
+		if ( prestigeMultStr != null ) {
+			options = options.replace( prestigeMultStr, "" );
+			prestigeMultStr = prestigeMultStr.replace( "prestigeMult=", "" ).trim();
+			
+			try {
+				prestigeMult = Double.parseDouble( prestigeMultStr );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid double number, or price:
+			}
+		}
+		
+		// This has to be checked after prestiges= or this will destroy that config setting:
+		if ( options.contains( "prestiges" ) ) {
+			prestiges = true;
+			options = options.replace( "prestiges", "" ).trim();
+		}
+		
+		
 		
 		
 		// What's left over, if not just a blank string, must be an error:
@@ -491,13 +570,22 @@ public class RanksCommands
 		int prestigesCount = 0;
 		
 		// add in 10 prestiges at 1 billion each:
-		double prestigeCost = 1000000000;
+//		double prestigeCost = 1_000_000_000;
 		
-		for ( int i = 0; i < 10; i++ ) {
-			String name = "P" + (i + 1);
-			String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
-			createRank(sender, name, (prestigeCost * (i + 1) ), LadderManager.LADDER_PRESTIGES, tag, "noPlaceholderUpdate");
-			prestigesCount++;
+		if ( prestiges ) {
+			
+			for ( int i = 0; i < prestigeRanks; i++ ) {
+				String name = "P" + (i + 1);
+				String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
+				double cost = prestigeCost * (i + 1) * prestigeMult;
+				
+				// Only add prestige ranks if they do not already exist:
+				if ( PrisonRanks.getInstance().getRankManager().getRank( name ) == null ) {
+					
+					createRank(sender, name, cost, LadderManager.LADDER_PRESTIGES, tag, "noPlaceholderUpdate");
+					prestigesCount++;
+				}
+			}
 		}
 		
 		// If mines were created, go ahead and auto assign blocks to the mines:
@@ -517,9 +605,9 @@ public class RanksCommands
 			// Set the prestiges ladder with a 10% base rank cost multiplier
 			double rankCostMultiplier = 0.10;
 			
-			RankLadder prestiges = PrisonRanks.getInstance().getLadderManager().getLadder( LadderManager.LADDER_PRESTIGES );
-			prestiges.setRankCostMultiplierPerRank( rankCostMultiplier );
-			PrisonRanks.getInstance().getLadderManager().save( prestiges );
+			RankLadder prestigesLadder = PrisonRanks.getInstance().getLadderManager().getLadderPrestiges();
+			prestigesLadder.setRankCostMultiplierPerRank( rankCostMultiplier );
+			PrisonRanks.getInstance().getLadderManager().save( prestigesLadder );
 			
 			// Log that the rank cost multiplier has been applied to the ladder
 			// with information on how to change it.
