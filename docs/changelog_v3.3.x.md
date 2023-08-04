@@ -17,8 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-04
 
 
+* **Prestiges: Bug fix. If no prestige rank, then prevent a NPE on a simple check.**
+Totally thought this was fixed a while ago?
 
-* ** AutoFeatures BlockInspector: Fixed a bug with not negating a condition... was causing some problems since it was misreporting the results.**
+
+* **AutoFeatures BlockInspector: Fixed a bug with not negating a condition... was causing some problems since it was misreporting the results.**
 
 
 * **AutoFeatures: Add support for the XPrison enchantments.**
