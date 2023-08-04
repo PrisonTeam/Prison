@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-04
 
 
+
+* ** AutoFeatures BlockInspector: Fixed a bug with not negating a condition... was causing some problems since it was misreporting the results.**
+
+
 * **AutoFeatures: Add support for the XPrison enchantments.**
 Please be aware that event priorities must be adjusted. You can change prison's event priorities, but XPrison is hard coded to NORMAL  So to get this work, you may have to adjust prison's priorities so it is after XPrison's.
 We cannot support XPrison especially if their event priorities become a problem, or causes a problem.

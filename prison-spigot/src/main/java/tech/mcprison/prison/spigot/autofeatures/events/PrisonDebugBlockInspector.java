@@ -525,7 +525,7 @@ public class PrisonDebugBlockInspector
     	EventDropsStatus results = EventDropsStatus.normal;
     	
     	try {
-			if ( bbe.isDropItems() ) {
+			if ( !bbe.isDropItems() ) {
 				results = EventDropsStatus.canceled;
 			}
 			else {
