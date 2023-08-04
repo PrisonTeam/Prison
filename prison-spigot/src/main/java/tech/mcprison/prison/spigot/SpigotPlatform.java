@@ -115,6 +115,9 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosi
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsExplosiveEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsJackHammerEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerXPrisonExplosionTriggerEvent;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerXPrisonLayerTriggerEvent;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerXPrisonNukeTriggerEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
@@ -2658,6 +2661,20 @@ public class SpigotPlatform
 		
 		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
 		zenchantments.dumpEventListeners( sb );
+		
+		
+		
+		AutoManagerXPrisonExplosionTriggerEvent xpExplosion = new AutoManagerXPrisonExplosionTriggerEvent();
+		xpExplosion.dumpEventListeners( sb );
+		
+		AutoManagerXPrisonLayerTriggerEvent xpLayer = new AutoManagerXPrisonLayerTriggerEvent();
+		xpLayer.dumpEventListeners( sb );
+		
+		AutoManagerXPrisonNukeTriggerEvent xpNuke = new AutoManagerXPrisonNukeTriggerEvent();
+		xpNuke.dumpEventListeners( sb );
+		
+		
+		
 		
 		
 		// Shorten the prison package names:

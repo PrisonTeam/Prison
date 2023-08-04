@@ -127,6 +127,10 @@ public class AutoFeaturesFileConfig {
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	
+		    	XPrisonExplosionTriggerEventPriority(blockBreakEvents, "DISABLED"),
+		    	XPrisonLayerTriggerEventPriority(blockBreakEvents, "DISABLED"),
+		    	XPrisonNukeTriggerEventPriority(blockBreakEvents, "DISABLED"),
+		    	
 		    	
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 
 		    			"Use the following event priorities with the blockBreakEvents: " +

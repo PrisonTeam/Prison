@@ -17,6 +17,9 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosi
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsExplosiveEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsJackHammerEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerXPrisonExplosionTriggerEvent;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerXPrisonLayerTriggerEvent;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerXPrisonNukeTriggerEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.autofeatures.events.PrisonDebugBlockInspector;
 
@@ -111,8 +114,14 @@ public class OnBlockBreakEventListener
 	private AutoManagerRevEnchantsExplosiveEvent reEEvents;
 	private AutoManagerRevEnchantsJackHammerEvent reJHEvents;
 
-
+	private AutoManagerXPrisonExplosionTriggerEvent xpExpEvents;
+	private AutoManagerXPrisonLayerTriggerEvent xpLayerEvents;
+	private AutoManagerXPrisonNukeTriggerEvent xpNukeEvents;
+	
+	
 	private PrisonDebugBlockInspector pdBlockInspector;
+	
+	
 	
 	
 	public OnBlockBreakEventListener() {
@@ -227,6 +236,15 @@ public class OnBlockBreakEventListener
 		reJHEvents = new AutoManagerRevEnchantsJackHammerEvent();
 		
 		
+		
+		xpExpEvents = new AutoManagerXPrisonExplosionTriggerEvent();
+		
+		xpLayerEvents = new AutoManagerXPrisonLayerTriggerEvent();
+		
+		xpNukeEvents = new AutoManagerXPrisonNukeTriggerEvent();
+		
+		
+		
 		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
 			
 			bbEvents.registerEvents();
@@ -245,9 +263,19 @@ public class OnBlockBreakEventListener
 			reEEvents.registerEvents();
 			
 			reJHEvents.registerEvents();
+			
+			
+			xpExpEvents.registerEvents();
+			
+			xpLayerEvents.registerEvents();
+			
+			xpNukeEvents.registerEvents();
+			
 		}
 		
 		pdBlockInspector = PrisonDebugBlockInspector.getInstance();
+		pdBlockInspector.getClass();
+		
 //		pdBlockInspector.init();
 	}
 	
