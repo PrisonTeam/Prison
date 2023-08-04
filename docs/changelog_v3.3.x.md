@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-04
 
 
+* **AutoFeatures: Added support for XPrison's enchantments... forgot to add the API jar which is used to just compile prison (not used on servers).**
+
+
 * **Prison Placeholders:  Added support to disable placeholders in disabled worlds.**
 This feature is not enabled by default.  
 Any disabled world in the prisonCommandHandler configs within config.yml, could also shutdown the prison placeholders in that world if enabled.  
