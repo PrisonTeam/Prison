@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import tech.mcprison.prison.Prison;
-
 public class ExampleJavaDoubleVsBigDecimal {
 	
 	public static void main( String[] args ) {
@@ -36,7 +34,7 @@ public class ExampleJavaDoubleVsBigDecimal {
 		StringBuilder sb = new StringBuilder();
 		sb.append( ".111111" );
 		
-		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.00000" );
+		DecimalFormat dFmt = new DecimalFormat( "#,##0.00000" );
 		
 		for ( int i = 1; i < 25; i++ ) {
 			sb.insert( 0, "1" );
