@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-04
 
 
+* **Prison Placeholders:  Added support to disable placeholders in disabled worlds.**
+This feature is not enabled by default.  
+Any disabled world in the prisonCommandHandler configs within config.yml, could also shutdown the prison placeholders in that world if enabled.  
+The placeholder text will be replaced with just an empty string.
+
+
 * **Prestiges: Bug fix. If no prestige rank, then prevent a NPE on a simple check.**
 Totally thought this was fixed a while ago?
 

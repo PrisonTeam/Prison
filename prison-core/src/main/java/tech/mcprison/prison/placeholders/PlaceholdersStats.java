@@ -13,7 +13,10 @@ public class PlaceholdersStats {
 
 	private static PlaceholdersStats stats; 
 	
-	TreeMap<String, PlaceholderStatsData> placeholders;
+	private TreeMap<String, PlaceholderStatsData> placeholders;
+	
+	private int invalidWorldCount = 0;
+	
 	
 	private PlaceholdersStats() {
 		super();
@@ -154,6 +157,13 @@ public class PlaceholdersStats {
 			
 		}
 		
+		
+		results.add( 
+				String.format( "&7Invalid World Usage Total: &3%10s  &b(Placeholders replaced with banks)", 
+						iFmt.format( getInvalidWorldCount() ) ));
+		
+
+		
 		return results;
 	}
 	
@@ -174,6 +184,7 @@ public class PlaceholdersStats {
 			getPlaceholders().remove( key );
 		}
 		
+		setInvalidWorldCount( 0 );
 		
 		Output.get().logInfo( "PlaceholderStats: Cache was purged of %s placeholders. Removed: %s ", 
 				resetCache ? "all" : 
@@ -189,6 +200,16 @@ public class PlaceholdersStats {
 	}
 	public void setPlaceholders(TreeMap<String, PlaceholderStatsData> placeholders) {
 		this.placeholders = placeholders;
+	}
+
+	public int incrementInvalidWorldCount() {
+		return invalidWorldCount++;
+	}
+	public int getInvalidWorldCount() {
+		return invalidWorldCount;
+	}
+	public void setInvalidWorldCount(int invalidWorldCount) {
+		this.invalidWorldCount = invalidWorldCount;
 	}
 	
 }

@@ -418,6 +418,7 @@ prisonCommandHandler:
   exclude-worlds:
   - miniGameWorld
   - playerPlotWorld
+  disable-player-placeholders-in-excluded-worlds: false
   exclude-non-ops:
     exclude-related-aliases: true
     commands:

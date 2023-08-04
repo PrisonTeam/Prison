@@ -25,6 +25,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 public class SpigotPlaceholders
 	implements Placeholders {
@@ -70,6 +71,38 @@ public class SpigotPlaceholders
 		}
 	}
 	
+	private boolean ignorePlayerInDisabledWorlds( SpigotPlayer sPlayer ) {
+		boolean results = false;
+		
+		String worldName = 
+				sPlayer == null || 
+				sPlayer.getLocation() == null || 
+				sPlayer.getLocation().getWorld() == null ? 
+						null :
+						sPlayer.getLocation().getWorld().getName();
+		
+		if ( worldName != null && sPlayer.isOnline() ) {
+			
+			boolean disable = Prison.get().getPlatform().getConfigBooleanFalse( 
+					"prisonCommandHandler.disable-player-placeholders-in-excluded-worlds" );
+			if ( disable ) {
+				List<String> excludedWorlds = Prison.get().getPlatform()
+								.getConfigStringArray( "prisonCommandHandler.exclude-worlds" );
+				for (String world : excludedWorlds) {
+					if ( world.trim().equalsIgnoreCase( worldName ) ) {
+						results = true;
+						break;
+					}
+				}
+			}
+		}
+		
+		if ( results ) {
+			PlaceholdersStats.getInstance().incrementInvalidWorldCount();
+		}
+			
+		return results;
+	}
     
 	@Override
     public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
@@ -425,6 +458,11 @@ public class SpigotPlaceholders
 			
 			String replacementText = processPlaceholderIdentifier(identifier);
 			if ( identifier.isFoundAMatch() ) {
+				
+				if ( ignorePlayerInDisabledWorlds( (SpigotPlayer) identifier.getPlayer() )) {
+					replacementText = "";
+				}
+				
 				results = results.replace( placeholderText, replacementText );
 			}
 			
@@ -480,6 +518,10 @@ public class SpigotPlaceholders
 				
 				
 				String value = processPlaceholderHavePlaceholderKey( identifier );
+				
+				if ( ignorePlayerInDisabledWorlds( (SpigotPlayer) identifier.getPlayer() )) {
+					value = "";
+				}
 				
 				// Note: STATSMINES will not work here since the sequence is not being addressed.
 				
