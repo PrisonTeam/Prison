@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15c 2023-08-04
+# 3.3.0-alpha.15c 2023-08-08
+
+* **Auto Features: If autosell is enabled and there are any leftover blocks that was not sold, it will now generate an error message and if prison debug mode is turned off, then it will force the logging of the transaction.**
+This forcing the logging can be turned off in the auto features configs.
+Expanded the logging to change the color on some of the more important warnings and failures so they stand out.
+Also reworked some of the log details to eliminate redundancy and clarify what's being logged.
 
 
 * **AutoFeatures: Added support for XPrison's enchantments... forgot to add the API jar which is used to just compile prison (not used on servers).**

@@ -13,6 +13,7 @@ import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -129,8 +130,9 @@ public class PrisonMinesBlockBreakEvent
 	
 	
 	private StringBuilder debugInfo;
-	
+	private boolean forceDebugLogging;
 
+	
 	public PrisonMinesBlockBreakEvent( 
 				MinesEventResults eventResults,
 //				Block theBlock, Player player, 
@@ -175,7 +177,11 @@ public class PrisonMinesBlockBreakEvent
 		
 		this.bukkitDrops = new ArrayList<>();
 		
-		this.debugInfo = debugInfo;
+		this.debugInfo = new StringBuilder();
+		setDebugColorCodeDebug();
+		this.debugInfo.append( debugInfo );
+		
+		this.forceDebugLogging = false;
 		
 	}
 	
@@ -433,4 +439,26 @@ public class PrisonMinesBlockBreakEvent
 		this.debugInfo = debugInfo;
 	}
 
+	public boolean isForceDebugLogging() {
+		return forceDebugLogging;
+	}
+	public void setForceDebugLogging(boolean forceDebugLogging) {
+		this.forceDebugLogging = forceDebugLogging;
+	}
+
+	public void setDebugColorCodeInfo() {
+		getDebugInfo().append( Output.get().getColorCodeInfo() );
+	}
+	
+	public void setDebugColorCodeWarning() {
+		getDebugInfo().append( Output.get().getColorCodeWarning() );
+	}
+	
+	public void setDebugColorCodeError() {
+		getDebugInfo().append( Output.get().getColorCodeError() );
+	}
+	
+	public void setDebugColorCodeDebug() {
+		getDebugInfo().append( Output.get().getColorCodeDebug() );
+	}
 }

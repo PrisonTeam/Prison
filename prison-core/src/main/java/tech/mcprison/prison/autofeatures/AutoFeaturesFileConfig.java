@@ -190,6 +190,13 @@ public class AutoFeaturesFileConfig {
 						"If OP then you cannot use this permission node since it would always " +
 						"be enabled. Using a value of 'disable' will turn it off for everyone."),
 //				
+				isAutoSellLeftoversForceDebugLogging(inventory, true),
+				isAutoSellLeftoversForceDebugLogging__ReadMe(inventory, 
+						"If autosell is enabled and could not sell all blocks, then force " +
+						"Prison's debug logging of transaction to help identify why. This only " +
+						"applies if debug mode is turned off."),
+
+				
 //				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				isAutoSellIfInventoryIsFull(inventory, true),

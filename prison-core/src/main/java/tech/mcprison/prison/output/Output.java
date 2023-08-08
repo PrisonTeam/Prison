@@ -52,10 +52,10 @@ public class Output
     private String prefixTemplateError;
     private String prefixTemplateDebug;
     
-    private String colorCodeInfo;
-    private String colorCodeWarning;
-    private String colorCodeError;
-    private String colorCodeDebug;
+    private final String colorCodeInfo;
+    private final String colorCodeWarning;
+    private final String colorCodeError;
+    private final String colorCodeDebug;
     
 
     private boolean debug = false;
@@ -622,4 +622,22 @@ public class Output
         return String.format(prefixTemplate, name);
     }
 
+
+	public String getColorCodeInfo() {
+		return colorCodeInfo;
+	}
+
+	public String getColorCodeWarning() {
+		return colorCodeWarning;
+	}
+
+	public String getColorCodeError() {
+		return colorCodeError;
+	}
+
+	public String getColorCodeDebug() {
+		return colorCodeDebug;
+	}
+
+    
 }

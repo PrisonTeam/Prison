@@ -276,7 +276,7 @@ public abstract class OnBlockBreakEventCore
 			int count = 0;
 			for ( SpigotBlock spigotBlock : blocks ) {
 				
-				if ( count++ % 10 == 0 && pmEvent.getMine() != null && 
+				if ( count++ % 20 == 0 && pmEvent.getMine() != null && 
 						!pmEvent.getMine().getMineStateMutex().isMinable() ) {
 					
 					SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
@@ -398,7 +398,9 @@ public abstract class OnBlockBreakEventCore
 			// NOTE: I have no idea why 25 blocks and less should be bypassed for validation:
 			boolean bypassMatchedBlocks = pmEvent.getMine().getBounds().getTotalBlockCount() <= 25;
 			if ( bypassMatchedBlocks ) {
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "(TargetBlock match requirement is disabled [blocks<=25]) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			
 			boolean matchedBlocks = isBlockAMatch( targetBlock, sBlockHit );
@@ -422,6 +424,8 @@ public abstract class OnBlockBreakEventCore
 					 targetBlock.isExploded()) ) {
 				
 //				debugInfo.setLength( 0 );
+				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "(Primary TargetBlock forcedFastFail validateEvent [ ");
 				if ( targetBlock.isIgnoreAllBlockEvents() ) {
 					debugInfo.append( "ignoreAllBlockEvents " );
@@ -430,6 +434,7 @@ public abstract class OnBlockBreakEventCore
 					debugInfo.append( "alreadyExploded" );
 				}
 				debugInfo.append( "]) " );
+				pmEvent.setDebugColorCodeDebug();
 				
 				pmEvent.setForceIfAirBlock( false );
 				
@@ -530,7 +535,9 @@ public abstract class OnBlockBreakEventCore
 						// This block has already been mined and is not a mine bomb, so fail the validation
 						// and cancel the event since if it's not an air block, it may be another effect that
 						// is placing a block within the mine, such as a prison util's decay function.
+						pmEvent.setDebugColorCodeWarning();
 						debugInfo.append( "VALIDATION_FAILED_BLOCK_ALREADY_MINED " );
+						pmEvent.setDebugColorCodeDebug();
 						
 						results = false;
 						
@@ -542,7 +549,9 @@ public abstract class OnBlockBreakEventCore
 			else {
 				noTargetBlock++;
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "VALIDATION_FAILED_NO_TARGETBLOCK " );
+				pmEvent.setDebugColorCodeDebug();
 				
 				results = false;
 			}
@@ -676,8 +685,10 @@ public abstract class OnBlockBreakEventCore
 			}
 			if ( unbreakable > 0 ) {
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
 						" blocks, event not canceled) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			if ( outsideOfMine > 0 ) {
 				
@@ -701,8 +712,10 @@ public abstract class OnBlockBreakEventCore
 			}
 			if ( blockTypeNotExpected > 0 ) {
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "BLOCK_TYPE_NOT_EXPECTED__CANNOT_PROCESS (" + blockTypeNotExpected + 
 						" ) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			
 			
@@ -730,7 +743,9 @@ public abstract class OnBlockBreakEventCore
 				// Ignore event and clear debugInfo:
 //				debugInfo.setLength( 0 );
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "(TargetBlock forcedFastFail validateEvent [BlockAlreadyMined]) " );
+				pmEvent.setDebugColorCodeDebug();
 				
 				return results;
 			}
@@ -754,14 +769,18 @@ public abstract class OnBlockBreakEventCore
 //					"&cYour tool is worn-out and cannot be used." );
 			
 			pmEvent.setCancelOriginalEvent( true );
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		if ( mine != null && BlockUtils.getInstance().isUnbreakable( sBlockHit ) ) {
 			// The block is unbreakable because a utility has it locked:
 			
 			pmEvent.setCancelOriginalEvent( true );
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (event canceled) " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
@@ -773,9 +792,11 @@ public abstract class OnBlockBreakEventCore
 				mine.isAccessPermissionEnabled() ? "Perms" : "Other?";
 			
 			pmEvent.setCancelOriginalEvent( true );
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "ACCESS_DENIED (event canceled - Access by " )
 						.append( accessType )
 						.append( ") " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		
@@ -850,7 +871,9 @@ public abstract class OnBlockBreakEventCore
 		else if ( results && pmEvent.getBbPriority().isMonitor() && mine == null ) {
 			// bypass all processing since the block break is outside any mine:
 			
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "(MONITOR bypassed: no mine) " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		
@@ -976,7 +999,9 @@ public abstract class OnBlockBreakEventCore
 			debugInfo.append( "(PassedValidation) " );
 		}
 		else {
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "(ValidationFailed) " );
+			pmEvent.setDebugColorCodeDebug();
 		}
 
 		
@@ -1240,7 +1265,9 @@ public abstract class OnBlockBreakEventCore
 			success = true;
 		}
 		else {
+			pmEvent.setDebugColorCodeWarning();
 			pmEvent.getDebugInfo().append( "(fail:totalDrops=0) ");
+			pmEvent.setDebugColorCodeDebug();
 		}
 		
 		return success;
@@ -1714,7 +1741,8 @@ public abstract class OnBlockBreakEventCore
 						try {
 							results += Integer.parseInt(val);
 						} catch (NumberFormatException e1) {
-							Output.get().logError("AutoManager: tool durability failure. lore= [" + s + "] val= [" + val + "] error: " + e1.getMessage());
+							Output.get().logError("AutoManager: tool durability failure. "
+									+ "lore= [" + s + "] val= [" + val + "] error: " + e1.getMessage());
 						}
 
 						break;

@@ -92,9 +92,9 @@ public class OnBlockBreakMines
 						"" : 
 						getSpigotBlock().getLocation().toWorldCoordinates();
 				
-				Output.get().logInfo( "Prison AutoFeatures Fast-Fail: %s %s %s %s %s%s", 
+				Output.get().logInfo( "Prison AutoFeatures Fast-Fail: %s %s %s %s%s", 
 						getResultsReason().name(),
-						getBbPriority().name(),
+						//getBbPriority().name(),
 						getSpigotPlayer().getName(),
 						
 						getMine() == null ? "noMine" : getMine().getName(),
@@ -115,9 +115,9 @@ public class OnBlockBreakMines
 						getSpigotBlock().getLocation().toWorldCoordinates();
 			
 			return String.format( 
-					"AutoFeatures: %s %s %s %s %s%s ", 
+					"AutoFeatures: %s %s %s %s%s ", 
 					getResultsReason().name(),
-					getBbPriority().name(),
+//					getBbPriority().name(),
 					getSpigotPlayer().getName(),
 					
 					getMine() == null ? "noMine" : getMine().getName(),

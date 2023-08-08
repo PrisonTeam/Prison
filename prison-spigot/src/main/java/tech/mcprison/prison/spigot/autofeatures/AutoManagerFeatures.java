@@ -154,7 +154,15 @@ public abstract class AutoManagerFeatures
 			long stop = System.nanoTime();
 			pmEvent.getDebugInfo().append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
 			
-			Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString() );
+			if ( !Output.get().isDebug() && pmEvent.isForceDebugLogging() ) {
+				
+				pmEvent.getDebugInfo().insert(0, Output.get().getColorCodeDebug() );
+				Output.get().logInfo( pmEvent.getDebugInfo().toString() );
+			}
+			else {
+				
+				Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString() );
+			}
 		}
     }
     
@@ -236,7 +244,7 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
 				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
 			
-			pmEvent.getDebugInfo().append( "(normal processing initiating) " );
+			pmEvent.getDebugInfo().append( "(Fire pmEvent) " );
 			
 			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
 			// Needed since processing of the block will lose track of which mine it came from.
@@ -256,8 +264,11 @@ public abstract class AutoManagerFeatures
 //    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
 			Bukkit.getServer().getPluginManager().callEvent( pmEvent );
 			if ( pmEvent.isCancelled() ) {
+				
+				pmEvent.setDebugColorCodeWarning();
 				pmEvent.getDebugInfo().append( 
-						"(normal processing: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+						"(Fire pmEvent: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			else {
 				
@@ -287,17 +298,19 @@ public abstract class AutoManagerFeatures
 				}
 				else {
 					
-					pmEvent.getDebugInfo().append( "(doAction failed without details) " );
+					pmEvent.setDebugColorCodeWarning();
+					pmEvent.getDebugInfo().append( "(fire pmEvent:doAction failed without details) " );
+					pmEvent.setDebugColorCodeDebug();
 				}
 				
 			}
 			
 			
-			pmEvent.getDebugInfo().append( "(normal processing completed) " );
+			pmEvent.getDebugInfo().append( "(Fire pmEvent completed) " );
 		}
 		else {
 			
-			pmEvent.getDebugInfo().append( "(logic bypass) " );
+			pmEvent.getDebugInfo().append( "(Fire pmEvent bypassed) " );
 		}
 		return cancelBy;
 	}
@@ -906,7 +919,9 @@ public abstract class AutoManagerFeatures
 					else {
 						
 						// Unable to sell since amount was zero.  Not configured to be sold.
+						pmEvent.setDebugColorCodeWarning();
 						debugInfo.append( "(unsellable: " + itemStack.getName() + " qty: " + itemStack.getAmount() + ") ");
+						pmEvent.setDebugColorCodeDebug();
 						autosellUnsellableCount += itemStack.getAmount();
 					}
 					
@@ -917,6 +932,32 @@ public abstract class AutoManagerFeatures
 				// Add blocks to player's inventory IF autosell was unable to sell the item stack, hence
 				// it will have an amount of more than 0.
 				if ( itemStack.getAmount() > 0 ) {
+					
+					
+					// AutoSell failure... some items may be unsellable due to not being setup in the sellall shop:
+					if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
+						
+						// Force debug printing for this entry even if debug mode is turned off:
+						pmEvent.setForceDebugLogging( true );
+						
+						if ( !Output.get().isDebug() && 
+								isBoolean(AutoFeatures.isAutoSellLeftoversForceDebugLogging) ) {
+							pmEvent.setForceDebugLogging( true );
+						}
+						
+						pmEvent.setDebugColorCodeError();
+						
+						// Just get the calculated value for the drops... do not sell:
+						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
+						autosellTotal += amount;
+
+						debugInfo.append( "(WARNING: autosell leftovers: " + itemStack.getName() + 
+								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + 
+								" - " + 
+								( amount == 0 ? " Items NOT in sellall shop!" : " CouldNotSell?") +
+								") ");
+						pmEvent.setDebugColorCodeDebug();
+					}
 					
 					if ( Output.get().isDebug() && isSellallEnabled ) {
 						

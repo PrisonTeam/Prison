@@ -360,7 +360,9 @@ public void handleXPrisonLayerTriggerEvent( LayerTriggerEvent e, BlockBreakPrior
 				e.setCancelled( true );
 			}
 			
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "(doAction failed validation) " );
+			pmEvent.setDebugColorCodeDebug();
 		}
 
 		
