@@ -881,13 +881,16 @@ public abstract class AutoManagerFeatures
 							!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
 							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
 			
+			// Try to autosell if enabled in any of the following ways:
+			boolean autoSell = ( forceAutoSell || autoSellBySettings || autoSellByPerm );
+			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
 				
 						
 				// Try to autosell if enabled in any of the following ways:
-				if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
+				if ( autoSell ) {
 					
 //				// Try to autosell if enabled:
 //				if ( isSellallEnabled &&
@@ -992,7 +995,7 @@ public abstract class AutoManagerFeatures
 //					}
 					
 					
-					dropExtra( extras, player, debugInfo );
+					dropExtra( extras, player, debugInfo, autoSell );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
 				
@@ -1388,7 +1391,8 @@ public abstract class AutoManagerFeatures
 	 * @param player
 	 * @param block
 	 */
-	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player, StringBuilder debugInfo ) {
+	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, 
+						Player player, StringBuilder debugInfo, boolean autoSell ) {
 
 		if ( SpigotPrison.getInstance().isSellAllEnabled() && (
 				 extra != null && extra.size() > 0 ||
@@ -1418,7 +1422,8 @@ public abstract class AutoManagerFeatures
 				// the sellall configs, or the auto feature configs.
 				if (sellAllUtil != null && (
 						sellAllUtil.isAutoSellEnabled ||
-						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
+						autoSell )) {
+//						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
 					
 					
 					if ( isPlayerAutosellEnabled ) {

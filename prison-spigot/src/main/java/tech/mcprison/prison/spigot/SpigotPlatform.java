@@ -412,11 +412,13 @@ public class SpigotPlatform
         return plugin.getDescription().getVersion();
     }
 
-    @Override public File getPluginDirectory() {
+    @Override 
+    public File getPluginDirectory() {
         return plugin.getDataFolder();
     }
 
-    @Override public void registerCommand(PluginCommand command) {
+    @Override
+    public void registerCommand(PluginCommand command) {
         try {
         	Command cmd = new Command(
     				command.getLabel(),
@@ -560,15 +562,18 @@ public class SpigotPlatform
     	return results;
     }
     
-    @Override public List<PluginCommand> getCommands() {
+    @Override 
+    public List<PluginCommand> getCommands() {
         return commands;
     }
 
-    @Override public void dispatchCommand(String cmd) {
+    @Override 
+    public void dispatchCommand(String cmd) {
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
     }
     
-    @Override public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
+    @Override 
+    public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
     	
     	if ( sender instanceof SpigotCommandSender ) {
     		SpigotCommandSender cmdSender = (SpigotCommandSender) sender;
@@ -585,7 +590,8 @@ public class SpigotPlatform
     	
     }
 
-    @Override public Scheduler getScheduler() {
+    @Override 
+    public Scheduler getScheduler() {
         return plugin.scheduler;
     }
 
