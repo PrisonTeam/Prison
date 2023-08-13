@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-13
 
 
+* **AutoFeatures: Added the ability to force an inventory sellall at the end of handling a bukkit BlockBreakEvent.**
+This was added to help cover situations where third party plugins are trying to add additional bonus drops to the players.
+
+
 * **auto features: setup a sellall function on PrisonMinesBlockBreakEvent so it can be easier to utilize from other functions.**
 
 

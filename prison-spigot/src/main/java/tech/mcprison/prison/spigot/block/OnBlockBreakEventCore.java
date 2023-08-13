@@ -910,19 +910,20 @@ public abstract class OnBlockBreakEventCore
 						isPlayerAutosellEnabled &&
 						pmEvent.getSpigotPlayer().isInventoryFull() ) {
 					
+					pmEvent.performSellAllOnPlayerInventoryLogged("BLOCKEVENTS priority sellall");
 					
-					final long nanoStart = System.nanoTime();
-					boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
-											false, false, false, true, true, false);
-					final long nanoStop = System.nanoTime();
-					double milliTime = (nanoStop - nanoStart) / 1000000d;
-					
-					DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
-					debugInfo.append( "(autosell BLOCKEVENTS: " + (success ? "success" : "failed") + 
-							" ms: " + dFmt.format( milliTime ) + ") ");
-					
-					PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
-					
+//					final long nanoStart = System.nanoTime();
+//					boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
+//											false, false, false, true, true, false);
+//					final long nanoStop = System.nanoTime();
+//					double milliTime = (nanoStop - nanoStart) / 1000000d;
+//					
+//					DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+//					debugInfo.append( "(autosell BLOCKEVENTS: " + (success ? "success" : "failed") + 
+//							" ms: " + dFmt.format( milliTime ) + ") ");
+//					
+//					PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
+//					
 				}
 			}
 			

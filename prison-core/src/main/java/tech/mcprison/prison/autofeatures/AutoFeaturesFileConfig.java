@@ -197,6 +197,14 @@ public class AutoFeaturesFileConfig {
 						"applies if debug mode is turned off."),
 
 				
+				isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires(inventory, false),
+				isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires__readme(inventory, 
+						"AutoManager's autosell does not touch the player's inventory. So this feature " +
+						"will perform a sellall on the player's inventory at the end of handling " +
+						"the bukkkit's BlockBreakEvent. This will not apply to anyother event. " +
+						"This can be enabled without enabling the autosell."),
+				
+				
 //				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				isAutoSellIfInventoryIsFull(inventory, true),

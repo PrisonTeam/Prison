@@ -21,6 +21,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
 public class AutoManagerBlockBreakEvents 
@@ -465,6 +466,13 @@ public class AutoManagerBlockBreakEvents
     		
     	}
 
+    	if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) ) {
+
+    		pmEvent.getDebugInfo().append( Output.get().getColorCodeWarning());
+    		pmEvent.performSellAllOnPlayerInventoryLogged( "BlockBreakEvent sellall");
+    		pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
+    	}
+    	
 		printDebugInfo( pmEvent, start );
 	}
 	
