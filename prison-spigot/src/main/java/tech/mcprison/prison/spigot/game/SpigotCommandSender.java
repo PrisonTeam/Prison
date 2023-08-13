@@ -99,7 +99,8 @@ public class SpigotCommandSender implements CommandSender {
         }
     }
 
-    @Override public void sendRaw(String json) {
+    @Override 
+    public void sendRaw(String json) {
         if (bukkitSender instanceof org.bukkit.entity.Player) {
             json = Text.translateAmpColorCodes(json);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + bukkitSender.getName() + " " + json);

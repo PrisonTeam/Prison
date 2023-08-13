@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.api;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
@@ -20,6 +22,8 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.block.OnBlockBreakMines.MinesEventResults;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 
 /**
  * <p>This is an event that prison calls before processing the blocks that
@@ -290,6 +294,68 @@ public class PrisonMinesBlockBreakEvent
 		
 		return results;
 	}
+	
+	
+
+	/**
+	 * <p>This will perform a Prison's sellall on a player's inventory.
+	 * This tracks how many nanoseconds it took to run and will log this
+	 * information if Prison is in debug mode.  This info will be appended
+	 * to the debug info for the block break handling.
+	 * </p>
+	 * 
+	 * @param description
+	 */
+	public void performSellAllOnPlayerInventoryLogged( String description ) {
+
+		debugInfo.append( performSellAllOnPlayerInventoryString(description) );
+		
+//		final long nanoStart = System.nanoTime();
+//		boolean success = SellAllUtil.get().sellAllSell( getPlayer(), 
+//								false, false, false, true, true, false);
+//		final long nanoStop = System.nanoTime();
+//		double milliTime = (nanoStop - nanoStart) / 1000000d;
+//		
+//		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+//		debugInfo.append( "(" )
+//				.append( description)
+//				.append( ": " + (success ? "success" : "failed"))
+//				.append( " ms: " + dFmt.format( milliTime ) + ") ");
+		
+		PlayerAutoRankupTask.autoSubmitPlayerRankupTask( getSpigotPlayer(), debugInfo );
+		
+	}
+	public String performSellAllOnPlayerInventoryString( String description ) {
+		
+		final long nanoStart = System.nanoTime();
+		
+		boolean isUsingSign = false;
+		boolean completelySilent = false;
+		boolean notifyPlayerEarned = false;
+		boolean notifyPlayerDelay = false;
+		boolean notifyPlayerEarningDelay = true;
+		boolean playSoundOnSellAll = false;
+		boolean notifyNothingToSell = false;
+		
+		boolean success = SellAllUtil.get().sellAllSell( getPlayer(), 
+				isUsingSign, completelySilent, 
+				notifyPlayerEarned, notifyPlayerDelay, 
+				notifyPlayerEarningDelay, playSoundOnSellAll, 
+				notifyNothingToSell, null );
+		final long nanoStop = System.nanoTime();
+		double milliTime = (nanoStop - nanoStart) / 1000000d;
+		
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( "(" )
+		.append( description)
+		.append( ": " + (success ? "success" : "failed"))
+		.append( " ms: " + dFmt.format( milliTime ) + ") ");
+		
+		return sb.toString();
+	}
+	
 	
 	public Mine getMine() {
 		return mine;

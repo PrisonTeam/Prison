@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-13
 
 
+* **auto features: setup a sellall function on PrisonMinesBlockBreakEvent so it can be easier to utilize from other functions.**
+
+
 * **AutoFeatures SellAll: Added the ability to disable the "nothing to sell" message without effecting the other settings.**
 
 
