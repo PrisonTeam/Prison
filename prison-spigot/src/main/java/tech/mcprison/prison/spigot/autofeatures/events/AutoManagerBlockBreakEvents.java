@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
+import java.util.TreeSet;
+
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -12,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
@@ -30,11 +33,19 @@ public class AutoManagerBlockBreakEvents
 {
 	private BlockBreakPriority bbPriority;
 	
+	
+	private TreeSet<SpigotPlayer> delayedSellallPlayers;
+	
+	
 	public AutoManagerBlockBreakEvents() {
         super();
+        
+        this.delayedSellallPlayers = new TreeSet<>();
     }
 	public AutoManagerBlockBreakEvents( BlockBreakPriority bbPriority ) {
 		super();
+
+		this.delayedSellallPlayers = new TreeSet<>();
 		
 		this.bbPriority = bbPriority;
 	}
@@ -473,6 +484,33 @@ public class AutoManagerBlockBreakEvents
     		pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
     	}
     	
+    	if ( isBoolean( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires ) ) {
+    		
+    		if ( !getDelayedSellallPlayers().contains( pmEvent.getSpigotPlayer() ) ) {
+    			
+    			getDelayedSellallPlayers().add( pmEvent.getSpigotPlayer() );
+    			
+    			int ticks = getInteger( AutoFeatures.isEnabledDelayedSellAllOnInventoryDelayInTicks );
+    			
+    			pmEvent.getDebugInfo().append( Output.get().getColorCodeError());
+    			pmEvent.getDebugInfo().append( "(BlockBreakEvent delayed sellall submitted: no details available, see sellall debug info) " );
+    			pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
+    			
+    			final PrisonMinesBlockBreakEvent pmEventFinal = pmEvent;
+    			
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+	
+						String message = pmEventFinal.performSellAllOnPlayerInventoryString("delayed sellall");
+						getDelayedSellallPlayers().remove( pmEventFinal.getSpigotPlayer() );
+						
+						Output.get().logDebug(message);
+					}
+				}.runTaskLater( SpigotPrison.getInstance(), ticks );
+    		}
+    	}
+    	
 		printDebugInfo( pmEvent, start );
 	}
 	
@@ -481,6 +519,9 @@ public class AutoManagerBlockBreakEvents
 		
 		return bonusXp;
 	}
-
+	
+	public TreeSet<SpigotPlayer> getDelayedSellallPlayers() {
+		return delayedSellallPlayers;
+	}
 
 }

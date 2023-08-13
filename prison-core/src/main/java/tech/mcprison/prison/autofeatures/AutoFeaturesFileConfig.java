@@ -205,6 +205,17 @@ public class AutoFeaturesFileConfig {
 						"This can be enabled without enabling the autosell."),
 				
 				
+				isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires(inventory, false),
+				isEnabledDelayedSellAllOnInventoryDelayInTicks(inventory, 2),
+				isEnabledDelayedSellAllOnInventoryDelayInTicks__readme(inventory, 
+						"This option adds a delay to a sellall event. The delay can be set to " +
+						"a range of 0 or more ticks, with 2 ticks being the default.  When a " +
+						"player breaks a block through the BlockBreakEvent, if this is enabled, " +
+						"then a task will be submitted to perform a sellall transaction for " +
+						"the player.  Only one task per player can be submitted at a time, so " +
+						"if the player is agressivly mining, they cannot queue up many sellalls."),
+				
+				
 //				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				isAutoSellIfInventoryIsFull(inventory, true),
