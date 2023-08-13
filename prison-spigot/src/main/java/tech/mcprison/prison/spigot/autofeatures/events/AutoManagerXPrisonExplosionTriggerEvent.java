@@ -345,7 +345,7 @@ public class AutoManagerXPrisonExplosionTriggerEvent
         	}
         	
     		
-    		for ( int i = 1; i < e.getBlocksAffected().size(); i++ ) {
+    		for ( int i = 0; i < e.getBlocksAffected().size(); i++ ) {
     			pmEvent.getUnprocessedRawBlocks().add( e.getBlocksAffected().get( i ) );
     		}
     		

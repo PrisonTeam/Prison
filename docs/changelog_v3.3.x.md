@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-13
 
 
+* **AutoFeatures XPrison event listener: Fixed a bug that was ignoring the first block in the exploded block list.**
+
+
 * **AutoFeatures: Added the ability to force a delayed inventory sellall at the end of handling a bukkit BlockBreakEvent.  This is in addition to the other instant sellall at the end of the bukkit BlockBreakEvent.**
 This has the ability to set a delay in ticks before it is fired.
 If a task was submitted for a player, then future tasks cannot be submitted for that player until the submitted sellall task was finished running.
