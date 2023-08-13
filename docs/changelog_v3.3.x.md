@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15c 2023-08-08
+# 3.3.0-alpha.15c 2023-08-13
+
+
+* **AutoFeatures SellAll: Added the ability to disable the "nothing to sell" message without effecting the other settings.**
+
+
+* **auto features: Add the calculated autosell to the dropExtra function to force autosell if it should happen to have extra drops left over (it never should).**
+
 
 * **Auto Features: If autosell is enabled and there are any leftover blocks that was not sold, it will now generate an error message and if prison debug mode is turned off, then it will force the logging of the transaction.**
 This forcing the logging can be turned off in the auto features configs.

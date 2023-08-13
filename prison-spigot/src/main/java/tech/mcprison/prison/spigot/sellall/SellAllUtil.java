@@ -2295,25 +2295,49 @@ public class SellAllUtil
      * @return boolean If successful
      * */
     public boolean sellAllSell(Player p, 
-    		boolean isUsingSign, boolean completelySilent, 
+    		boolean isUsingSign, 
+    		boolean completelySilent, 
     		boolean notifyPlayerEarned, 
-			boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, 
+			boolean notifyPlayerDelay, 
+			boolean notifyPlayerEarningDelay, 
 			boolean playSoundOnSellAll) {
-    	return sellAllSell( p, isUsingSign, completelySilent, notifyPlayerEarned, notifyPlayerDelay, 
-    			notifyPlayerEarningDelay, playSoundOnSellAll, null );
+    	return sellAllSell( p, isUsingSign, completelySilent, 
+    			notifyPlayerEarned, notifyPlayerDelay, 
+    			notifyPlayerEarningDelay, playSoundOnSellAll, 
+    			true,
+    			null );
     }
     
     public boolean sellAllSell(Player p, 
-    		boolean isUsingSign, boolean completelySilent, 
+    		boolean isUsingSign, 
+    		boolean completelySilent, 
     		boolean notifyPlayerEarned, 
-    		boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, 
-    		boolean playSoundOnSellAll, List<Double> amounts ){
+    		boolean notifyPlayerDelay, 
+    		boolean notifyPlayerEarningDelay, 
+    		boolean playSoundOnSellAll, 
+    		List<Double> amounts ) {
+    	
+    	return sellAllSell( p, isUsingSign, completelySilent, 
+    			notifyPlayerEarned, notifyPlayerDelay, 
+    			notifyPlayerEarningDelay, playSoundOnSellAll, 
+    			true,
+    			amounts );
+    }
+    
+    public boolean sellAllSell(Player p, 
+    		boolean isUsingSign, 
+    		boolean completelySilent, 
+    		boolean notifyPlayerEarned, 
+    		boolean notifyPlayerDelay, 
+    		boolean notifyPlayerEarningDelay, 
+    		boolean playSoundOnSellAll, 
+    		boolean notifyNothingToSell,
+    		List<Double> amounts ) {
     	
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
             	
             	sellallCanOnlyUseSignsMsg( new SpigotCommandSender(p) );
-//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
             }
             return false;
         }
@@ -2322,7 +2346,6 @@ public class SellAllUtil
             if (notifyPlayerDelay && !completelySilent) {
 
             	sellallRateLimitExceededMsg( new SpigotCommandSender(p) );
-//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
             }
             return false;
         }
@@ -2331,7 +2354,6 @@ public class SellAllUtil
             if (!completelySilent){
             	
             	sellallShopIsEmptyMsg( new SpigotCommandSender(p) );
-//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
             }
             return false;
         }
@@ -2353,7 +2375,7 @@ public class SellAllUtil
 
         //TODO inventory access: getHashMapOfPlayerInventories() && removeSellableItems(p, p.getInventory());
 //        double money = getSellMoney(p);
-        if (money != 0){
+        if (money != 0) {
         	
         	if ( amounts != null ) {
         		
@@ -2393,12 +2415,13 @@ public class SellAllUtil
                 }
 
                 if (notifyPlayerEarningDelay && isAutoSellEarningNotificationDelayEnabled){
-                    if (!isPlayerWaitingAutoSellNotification(p)){
+                    if (!isPlayerWaitingAutoSellNotification(p)) {
                         addToAutoSellNotificationDelay(p);
                     } 
                     
                     addDelayedEarningAutoSellNotification(p, money);
-                } else if (notifyPlayerEarned){
+                } 
+                else if (notifyPlayerEarned) {
                 	DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
                 	String amt = fFmt.format( money );
                 	
@@ -2411,14 +2434,14 @@ public class SellAllUtil
                 }
             }
             return true;
-        } else {
-            if (!completelySilent){
+        } 
+        else {
+            if (!completelySilent && notifyNothingToSell) {
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
                     p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
                 
                 sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
-//                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
             }
             return false;
         }
