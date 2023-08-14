@@ -878,7 +878,9 @@ public abstract class AutoManagerFeatures
 			boolean autoSellByPerm = 
 							isPlayerAutosellEnabled &&
 							!player.isOp() && 
+							isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
 							!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+							!"false".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
 							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
 			
 			// Try to autosell if enabled in any of the following ways:

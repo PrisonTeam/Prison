@@ -184,7 +184,14 @@ public class AutoFeaturesFileConfig {
 		    	
 
 				isAutoSellPerBlockBreakEnabled(inventory, false),
+				
 				permissionAutoSellPerBlockBreakEnabled(inventory, "prison.automanager.autosell"),
+				permissionAutoSellPerBlockBreakEnabled__readme(inventory, 
+						"AutoSell by permission can be disabled with the use of 'disable', " + 
+						"or 'false', for the perm name. " +
+						"Players cannot use the autosell permission while OP'd."),
+				
+				
 				
 				permissionAutoSellPerBlockBreakEnabled__ReadMe(inventory, 
 						"If OP then you cannot use this permission node since it would always " +

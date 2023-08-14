@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-13
 
 
+* **AutoFeatures: Add comment on autosell by perms so it's clear what setting are needed.**
+Also added a setting of 'false', in addition to 'disable', which disables the permission based autosell.
+
+
 * **AutoFeatures XPrison event listener: Fixed a bug that was ignoring the first block in the exploded block list.**
 
 
