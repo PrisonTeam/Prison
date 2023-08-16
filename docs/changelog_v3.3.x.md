@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15c 2023-08-16
+# 3.3.0-alpha.15d 2023-08-16
+
+
+
+**v3.3.0-alpha.15d 2023-08-16**
 
 
 * **BlockBreak sync task:  Found a possible cause of jitters, or visual appearance of lag.**
