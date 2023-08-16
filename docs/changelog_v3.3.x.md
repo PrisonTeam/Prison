@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15c 2023-08-13
+# 3.3.0-alpha.15c 2023-08-16
+
+
+* **AutoFeatures: Expand the number of features being reported to bstats.**
+Removed a duplicate comment in the autoFeatures config file.
 
 
 * **AutoFeatures: Add comment on autosell by perms so it's clear what setting are needed.**

@@ -193,9 +193,9 @@ public class AutoFeaturesFileConfig {
 				
 				
 				
-				permissionAutoSellPerBlockBreakEnabled__ReadMe(inventory, 
-						"If OP then you cannot use this permission node since it would always " +
-						"be enabled. Using a value of 'disable' will turn it off for everyone."),
+//				permissionAutoSellPerBlockBreakEnabled__ReadMe(inventory, 
+//						"If OP then you cannot use this permission node since it would always " +
+//						"be enabled. Using a value of 'disable' will turn it off for everyone."),
 //				
 				isAutoSellLeftoversForceDebugLogging(inventory, true),
 				isAutoSellLeftoversForceDebugLogging__ReadMe(inventory, 
@@ -1071,6 +1071,7 @@ public class AutoFeaturesFileConfig {
 			
 			bStatsDetailPriority( AutoFeatures.blockBreakEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority, tm );
+			
 			bStatsDetailPriority( AutoFeatures.TokenEnchantBlockExplodeEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.CrazyEnchantsBlastUseEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.RevEnchantsExplosiveEventPriority, tm );
@@ -1079,14 +1080,43 @@ public class AutoFeaturesFileConfig {
 			bStatsDetailPriority( AutoFeatures.ZenchantmentsBlockShredEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.PrisonEnchantsExplosiveEventPriority, tm );
 
+			bStatsDetailPriority( AutoFeatures.XPrisonExplosionTriggerEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.XPrisonLayerTriggerEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.XPrisonNukeTriggerEventPriority, tm );
+			
+			
 			
 			bStatsDetailBoolean( AutoFeatures.isCalculateFoodExhustion, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateSilkEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateDropAdditionsEnabled, tm );
+
 			bStatsDetailBoolean( AutoFeatures.isCalculateXPEnabled, tm );
 			bStatsDetailBoolean( AutoFeatures.givePlayerXPAsOrbDrops, tm );
 			
+			bStatsDetailBoolean( AutoFeatures.ifBlockIsAlreadyCountedThenCancelEvent, tm );
+			bStatsDetailBoolean( AutoFeatures.processMonitorEventsOnlyIfPrimaryBlockIsAIR, tm );
+			bStatsDetailBoolean( AutoFeatures.isMinecraftStatsReportingEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine, tm );
+			
+			
+			
+			
 			bStatsDetailBoolean( AutoFeatures.isAutoSellPerBlockBreakEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.permissionAutoSellPerBlockBreakEnabled, tm );
+			
+			bStatsDetailPriority( AutoFeatures.isAutoSellLeftoversForceDebugLogging, tm );
+			bStatsDetailPriority( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires, tm );
+
+			bStatsDetailPriority( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires, tm );
+			bStatsDetailPriority( AutoFeatures.isEnabledDelayedSellAllOnInventoryDelayInTicks, tm );
+			
 			bStatsDetailBoolean( AutoFeatures.isAutoSellIfInventoryIsFull, tm );
+			bStatsDetailBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority, tm );
 			bStatsDetailBoolean( AutoFeatures.dropItemsIfInventoryIsFull, tm );
+			
+			bStatsDetailBoolean( AutoFeatures.actionBarMessageIfInventoryIsFull, tm );
+
+			
 			
 			
 			bStatsDetailBoolean( AutoFeatures.isAutoFeaturesEnabled, tm );
@@ -1107,11 +1137,32 @@ public class AutoFeaturesFileConfig {
 			
 			
 			bStatsDetailBoolean( AutoFeatures.tokensEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.tokensBlocksPerToken, tm );
 
+			
+			
+			bStatsDetailBoolean( AutoFeatures.isLoreEnabled, tm );
+			if ( isFeatureBoolean( AutoFeatures.isLoreEnabled )) {
+				
+				bStatsDetailBoolean( AutoFeatures.loreTrackBlockBreakCount, tm );
+				bStatsDetailBoolean( AutoFeatures.loreDurabiltyResistance, tm );
+			}
+			
+			
+			
 			bStatsDetailBoolean( AutoFeatures.isCalculateDurabilityEnabled, tm );
 			bStatsDetailBoolean( AutoFeatures.isPreventToolBreakage, tm );
+			bStatsDetailBoolean( AutoFeatures.preventToolBreakageThreshold, tm );
+			
+
+			
 			bStatsDetailBoolean( AutoFeatures.isCalculateFortuneEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.fortuneMultiplierGlobal, tm );
+			bStatsDetailBoolean( AutoFeatures.fortuneMultiplierMax, tm );
+			bStatsDetailBoolean( AutoFeatures.fortuneBukkitDropsMultiplier, tm );
+			
 			bStatsDetailBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled, tm );
+			
 			bStatsDetailBoolean( AutoFeatures.isCalculateAltFortuneEnabled, tm );
 			bStatsDetailBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled, tm );
 			
