@@ -1885,7 +1885,7 @@ public class MinesCommands
     @Command(identifier = "mines set resetTime", permissions = "mines.set", 
     		description = "Set a mine's auto reset time as expressed in seconds.")
     public void resetTimeCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "mineName", description = "The name of the mine to edit, or '*all' to apply to all mines.") String mineName,
         @Arg(name = "time", description = "Time in seconds for the mine to auto reset. " +
         		"With a minimum value of "+ MineData.MINE_RESET__TIME_SEC__MINIMUM + " seconds. " +
         				"Using '*disable*' will turn off the auto reset.  Use of "
@@ -1918,7 +1918,7 @@ public class MinesCommands
 				return;
 			}
     	}
-    	if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
+    	if ( !"*disable*".equalsIgnoreCase( time ) && resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
     		Output.get().sendWarn( sender, 
     				"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
     				mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
