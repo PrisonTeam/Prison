@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15c 2023-08-16
 
 
+* **BlockBreak sync task:  Found a possible cause of jitters, or visual appearance of lag.**
+Basically, need to check the block to ensure it's not already AIR before setting it to AIR.  This could happen if there is a heavy load on the server from other plugins, or from bukkit itself, and bukkit naturally breaks the block before prison's sync task can get to it.
+Prison submits the sync task to run "next" in the future, but if there are other tasks trying to run, and if they cause a longer delay, then it can appear to be laggy.
+
+
 * **AutoFeatures: Expand the number of features being reported to bstats.**
 Removed a duplicate comment in the autoFeatures config file.
 
