@@ -3330,6 +3330,53 @@ public class MinesCommands
     	}
     }
 
+    
+    
+    @Command(identifier = "mines top", 
+    		description = "TP to the top of the current mine. Will default to the mine's " +
+    		"spawn location if set, but can specify the target [spawn, mine]. If not in a "
+    		+ "mine, then it will be the same as '/mtp' where it will take you to a mine that "
+    		+ "is linked to your current rank. This command has no options.", 
+    		aliases = "mtop",
+    		altPermissions = {"access-by-rank", "mines.tp"})
+    public void mineTpTop(CommandSender sender ) {
+    	
+
+    	Player player = getPlayer( sender );
+    	//oboolean isOp = sender.isOp();
+    	
+    	
+    	if ( player == null || !player.isOnline() ) {
+    		
+    		teleportPlayerMustBeIngameMsg( sender );
+    		return;
+    	}
+    	
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	
+    	Mine mine = pMines.findMineLocationExact( player.getLocation() );
+
+    	
+    	if ( mine != null ) {
+    		if ( mine.isVirtual() ) {
+    			teleportCannotUseVirtualMinesMsg( sender );
+    			return;
+    		}
+    		else {
+    			
+    			mineTp( sender, mine.getName(), "", "spawn");
+    		}
+    	}
+    	else {
+    		// Player is not in a mine, so issue `/mtp` command for them:
+    		mineTp( sender, "", "", "");
+    	}
+    	
+    	
+
+    }
+    
     private void teleportPlayer( Player player, Mine mine, String target ) {
     	
     	if ( Prison.get().getPlatform().getConfigBooleanFalse( "prison-mines.tp-warmup.enabled" ) ) {
