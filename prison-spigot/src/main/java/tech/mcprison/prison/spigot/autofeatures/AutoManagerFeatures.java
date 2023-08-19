@@ -2684,7 +2684,46 @@ public abstract class AutoManagerFeatures
 						);
 				debugInfo.append( msg );
 			}
-
+			
+			else if ( isBoolean( AutoFeatures.isPercentGradientFortuneEnabled ) ) {
+				
+				int bonusBlocks = 0;
+				
+				int maxFortune = getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel );
+				int maxBonusBlocks = getInteger( AutoFeatures.percentGradientFortuneMaxBonusBlocks );
+				double minPctRnd = getDouble( AutoFeatures.percentGradientFortuneMinPercentRandomness );
+				
+				if ( maxFortune > 0 && maxBonusBlocks > 1 ) {
+					
+					minPctRnd = 
+							minPctRnd < 0.0 ? 0.0 : 
+								minPctRnd > 100.00 ? 99.0 : minPctRnd;
+								
+					double random = ((1.0 - (minPctRnd / 100)) * getRandom().nextDouble()) + (minPctRnd / 100);
+								
+					int fortLevel = fortuneLevelOriginal > maxFortune ? maxFortune : fortuneLevelOriginal;
+					
+					bonusBlocks = ( fortLevel / maxFortune ) * maxBonusBlocks;
+					
+					bonusBlocks *= random;
+				}
+				
+				// The count has the final value so set it as the amount:
+				blocks.setAmount( 1 + bonusBlocks );
+				
+				String msg = String.format(
+						"(gradientFortune blocks: 1 + bonusBlocks=%s == (fortLevel=%s / maxFortLevel=%s) * "
+						+ "maxBonusBlocks=%s * rnd=%s [with minPctRnd=%s]) ",
+						iFmt.format( bonusBlocks ),
+						iFmt.format( fortuneLevelOriginal ),
+						iFmt.format( maxFortune ),
+						iFmt.format( maxBonusBlocks ),
+						dFmt.format( random ),
+						dFmt.format( minPctRnd )
+						);
+				
+				debugInfo.append( msg );
+			}
 		}
 
 	}

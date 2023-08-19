@@ -330,7 +330,40 @@ public class AutoFeaturesFileConfig {
 	    		isCalculateAltFortuneOnAllBlocksEnabled(fortuneFeature, false),
 	    		
 	    		
+	    		percentGradientFortune(fortuneFeature),
 
+		    		isPercentGradientFortuneEnabled(percentGradientFortune, false),
+		    		isPercentGradientFortuneEnabled__readme(percentGradientFortune, 
+		    				"Percent Gradient Fortune is an alternative fortune calculation that "
+		    				+ "will only be enabled if extendedBukkitFortune and altFortune is "
+		    				+ "turned off.  Percent Gradient Fortune will always drop a minimum of "
+		    				+ "1 block with fortune 0 and higher. The max it will ever drop, will "
+		    				+ "be 1 + MaxBonusBlocks amount.  The calculation of the MaxBonusBlocks "
+		    				+ "will be a random roll resulting in 0 bonus blocks, to the MaxBonusBlocks "
+		    				+ "amount IF the player has the max fortune on their tool. For fortune "
+		    				+ "ammounts less than the maxFortuneLevel, it will be treated as a "
+		    				+ "linear percentage gradient of the max amount. "
+		    				+ "For example, MaxFortuneLevel= 1000, and MaxBonusBlocks= 200. "
+		    				+ "Therefore if the player has a fortune 500, the max bonus they could get would "
+		    				+ "be only 100 blocks, but could be as low as zero bonus blocks since it's a random "
+		    				+ "roll on each calculation. If they have a fort 250, then it will be 25% of 200, or 50 "
+		    				+ "blocks as a max bonus. "
+		    				+ "For better control of the randomness applied to the bonus block calculations, "
+		    				+ "the MinPercentRandomness sets the lowest range for the randomness. What this means, "
+		    				+ "is for a maxFortuneLevel= 1000 and a maxBonusBlocks of= 200, and a tool with "
+		    				+ "fort 500, the calcs would be for a bonus between '0' and (500 / 1000 * 200 =) 100 "
+		    				+ "bonus blocks.  But with the minPercentRandomness= 25, then the range would be "
+		    				+ "'25%' to 100% of the 100 bonus blocks. The minePercentRandomness would ensure a "
+		    				+ "higher payout of bonus blocks, without effecting the max payout. "
+		    				+ "minPercentRandomness has a valid range of 0.0 (off) to 99.0 percent. "
+		    				+ "No other fortune multipliers will apply to these calculations.  The percentage "
+		    				+ "gradient is a very controlled way of paying out fortune bonuses."),
+	
+		    		percentGradientFortuneMaxFortuneLevel(percentGradientFortune, 1000 ),
+		    		percentGradientFortuneMaxBonusBlocks(percentGradientFortune, 200 ),
+		    		
+		    		percentGradientFortuneMinPercentRandomness(percentGradientFortune, 25.0 ),
+		    		
 	    		
 	    		
 	    	pickupFeature(options),

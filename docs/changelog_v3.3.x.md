@@ -14,8 +14,16 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15d 2023-08-16
+# 3.3.0-alpha.15d 2023-08-18
 
+
+* **AutoManager: Added a new fortune type: percentGradient.**
+This fortune calculation is an alternative to the extendedBukkit and altFortune calculations.
+This fortune calculation applies a linear distribution based upon the player's tool's fortune level versus the maxfortuneLevel and the maxBonusBlocks.
+
+
+* **Added a `/mines top` command, alias `/mtop`, which will tp a player to the spawn location of the current mine they are in. **
+If they are not in a mine, then it will tp them to a mine tied to their current default rank.
 
 
 **v3.3.0-alpha.15d 2023-08-16**
