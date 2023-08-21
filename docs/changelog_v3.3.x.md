@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15d 2023-08-20
 
 
+* **AutoFeatures: New option to use TokenEnchant to get the enchantment level through their API instead of using the bukkit functions to get the fortune.**
+
+
 * **AutoFeatures: Added a debug statement when player autosell has been toggled off by the player, since it may look as if autosell is not working correctly.**
 Wrapped the notice in a WARNING color code so it stands out in the console with it being red.
 

@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.vk2gpz.tokenenchant.api.TokenEnchantAPI;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -374,9 +375,29 @@ public abstract class AutoManagerFeatures
 	
 	protected int getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
 		int fortLevel = 0;
+		boolean usedTEFortune = false;
+		
+		if ( isBoolean( AutoFeatures.isUseTokenEnchantsFortuneLevel ) && 
+				itemInHand != null && 
+				itemInHand.getBukkitStack() != null ) {
+			
+			try {
+				if ( TokenEnchantAPI.getInstance() != null ) {
+					
+					 fortLevel = TokenEnchantAPI.getInstance().getEnchantments( itemInHand.getBukkitStack() )
+					 		.get( TokenEnchantAPI.getInstance().getEnchantment("Fortune"));
+					
+					 usedTEFortune = true;
+				}
+			}
+			catch ( Exception e ) {
+				// ignore: could not use TE.
+			}
+		}
 		
 		try {
-			if ( itemInHand != null && 
+			if ( !usedTEFortune &&
+					itemInHand != null && 
 					itemInHand.getBukkitStack() != null && 
 					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
 					itemInHand.getBukkitStack().getEnchantments() != null ) {
