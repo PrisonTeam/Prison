@@ -284,6 +284,10 @@ public abstract class Spigot18Blocks
 						prisonBlock.getBlockName().equalsIgnoreCase( "bricks" ) ) {
 					results = XMaterial.BRICKS;
 				}
+				else if ( results == XMaterial.BRICK && 
+						prisonBlock.getBlockName().equalsIgnoreCase( "brick" ) ) {
+					results = XMaterial.BRICKS;
+				}
 				
 				putCachedXMaterial( prisonBlock, results );
 			}

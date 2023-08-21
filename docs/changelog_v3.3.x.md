@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15d 2023-08-20
 
 
+* **Sellall: Fixed a bug with spigot 1.8.8 where bricks were not able to be sold correctly.**
+The issue is with XBlock not correctly mapping brick and bricks to the correct bukkit 1.8 materials.  It may be close, or accurate, but when converting to a bukkit item stack, it fails to map back to the same objects.  
+Sellall was not using the prison compatibility classes, and those classes for 1.8 had to be updated too.
+
+
 * **AutoFeatures: New option to use TokenEnchant to get the enchantment level through their API instead of using the bukkit functions to get the fortune.**
 
 
