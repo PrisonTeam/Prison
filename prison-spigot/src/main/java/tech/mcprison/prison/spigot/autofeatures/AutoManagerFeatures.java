@@ -855,6 +855,17 @@ public abstract class AutoManagerFeatures
 			boolean isSellallEnabled = SellAllUtil.get() != null && 
 					SpigotPrison.getInstance().isSellAllEnabled();
 			
+			
+			boolean isPlayerAutoSellTurnedOff = SellAllUtil.get().isAutoSellPerUserToggleable &&
+					  !SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+								pmEvent.getSpigotPlayer().getWrapper() );
+			
+			if ( isPlayerAutoSellTurnedOff ) {
+				debugInfo.append( Output.get().getColorCodeWarning() );
+				debugInfo.append( "(Player toggled off autosell) " );
+				debugInfo.append( Output.get().getColorCodeDebug() );
+			}
+			
 			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
 			// This is to be used with other auto sell setting, but never on it's own:
 			boolean isPlayerAutosellEnabled = 

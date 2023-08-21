@@ -17,6 +17,8 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15d 2023-08-20
 
 
+* **AutoFeatures: Added a debug statement when player autosell has been toggled off by the player, since it may look as if autosell is not working correctly.**
+Wrapped the notice in a WARNING color code so it stands out in the console with it being red.
 
 
 * **AutoFeatures: Updated the gradient fortune to fix a problem with not setting the bonus block counts correctly.**
