@@ -372,15 +372,15 @@ public abstract class AutoManagerFeatures
 		return results;
 	}
 	
-	protected short getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
-		short fortLevel = (short) 0;
+	protected int getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
+		int fortLevel = 0;
 		
 		try {
 			if ( itemInHand != null && 
 					itemInHand.getBukkitStack() != null && 
 					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
 					itemInHand.getBukkitStack().getEnchantments() != null ) {
-				fortLevel = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+				fortLevel = itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 			}
 		}
 		catch ( NullPointerException e ) {
@@ -388,14 +388,14 @@ public abstract class AutoManagerFeatures
 			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
 		}
 		
-		short results = (short) fortLevel;
+		int results = fortLevel;
 //		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
 		DecimalFormat iFmt = new DecimalFormat( "#,##0" );
 		
 		int maxFortuneLevel = getInteger( AutoFeatures.fortuneMultiplierMax );
 		String maxFort = "";
 		if ( maxFortuneLevel > 0 && fortLevel > maxFortuneLevel ) {
-			results = (short) maxFortuneLevel;
+			results = maxFortuneLevel;
 			maxFort = String.format(" max=%s result=%s", 
 					iFmt.format( maxFortuneLevel ),
 					iFmt.format( results ));
@@ -794,7 +794,7 @@ public abstract class AutoManagerFeatures
 			// Add fortune to the items in the inventory
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
 				sb.setLength(0);
-				short fortuneLevel = getFortune(itemInHand, debugInfo );
+				int fortuneLevel = getFortune(itemInHand, debugInfo );
 
 //				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
 				
@@ -1093,7 +1093,7 @@ public abstract class AutoManagerFeatures
 			
 
 			// Need better drop calculation that is not using the getDrops function.
-			short fortuneLevel = getFortune( pmEvent.getItemInHand(), pmEvent.getDebugInfo() );
+			int fortuneLevel = getFortune( pmEvent.getItemInHand(), pmEvent.getDebugInfo() );
 
 //			calculateSilkTouch( pmEvent.getItemInHand(), drops );
 			
@@ -2688,24 +2688,26 @@ public abstract class AutoManagerFeatures
 			else if ( isBoolean( AutoFeatures.isPercentGradientFortuneEnabled ) ) {
 				
 				int bonusBlocks = 0;
-				
+				double rnd = 1.0;
+						
 				int maxFortune = getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel );
 				int maxBonusBlocks = getInteger( AutoFeatures.percentGradientFortuneMaxBonusBlocks );
 				double minPctRnd = getDouble( AutoFeatures.percentGradientFortuneMinPercentRandomness );
 				
+				int fortLevel = fortuneLevelOriginal > maxFortune ? maxFortune : fortuneLevelOriginal;
+
 				if ( maxFortune > 0 && maxBonusBlocks > 1 ) {
 					
 					minPctRnd = 
 							minPctRnd < 0.0 ? 0.0 : 
 								minPctRnd > 100.00 ? 99.0 : minPctRnd;
 								
-					double random = ((1.0 - (minPctRnd / 100)) * getRandom().nextDouble()) + (minPctRnd / 100);
+					rnd = ((1.0 - (minPctRnd / 100)) * getRandom().nextDouble()) + (minPctRnd / 100);
 								
-					int fortLevel = fortuneLevelOriginal > maxFortune ? maxFortune : fortuneLevelOriginal;
 					
 					bonusBlocks = ( fortLevel / maxFortune ) * maxBonusBlocks;
 					
-					bonusBlocks *= random;
+					bonusBlocks *= rnd;
 				}
 				
 				// The count has the final value so set it as the amount:
@@ -2715,10 +2717,10 @@ public abstract class AutoManagerFeatures
 						"(gradientFortune blocks: 1 + bonusBlocks=%s == (fortLevel=%s / maxFortLevel=%s) * "
 						+ "maxBonusBlocks=%s * rnd=%s [with minPctRnd=%s]) ",
 						iFmt.format( bonusBlocks ),
-						iFmt.format( fortuneLevelOriginal ),
+						iFmt.format( fortLevel ),
 						iFmt.format( maxFortune ),
 						iFmt.format( maxBonusBlocks ),
-						dFmt.format( random ),
+						dFmt.format( rnd ),
 						dFmt.format( minPctRnd )
 						);
 				

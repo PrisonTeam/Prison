@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15d 2023-08-18
+# 3.3.0-alpha.15d 2023-08-20
+
+
+
+
+* **AutoFeatures: Updated the gradient fortune to fix a problem with not setting the bonus block counts correctly.**
 
 
 * **AutoManager: Added a new fortune type: percentGradient.**
