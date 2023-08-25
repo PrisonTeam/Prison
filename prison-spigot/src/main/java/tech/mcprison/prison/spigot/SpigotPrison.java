@@ -311,7 +311,10 @@ public class SpigotPrison
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
 
         
-        if ( getConfig().getBoolean( "slime-fun" ) ) {
+        boolean slimeFunEnabled1 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun");
+		boolean slimeFunEnabled2 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun.enabled");
+		
+        if ( slimeFunEnabled1 || slimeFunEnabled2 ) {
         	Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
         }
         

@@ -120,12 +120,27 @@ integrations:
 
 
 
-# NEW: This enables new physics to be applied when jumpping on slime blocks.
+# This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can
 # jump even higher to heights of 40 to 60+ blocks.
-slime-fun: false
+# Boosters are items held in the primary hand of the player, which boosts the 
+# jump with each bounce.
+slime-fun:
+  enabled: false
+  display-messages: true
+  boosters:
+    diamond_pickkaxe: 3.0
+    gold_pickaxe: 2.85
+    iron_pickaxe: 2.85
+    stone_pickaxe: 2.85
+    wood_pickaxe: 2.85
+    diamond_block: 1.65
+    gold_block: 1.45
+    iron_block: 1.20
 
-# NEW: Prison now has GUIs for most features and actions. For more options
+
+
+# Prison now has GUIs for most features and actions. For more options
 # please check the GuiConfig.yml. 
 # Access with /gui
 prison-gui-enabled: true
