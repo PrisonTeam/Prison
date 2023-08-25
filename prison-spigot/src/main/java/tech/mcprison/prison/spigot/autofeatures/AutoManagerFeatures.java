@@ -2722,11 +2722,11 @@ public abstract class AutoManagerFeatures
 				int bonusBlocks = 0;
 				double rnd = 1.0;
 						
-				int maxFortune = getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel );
+				double maxFortune = getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel );
 				int maxBonusBlocks = getInteger( AutoFeatures.percentGradientFortuneMaxBonusBlocks );
 				double minPctRnd = getDouble( AutoFeatures.percentGradientFortuneMinPercentRandomness );
 				
-				int fortLevel = fortuneLevelOriginal > maxFortune ? maxFortune : fortuneLevelOriginal;
+				double fortLevel = fortuneLevelOriginal > maxFortune ? maxFortune : fortuneLevelOriginal;
 
 				if ( maxFortune > 0 && maxBonusBlocks > 1 ) {
 					
@@ -2737,7 +2737,7 @@ public abstract class AutoManagerFeatures
 					rnd = ((1.0 - (minPctRnd / 100)) * getRandom().nextDouble()) + (minPctRnd / 100);
 								
 					
-					bonusBlocks = ( fortLevel / maxFortune ) * maxBonusBlocks;
+					bonusBlocks = (int) Math.round( ( fortLevel / maxFortune ) * maxBonusBlocks );
 					
 					bonusBlocks *= rnd;
 				}

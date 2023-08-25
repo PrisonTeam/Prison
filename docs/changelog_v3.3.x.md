@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15d 2023-08-24
 
 
+* **AutoManager: percent gradient fortune: Changed the calculations to use doubles instead of integers.**
+
+
 * **Slime-fun: Moved a lot of the settings for it to the config.yml file instead of hard coding them.**
 Now the messages can be turned off, and the boosters can now be added to, and changed.
 
