@@ -66,7 +66,9 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.bstats.PrisonBStats;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotGUIBackPackCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotGUISellAllCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
@@ -1035,14 +1037,18 @@ public class SpigotPrison
 
         YamlConfiguration modulesConf = loadConfig("modules.yml");
         
+        boolean isMinesEnabled = false;
         boolean isRanksEnabled = false;
 
         // TODO: This business logic needs to be moved to the Module Manager:
         if (modulesConf.getBoolean("mines")) {
+        	isMinesEnabled = true;
+        	
             Prison.get().getModuleManager()
                     .registerModule(new PrisonMines(getDescription().getVersion()));
 
-            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+            // The GUI handler for mines... cannot be hooked up here:
+//            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
             
         } else {
             Output.get().logInfo("&7Modules: &cPrison Mines are disabled and were not Loaded. ");
@@ -1120,13 +1126,14 @@ public class SpigotPrison
         // Do not enable sellall if ranks is not loaded since it uses player ranks:
         if ( isRanksEnabled ) {
         	
-        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+        	// enable under GUI:
+//        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
         	
-        	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
-        	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
-        		// Enable the setup of the prestige related commands only if prestiges is enabled:
-        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
-        	}
+//        	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+//        	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+//        		// Enable the setup of the prestige related commands only if prestiges is enabled:
+//        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+//        	}
         	
             
         }
@@ -1137,11 +1144,46 @@ public class SpigotPrison
         }
 
         
-        // This registers the admin's /gui commands
-        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
-        if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
+        // The following will enable all of the GUI related commands.  It's important that they
+        // cannot be enabled elsewhere, or at least the 'prison-gui-enabled' must control 
+        // their registration:
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "prison-gui-enabled" ) ) {
+
+        	// Prison's primary GUI commands:
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
+        	
+        	
+        	if ( isMinesEnabled ) {
+              // The GUI handler for mines... cannot be hooked up here:
+              Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+        	}
+        	
+        	
+        	if ( isRanksEnabled ) {
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+        		
+            	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+            	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+            		// Enable the setup of the prestige related commands only if prestiges is enabled:
+            		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+            	}
+        	}
+        	
+        	
+        	if ( isBackPacksEnabled ) {
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUIBackPackCommands() );	
+        	}
+        	
+        	
+        	if ( isSellAllEnabled ) {
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUISellAllCommands() );	
+        	}
         }
+        
+//        // This registers the admin's /gui commands
+//        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
+//        if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
+//        }
 
         
         // Register prison utility commands:

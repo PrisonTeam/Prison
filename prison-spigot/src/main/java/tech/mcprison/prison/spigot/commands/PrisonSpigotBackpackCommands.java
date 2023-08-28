@@ -278,79 +278,79 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         BackpacksAdminGUI gui = new BackpacksAdminGUI(p);
         gui.open();
     }
-
-    @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)
-    private void backpackGUIOpenCommand(CommandSender sender,
-        @Arg(name = "Backpack-ID", def = "null", 
-        description = "If user have more than backpack, he'll be able to choose another backpack on ID") String id){
-
-        Player p = getSpigotPlayer(sender);
-
-        if (p == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format( messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
-            return;
-        }
-
-        if (isDisabledWorld(p)) return;
-
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (BackpacksUtil.get().reachedBackpacksLimit(p) && !BackpacksUtil.get().getBackpacksIDs(p).contains(id))){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_reached) + " [" + BackpacksUtil.get().getNumberOwnedBackpacks(p) + "]"));
-            return;
-        }
-
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
-            return;
-        }
-
-        if (!BackpacksUtil.get().canOwnBackpack(p)){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_cant_own)));
-            return;
-        }
-
-        // New method.
-        if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
-            BackpacksUtil.get().openBackpack(p, id);
-        } else {
-            BackpacksUtil.get().openBackpack(p, (String) null );
-        }
-    }
-
-    @Command(identifier = "gui backpackslist", description = "Backpack as a GUI", onlyPlayers = true)
-    private void backpackListGUICommand(CommandSender sender){
-        Player p = getSpigotPlayer(sender);
-
-        if (p == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format( messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
-            return;
-        }
-
-        if (isDisabledWorld(p)) return;
-
-        // New method.
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
-            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
-                return;
-            }
-            BackpacksListPlayerGUI gui = new BackpacksListPlayerGUI(p);
-            gui.open();
-        }
-    }
-
-    @Command(identifier = "gui backpackadmin", description = "Open backpack admin GUI", permissions = "prison.admin", onlyPlayers = true)
-    private void openBackpackAdminCommandGUI(CommandSender sender){
-
-        Player p = getSpigotPlayer(sender);
-
-        if (p == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format( messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
-            return;
-        }
-
-        BackpacksAdminGUI gui = new BackpacksAdminGUI(p);
-        gui.open();
-    }
+//
+//    @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)
+//    private void backpackGUIOpenCommand(CommandSender sender,
+//        @Arg(name = "Backpack-ID", def = "null", 
+//        description = "If user have more than backpack, he'll be able to choose another backpack on ID") String id){
+//
+//        Player p = getSpigotPlayer(sender);
+//
+//        if (p == null) {
+//            Output.get().sendInfo(sender, SpigotPrison.format( messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
+//            return;
+//        }
+//
+//        if (isDisabledWorld(p)) return;
+//
+//        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (BackpacksUtil.get().reachedBackpacksLimit(p) && !BackpacksUtil.get().getBackpacksIDs(p).contains(id))){
+//            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_reached) + " [" + BackpacksUtil.get().getNumberOwnedBackpacks(p) + "]"));
+//            return;
+//        }
+//
+//        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
+//            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+//            return;
+//        }
+//
+//        if (!BackpacksUtil.get().canOwnBackpack(p)){
+//            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_cant_own)));
+//            return;
+//        }
+//
+//        // New method.
+//        if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+//            BackpacksUtil.get().openBackpack(p, id);
+//        } else {
+//            BackpacksUtil.get().openBackpack(p, (String) null );
+//        }
+//    }
+//
+//    @Command(identifier = "gui backpackslist", description = "Backpack as a GUI", onlyPlayers = true)
+//    private void backpackListGUICommand(CommandSender sender){
+//        Player p = getSpigotPlayer(sender);
+//
+//        if (p == null) {
+//            Output.get().sendInfo(sender, SpigotPrison.format( messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
+//            return;
+//        }
+//
+//        if (isDisabledWorld(p)) return;
+//
+//        // New method.
+//        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+//            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
+//                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+//                return;
+//            }
+//            BackpacksListPlayerGUI gui = new BackpacksListPlayerGUI(p);
+//            gui.open();
+//        }
+//    }
+//
+//    @Command(identifier = "gui backpackadmin", description = "Open backpack admin GUI", permissions = "prison.admin", onlyPlayers = true)
+//    private void openBackpackAdminCommandGUI(CommandSender sender){
+//
+//        Player p = getSpigotPlayer(sender);
+//
+//        if (p == null) {
+//            Output.get().sendInfo(sender, SpigotPrison.format( messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
+//            return;
+//        }
+//
+//        BackpacksAdminGUI gui = new BackpacksAdminGUI(p);
+//        gui.open();
+//    }
 
     private boolean isDisabledWorld(Player p) {
         String worldName = p.getWorld().getName();

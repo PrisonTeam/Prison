@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15d 2023-08-24
+# 3.3.0-alpha.15d 2023-08-26
+
+
+
+* **Prison GUI: When disabled through the config.yml 'prison-gui-enabled: false' there were still some commands that were being registered with the '/gui' root.**
+As a result, prison was taking over the use of the command '/gui' that was trying to be used by other plugins.
+This fix tries to isolate the GUI commands from backpacks, prestiges, and sellall, to make sure they cannot be registered if GUI is disabled.
+Had to create new classes to allow the isolation when registering the commands.
 
 
 * **AutoManager: percent gradient fortune: Changed the calculations to use doubles instead of integers.**
