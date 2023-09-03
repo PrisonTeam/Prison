@@ -2170,7 +2170,7 @@ public class SpigotPlatform
     	
 		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
-    	afw.reloadConfigs();
+//    	afw.reloadConfigs();
     	
     	
     	boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );

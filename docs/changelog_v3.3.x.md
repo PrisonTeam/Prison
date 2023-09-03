@@ -14,8 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15d 2023-08-26
+# 3.3.0-alpha.15d 2023-09-01
 
+
+
+* **AutoFeatures and prison version:  I have no idea why I added an auto features reload when doing prison version.  Removed.**
+Best guess at this moment is that it was to test something.
 
 
 * **Prison GUI: When disabled through the config.yml 'prison-gui-enabled: false' there were still some commands that were being registered with the '/gui' root.**
