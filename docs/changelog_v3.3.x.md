@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15d 2023-09-02
+# 3.3.0-alpha.15d 2023-09-03
+
+
+* **Prison messages: Expanded the use of prison message line breaks, `{br}` in both console messages and sending messages to player.**
+Auto Features: Added line breaks to the existing block break debug info since it's very long and difficult to read.
 
 
 * **Mine wand debug info: Slightly alter the printing of the details to make it easier to read.**

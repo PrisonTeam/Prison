@@ -153,7 +153,9 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent != null && pmEvent.getDebugInfo().length() > 0 ) {
 			
 			long stop = System.nanoTime();
-			pmEvent.getDebugInfo().append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			pmEvent.getDebugInfo().append( "{br}### ** End Event Debug Info ** ### [" )
+					.append( (stop - start) / 1000000d )
+					.append( " ms]" );
 			
 			if ( !Output.get().isDebug() && pmEvent.isForceDebugLogging() ) {
 				
@@ -539,11 +541,16 @@ public abstract class AutoManagerFeatures
 		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
-			pmEvent.getDebugInfo().append( "(applyAutoEvents: " )
+			pmEvent.getDebugInfo().append( "{br}  (applyAutoEvents: " )
 				.append( pmEvent.getSpigotBlock().getBlockName() );
 			
 			if ( !isAutoFeaturesEnabled ) {
-				pmEvent.getDebugInfo().append("isAutoFeaturesEnabled=false (disabled)");
+				pmEvent.getDebugInfo().append(" isAutoFeaturesEnabled=false (");
+				
+				pmEvent.getDebugInfo().append( Output.get().getColorCodeError() );
+				pmEvent.getDebugInfo().append("disabled");
+				pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug() );
+				pmEvent.getDebugInfo().append(")");
 			}
 			else {
 				
@@ -598,7 +605,7 @@ public abstract class AutoManagerFeatures
 				
 				if ( configNormalDrop ) {
 					pmEvent.getDebugInfo()
-						.append( "(NormalDrop handling enabled: " )
+						.append( "{br}  (NormalDrop handling enabled: " )
 						.append( "normalDropSmelt[" )
 						.append( configNormalDropSmelt ? "enabled" : "disabled" )
 						.append( "] " )
@@ -799,7 +806,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			debugInfo.append( "[autoPickupDrops:beforeFortune:: " ).append( sb ).append( "] ");
+			debugInfo.append( "{br}  [autoPickupDrops:beforeFortune:: " ).append( sb ).append( "] ");
 			
 			
 			
@@ -831,7 +838,7 @@ public abstract class AutoManagerFeatures
 						.append( ":" )
 						.append( itemStack.getAmount() );
 				}
-				debugInfo.append( "[totalDrops:afterFortune:: " ).append( sb ).append( "] ");
+				debugInfo.append( "{br}  [totalDrops:afterFortune:: " ).append( sb ).append( "] ");
 			}
 			
 			
@@ -842,14 +849,14 @@ public abstract class AutoManagerFeatures
 			
 			// Smelt
 			if ( isAutoSmelt ) {
-				debugInfo.append( "(autoSmelting: itemStacks)" );
+				debugInfo.append( "(autoSmelting: drops)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			// Block
 			if ( isAutoBlock ) {
-				debugInfo.append( "(autoBlocking: itemStacks)" );
+				debugInfo.append( "(autoBlocking: drops)" );
 				normalDropBlock( drops );
 			}
 			
@@ -988,7 +995,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 
-						debugInfo.append( "(WARNING: autosell leftovers: " + itemStack.getName() + 
+						debugInfo.append( "{br}  (WARNING: autosell leftovers: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + 
 								" - " + 
 								( amount == 0 ? " Items NOT in sellall shop!" : " CouldNotSell?") +
@@ -1002,7 +1009,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 						
-						debugInfo.append( "(Debug-unsold-value-check: " + itemStack.getName() + 
+						debugInfo.append( "{br}  (Debug-unsold-value-check: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + ") ");
 					}
 					
@@ -1038,7 +1045,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
+				debugInfo.append( "{br}  [autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
 						"  unsellableCount: " + autosellUnsellableCount );
 				
 				if ( nanoTime > 0 ) {
@@ -1121,7 +1128,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			pmEvent.getDebugInfo().append( "[normalDrops:: " ).append( sb ).append( "] ");
+			pmEvent.getDebugInfo().append( "{br}  [normalDrops:: " ).append( sb ).append( "] ");
 			
 
 			// Need better drop calculation that is not using the getDrops function.
@@ -1149,13 +1156,13 @@ public abstract class AutoManagerFeatures
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
-				pmEvent.getDebugInfo().append( "(normSmelting: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normSmelting: drops)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
-				pmEvent.getDebugInfo().append( "(normBlocking: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normBlocking: drops)" );
 				normalDropBlock( drops );
 			}
 			
@@ -1172,6 +1179,7 @@ public abstract class AutoManagerFeatures
 //			}
 			
 			
+			pmEvent.getDebugInfo().append( "{br}  " );
 			
 			double autosellTotal = 0;
 			
@@ -1224,7 +1232,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				pmEvent.getDebugInfo().append( "[normalDrops total: qty: " + count + " value: " + autosellTotal + ") ");
+				pmEvent.getDebugInfo().append( "{br}  [normalDrops total: qty: " + count + " value: " + autosellTotal + "] ");
 				
 			}
 			
@@ -2744,7 +2752,7 @@ public abstract class AutoManagerFeatures
 				
 				// The count has the final value so set it as the amount:
 				blocks.setAmount( 1 + bonusBlocks );
-				
+			
 				String msg = String.format(
 						"(gradientFortune blocks: 1 + bonusBlocks=%s == (fortLevel=%s / maxFortLevel=%s) * "
 						+ "maxBonusBlocks=%s * rnd=%s [with minPctRnd=%s]) ",

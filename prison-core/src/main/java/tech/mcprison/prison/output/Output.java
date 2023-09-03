@@ -40,6 +40,8 @@ public class Output
 	
 	public static final String PERCENT_ENCODING = "&percnt;";
 	public static final String PERCENT_DECODING = "%";
+	public static final String LINE_SPLITING = "\\{br\\}";
+//	public static final String LINE_SPLITING = "\n";
 
     private static Output instance;
     
@@ -279,10 +281,15 @@ public class Output
 //    				msg = msg.replace( PERCENT_ENCODING, PERCENT_DECODING );
 //    			}
     			
-				Prison.get().getPlatform().log(
-						prefixTemplatePrison + " " + 
-						getLogColorCode(level) +
-						msg);
+        		String msgRaw = String.format(msg, args);
+        		for (String  msgSplit : msgRaw.split( LINE_SPLITING )) {
+    				
+        			Prison.get().getPlatform().log(
+        					prefixTemplatePrison + " " + 
+        							getLogColorCode(level) +
+        							msgSplit);
+    			}
+    			
 			}
 			catch ( MissingFormatArgumentException e )
 			{
@@ -578,7 +585,11 @@ public class Output
     		if ( level == null ) {
     			level = LogLevel.PLAIN;
     		}
-    		sender.sendMessage(getLogPrefix(level) + String.format(message, args));
+    		String msgRaw = String.format(message, args);
+    		for (String  msg : msgRaw.split( LINE_SPLITING )) {
+				
+    			sender.sendMessage(getLogPrefix(level) + msg);
+			}
     	}
     }
     

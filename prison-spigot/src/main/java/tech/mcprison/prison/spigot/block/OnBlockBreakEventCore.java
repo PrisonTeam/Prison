@@ -348,6 +348,8 @@ public abstract class OnBlockBreakEventCore
 		
 		StringBuilder debugInfo = pmEvent.getDebugInfo();
 
+		debugInfo.append( "{br}  validateEvent:: " );
+		
 		SpigotBlock sBlockHit = pmEvent.getSpigotBlock();
 
 		// Mine should already be set:
@@ -751,7 +753,7 @@ public abstract class OnBlockBreakEventCore
 		}
 		
 		
-		debugInfo.append( "blocks(" )
+		debugInfo.append( "{br}  blocks(" )
 			.append( pmEvent.getBlock() == null ? "0" : "1" )
 			.append( "+" )
 			.append( pmEvent.getExplodedBlocks().size() )
@@ -1003,6 +1005,8 @@ public abstract class OnBlockBreakEventCore
 			pmEvent.setDebugColorCodeDebug();
 		}
 
+		
+		debugInfo.append( "{br}  " );
 		
 		return results;
 	}
