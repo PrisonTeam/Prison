@@ -102,6 +102,9 @@ public class PrisonDebugBlockInspector
     @Subscribe
     public void onPlayerInteract( PrisonPlayerInteractEvent e ) {
     	
+    	List<String> output = new ArrayList<>();
+    	
+    	
     	// Cool down: run no sooner than every 2 seconds... prevents duplicate runs:
     	if ( lastAccess != 0 && (System.currentTimeMillis() - lastAccess) < 2000 ) {
     		return;
@@ -134,9 +137,9 @@ public class PrisonDebugBlockInspector
     	
         if ( mine == null ) {
         	
-        	player.sendMessage(
+        	output.add(
         			String.format(
-	        			"&dDebugBlockInfo: &7Not in a mine. &5%s &7%s",
+	        			"-&dDebugBlockInfo: &7Not in a mine. &5%s &7%s",
 	        			sBlock.getBlockName(), location.toWorldCoordinates()) );
         	
         }
@@ -152,21 +155,24 @@ public class PrisonDebugBlockInspector
 //        	checkForCustomBlock( sBlock, targetBlock );
         	
         	String m1 = String.format(
-        					"&dDebugBlockInfo:  &3Mine &7%s  &3Rank: &7%s  " +
-			    			"&5%s  &7%s",
+        					"-&dDebugBlockInfo:  &3Mine &7%s  &3Rank: &7%s  " +
+			    			"&5%s  &7%s ",
 			    			mine.getName(),
 			    			(mine.getRank() == null ? "---" : mine.getRank().getName()),
 			    			sBlock.getBlockName(), 
 			    			location.toWorldCoordinates());
         	
-        	player.sendMessage( m1 );
-        	Output.get().logInfo( m1 );
+        	output.add( m1 );
+//        	player.sendMessage( m1 );
+//        	Output.get().logInfo( m1 );
         	
 			// Get the mine's targetBlock:
 //			MineTargetPrisonBlock tBlock = mine.getTargetPrisonBlock( sBlock );
 
         	if ( targetBlock == null ) {
-        		player.sendMessage( "Notice: Unable to get a mine's targetBlock. This could imply " +
+        		
+        		
+        		output.add( "-Notice: Unable to get a mine's targetBlock. This could imply " +
         				"that the mine was not reset since the server started up, or that the air-block " +
         				"check was not ran yet.  Use `/mine reset " + mine.getName() + "' to reset the " +
         						"target blocks." );
@@ -174,7 +180,7 @@ public class PrisonDebugBlockInspector
         	else {
         		
         		
-        		String message = String.format( "    &3TargetBlock: &7%s  " +
+        		String message = String.format( "-    &3TargetBlock: &7%s  " +
         				"&3Mined: %s%b  &3Broke: &7%b  &3Counted: &7%b", 
         				targetBlock.getPrisonBlock().getBlockName(),
         				(targetBlock.isMined() ? "&d" : "&2"),
@@ -183,10 +189,11 @@ public class PrisonDebugBlockInspector
         				targetBlock.isCounted()
         				);
         		
-        		player.sendMessage( message );
-        		Output.get().logInfo( message );
+        		output.add( message );
+//        		player.sendMessage( message );
+//        		Output.get().logInfo( message );
         		
-        		String message2 = String.format( "    &3isEdge: &7%b  " +
+        		String message2 = String.format( "-    &3isEdge: &7%b  " +
         				"&3Exploded: %s%b  &3IgnoreAllEvents: &7%b", 
         				
         				targetBlock.isEdge(),
@@ -195,15 +202,16 @@ public class PrisonDebugBlockInspector
         				targetBlock.isIgnoreAllBlockEvents()
         				);
         		
-        		player.sendMessage( message2 );
-        		Output.get().logInfo( message2 );
+        		output.add( message2 );
+//        		player.sendMessage( message2 );
+//        		Output.get().logInfo( message2 );
         		
         	}
         }
         
         
         if ( !isSneaking ) {
-        	player.sendMessage(
+        	output.add( 
         			String.format(
 	        			"  &d(&7Sneak to test BlockBreakEvent with block.&d)"
 	        			) );
@@ -217,11 +225,22 @@ public class PrisonDebugBlockInspector
         	
         	// Debug the block break events:
 
-        	dumpBlockBreakEvent( player, sBlock, targetBlock );
+        	dumpBlockBreakEvent( player, sBlock, targetBlock, output );
         	
         }
         	
+        
+        output.add( " - - End DebugBlockInfo - - " );
         	
+    	for ( String outputLine : output ) {
+    		boolean playerMessage = outputLine.startsWith( "-" );
+    		if ( playerMessage ) {
+    			outputLine = outputLine.substring( 1 );
+    			
+    			player.sendMessage( outputLine );
+    		}
+			Output.get().logInfo( outputLine );
+		}
         	
         	
         
@@ -250,8 +269,9 @@ public class PrisonDebugBlockInspector
 
     }
     
-    public void dumpBlockBreakEvent( SpigotPlayer player, SpigotBlock sBlock, MineTargetPrisonBlock targetBlock ) {
-    	List<String> output = new ArrayList<>();
+    public void dumpBlockBreakEvent( SpigotPlayer player, SpigotBlock sBlock, MineTargetPrisonBlock targetBlock,
+    				List<String> output ) {
+//    	List<String> output = new ArrayList<>();
     	
     	SpigotBlock checkBlock = sBlock;
     	
@@ -380,10 +400,10 @@ public class PrisonDebugBlockInspector
     	// Put the heldItem back in the player's hand, which should be the prison wand:
     	SpigotCompatibility.getInstance().setItemInMainHand( player.getWrapper(), heldItem );
     	
-    	for ( String outputLine : output )
-		{
-			Output.get().logInfo( outputLine );
-		}
+//    	for ( String outputLine : output )
+//		{
+//			Output.get().logInfo( outputLine );
+//		}
     }
     
     

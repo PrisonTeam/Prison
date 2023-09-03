@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15d 2023-09-01
+# 3.3.0-alpha.15d 2023-09-02
+
+
+* **Mine wand debug info: Slightly alter the printing of the details to make it easier to read.**
 
 
 
