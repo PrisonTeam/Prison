@@ -282,12 +282,14 @@ public class Output
 //    			}
     			
         		String msgRaw = String.format(msg, args);
+        		boolean includePrefix = true;
         		for (String  msgSplit : msgRaw.split( LINE_SPLITING )) {
     				
         			Prison.get().getPlatform().log(
-        					prefixTemplatePrison + " " + 
+        					(includePrefix ? (prefixTemplatePrison + " ") : "") +
         							getLogColorCode(level) +
         							msgSplit);
+        			includePrefix = false;
     			}
     			
 			}

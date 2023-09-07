@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-03
+# 3.3.0-alpha.15e 2023-09-07
+
+
+
+* **Prison logging: When line breaks are applied in log messages, it will no long include the prison template prefix with the message to reduce the clutter and make it easier to read multi-lined content.**
+The line break placeholder is '{br}', similar to the html element BR.
 
 
 
