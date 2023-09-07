@@ -230,7 +230,7 @@ public class RanksCommands
 			"So using just 'mines' will only generate mines and no ranks or prestiges." +
 			
 			"The option 'prestiges=x' will set how many initial prestige ranks to create. " +
-			"The option `prestigeCost=x` sets the intial cost for P1; default value is 1_000_000_000. " +
+			"The option `prestigeCost=x` sets the initial cost for P1; default value is 1_000_000_000. " +
 			"The option 'prestigeMult=x' is an additional multiplier for presetige ranks, with the " +
 			"default value of 1. The cost for each prestige rank is based upon the initial " + 
 			"presetigeCost, times the prestige level so p3 will be 3 times the cost of p1 with the "  +

@@ -1,16 +1,20 @@
 package tech.mcprison.prison.ranks.commands;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.backups.PrisonBackups;
+import tech.mcprison.prison.backups.PrisonBackups.BackupTypes;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
+import tech.mcprison.prison.ranks.managers.RankManager;
 
 /**
  * @author Faizaan A. Datoo
@@ -483,4 +487,101 @@ public class LadderCommands
 	}
 	
   
+	@Command( identifier = "ranks ladder resetRankCosts", 
+			description = "For a given ladder, this command will reset all rank costs. "
+					+ "This allow easier adjustments to many ranks at the same time. "
+					+ "The ranks within this ladder will not be changed, and they will be "
+					+ "processed in the same order in which they are listed with the "
+					+ "command: '/ranks list <ladderName>'.", 
+					onlyPlayers = false, permissions = "ranks.ladder" )
+    public void ladderResetRankCosts(CommandSender sender, 
+    		@Arg(name = "ladderName") String ladderName,
+    		
+	        @Arg(name = "initialCost",
+	        	def = "1000000000", verifiers = "min[1]",
+	        	description = "The 'initialCost' will set the cost of the first rank on "
+	        			+ "this ladder.  All other rank costs will be based upon this "
+	        			+ "value. The default value is 1_000_000_0000."
+	        		) double initialCost,
+	        @Arg(name = "addMult", def = "1", verifiers = "min[1]",
+	        description = "This is an 'additional multiplier' for all ranks on the ladder, "
+	        		+ "with the default value of 1. The cost for each rank is based upon "
+	        		+ "the initial rank cost, times the rank's level. So the default ranks "
+	        		+ "named 'C', or 'p3', since both are the third rank on their ladders, "
+	        		+ "will be 3 times the cost of the first ranks, 'A' or 'p1', with this "
+	        		+ "additional multiplier being multiplied against that value.  "
+	        		+ "So for default values for a rankk in the third position, "
+	        		+ "with a 1.75 multipler will have a "
+	        		+ "cost = 1_000_000_000 * 3 * 1.75.") double addMult ) {
+    	
+		
+		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
+		RankManager rm = PrisonRanks.getInstance().getRankManager();
+		
+        RankLadder ladder = lm.getLadder(ladderName);
+        
+        if ( ladder == null ) {
+        	ladderDoesNotExistsMsg( sender, ladderName );
+            return;
+        }
+
+        // Force a backup:
+    	PrisonBackups prisonBackup = new PrisonBackups();
+    	
+    	String backupComment = String.format( 
+    							"Resetting all rank costs on ladder %s.", 
+    							ladder.getName() );
+    	String message = prisonBackup.startBackup( BackupTypes.auto, backupComment );
+    	
+    	sender.sendMessage( message );
+    	sender.sendMessage( "Forced a Backup of prison configs prior to changing rank costs." );
+
+        
+        int ranksChanged = 0;
+        
+        int i = 0;
+        for (Rank rank : ladder.getRanks() ) {
+			
+        	double cost = initialCost * (i++ + 1) * addMult;
+        	
+        	if ( rank.getRawRankCost() != cost ) {
+        		rank.setRawRankCost( cost );
+        		
+        		rm.saveRank( rank );
+        		
+        		ranksChanged++;
+        	}
+        	
+		}
+
+        if ( ranksChanged > 0 ) {
+        	// Reload the placeholders: 
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        	
+        	String msg = String.format(
+        			"Done resetting all rank costs on the '%s' ladder. "
+        			+ "There were %d ranks that had cost changes.", 
+        			ladder.getName(),
+        			ranksChanged );
+        	
+        	Output.get().logInfo( msg );
+        }
+        
+//        for ( int i = 0; i < prestigeRanks; i++ ) {
+//			String name = "P" + (i + 1);
+//			String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
+//			double cost = prestigeCost * (i + 1) * prestigeMult;
+//			
+//			// Only add prestige ranks if they do not already exist:
+//			if ( PrisonRanks.getInstance().getRankManager().getRank( name ) == null ) {
+//				
+//				createRank(sender, name, cost, LadderManager.LADDER_PRESTIGES, tag, "noPlaceholderUpdate");
+//				prestigesCount++;
+//			}
+//		}
+
+
+    }
+
+	
 }

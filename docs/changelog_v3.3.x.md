@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-07
 
 
+* **Ladders: Added a new command to reset all rank costs for a given ladder: '/ranks ladder resetRankCosts help'**
+This will allow a simple and easy change to all rank costs within a given ladder even if there are many ranks, such as the presetiges ladder which could have thousands of ranks.
+These calculations are similar to how the `/ranks autoConfigure` will set them up.
+
 
 * **Prison logging: When line breaks are applied in log messages, it will no long include the prison template prefix with the message to reduce the clutter and make it easier to read multi-lined content.**
 The line break placeholder is '{br}', similar to the html element BR.
