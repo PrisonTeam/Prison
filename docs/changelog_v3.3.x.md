@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-09
 
 
+* **sellall multiplier list: Now applies a sort order to the ranks, grouping by ladders.**  It groups by ladders, and then lists the ranks in rank order, within each ladder.
+
+
 * **sellall multiplier addLadder: added more comments to the command's help, and added defaults to the parameters.**
 
 

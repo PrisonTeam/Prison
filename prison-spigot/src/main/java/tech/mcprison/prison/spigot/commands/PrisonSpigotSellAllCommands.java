@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.commands;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -23,15 +24,12 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.ranks.managers.RankManager;
-import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
@@ -848,6 +846,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
+    
     @Command(identifier = "sellall multiplier list", 
     		description = "Lists all of the SellAll Rank multipliers", 
     		permissions = "prison.admin", onlyPlayers = false)
@@ -865,6 +864,15 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+    	
+    	if ( !PrisonRanks.getInstance().isEnabled() ) {
+    		Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier addLadder` since ranks are disabled" );
+    		return;
+    	}
+    	
+    	List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+    	
+
         
 //        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier help" );
 //        sender.dispatchCommand(registeredCmd);
@@ -872,56 +880,104 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         TreeMap<String, Double> mults = new TreeMap<>( sellAllUtil.getPrestigeMultipliers() );
 
 //        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
-        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
+        DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+        DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
         
         Set<String> keys = mults.keySet();
         
+        // Need to calculate the maxLenVal so we can properly space all columns:
         int maxLenKey = 0;
         int maxLenVal = 0;
         for ( String key : keys ) {
 			if ( key.length() > maxLenKey ) {
 				maxLenKey = key.length();
 			}
-			String val = fFmt.format( mults.get( key ) );
+			String val = dFmt.format( mults.get( key ) );
 			if ( val.length() > maxLenVal ) {
 				maxLenVal = val.length();
 			}
 		}
+        String multiplierLayout = "%-" + maxLenKey + "s %" + maxLenVal + "s";
         
         
         ChatDisplay chatDisplay = new ChatDisplay("&bSellall Rank Multipliers list: &3(&b" + keys.size() + "&3)" );
 
-        int lines = 0;
-        int columns = 0;
-        StringBuilder sb = new StringBuilder();
-        for ( String key : keys ) {
-//        	boolean first = sb.length() == 0;
 
-        	Double cost = mults.get( key );
-        	
-        	if ( columns++ > 0 ) {
-        		sb.append( "    " );
-        	}
-        	
-        	sb.append( String.format( "%-" + maxLenKey + "s %" + maxLenVal + "s", 
-        			key, fFmt.format( cost ) ) );
-//        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
-//        			key.toString(), fFmt.format( cost ), key.name() ) );
-        	
-        	if ( columns > 7 ) {
-        		chatDisplay.addText( sb.toString() );
+        for (RankLadder ladder : ladders ) {
+			
+        	StringBuilder sb = new StringBuilder();
+
+        	int lines = 0;
+        	int columns = 0;
+        	for ( Rank rank : ladder.getRanks() ) {
+        		String key = rank.getName();
         		
-        		if ( ++lines % 10 == 0 && lines > 1 ) {
-        			chatDisplay.addText( " " );
-        		}
-        		
-        		sb.setLength( 0 );
-        		columns = 0;
-        	}
-        }
-        if ( sb.length() > 0 ) {
-        	chatDisplay.addText( sb.toString() );
-        }
+				if ( mults.containsKey( key ) ) {
+					
+					if ( lines == 0 && sb.length() == 0 ) {
+						chatDisplay.addText( "&3Ladder: &7%s  &3Ranks: &7%s", 
+								ladder.getName(),
+								iFmt.format( ladder.getRanks().size() ));
+					}
+					
+		        	Double cost = mults.get( key );
+		        	
+		        	if ( columns++ > 0 ) {
+		        		sb.append( "    " );
+		        	}
+		        	
+		        	sb.append( String.format( multiplierLayout, 
+		        			key, dFmt.format( cost ) ) );
+		        	
+		        	if ( columns > 9 ) {
+		        		chatDisplay.addText( sb.toString() );
+		        		
+		        		if ( ++lines % 10 == 0 && lines > 1 ) {
+		        			chatDisplay.addText( " " );
+		        		}
+		        		
+		        		sb.setLength( 0 );
+		        		columns = 0;
+		        	}
+
+				}
+			}
+            if ( sb.length() > 0 ) {
+            	chatDisplay.addText( sb.toString() );
+            }
+        	
+		}
+        
+        
+//        int columns = 0;
+//        for ( String key : keys ) {
+////        	boolean first = sb.length() == 0;
+//
+//        	Double cost = mults.get( key );
+//        	
+//        	if ( columns++ > 0 ) {
+//        		sb.append( "    " );
+//        	}
+//        	
+//        	sb.append( String.format( "%-" + maxLenKey + "s %" + maxLenVal + "s", 
+//        			key, fFmt.format( cost ) ) );
+////        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
+////        			key.toString(), fFmt.format( cost ), key.name() ) );
+//        	
+//        	if ( columns > 7 ) {
+//        		chatDisplay.addText( sb.toString() );
+//        		
+//        		if ( ++lines % 10 == 0 && lines > 1 ) {
+//        			chatDisplay.addText( " " );
+//        		}
+//        		
+//        		sb.setLength( 0 );
+//        		columns = 0;
+//        	}
+//        }
+//        if ( sb.length() > 0 ) {
+//        	chatDisplay.addText( sb.toString() );
+//        }
         
         chatDisplay.send( sender );
 
