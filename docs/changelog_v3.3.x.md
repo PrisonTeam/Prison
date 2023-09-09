@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-07
+# 3.3.0-alpha.15e 2023-09-09
+
+
+* **Update the rank's getPosition() java docs to better clarify what it is.**
 
 
 * **Ladders: Added a new command to reset all rank costs for a given ladder: '/ranks ladder resetRankCosts help'**
