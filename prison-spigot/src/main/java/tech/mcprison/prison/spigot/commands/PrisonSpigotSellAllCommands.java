@@ -20,6 +20,10 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -904,7 +908,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 //        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
 //        			key.toString(), fFmt.format( cost ), key.name() ) );
         	
-        	if ( columns > 4 ) {
+        	if ( columns > 7 ) {
         		chatDisplay.addText( sb.toString() );
         		
         		if ( ++lines % 10 == 0 && lines > 1 ) {
@@ -1004,6 +1008,149 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_delete_success));
         }
     }
+    
+    
+    
+
+    @Command(identifier = "sellall multiplier deleteLadder", 
+    		description = "Deletes all SellAll Rank multipliers for a ladder.", 
+    		permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllMultiplierDeleteLadderCommand(
+    		CommandSender sender,
+    		@Arg(name = "ladder", 
+    			description = "All ranks with multipliers for this ladder will be removed.") String ladderName
+    		
+    		) {
+
+        if (!isEnabled()) return;
+
+        SellAllUtil sellAllUtil = SellAllUtil.get();
+        if (sellAllUtil == null){
+            return;
+        }
+
+        if (!sellAllUtil.isSellAllMultiplierEnabled){
+            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_are_disabled));
+            return;
+        }
+        
+        if ( !PrisonRanks.getInstance().isEnabled() ) {
+        	Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier deleteLadder` since ranks are disabled" );
+        	return;
+        }
+
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        
+        
+        if ( ladder == null ) {
+        	Output.get().sendWarn(sender, 
+        			"A ladder with the name of '%s' does not exist. Use '/ranks ladder list' "
+        			+ "to find the correct ladder name.", ladderName );
+        	
+        	return;
+        }
+        
+        DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
+
+        int removed = 0;
+        for (Rank rank : ladder.getRanks() ) {
+			
+            if (sellAllUtil.removeSellallRankMultiplier( rank.getName() )) {
+                removed++;
+            }
+		}
+        
+        sender.sendMessage( 
+        		String.format( 
+        				"For ladder %s, there were %s multipliers removed.",
+        				ladderName, iFmt.format(removed)) );
+        
+    }
+
+    
+    
+    @Command(identifier = "sellall multiplier addLadder", 
+    		description = "Adds multipliers for all ranks on the ladder. "
+    				+ "If they already exist, they will be replaced. The formula used to "
+    				+ "calculate the multiplier is "
+    				+ "'multiplier = baseMultiplier + ((rankPosition - 1) * rankMultiplier)'.", 
+    		permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllMultiplierAddLadderCommand(
+    		CommandSender sender,
+    		@Arg(name = "ladder", 
+    			description = "Add multipliers for all ranks on this ladder. "
+    					+ "If multipliers already exist, they will be replaced.") 
+    			String ladderName,
+    		@Arg(name = "baseMultiplier",
+    				description = "The baseMultiplier that will have the rank's "
+    						+ "position multiplier added to it.")
+    			double baseMultiplier,
+    		@Arg(name = "rankMultiplier", 
+    				description = "The multiplier applied to the rank position.")
+    			double rankMultiplier
+    		
+    		) {
+    	
+    	if (!isEnabled()) return;
+    	
+    	SellAllUtil sellAllUtil = SellAllUtil.get();
+    	if (sellAllUtil == null){
+    		return;
+    	}
+    	
+    	if (!sellAllUtil.isSellAllMultiplierEnabled){
+    		Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_are_disabled));
+    		return;
+    	}
+    	
+    	if ( !PrisonRanks.getInstance().isEnabled() ) {
+    		Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier addLadder` since ranks are disabled" );
+    		return;
+    	}
+    	
+    	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+    	
+    	
+    	if ( ladder == null ) {
+    		Output.get().sendWarn(sender, 
+    				"A ladder with the name of '%s' does not exist. Use '/ranks ladder list' "
+    						+ "to find the correct ladder name.", ladderName );
+    		
+    		return;
+    	}
+    	
+    	DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
+    	
+    	int added = 0;
+    	int failed = 0;
+    	for (Rank rank : ladder.getRanks() ) {
+    		
+    		int rankPos = rank.getPosition();
+    		
+    		double multi = baseMultiplier + (rankPos * rankMultiplier);
+    		
+    		if ( sellAllUtil.addSellallRankMultiplier(rank.getName(), multi) ) {
+    			// No message should be sent for each rank, since there could be thousands of prestige ranks
+    			added++;
+    		}
+            else {
+            	failed++;
+            }
+    		
+    	}
+    	
+    	sender.sendMessage( 
+    			String.format( 
+    					"For ladder %s, there were %s multipliers added, and %s failed to be added.",
+    					ladderName, 
+    					iFmt.format(added),
+    					iFmt.format(failed)
+    					) );
+    	
+    }
+    
+
+    
 
     @Command(identifier = "sellall set trigger", 
     		description = "Toggle SellAll trigger to enable/disable the Shift+Right Clicking "
