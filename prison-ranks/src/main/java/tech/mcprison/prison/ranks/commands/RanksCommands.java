@@ -349,6 +349,20 @@ public class RanksCommands
 		}
 		
 		
+		String prestigeMultStr = extractParameter("prestigeMult=", options);
+		if ( prestigeMultStr != null ) {
+			options = options.replace( prestigeMultStr, "" );
+			prestigeMultStr = prestigeMultStr.replace( "prestigeMult=", "" ).trim();
+			
+			try {
+				prestigeMult = Double.parseDouble( prestigeMultStr );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid double number, or price:
+			}
+		}	
+		
+		
 		String multStr = extractParameter("mult=", options);
 		if ( multStr != null ) {
 			options = options.replace( multStr, "" );
@@ -387,19 +401,7 @@ public class RanksCommands
 				// Not a valid double number, or price:
 			}
 		}
-		
-		String prestigeMultStr = extractParameter("prestigeMult=", options);
-		if ( prestigeMultStr != null ) {
-			options = options.replace( prestigeMultStr, "" );
-			prestigeMultStr = prestigeMultStr.replace( "prestigeMult=", "" ).trim();
-			
-			try {
-				prestigeMult = Double.parseDouble( prestigeMultStr );
-			}
-			catch ( NumberFormatException e ) {
-				// Not a valid double number, or price:
-			}
-		}
+
 		
 		// This has to be checked after prestiges= or this will destroy that config setting:
 		if ( options.contains( "prestiges" ) ) {
@@ -675,6 +677,9 @@ public class RanksCommands
 	}
 	
 	private String extractParameter( String key, String options ) {
+		return extractParameter( key, options, true );
+	}
+	private String extractParameter( String key, String options, boolean tryLowerCase ) {
 		String results = null;
 		int idx = options.indexOf( key );
 		if ( idx != -1 ) {
@@ -683,6 +688,10 @@ public class RanksCommands
 				idxEnd = options.length();
 			}
 			results = options.substring( idx, idxEnd );
+		}
+		else if ( tryLowerCase ) {
+			// try again, but lowercase the key
+			results = extractParameter( key.toLowerCase(), options, false );
 		}
 		return results;
 	}
