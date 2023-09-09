@@ -1073,19 +1073,24 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		description = "Adds multipliers for all ranks on the ladder. "
     				+ "If they already exist, they will be replaced. The formula used to "
     				+ "calculate the multiplier is "
-    				+ "'multiplier = baseMultiplier + ((rankPosition - 1) * rankMultiplier)'.", 
+    				+ "'multiplier = baseMultiplier + ((rankPosition - 1) * rankMultiplier)'. "
+    				+ "Example: '/sellall multiplier addLadder presetiges 1.0 0.1' will result in "
+    				+ "p1=1.0 p2=1.1 p3=1.2 p4=1.3 etc...", 
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllMultiplierAddLadderCommand(
     		CommandSender sender,
-    		@Arg(name = "ladder", 
+    		@Arg(name = "ladder",
+    			def = "prestiges",
     			description = "Add multipliers for all ranks on this ladder. "
     					+ "If multipliers already exist, they will be replaced.") 
     			String ladderName,
     		@Arg(name = "baseMultiplier",
+    				def = "1.0",
     				description = "The baseMultiplier that will have the rank's "
     						+ "position multiplier added to it.")
     			double baseMultiplier,
     		@Arg(name = "rankMultiplier", 
+    				def = "0.1",
     				description = "The multiplier applied to the rank position.")
     			double rankMultiplier
     		

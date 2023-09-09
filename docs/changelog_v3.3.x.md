@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-09
 
 
+* **sellall multiplier addLadder: added more comments to the command's help, and added defaults to the parameters.**
+
+
 * **SellAll multipliers:  Increased the number of columns for the listing to 8 columns instead of 5.**  May need to expand it even more so if there are thousands of ranks, it can be better managed.
 New command: `/sellall multiplier deleteLadder` deletes all multipliers for that ladder.
 New command: `/sellall multiplier addLadder` adds multipliers for all ranks on the ladder.
