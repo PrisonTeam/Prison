@@ -850,7 +850,13 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "sellall multiplier list", 
     		description = "Lists all of the SellAll Rank multipliers", 
     		permissions = "prison.admin", onlyPlayers = false)
-    private void sellAllMultiplierCommand(CommandSender sender){
+    private void sellAllMultiplierCommand(CommandSender sender, 
+    		@Wildcard(join=true)
+    		@Arg(name = "options", 
+    			description = "Optionaly, you can control which ladder is displayed.  By default, it's "
+    					+ "all ladders. Just use the ladder's name.  You can also change the number of "
+    					+ "columns in the output by using 'cols=16', where the default is 10 columns.  ")
+    		String options ) {
 
         if (!isEnabled()) return;
 
@@ -870,7 +876,41 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		return;
     	}
     	
-    	List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+    	int displayColumns = 10;
+    	String ladderName = "";
+    	RankLadder rLadder = null;
+    	
+    	
+    	// pull columns out of the options, if it has been specified:
+		String colsStr = extractParameter("cols=", options);
+		if ( colsStr != null ) {
+			options = options.replace( colsStr, "" ).trim();
+			colsStr = colsStr.replace( "cols=", "" ).trim();
+			
+			try {
+				displayColumns = Integer.parseInt( colsStr );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid int number:
+			}
+		}
+		
+		
+		// Check to see if the remaining options is a ladder name, if so, then only load that ladder:
+		if ( options.length() > 0 ) {
+			rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( options );
+		}
+		
+    	
+    	List<RankLadder> ladders = new ArrayList<>();
+    	
+    	if ( rLadder == null ) {
+    		ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+    	}
+    	else {
+    		ladders.add( rLadder );
+    	}
+    	
     	
 
         
@@ -929,7 +969,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 		        	sb.append( String.format( multiplierLayout, 
 		        			key, dFmt.format( cost ) ) );
 		        	
-		        	if ( columns > 9 ) {
+		        	if ( columns >= displayColumns ) {
 		        		chatDisplay.addText( sb.toString() );
 		        		
 		        		if ( ++lines % 10 == 0 && lines > 1 ) {
@@ -981,11 +1021,27 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         
         chatDisplay.send( sender );
 
-        
-        
-        
     }
 
+	private String extractParameter( String key, String options ) {
+		return extractParameter( key, options, true );
+	}
+	private String extractParameter( String key, String options, boolean tryLowerCase ) {
+		String results = null;
+		int idx = options.indexOf( key );
+		if ( idx != -1 ) {
+			int idxEnd = options.indexOf( " ", idx );
+			if ( idxEnd == -1 ) {
+				idxEnd = options.length();
+			}
+			results = options.substring( idx, idxEnd );
+		}
+		else if ( tryLowerCase ) {
+			// try again, but lowercase the key
+			results = extractParameter( key.toLowerCase(), options, false );
+		}
+		return results;
+	}
     
     @Command(identifier = "sellall multiplier add", 
     		description = "Add a sellall multiplier based upon the player's rank. " +
