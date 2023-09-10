@@ -370,12 +370,44 @@ public class LadderCommands
 
 
 	@Command( identifier = "ranks ladder rankCostMultiplier", 
-			description = "Sets or removes a ladder's Rank Cost Multiplier.  Setting the " +
-					"value to zero will remove the multiplier from the calculations.  The " +
-					"Rank Cost Multiplier from all ladders a player has active, will be " +
-					"summed together and applied to the cost of all of their ranks. The Rank " +
-					"Cost Multiplier represents a percentage, and can be either postive or " +
-					"negative. ", 
+			description = "Sets a ladder's rank cost multiplier which is used to calculate " +
+					"a rank's cost on ladders that have them enabled. " +
+					"Setting the value to zero will remove that ladder's rank multiplier from " +
+					"the calculations. " +
+					"Rank Cost Multiplier represents a percentage, and can be either postive or " +
+					"negative, and is multiplied by the rank's position (1's based). " +
+					"This means that for ladders have have a rank cost multiplier, the " +
+					"multiplier increases by the rank's position, such that if the prestige " +
+					"ladder has a ranks cost multiplier of 0.1, the P1=0.1, P2=0.2, P3=0.3, etc... {br}" +
+	
+					"All rank cost multipliers for the player's rank on that ladder, are " +
+					"combined from all ladders the player is on, " +
+					"then this value is added to a value of 1.0 before being multiplied to the rank cost. " +
+					"This will result in a progressively more expensive rank cost for the " + 
+					"player as they advance on multiple ladders. " +
+					"If a ladder has 'applyRankCostMultiplier' disabled, then rank costs on that " +
+					"ladder will not use the player's combined rank cost multiplier. {br}" +
+					
+					"This calculates " +
+					"what a player would have to pay when ranking up.  " +
+					"It should be understood that a ladder can contribute to the total " +
+					"ranks multiplier, but yet it could ignore the ranks multiplier when " +
+					"calculating the rank costs for that ladder. {br}" +
+					
+					"Example of this kind of setup would be to have the " +
+					"default ladder apply the rank cost multiplier to its rank's costs, " +
+					"but yet have the default ladder set it's rank cost multiplier to a value of 0.0. " +
+					"Then have the prestige ladder ignore " +
+					"them, but have the prestige ladder contribute to the global rank " +
+					"cost multipliers. This configuration will result in rank costs increasing " + 
+					"for the default ladder's ranks, as the player increases their prestige ranks. " + 
+					"But yet the prestiges ladder rank costs will not be impacted " +
+					"by the rank cost multipliers. Using the example above for p1, p2, p3, etc, " +
+					"the rank costs on the default ladder will increase by 10 percent each time " +
+					"the player prestiges.  At a 10% increase, the default rank costs will be " +
+					"twice as expensive when the are at P10, compared to when they were at " +
+					"p0 (no prestige rank)." 
+					, 
 			onlyPlayers = false, permissions = "ranks.ladder" )
 	public void ladderSetRankCostMultiplier( CommandSender sender, 
 			@Arg( name = "ladderName" ) String ladderName,
@@ -433,15 +465,15 @@ public class LadderCommands
 
 	
 	@Command( identifier = "ranks ladder applyRankCostMultiplier", 
-			description = "Controls if the rank costs multiplier should apply to the" +
-					"ranks on this ladder.  If the ladder has a rank cost multipiler " +
-					"enabled, this setting will not effect its contribution to other " +
-					"the multiplier.", 
+			description = "Controls if the rank costs multiplier should apply to the " +
+					"ranks on this ladder. This is an 'ON' or 'OFF' situation for the whole " +
+					"ladder, where the Rank Cost Multiplier will be ignored for a ladder " +
+					"if this is disabled.", 
 					onlyPlayers = false, permissions = "ranks.ladder" )
 	public void ladderApplyRankCostMultiplier( CommandSender sender, 
 			@Arg( name = "ladderName" ) String ladderName,
 			@Arg( name = "applyRankCostMultiplier", def = "apply", 
-			description = "Applies or disables the ranks on this ladder "
+				description = "Applies or disables the ranks on this ladder "
 					+ "from applying the rank multiplier to the rank cost for players."
 					) 
 			String applyRankCostMultiplier )
@@ -488,7 +520,9 @@ public class LadderCommands
 	
   
 	@Command( identifier = "ranks ladder resetRankCosts", 
-			description = "For a given ladder, this command will reset all rank costs. "
+			description = "For a given ladder, this command will reset all rank costs "
+					+ "based upon a formula, where each rank is progressivly more "
+					+ "expensive. "
 					+ "This allow easier adjustments to many ranks at the same time. "
 					+ "The ranks within this ladder will not be changed, and they will be "
 					+ "processed in the same order in which they are listed with the "

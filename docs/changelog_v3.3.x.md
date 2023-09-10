@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-09
 
 
+* **Update docs and some command descriptions to make them a little more clearer as to what they do.**
+
+
 * **sellall multipliers list:  Added 2 options to control the number of columns displayed with 'cols=7' and also only show multipliers for a single ladder if that ladder name is provided in the options.**
 
 

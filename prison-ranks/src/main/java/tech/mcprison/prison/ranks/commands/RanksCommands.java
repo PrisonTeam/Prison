@@ -219,11 +219,14 @@ public class RanksCommands
 	@Command(identifier = "ranks autoConfigure", 
 		description = "Auto configures Ranks, Mines, and Prestiges using " +
 			"single letters A through Z for both the rank and mine names. Both ranks and mines are " +
-			"generated, they will also be linked together automatically. To set the starting price use " +
-			"'price=x'. To set multiplier 'mult=x'. AutoConfigure will try to merge any preexsiting ranks " +
+			"generated, they will also be linked together automatically. Prestige ranks will "
+			+ "also be auto generated with a default of 25 that will be created. {br}"
+			+ "To set the starting price use " +
+			"'price=x'. To set multiplier 'mult=x'. {br}"
+			+ "AutoConfigure will try to merge any preexsiting ranks " +
 			"and mines, but you must use the 'force' keyword in 'options' and force will " +
 			"replace all blocks in preexisting " +
-			"mines. To keep preexisting blocks, use 'forceKeepBlocks' with the 'force' option. " +
+			"mines. To keep preexisting blocks, use 'forceKeepBlocks' with the 'force' option. {br}" +
 			
 			"The option 'full' will enable ranks, mines, and prestiges. No options will default to 'full'. " +
 			"The options 'ranks', 'mines', and 'prestiges' will enable each of these if they are listed. " +
@@ -234,10 +237,10 @@ public class RanksCommands
 			"The option 'prestigeMult=x' is an additional multiplier for presetige ranks, with the " +
 			"default value of 1. The cost for each prestige rank is based upon the initial " + 
 			"presetigeCost, times the prestige level so p3 will be 3 times the cost of p1 with the "  +
-			"prestige multiplier will multipled against that value.  So for default values " +
-			" with a 1.75 multipler p3 cost = 1_000_000_000 * 3 * 1.75. " +
+			"prestige multiplier will multiplied against that value.  So for default values " +
+			" with a 1.75 multiplier p3 cost = 1_000_000_000 * 3 * 1.75. " +
 			"Default values [full price=50000 mult=1.5 prestiges=25 presetigeCost=1000000000 " +
-			"prestigeMult=1] " +
+			"prestigeMult=1] {br}" +
 			
 			"Example of just adding more prestige ranks using the other default values: " +
 			"'/ranks autoConfigure force prestiges presetiges=1000', no ranks and no mines will " +
