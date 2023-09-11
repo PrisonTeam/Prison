@@ -875,24 +875,54 @@ public class PrisonCommand
     		sender.sendMessage( filePath );
     	}
     	catch ( IOException e ) {
-    		// Ingore
+    		// Ignore
     	}
-    	try {
+//    	try {
+//    		
+//    		if ( AutoFeaturesWrapper.getInstance().getBlockConvertersConfig() != null ) {
+//    			
+//    			File bcFile = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig().getConfigFile();
+//    			if ( bcFile != null && bcFile.exists() ) {
+//    				
+//    				String filePath = bcFile.getCanonicalPath();
+//    				sender.sendMessage( filePath );
+//    			}
+//    		}
+//    		
+//    	}
+//    	catch ( IOException e ) {
+//    		// Ignore
+//    	}
+    }
+    
+    
+    @Command(identifier = "prison reload blockConverters", 
+    		description = "BlockConverters reload: Reloads the block converter settings. The current " +
+    				"settings will be discarded before reloading the configuration file.", 
+    				onlyPlayers = false, permissions = "prison.autofeatures")
+    public void reloadBlockConverters(CommandSender sender ) {
+    	
+    	if ( AutoFeaturesWrapper.getBlockConvertersInstance() != null ) {
     		
-    		if ( AutoFeaturesWrapper.getInstance().getBlockConvertersConfig() != null ) {
-    			
-    			File bcFile = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig().getConfigFile();
+    		AutoFeaturesWrapper.getBlockConvertersInstance().reloadConfig();
+    		
+    		String message = "&7BlockConverters were reloaded. The new settings are now in effect. ";
+    		sender.sendMessage( message );
+    		
+    		try {
+    			File bcFile = AutoFeaturesWrapper.getBlockConvertersInstance().getConfigFile();
     			if ( bcFile != null && bcFile.exists() ) {
     				
     				String filePath = bcFile.getCanonicalPath();
     				sender.sendMessage( filePath );
     			}
     		}
+    		catch ( IOException e ) {
+    			// Ignore
+    		}
     		
     	}
-    	catch ( IOException e ) {
-    		// Ingore
-    	}
+    	
     }
 
     

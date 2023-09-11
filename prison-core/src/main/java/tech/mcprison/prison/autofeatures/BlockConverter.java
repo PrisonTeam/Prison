@@ -19,6 +19,8 @@ public class BlockConverter {
 	private ArrayList<String> permissions;
 	
 	private ArrayList<BlockConverterOutput> outputs;
+
+//	private ArrayList<BlockConverterOptions> options;
 	
 	public BlockConverter( String blockName, int keyQuantity ) {
 		super();
@@ -32,6 +34,8 @@ public class BlockConverter {
 		this.permissions = new ArrayList<>();
 		
 		this.outputs = new ArrayList<>();
+
+//		this.options = new ArrayList<>();
 	}
 
 	public BlockConverter( String blockName, int keyQuantity, String mininumSpigotSemanticVersion ) {
@@ -235,5 +239,12 @@ public class BlockConverter {
 	public void setOutputs(ArrayList<BlockConverterOutput> outputs) {
 		this.outputs = outputs;
 	}
+
+//	public ArrayList<BlockConverterOptions> getOptions() {
+//		return options;
+//	}
+//	public void setOptions(ArrayList<BlockConverterOptions> options) {
+//		this.options = options;
+//	}
 
 }

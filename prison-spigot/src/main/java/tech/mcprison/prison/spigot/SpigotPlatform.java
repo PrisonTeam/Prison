@@ -2172,6 +2172,11 @@ public class SpigotPlatform
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
 //    	afw.reloadConfigs();
     	
+//		AutoFeaturesWrapper.getBlockConvertersInstance();
+		
+		
+		
+    	
     	
     	boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );
     	results.add( String.format("AutoManager Enabled:&b %s", isAutoManagerEnabled) );

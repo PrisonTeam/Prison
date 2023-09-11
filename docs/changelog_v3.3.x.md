@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-09
+# 3.3.0-alpha.15e 2023-09-11
+
+* **Block Converters: Start to hook up block converters to auto features.**
+Changed how block converters were structured to get them to work with the prison environment.
+Hooked up the Block Converter Event Trigger to the bukkit BlockBreakEvent.  Explosions are not yet covered, will add support for them if this appears to work.
 
 
 * **Update docs and some command descriptions to make them a little more clearer as to what they do.**

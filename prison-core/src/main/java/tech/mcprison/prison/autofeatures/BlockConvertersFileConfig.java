@@ -6,38 +6,48 @@ import java.util.List;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.file.FileIOData;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 
-public class BlockConvertersFileConfig
-	implements FileIOData {
+public class BlockConvertersFileConfig {
 
 	public static final String FILE_NAME__BLOCK_CONVERTS_CONFIG_JSON = "/blockConvertersConfig.json";
 	
 	private transient File configFile;
 	
-	private TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters;
+	private transient BlockConvertersData bcData;
 	
-	private TreeMap<String, Boolean> processAutoFeaturesAllBlocks = null;
+//	private TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters;
+//	private TreeMap<String, BlockConverterEventTrigger> blockConvertersEventTiggers;
+
+	
+//	private TreeMap<String, Boolean> processAutoFeaturesAllBlocks = null;
 	
 
 	public enum BlockConverterTypes {
 		aSample01,
 		autoPickupFeatures,
 		blockFeatures, 
-		smeltFeatures
+		smeltFeatures,
+		eventTriggers
 		;
 	}
 	
 	public BlockConvertersFileConfig() {
 		super();
 		
-		this.blockConverters = new TreeMap<>();
+		this.bcData = new BlockConvertersData();
 		
-		this.processAutoFeaturesAllBlocks = new TreeMap<>();
+//		this.blockConverters = new TreeMap<>();
+//		this.blockConvertersEventTiggers = new TreeMap<>();
+//		
+//		this.processAutoFeaturesAllBlocks = new TreeMap<>();
+		
+		reloadConfig();
 		
 	}
 	
@@ -119,6 +129,7 @@ public class BlockConvertersFileConfig
 		if ( player != null && blockName != null && bcType != null ) {
 			
 			BlockConverter temp = getBlockConverter( blockName, bcType );
+			
 			if ( temp != null && temp.getPermissions().size() == 0 ) {
 				results = temp;
 			}
@@ -150,7 +161,15 @@ public class BlockConvertersFileConfig
 		
 		if ( blockName != null && bcType != null ) {
 			
-			TreeMap<String, BlockConverter> bConverters = getBlockConverters().get(bcType);
+			TreeMap<String, BlockConverter> bConverters = null;
+			
+			if ( bcType == BlockConverterTypes.eventTriggers ) {
+				bConverters = getBcData().getBlockConvertersEventTiggers( blockName );
+			}
+			else {
+				
+				bConverters = getBcData().getBlockConverters().get(bcType);
+			}
 			
 			if ( bConverters.containsKey( blockName.toLowerCase() ) ) {
 				results = bConverters.get( blockName.toLowerCase() );
@@ -214,62 +233,6 @@ public class BlockConvertersFileConfig
 		return outputs;
 	}
 	
-	
-	
-	private boolean initialConfig() {
-		boolean dirty = false;
-		
-		BlockConvertersInitializer initializer = new BlockConvertersInitializer();
-		
-		dirty = initializer.checkConfigs( getBlockConverters() );
-		
-		
-		if ( initializer.validateBlockConverters( getBlockConverters() ) ) {
-			dirty = true;
-		}
-		
-		return dirty;
-	}
-	
-	
-	public File getConfigFile() {
-		if ( this.configFile == null ) {
-			
-			this.configFile = new File(
-					Prison.get().getDataFolder() + FILE_NAME__BLOCK_CONVERTS_CONFIG_JSON);
-		}
-		return configFile;
-	}
-	
-	public void reloadConfig() {
-		JsonFileIO jfio = new JsonFileIO();
-		
-		BlockConvertersFileConfig temp = (BlockConvertersFileConfig) jfio.readJsonFile( getConfigFile(), this );
-		
-		if ( temp != null ) {
-			setBlockConverters( temp.getBlockConverters() );
-		}
-		
-		boolean dirty = initialConfig();
-		
-		if ( dirty ) {
-			saveToJson();
-		}
-	}
-	
-	public void saveToJson() {
-		JsonFileIO jfio = new JsonFileIO();
-
-		jfio.saveJsonFile(getConfigFile(), this );
-	}
-
-	public TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> getBlockConverters() {
-		return blockConverters;
-	}
-	public void setBlockConverters(TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters) {
-		this.blockConverters = blockConverters;
-	}
-
 	/**
 	 * <p>This function will take a player, and check if that player should have the ability to process all
 	 * blocks under auto features.  This is the "global" setting that bypasses checking individual block types.
@@ -286,18 +249,142 @@ public class BlockConvertersFileConfig
 	 */
 	public Boolean isProcessAutoFeaturesAllBlocks( RankPlayer player ) {
 		
-		if ( !processAutoFeaturesAllBlocks.containsKey( player.getName() ) ) {
+		if ( !getBcData().getProcessAutoFeaturesAllBlocks().containsKey( player.getName() ) ) {
 			BlockConverterResults allBlocksBCR = getBlockConverterItemStacks( player, "*all*", 1, BlockConverterTypes.autoPickupFeatures );
 			
 			BlockConverter allBlocks = allBlocksBCR.getBlockConverter();
 
 			boolean playerAllBlocks = ( allBlocks != null && allBlocks.isEnabled() );
 			
-			processAutoFeaturesAllBlocks.put( player.getName(), playerAllBlocks );
+			getBcData().getProcessAutoFeaturesAllBlocks().put( player.getName(), playerAllBlocks );
 		}
 		
-		return processAutoFeaturesAllBlocks.get( player.getName() );
+		return getBcData().getProcessAutoFeaturesAllBlocks().get( player.getName() );
+	}
+	
+	/**
+	 * <p>This loads the sample block converters.  If a new section is added, it will 
+	 * add the new section, along with the examples, to the existing block 
+	 * converters and then save everything.
+	 * </p>
+	 * 
+	 * <p>This should only be called from the reloadConfig() function.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	private boolean initialConfig() {
+		boolean dirty = false;
+		
+		BlockConvertersInitializer initializer = new BlockConvertersInitializer();
+		
+		boolean d1 = initializer.checkConfigs( getBcData().getBlockConverters() );
+		boolean d2 = initializer.checkConfigsEventTrigger( getBcData().getBlockConvertersEventTiggers() );
+		
+		dirty = d1 || d2;
+		
+		if ( initializer.validateBlockConverters( getBcData().getBlockConverters() ) ) {
+			dirty = true;
+		}
+		
+		return dirty;
+	}
+	
+	
+	public File getConfigFile() {
+		if ( this.configFile == null ) {
+			
+			this.configFile = new File(
+					Prison.get().getDataFolder() + FILE_NAME__BLOCK_CONVERTS_CONFIG_JSON);
+		}
+		return configFile;
+	}
+	
+	/**
+	 * <p>This actually is how the BlockConverters are loaded and created.
+	 * There should be no other way to load the configs.
+	 * 
+	 * This class can be instantiated, but only if block converters are 
+	 * enabled within the AutoFeatures config file will they be loaded.
+	 * </p>
+	 * 
+	 */
+	public void reloadConfig() {
+		
+		Output.get().logInfo( "###### blockConverters: reloadConfig(): 1");
+		if ( AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.isEnabledBlockConverters ) ) {
+			Output.get().logInfo( "###### blockConverters: reloadConfig)(: 2");
+			JsonFileIO jfio = new JsonFileIO();
+			
+			BlockConvertersData temp = (BlockConvertersData) jfio.readJsonFile( getConfigFile(), getBcData() );
+			
+			if ( temp != null ) {
+				setBcData( temp );
+//				setBlockConverters( temp.getBlockConverters() );
+			}
+			
+			boolean dirty = initialConfig();
+			
+			if ( dirty ) {
+				saveToJson();
+			}
+		}
+
+	}
+	
+	public void saveToJson() {
+		JsonFileIO jfio = new JsonFileIO();
+
+		jfio.saveJsonFile(getConfigFile(), getBcData() );
+		
+		Output.get().logDebug( 
+				"BlockConverters: saved config file: %s", 
+				getConfigFile().getAbsolutePath() );
 	}
 
+//	public TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> getBlockConverters() {
+//		return blockConverters;
+//	}
+//	public void setBlockConverters(TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters) {
+//		this.blockConverters = blockConverters;
+//	}
+//
+//	public TreeMap<String, BlockConverterEventTrigger> getBlockConvertersEventTiggers() {
+//		return blockConvertersEventTiggers;
+//	}
+//	public void setBlockConvertersEventTiggers(TreeMap<String, BlockConverterEventTrigger> blockConvertersEventTiggers) {
+//		this.blockConvertersEventTiggers = blockConvertersEventTiggers;
+//	}
 
+
+
+	public BlockConvertersData getBcData() {
+		return bcData;
+	}
+	public void setBcData(BlockConvertersData bcData) {
+		this.bcData = bcData;
+	}
+
+	/**
+	 * <p>This gets the BlockConverterEventTrigger for the block name provided, based upon player permissions
+	 * if they apply.
+	 * </p>
+	 * 
+	 * @param rPlayer
+	 * @param blockName
+	 * @return
+	 */
+	public List<BlockConverterOptionEventTrigger> findEventTrigger(RankPlayer rPlayer, String blockName) {
+		List<BlockConverterOptionEventTrigger> eventTriggers = null;
+		
+		BlockConverterEventTrigger bcet = (BlockConverterEventTrigger) 
+						getBlockConverter( rPlayer, blockName, BlockConverterTypes.eventTriggers );
+		
+		if ( bcet != null && bcet.getOptions().size() > 0 ) {
+			eventTriggers = bcet.getOptions();
+		}
+		
+		return eventTriggers;
+	}
+	
 }

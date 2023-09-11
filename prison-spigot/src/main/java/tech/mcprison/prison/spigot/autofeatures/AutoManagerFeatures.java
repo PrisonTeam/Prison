@@ -17,16 +17,20 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventException;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredListener;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.vk2gpz.tokenenchant.api.TokenEnchantAPI;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.BlockConverterOptionEventTrigger;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -34,6 +38,8 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
@@ -3248,6 +3254,75 @@ public abstract class AutoManagerFeatures
 		return adds;
 	}
 
+	public boolean checkBlockConverterEventTrigger(PrisonMinesBlockBreakEvent pmEvent, BlockBreakEvent event ) {
+		boolean terminate = false;
+		
+		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
+		String blockName = pmEvent.getSpigotBlock().getBlockName();
+		
+		List<BlockConverterOptionEventTrigger> eventTriggers = 
+							AutoFeaturesWrapper.getBlockConvertersInstance().findEventTrigger( rPlayer, blockName );
+		
+		if ( eventTriggers != null ) {
+			for (BlockConverterOptionEventTrigger eventTrigger : eventTriggers) {
+				RegisteredListener listener = null;
+				
+				if ( eventTrigger.getExternalResource() == null ) {
+					// Try to hook in to the external resource (the plugin listener):
+					// Adding this listener to the eventTrigger will be  like a cache:
+					
+					listener = findBlockBreakEventListener( 
+							eventTrigger.getEventPluginName(), 
+							eventTrigger.getEventPluginPriority(), 
+							eventTrigger.getEventPluginClassName() );
+					
+					if ( listener != null ) {
+						eventTrigger.setExternalResource( listener );
+					}
+				}
+				
+				if ( listener == null && eventTrigger.getExternalResource() != null ) {
+					
+					listener = (RegisteredListener) eventTrigger.getExternalResource();
+				}
+				
+				if ( listener != null ) {
+					
+					try {
+						// This is where the magic happens... triggers the event listener:
+						listener.callEvent( event );
+						
+						if ( !eventTrigger.isAllowPrisonToProccessDrops() ) {
+							terminate = true;
+						}
+					} 
+					catch (EventException e) {
+					}
+				}
+				
+			}
+		}
+		
+		return terminate;
+	}
+	
+	private RegisteredListener findBlockBreakEventListener( String plugin, String priority, String className ) {
+		RegisteredListener results = null;
+		
+		for ( RegisteredListener listener : BlockBreakEvent.getHandlerList().getRegisteredListeners() ) {
+			
+			if ( plugin.equalsIgnoreCase( listener.getPlugin().getName() ) && 
+				priority.equalsIgnoreCase( listener.getPriority().name() ) && 
+				listener.getClass().getName().endsWith( className ) ) {
+				
+				results = listener;
+				break;
+			}
+			
+		}
+		return results;
+	}
+	
 	public Random getRandom() {
 		return random;
 	}

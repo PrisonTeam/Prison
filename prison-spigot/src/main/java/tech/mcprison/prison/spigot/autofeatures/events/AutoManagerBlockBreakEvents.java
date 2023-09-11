@@ -296,6 +296,8 @@ public class AutoManagerBlockBreakEvents
 		
 		debugInfo.append( eventResults.getDebugInfo() );
 		
+		
+		
 		// Process all priorities if the event has not been canceled, and 
 		// process the MONITOR priority even if the event was canceled:
     	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
@@ -333,6 +335,15 @@ public class AutoManagerBlockBreakEvents
         		return;
         	}
     		
+        	
+    		// Check for BlockConverters Event Triggers:
+    		if ( checkBlockConverterEventTrigger( pmEvent, e ) ) {
+
+    			e.setCancelled( true );
+    			return;
+    		}
+    		
+        	
     		// Validate the event. 
     		if ( !validateEvent( pmEvent ) ) {
     			
@@ -514,6 +525,7 @@ public class AutoManagerBlockBreakEvents
 		printDebugInfo( pmEvent, start );
 	}
 	
+
 	protected int checkBonusXp( Player player, Block block, ItemStack item ) {
 		int bonusXp = 0;
 		

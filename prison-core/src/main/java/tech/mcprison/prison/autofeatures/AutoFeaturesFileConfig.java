@@ -432,6 +432,21 @@ public class AutoFeaturesFileConfig {
 		    	blockCopperBlock(blockFeature, true),
 		   
 		    	
+		    	
+		    blockConverters(options),
+			    isEnabledBlockConverters(blockConverters, false ),
+			    
+		    	blockConverters_readme(blockConverters, 
+		    			"Block converters are a new experimental component to prison that will "
+		    			+ "provide much more control over all things related to blocks, including "
+		    			+ "access through perms, ranks, or special functional behaviors. Eventually "
+		    			+ "this will replace the list of hard coded blocks listed above for "
+		    			+ "blocking and smelting."),
+    	
+    			isEnabledBlockConvertersEventTriggers(blockConverters, false )
+		    	
+    			
+    			
 //		examplesOnlyNotUsed,    	
 //		    exampleOfBlockConversions(examplesOnlyNotUsed),
 //		    

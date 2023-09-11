@@ -637,6 +637,8 @@ public class RanksCommands
 		// Reloads autoFeatures and blockConverters:
 		AutoFeaturesWrapper.getInstance().reloadConfigs();
 		
+		AutoFeaturesWrapper.getBlockConvertersInstance().reloadConfig();
+		
 		
 		// Reset all player to the first rank on the default ladder:
 		PrisonRanks.getInstance().checkAllPlayersForJoin();

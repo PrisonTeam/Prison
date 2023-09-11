@@ -36,6 +36,20 @@ public class BlockConvertersInitializer {
 		return isDirty;
 	}
 	
+	public boolean checkConfigsEventTrigger( TreeMap<String, BlockConverterEventTrigger> treeMap) {
+		boolean isDirty = false;
+		
+		if ( treeMap != null && treeMap.size() == 0 ) {
+			
+			loadDefaultBlockConvertersEventTriggers(treeMap);
+			
+			isDirty = true;
+			
+		}
+		
+		return isDirty;
+	}
+	
 	
 	private void loadDefaultBlockConverters( BlockConverterTypes bcType, TreeMap<String, BlockConverter> blockConverters ) {
 		
@@ -63,11 +77,23 @@ public class BlockConvertersInitializer {
 			
 			break;
 			
+		case eventTriggers:
+			
+//			loadDefaultEventTriggers( blockConverters );
+			
+			break;
+			
 		default:
 			break;
 		}
 	}
 	
+	private void loadDefaultBlockConvertersEventTriggers( TreeMap<String, BlockConverterEventTrigger> blockConverters ) {
+		
+			loadDefaultEventTriggers( blockConverters );
+	
+	}
+
     
 
     private void loadDefaultBlockConverterSample01(TreeMap<String, BlockConverter> blockConverters) {
@@ -92,7 +118,29 @@ public class BlockConvertersInitializer {
     	blockConverters.put( bc2.getKeyBlockName(), bc2 );
 		
 	}
+    
+    
+    private void loadDefaultEventTriggers(TreeMap<String, BlockConverterEventTrigger> blockConverters ) {
+    	
+    	BlockConverterEventTrigger bc1 = new BlockConverterEventTrigger( "*not_a_real_block*" );
+    	
+    	bc1.getPermissions().add("prison.not.used.sample.admin");
+    	
+    	BlockConverterOptionEventTrigger et1 = new BlockConverterOptionEventTrigger();
+    	et1.setEventPluginName( "DropEdit2" );
+    	et1.setDescription( "Sample of how an EventTrigger is setup. Use "
+    								+ "'/prison support listeners blockEvent' to get details.");
+    	et1.setEventPluginPriority( "HIGHEST" );
+    	et1.setEventPluginClassName( "DropEdit.ListenersLegacy" );
+    	
+    	bc1.getOptions().add( et1 );
+    	
+    	blockConverters.put( bc1.getKeyBlockName(), bc1 );
+    	
+    }
 
+    
+    
 
 	public void loadDefaultBlockConverterSmelters( 
     		TreeMap<String, BlockConverter> blockConverters ) {

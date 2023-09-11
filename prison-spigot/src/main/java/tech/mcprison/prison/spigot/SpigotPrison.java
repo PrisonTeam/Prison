@@ -40,6 +40,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.alerts.Alerts;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.integration.IntegrationType;
@@ -335,6 +336,14 @@ public class SpigotPrison
         // Sellall set to disabled since it will be set to the correct value in enableModulesAndCommands():
         isSellAllEnabled = false;
         
+
+        
+		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
+    	AutoFeaturesWrapper.getInstance();
+    	AutoFeaturesWrapper.getBlockConvertersInstance();
+    	
+        
+		
         // This is the loader for modules and commands:
         enableModulesAndCommands();
 
