@@ -37,9 +37,11 @@ public class BlockConvertersData
 	public TreeMap<String, BlockConverter> getBlockConvertersEventTiggers(String blockName) {
 		TreeMap<String, BlockConverter> results = new TreeMap<>();
 		
-		if ( getBlockConvertersEventTiggers().containsKey( blockName ) ) {
-			results.put( blockName, 
-					(BlockConverter) getBlockConvertersEventTiggers().get( blockName )
+		String key = blockName.toLowerCase();
+		
+		if ( getBlockConvertersEventTiggers().containsKey( key ) ) {
+			results.put( key, 
+					(BlockConverter) getBlockConvertersEventTiggers().get( key )
 					);
 		}
 		

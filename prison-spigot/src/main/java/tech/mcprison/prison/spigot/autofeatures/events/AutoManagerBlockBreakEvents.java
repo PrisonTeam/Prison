@@ -340,6 +340,8 @@ public class AutoManagerBlockBreakEvents
     		if ( checkBlockConverterEventTrigger( pmEvent, e ) ) {
 
     			e.setCancelled( true );
+    			
+    			printDebugInfo( pmEvent, start );
     			return;
     		}
     		

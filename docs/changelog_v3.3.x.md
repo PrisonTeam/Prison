@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-11
+# 3.3.0-alpha.15e 2023-09-16
+
+
+* **Block Converters - Event Triggers - Had issues with block names not matching, so using all lower case. When using an event trigger it now logs the debug info to the console.**
+This will need more work, such as block removal and logging as if it were a MONITOR priority.
+At this point, we are testing to confirm that the event is actually being triggered.  So far it looks like it is working as intended.
+
 
 * **Block Converters: Start to hook up block converters to auto features.**
 Changed how block converters were structured to get them to work with the prison environment.

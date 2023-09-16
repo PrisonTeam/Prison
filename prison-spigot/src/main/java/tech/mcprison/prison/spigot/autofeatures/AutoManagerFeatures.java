@@ -3257,6 +3257,8 @@ public abstract class AutoManagerFeatures
 	public boolean checkBlockConverterEventTrigger(PrisonMinesBlockBreakEvent pmEvent, BlockBreakEvent event ) {
 		boolean terminate = false;
 		
+		long start = System.currentTimeMillis();
+		
 		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
 		String blockName = pmEvent.getSpigotBlock().getBlockName();
 		
@@ -3264,6 +3266,8 @@ public abstract class AutoManagerFeatures
 							AutoFeaturesWrapper.getBlockConvertersInstance().findEventTrigger( rPlayer, blockName );
 		
 		if ( eventTriggers != null ) {
+			StringBuilder sb = new StringBuilder();
+			
 			for (BlockConverterOptionEventTrigger eventTrigger : eventTriggers) {
 				RegisteredListener listener = null;
 				
@@ -3289,6 +3293,12 @@ public abstract class AutoManagerFeatures
 				if ( listener != null ) {
 					
 					try {
+						
+						if ( sb.length() > 0 ) {
+							sb.append( " " );
+						}
+						sb.append( eventTrigger.getEventPluginName() );
+						
 						// This is where the magic happens... triggers the event listener:
 						listener.callEvent( event );
 						
@@ -3301,6 +3311,17 @@ public abstract class AutoManagerFeatures
 				}
 				
 			}
+			
+			long stop = System.currentTimeMillis();
+			double durationMs = (stop - start) / 1_000_000.0d;
+			
+			DecimalFormat dFmt = new DecimalFormat( "#,##0.000" );
+			
+			String msg = String.format( 
+						"(BlockConverter eventTrigger: %s : %s ms) ",
+						sb, 
+						dFmt.format( durationMs ) );
+			pmEvent.getDebugInfo().append( msg );
 		}
 		
 		return terminate;
@@ -3313,7 +3334,8 @@ public abstract class AutoManagerFeatures
 			
 			if ( plugin.equalsIgnoreCase( listener.getPlugin().getName() ) && 
 				priority.equalsIgnoreCase( listener.getPriority().name() ) && 
-				listener.getClass().getName().endsWith( className ) ) {
+				listener.getListener().getClass().getName().endsWith( className ) 
+					) {
 				
 				results = listener;
 				break;

@@ -163,16 +163,18 @@ public class BlockConvertersFileConfig {
 			
 			TreeMap<String, BlockConverter> bConverters = null;
 			
+			String key = blockName.toLowerCase();
+			
 			if ( bcType == BlockConverterTypes.eventTriggers ) {
-				bConverters = getBcData().getBlockConvertersEventTiggers( blockName );
+				bConverters = getBcData().getBlockConvertersEventTiggers( key );
 			}
 			else {
 				
 				bConverters = getBcData().getBlockConverters().get(bcType);
 			}
 			
-			if ( bConverters.containsKey( blockName.toLowerCase() ) ) {
-				results = bConverters.get( blockName.toLowerCase() );
+			if ( bConverters.containsKey( key ) ) {
+				results = bConverters.get( key );
 			}
 		}
 		
