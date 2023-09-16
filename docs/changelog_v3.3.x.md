@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-16
 
 
+* **Mines block edit - Found a problem where if you are trying to edit a block and the name does not match, it was causing an error.**  Now reports that the block name is invalid.
+
+
 * **Block Converters - Event Triggers - Had issues with block names not matching, so using all lower case. When using an event trigger it now logs the debug info to the console.**
 This will need more work, such as block removal and logging as if it were a MONITOR priority.
 At this point, we are testing to confirm that the event is actually being triggered.  So far it looks like it is working as intended.
