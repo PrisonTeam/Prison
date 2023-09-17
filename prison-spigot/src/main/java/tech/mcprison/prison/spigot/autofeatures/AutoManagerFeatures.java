@@ -3336,22 +3336,25 @@ public abstract class AutoManagerFeatures
 
 	public void removeEventTriggerBlockksFromExplosions(PrisonMinesBlockBreakEvent pmEvent ) {
 		
-		if ( pmEvent.getExplodedBlocks().size() > 0 &&
+		if ( pmEvent.getUnprocessedRawBlocks().size() > 0 &&
 				AutoFeaturesWrapper.getBlockConvertersInstance().getBcData().getBlockConvertersEventTiggers().size() > 0 ) {
 			
 			long start = System.currentTimeMillis();
 			
-			RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
+//			RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
 			
 			
-			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().findEventTriggerBlockNames();
-			List<SpigotBlock> removeBlocks = new ArrayList<>();
 			TreeMap<String,Integer> blockCounts = new TreeMap<>();
+
+			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().findEventTriggerBlockNames();
+			List<Block> removeBlocks = new ArrayList<>();
 			
-			for (SpigotBlock explodedBlock : pmEvent.getExplodedBlocks()) {
-				String blockName = explodedBlock.getBlockName().toLowerCase();
+			for (Block block : pmEvent.getUnprocessedRawBlocks()) {
+				SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
+				String blockName = sBlock.getBlockName().toLowerCase();
+				
 				if ( blockNamesToRemove.contains( blockName ) ) {
-					removeBlocks.add( explodedBlock );
+					removeBlocks.add( block );
 					
 					if ( !blockCounts.containsKey(blockName) ) {
 						blockCounts.put( blockName, 1 );
@@ -3364,7 +3367,7 @@ public abstract class AutoManagerFeatures
 			}
 			
 			if ( removeBlocks.size() > 0 ) {
-				pmEvent.getExplodedBlocks().removeAll( removeBlocks );
+				pmEvent.getUnprocessedRawBlocks().removeAll( removeBlocks );
 			}
 			
 			
@@ -3373,7 +3376,7 @@ public abstract class AutoManagerFeatures
 
 			
 			// Log if blocks were removed, or if duration is >= 0.5:
-			if  ( removeBlocks.size() > 0 || durationMs > 0.5 ) {
+			if  ( blockCounts.size() > 0 || durationMs > 0.5 ) {
 				
 				StringBuilder sb = new StringBuilder();
 				

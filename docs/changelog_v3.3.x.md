@@ -17,6 +17,13 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-17
 
 
+* **BlockConverters eventTriggers: Fixed the handling of event trigger blocks so they can be ignored within an explosion event.  Now works.**
+Still have to process the event trigger blocks in explosions for when they need to be triggered.
+
+
+* **Sellall command: '/sellall set delay' - fixed the description which had a typo in the description.**
+
+
 * **SpigotPlayer: fixed a problem where the object was expected to be comparable.**
 
 
