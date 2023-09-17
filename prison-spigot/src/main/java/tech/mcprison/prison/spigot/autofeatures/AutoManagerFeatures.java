@@ -3344,7 +3344,7 @@ public abstract class AutoManagerFeatures
 			RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
 			
 			
-			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().findEventTriggerBlockNames( rPlayer );
+			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().findEventTriggerBlockNames();
 			List<SpigotBlock> removeBlocks = new ArrayList<>();
 			TreeMap<String,Integer> blockCounts = new TreeMap<>();
 			

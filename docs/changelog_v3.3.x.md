@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-17
 
 
+* **BlockConverters eventTriggers: Add the support for explosion events to all of the explosion event handlers.**
+
+
 * **BlockConverters EventTriggers: Setup the next phase of handling where blocks in explosions can be ignored.**
 
 
