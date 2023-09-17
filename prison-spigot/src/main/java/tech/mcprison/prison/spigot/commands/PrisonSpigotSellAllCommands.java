@@ -106,12 +106,14 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
     @Command(identifier = "sellall set delay", 
-    		description = "Enables or disables a SellAll cooldown delay to preventh "
+    		description = "Enables or disables a SellAll cooldown delay to prevent "
     				+ "players from spamming the sellall command. "
     				+ "See `/sellall set delayTime`.", 
     		onlyPlayers = false, permissions = "prison.sellall.delay")
     private void sellAllDelay(CommandSender sender,
-           @Arg(name = "boolean", description = "True to enable or false to disable.", def = "false") String enable){
+           @Arg(name = "boolean", 
+           		description = "True to enable or false to disable.", 
+           		def = "false") String enable){
 
         if (!isEnabled()) return;
 
