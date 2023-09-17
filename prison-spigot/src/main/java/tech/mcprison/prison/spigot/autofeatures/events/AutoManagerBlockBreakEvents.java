@@ -337,12 +337,17 @@ public class AutoManagerBlockBreakEvents
     		
         	
     		// Check for BlockConverters Event Triggers:
+        	// If this function returns a true, then the event should be canceled so no other plugins
+        	// process the block after the triggered plugin has processed it.
+        	// If the eventTrigger is marked to remove block without drops, then the 
+        	// block break event priority will be set to MONITOR and will force the 
+        	// block to be removed by prison.
     		if ( checkBlockConverterEventTrigger( pmEvent, e ) ) {
 
     			e.setCancelled( true );
     			
-    			printDebugInfo( pmEvent, start );
-    			return;
+//    			printDebugInfo( pmEvent, start );
+//    			return;
     		}
     		
         	

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -3305,6 +3306,11 @@ public abstract class AutoManagerFeatures
 						if ( !eventTrigger.isAllowPrisonToProccessDrops() ) {
 							terminate = true;
 						}
+						
+						if ( eventTrigger.isRemoveBlockWithoutDrops() ) {
+							pmEvent.setForceBlockRemoval( true );
+							pmEvent.setBbPriority( BlockBreakPriority.MONITOR );
+						}
 					} 
 					catch (EventException e) {
 					}
@@ -3325,6 +3331,74 @@ public abstract class AutoManagerFeatures
 		}
 		
 		return terminate;
+	}
+	
+
+	public void removeEventTriggerBlockksFromExplosions(PrisonMinesBlockBreakEvent pmEvent ) {
+		
+		if ( pmEvent.getExplodedBlocks().size() > 0 &&
+				AutoFeaturesWrapper.getBlockConvertersInstance().getBcData().getBlockConvertersEventTiggers().size() > 0 ) {
+			
+			long start = System.currentTimeMillis();
+			
+			RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
+			
+			
+			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().findEventTriggerBlockNames( rPlayer );
+			List<SpigotBlock> removeBlocks = new ArrayList<>();
+			TreeMap<String,Integer> blockCounts = new TreeMap<>();
+			
+			for (SpigotBlock explodedBlock : pmEvent.getExplodedBlocks()) {
+				String blockName = explodedBlock.getBlockName().toLowerCase();
+				if ( blockNamesToRemove.contains( blockName ) ) {
+					removeBlocks.add( explodedBlock );
+					
+					if ( !blockCounts.containsKey(blockName) ) {
+						blockCounts.put( blockName, 1 );
+					}
+					else {
+						int count = blockCounts.get( blockName );
+						blockCounts.put( blockName, ++count );
+					}
+				}
+			}
+			
+			if ( removeBlocks.size() > 0 ) {
+				pmEvent.getExplodedBlocks().removeAll( removeBlocks );
+			}
+			
+			
+			long stop = System.currentTimeMillis();
+			double durationMs = (stop - start) / 1_000_000.0d;
+
+			
+			// Log if blocks were removed, or if duration is >= 0.5:
+			if  ( removeBlocks.size() > 0 || durationMs > 0.5 ) {
+				
+				StringBuilder sb = new StringBuilder();
+				
+				Set<String> keys = blockCounts.keySet();
+				for (String key : keys) {
+					if ( sb.length() > 0 ) {
+						sb.append(",");
+					}
+					sb.append( key ).append( ":" ).append( blockCounts.get(key).toString() );
+				}
+				
+				if ( sb.length() == 0 ) {
+					sb.append( "none" );
+				}
+				DecimalFormat dFmt = new DecimalFormat( "#,##0.000" );
+				
+				String msg = String.format( 
+						"(BlockConverter eventTrigger: blocks removed: [%s] %s ms) ",
+						sb, 
+						dFmt.format( durationMs ) );
+				pmEvent.getDebugInfo().append( msg );
+			}
+			
+		}
+		
 	}
 	
 	private RegisteredListener findBlockBreakEventListener( String plugin, String priority, String className ) {

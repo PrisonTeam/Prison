@@ -403,7 +403,7 @@ public class BlockConvertersFileConfig {
 	 * @param rPlayer
 	 * @return
 	 */
-	public List<String> findEventTriggerBlockNames(RankPlayer rPlayer) {
+	public List<String> findEventTriggerBlockNames() {
 		List<String> blockNames = new ArrayList<>();
 		
 		TreeMap<String, BlockConverterEventTrigger> eventTriggers = getBcData().getBlockConvertersEventTiggers();
@@ -414,27 +414,17 @@ public class BlockConvertersFileConfig {
 			
 			String blockName = et.getKeyBlockName().toLowerCase();
 			
-			// Confirm the player has perms:
-			if ( et.isEnabled() &&
-					et.getPermissions() != null && et.getPermissions().size() > 0 ) {
+			// Confirm the BlockConverter is active:
+			if ( et.isEnabled() ) {
 				
-				for (String perm : et.getPermissions() ) {
-					if ( rPlayer.hasPermission( perm ) ) {
+				for ( BlockConverterOptionEventTrigger eventTrigger : et.getOptions() ) {
+					if ( eventTrigger.isIgnoreBlockInExplosionEvents() ) {
 						
-						for ( BlockConverterOptionEventTrigger eventTrigger : et.getOptions() ) {
-							if ( eventTrigger.isIgnoreBlockInExplosionEvents() ) {
-								
-								if ( !blockNames.contains(blockName) ) {
-									
-									blockNames.add( blockName );
-									break;
-								}
-							}
+						if ( !blockNames.contains(blockName) ) {
+							
+							blockNames.add( blockName );
+							break;
 						}
-						
-					}
-					if ( blockNames.contains(blockName) ) {
-						break;
 					}
 				}
 			}

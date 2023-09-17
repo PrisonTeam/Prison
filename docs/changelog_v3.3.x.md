@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-17
 
 
+* **BlockConverters EventTriggers: Setup the next phase of handling where blocks in explosions can be ignored.**
+
+
 * **BlockConverters EventTriggers - setup the PrisonMinesBlockBreakEvent to allow an event to identify if the primary block must be forcefully removed**, which is only used right now with event triggers, and would remove the block when handling a MONITOR event, which normally does not remove any blocks.
 
 
