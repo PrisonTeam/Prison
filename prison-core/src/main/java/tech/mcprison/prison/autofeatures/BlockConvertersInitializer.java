@@ -133,6 +133,10 @@ public class BlockConvertersInitializer {
     	et1.setEventPluginPriority( "HIGHEST" );
     	et1.setEventPluginClassName( "DropEdit.ListenersLegacy" );
     	
+    	et1.setAllowPrisonToProccessDrops( false );
+    	et1.setIgnoreBlockInExplosionEvents( true );
+    	et1.setRemoveBlockWithoutDrops( true );
+    	
     	bc1.getOptions().add( et1 );
     	
     	blockConverters.put( bc1.getKeyBlockName(), bc1 );

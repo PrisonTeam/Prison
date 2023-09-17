@@ -22,6 +22,10 @@ public class BlockConverterOptionEventTrigger
 	
 	private boolean allowPrisonToProccessDrops;
 	
+	private boolean removeBlockWithoutDrops;
+	
+	private boolean ignoreBlockInExplosionEvents;
+	
 	/**
 	 * This is to be used as a transient cache of working with
 	 * the external event.
@@ -66,6 +70,20 @@ public class BlockConverterOptionEventTrigger
 	}
 	public void setAllowPrisonToProccessDrops(boolean allowPrisonToProccessDrops) {
 		this.allowPrisonToProccessDrops = allowPrisonToProccessDrops;
+	}
+
+	public boolean isRemoveBlockWithoutDrops() {
+		return removeBlockWithoutDrops;
+	}
+	public void setRemoveBlockWithoutDrops(boolean removeBlockWithoutDrops) {
+		this.removeBlockWithoutDrops = removeBlockWithoutDrops;
+	}
+
+	public boolean isIgnoreBlockInExplosionEvents() {
+		return ignoreBlockInExplosionEvents;
+	}
+	public void setIgnoreBlockInExplosionEvents(boolean ignoreBlockInExplosionEvents) {
+		this.ignoreBlockInExplosionEvents = ignoreBlockInExplosionEvents;
 	}
 
 	public Object getExternalResource() {

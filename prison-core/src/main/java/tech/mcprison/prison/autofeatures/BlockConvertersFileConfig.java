@@ -3,6 +3,7 @@ package tech.mcprison.prison.autofeatures;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
@@ -313,9 +314,7 @@ public class BlockConvertersFileConfig {
 	 */
 	public void reloadConfig() {
 		
-		Output.get().logInfo( "###### blockConverters: reloadConfig(): 1");
 		if ( AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.isEnabledBlockConverters ) ) {
-			Output.get().logInfo( "###### blockConverters: reloadConfig)(: 2");
 			JsonFileIO jfio = new JsonFileIO();
 			
 			BlockConvertersData temp = (BlockConvertersData) jfio.readJsonFile( getConfigFile(), getBcData() );
@@ -387,6 +386,61 @@ public class BlockConvertersFileConfig {
 		}
 		
 		return eventTriggers;
+	}
+	
+	/**
+	 * <p>This function gets all of the blocks within the BlockConverterEventTriggers that should be
+	 * ignored, and removed, from explosion events, or multi-block events.  If this feature is 
+	 * enabled, then the only way to break those blocks, or to trigger those plugins that 
+	 * should handle those blocks, is by direct block breakage, and not explosion events. 
+	 * </p>
+	 * 
+	 * <p>The list of blocks, should not be impacted by player's permissions because if they are, then
+	 * those who do not have access to those blocks, would then be able to break those blocks, or at least
+	 * through explosion events.
+	 * </p>
+	 * 
+	 * @param rPlayer
+	 * @return
+	 */
+	public List<String> findEventTriggerBlockNames(RankPlayer rPlayer) {
+		List<String> blockNames = new ArrayList<>();
+		
+		TreeMap<String, BlockConverterEventTrigger> eventTriggers = getBcData().getBlockConvertersEventTiggers();
+		
+		Set<String> keys = eventTriggers.keySet();
+		for (String key : keys) {
+			BlockConverterEventTrigger et = eventTriggers.get(key);
+			
+			String blockName = et.getKeyBlockName().toLowerCase();
+			
+			// Confirm the player has perms:
+			if ( et.isEnabled() &&
+					et.getPermissions() != null && et.getPermissions().size() > 0 ) {
+				
+				for (String perm : et.getPermissions() ) {
+					if ( rPlayer.hasPermission( perm ) ) {
+						
+						for ( BlockConverterOptionEventTrigger eventTrigger : et.getOptions() ) {
+							if ( eventTrigger.isIgnoreBlockInExplosionEvents() ) {
+								
+								if ( !blockNames.contains(blockName) ) {
+									
+									blockNames.add( blockName );
+									break;
+								}
+							}
+						}
+						
+					}
+					if ( blockNames.contains(blockName) ) {
+						break;
+					}
+				}
+			}
+		}
+		
+		return blockNames;
 	}
 	
 }
