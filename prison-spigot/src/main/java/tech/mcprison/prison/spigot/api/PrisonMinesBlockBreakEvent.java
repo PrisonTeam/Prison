@@ -105,6 +105,12 @@ public class PrisonMinesBlockBreakEvent
 	private boolean forceAutoSell = false;
 	
 	
+	// If forceBlockRemoval is true, then it will remove the block even if the block
+	// break priority is MONITOR. This setting is only used (so far) with the
+	// BlockConverters Event Triggers to bypass prison processing, but will allow prison
+	// to remove the block and then treat it like a MONITOR event so it gets counted.
+	private boolean forceBlockRemoval = false;
+	
 	
 	private BlockBreakPriority bbPriority;
 	
@@ -453,6 +459,13 @@ public class PrisonMinesBlockBreakEvent
 	}
 	public void setForceAutoSell( boolean forceAutoSell ) {
 		this.forceAutoSell = forceAutoSell;
+	}
+	
+	public boolean isForceBlockRemoval() {
+		return forceBlockRemoval;
+	}
+	public void setForceBlockRemoval(boolean forceBlockRemoval) {
+		this.forceBlockRemoval = forceBlockRemoval;
 	}
 
 	public BlockBreakPriority getBbPriority() {

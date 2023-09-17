@@ -366,6 +366,14 @@ public class AutoManagerBlockBreakEvents
     		else if ( pmEvent.getBbPriority().isMonitor() ) {
     			// Stop here, and prevent additional processing. 
     			// Monitors should never process the event beyond this.
+    			
+    			// NOTE: BlockConverters EventTriggers will force processing to MONITOR
+    			//       plus require the block to be removed with no drops with 
+    			//       no block events.
+    			if ( pmEvent.isForceBlockRemoval() ) {
+
+    				finalizeBreakTheBlocks( pmEvent );
+    			}
     		}
     		
     		

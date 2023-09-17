@@ -14,7 +14,16 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-16
+# 3.3.0-alpha.15e 2023-09-17
+
+
+* **BlockConverters EventTriggers - setup the PrisonMinesBlockBreakEvent to allow an event to identify if the primary block must be forcefully removed**, which is only used right now with event triggers, and would remove the block when handling a MONITOR event, which normally does not remove any blocks.
+
+
+* **BlockConverters EventTriggers: Setup more controls within the settings of a blockEvent.**
+Setup the ability to control processing of drops: if disabled, it will treat the block event as a MONITOR.  This allows the block to be counted correctly.
+Setup the ability to ignore the block type within all explosions, so each block would have to be broken individually.
+Setup the ability to remove the block without dropping anything since another plugin would have already processed the block, so nothing would remain to be done with it.
 
 
 * **Mines block edit - Found a problem where if you are trying to edit a block and the name does not match, it was causing an error.**  Now reports that the block name is invalid.
