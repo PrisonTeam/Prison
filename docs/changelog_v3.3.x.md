@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-17
 
 
+* **SpigotPlayer: fixed a problem where the object was expected to be comparable.**
+
+
 * **BlockConverters eventTriggers: Add the support for explosion events to all of the explosion event handlers.**
 
 

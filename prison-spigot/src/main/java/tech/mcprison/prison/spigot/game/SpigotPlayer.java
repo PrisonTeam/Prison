@@ -62,7 +62,7 @@ import tech.mcprison.prison.util.Location;
  */
 public class SpigotPlayer 
 				extends SpigotCommandSender 
-				implements Player {
+				implements Player, Comparable<SpigotPlayer> {
 
 	private RankPlayer rankPlayer;
 	
@@ -306,6 +306,12 @@ public class SpigotPlayer
 //    	return results;
 //    }
     
+	@Override
+	public int compareTo( SpigotPlayer sPlayer) {
+		return getName().compareTo( sPlayer.getName() );
+	}
+	
+	
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();
