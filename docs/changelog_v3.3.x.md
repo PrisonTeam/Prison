@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-17
+# 3.3.0-alpha.15e 2023-09-19
+
+
+* **Block Converters: event triggers:  More work. Got it working to the point that it's ready for production.**
+The way it is right now, any block that is in an event trigger, will be excluded from all explosions.  They will remain unbroken in the mine.  
+The players can then break them directly to trigger the events.  Eventually I may allow processing within an explosion event, but right now it's not making sense to process 100+ triggers all at one time for huge explosions... the other plugin that's being "fired" may cause lag trying to process that many at one time.
+
 
 
 * **BlockConverters eventTriggers: Fixed the handling of event trigger blocks so they can be ignored within an explosion event.  Now works.**

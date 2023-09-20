@@ -3310,6 +3310,8 @@ public abstract class AutoManagerFeatures
 						if ( eventTrigger.isRemoveBlockWithoutDrops() ) {
 							pmEvent.setForceBlockRemoval( true );
 							pmEvent.setBbPriority( BlockBreakPriority.MONITOR );
+							
+							finalizeBreakTheBlocks( pmEvent, pmEvent.getSpigotBlock(), pmEvent.getTargetBlock() );
 						}
 					} 
 					catch (EventException e) {
@@ -3333,11 +3335,17 @@ public abstract class AutoManagerFeatures
 		return terminate;
 	}
 	
+	
+	public void removeBlockForTriggerEvent( PrisonMinesBlockBreakEvent pmEvent) {
+		
+		finalizeBreakTheBlocks( pmEvent );
+		
+	}
 
-	public void removeEventTriggerBlockksFromExplosions(PrisonMinesBlockBreakEvent pmEvent ) {
+	public void removeEventTriggerBlocksFromExplosions( PrisonMinesBlockBreakEvent pmEvent ) {
 		
 		if ( pmEvent.getUnprocessedRawBlocks().size() > 0 &&
-				AutoFeaturesWrapper.getBlockConvertersInstance().getBcData().getBlockConvertersEventTiggers().size() > 0 ) {
+				AutoFeaturesWrapper.getBlockConvertersInstance().getEventTriggerBlockNames().size() > 0 ) {
 			
 			long start = System.currentTimeMillis();
 			
@@ -3346,7 +3354,7 @@ public abstract class AutoManagerFeatures
 			
 			TreeMap<String,Integer> blockCounts = new TreeMap<>();
 
-			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().findEventTriggerBlockNames();
+			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().getEventTriggerBlockNames();
 			List<Block> removeBlocks = new ArrayList<>();
 			
 			for (Block block : pmEvent.getUnprocessedRawBlocks()) {
@@ -3368,6 +3376,14 @@ public abstract class AutoManagerFeatures
 			
 			if ( removeBlocks.size() > 0 ) {
 				pmEvent.getUnprocessedRawBlocks().removeAll( removeBlocks );
+				
+				
+//				if ( eventTrigger.isRemoveBlockWithoutDrops() ) {
+////					pmEvent.setForceBlockRemoval( true );
+////					pmEvent.setBbPriority( BlockBreakPriority.MONITOR );
+//					
+//					finalizeBreakTheBlocks( pmEvent, pmEvent.getSpigotBlock(), pmEvent.getTargetBlock() );
+//				}
 			}
 			
 			

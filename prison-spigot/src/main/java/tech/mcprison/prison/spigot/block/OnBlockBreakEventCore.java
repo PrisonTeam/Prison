@@ -326,6 +326,30 @@ public abstract class OnBlockBreakEventCore
 		return blocks;
 	}
 
+	
+	/**
+	 * <p>Used with BlockConverters event triggers.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 * @param minedBlock
+	 * @param targetBlock
+	 * @return
+	 */
+	protected SpigotBlock finalizeBreakTheBlocks( PrisonMinesBlockBreakEvent pmEvent, 
+							SpigotBlock minedBlock, MineTargetPrisonBlock targetBlock  ) {
+		SpigotBlock results = null;
+		
+		if ( targetBlock.getPrisonBlock().getBlockName().equalsIgnoreCase( minedBlock.getBlockName() ) ) {
+			results = minedBlock;
+			targetBlock.setAirBroke( true );
+			
+			// Count the blocks that were mined:
+			countBlocksMined( pmEvent, pmEvent.getTargetBlock() );
+		}
+					
+		return results;
+	}
 
 	
 	/**

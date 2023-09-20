@@ -22,6 +22,7 @@ public class BlockConvertersFileConfig {
 	
 	private transient BlockConvertersData bcData;
 	
+	private transient List<String> eventTriggerBlockNames;
 //	private TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters;
 //	private TreeMap<String, BlockConverterEventTrigger> blockConvertersEventTiggers;
 
@@ -42,6 +43,8 @@ public class BlockConvertersFileConfig {
 		super();
 		
 		this.bcData = new BlockConvertersData();
+		
+		this.eventTriggerBlockNames = null;
 		
 //		this.blockConverters = new TreeMap<>();
 //		this.blockConvertersEventTiggers = new TreeMap<>();
@@ -279,6 +282,9 @@ public class BlockConvertersFileConfig {
 	private boolean initialConfig() {
 		boolean dirty = false;
 		
+		// Set to null so it will auto reload on next access:
+		setEventTriggerBlockNames( null );
+		
 		BlockConvertersInitializer initializer = new BlockConvertersInitializer();
 		
 		boolean d1 = initializer.checkConfigs( getBcData().getBlockConverters() );
@@ -388,6 +394,21 @@ public class BlockConvertersFileConfig {
 		return eventTriggers;
 	}
 	
+	
+	
+	
+	public List<String> getEventTriggerBlockNames() {
+		
+		if ( eventTriggerBlockNames == null ) {
+			eventTriggerBlockNames = findEventTriggerBlockNames();
+		}
+		return eventTriggerBlockNames;
+	}
+
+	public void setEventTriggerBlockNames(List<String> eventTriggerBlockNames) {
+		this.eventTriggerBlockNames = eventTriggerBlockNames;
+	}
+
 	/**
 	 * <p>This function gets all of the blocks within the BlockConverterEventTriggers that should be
 	 * ignored, and removed, from explosion events, or multi-block events.  If this feature is 
@@ -403,7 +424,7 @@ public class BlockConvertersFileConfig {
 	 * @param rPlayer
 	 * @return
 	 */
-	public List<String> findEventTriggerBlockNames() {
+	private List<String> findEventTriggerBlockNames() {
 		List<String> blockNames = new ArrayList<>();
 		
 		TreeMap<String, BlockConverterEventTrigger> eventTriggers = getBcData().getBlockConvertersEventTiggers();

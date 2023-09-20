@@ -400,7 +400,7 @@ public class AutoManagerTokenEnchant
     		// Check to see if the blockConverter's EventTrigger should have
     		// it's blocks suppressed from explosion events.  If they should be
     		// removed, then it's removed within this funciton.
-    		removeEventTriggerBlockksFromExplosions( pmEvent );
+    		removeEventTriggerBlocksFromExplosions( pmEvent );
     		
   
     		
