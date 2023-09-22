@@ -31,131 +31,123 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 /**
+ * Spigot 1.9, 1.10, and 1.11.
+ *
  * @author Faizaan A. Datoo
  */
-public class Spigot18 
-	extends Spigot18GUI 
+public class Spigot_1_9 
+	extends Spigot_1_9_GUI
 	implements Compatibility {
 
-	
-	
     @Override 
     public EquipmentSlot getHand(PlayerInteractEvent e) {
-        return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
+        if (e.getHand() == null) {
+            return null;
+        } else {
+            return EquipmentSlot.valueOf(e.getHand().name());
+        }
     }
 
-	@Override 
-	public ItemStack getItemInMainHand(PlayerInteractEvent e) {
+    @Override 
+    public ItemStack getItemInMainHand(PlayerInteractEvent e) {
         return getItemInMainHand( e.getPlayer() );
     }
 
     @Override 
-    public ItemStack getItemInMainHand(Player player ) {
+    public ItemStack getItemInMainHand(Player player) {
     	return getItemInMainHand( player.getInventory() );
     }
     
-    @SuppressWarnings( "deprecation" )
 	@Override 
     public ItemStack getItemInMainHand(PlayerInventory playerInventory) {
-    	return playerInventory.getItemInHand();
+    	return playerInventory.getItemInMainHand();
     }
     
-    
+	@Override
     public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
     }
     
+	@Override
     public SpigotItemStack getPrisonItemInMainHand(Player player) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
+	
+	@Override
+	public SpigotItemStack getPrisonItemInOffHand(Player player) {
+		return SpigotUtil.bukkitItemStackToPrison( getItemInOffHand( player ) );
+	}
     
-    public SpigotItemStack getPrisonItemInOffHand(Player player) {
-    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
-    }
-
 	@Override 
 	public ItemStack getItemInOffHand(PlayerInteractEvent e) {
-        return getItemInOffHand( e.getPlayer() );
+        return getItemInOffHand(e.getPlayer());
     }
 
     @Override 
     public ItemStack getItemInOffHand(Player player ) {
-    	return getItemInOffHand( player.getInventory() );
+    	return getItemInOffHand(player.getInventory());
     }
     
-    /**
-     * This function does not exist in v1.8 so returns null.
-     */
+    @Override
     public ItemStack getItemInOffHand(PlayerInventory playerInventory) {
-    	return null;
+    	return playerInventory.getItemInOffHand();
     }
     
-    @SuppressWarnings( "deprecation" )
-	@Override
+    @Override
     public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
     	
     	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
-    			.setItemInHand( itemStack.getBukkitStack() );
+    			.setItemInMainHand( itemStack.getBukkitStack() );
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void setItemInMainHand(Player p, ItemStack itemStack) {
-        p.getInventory().setItemInHand(itemStack);
+        p.getInventory().setItemInMainHand(itemStack);
     }
 
-    /**
-     * Spigot v1.8 does not have an off hand, so set it to main hand.
-     */
-	@Override
+    @Override
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
-    	setItemStackInMainHand( inventory, itemStack );
+
+    	ItemStack iStack = itemStack == null ? null : itemStack.getBukkitStack();
+    	
+    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
+    	.setItemInOffHand( iStack );
     }
-    
     @Override 
     public void playIronDoorSound(Location loc) {
-        loc.getWorld().playEffect(loc, Effect.DOOR_TOGGLE, null);
+        loc.getWorld().playEffect(loc, Effect.IRON_DOOR_TOGGLE, null);
     }
 
     @Override
     public Sound getAnvilSound() {
-        return Sound.valueOf("ANVIL_LAND");
+        return Sound.valueOf("BLOCK_ANVIL_BREAK");
     }
 
     @Override
     public Sound getLevelUpSound() {
-        return Sound.valueOf("LEVEL_UP");
+        return Sound.valueOf("ENTITY_PLAYER_LEVELUP");
     }
 
     @Override
     public Sound getOpenChestSound() {
-        return Sound.valueOf("CHEST_OPEN");
+        return Sound.valueOf("BLOCK_CHEST_OPEN");
     }
 
     @Override
     public Sound getCloseChestSound() {
-        return Sound.valueOf("CHEST_CLOSE");
+        return Sound.valueOf("BLOCK_CHEST_CLOSE");
     }
 
     @Override
     public Sound getEntityItemBreakSound() {
-        return Sound.valueOf("ITEM_BREAK");
+        return Sound.valueOf("ENTITY_ITEM_BREAK");
     }
 
-    @SuppressWarnings( "deprecation" )
-	@Override
+    @Override
 	public void breakItemInMainHand( Player player ) {
-		player.setItemInHand( null );
+		player.getInventory().setItemInMainHand( null );
 		
-		try
-		{
-			player.playSound(player.getLocation(), getEntityItemBreakSound(), 1.0F, 0.85F);
-		}
-		catch ( NoSuchFieldError e )
-		{
-			// Sound does not exist for this version of spigot.  Ignore.
-		} 
+		player.playSound(player.getLocation(), getEntityItemBreakSound(), 1.0F, 0.85F);
 	}
-
 
 }

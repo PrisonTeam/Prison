@@ -7,7 +7,7 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.util.Text;
 
-public abstract class Spigot18Player
+public abstract class Spigot_1_8_Player
 		extends CompatibilityCache
 		implements CompatibilityPlayer
 {

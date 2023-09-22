@@ -9,8 +9,8 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.util.Text;
 
-public abstract class Spigot19Player
-		extends Spigot18Blocks
+public abstract class Spigot_1_9_Player
+		extends Spigot_1_8_Blocks
 {
 	public void setMaxHealth( Player player, double maxHealth ) {
 		

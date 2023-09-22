@@ -15,8 +15,8 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.Location;
 
-public abstract class Spigot18Blocks 
-	extends Spigot18Player 
+public abstract class Spigot_1_8_Blocks 
+	extends Spigot_1_8_Player 
 	implements CompatibilityBlocks {
 
 
@@ -752,5 +752,52 @@ public abstract class Spigot18Blocks
     public int getMaxY() {
     	return 255;
     }
+    
+    
+    /**
+     * Not compatible with Spigot 1.8 through 1.13 so return a value of 0.
+     * Only available with 1.14 and higher.
+     * @param itemStack
+     * @return
+     */
+    @Override
+    public int getCustomModelData( SpigotItemStack itemStack ) {
+    	return 0;
+    }
+    /**
+     * Not compatible with Spigot 1.8 through 1.13 so return a value of 0.
+     * Only available with 1.14 and higher.
+     * @param itemStack
+     * @return
+     */
+    @Override
+    public int getCustomModelData( ItemStack itemStack ) {
+    	return 0;
+    }
+    
+    /**
+     * Not compatible with Spigot 1.8 through 1.13 so do nothing.
+     * Only available with 1.14 and higher.
+     * @param itemStack
+     * @return
+     */
+    @Override
+	public void setCustomModelData( SpigotItemStack itemStack, int customModelData ) {
+		if ( itemStack != null ) {
+			setCustomModelData( itemStack.getBukkitStack(), customModelData);
+		}
+	}
+	/**
+	 * Not compatible with Spigot 1.8 through 1.13 so do nothing.
+	 * Only available with 1.14 and higher.
+	 * @param itemStack
+	 * @return
+	 */
+    @Override
+	public void setCustomModelData( ItemStack itemStack, int customModelData ) {
+		
+	}
+
+
     
 }

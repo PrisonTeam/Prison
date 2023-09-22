@@ -27,7 +27,7 @@ public class SpigotCompatibility {
 			
 			if ( bukkitVersion == null ) {
 				
-				results = new Spigot113();
+				results = new Spigot_1_13();
 			}
 			else {
 				
@@ -35,19 +35,23 @@ public class SpigotCompatibility {
 				
 				if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
 					
-					results = new Spigot18();
+					results = new Spigot_1_8();
 				}
 				else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
 					
-					results = new Spigot19();
+					results = new Spigot_1_9();
+				}
+				else if ( svData.compareTo( new BluesSemanticVersionData( "1.14.0" ) ) < 0 ) {
+					
+					results = new Spigot_1_13();
 				}
 				else if ( svData.compareTo( new BluesSemanticVersionData( "1.18.0" ) ) < 0 ) {
 					
-					results = new Spigot113();
+					results = new Spigot_1_14();
 				}
 				else {
 					
-					results = new Spigot118();
+					results = new Spigot_1_18();
 				}
 			}
 			
