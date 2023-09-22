@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-21
 
 
+* **Ranks Ladder resetRankCost: Added a new parameter to provide an exponent which is used as a Math.pow() function over the base rank cost calculations.**
+This can help increase the rank costs for higher ranks.
+Default value is 1.0 so it does not apply unless it is specifically changed.
+ 
+
 * **Update the Double vs BigDecimal example.  Increased from 25 to 35 iterations, and expanded all columns to adjust for the wider output.**
 
 

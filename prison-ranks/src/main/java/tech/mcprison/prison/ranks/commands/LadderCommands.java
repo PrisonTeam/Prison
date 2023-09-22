@@ -546,7 +546,16 @@ public class LadderCommands
 	        		+ "additional multiplier being multiplied against that value.  "
 	        		+ "So for default values for a rankk in the third position, "
 	        		+ "with a 1.75 multipler will have a "
-	        		+ "cost = 1_000_000_000 * 3 * 1.75.") double addMult ) {
+	        		+ "cost = 1_000_000_000 * 3 * 1.75.") double addMult,
+	        @Arg(name = "exponent", def = "1", verifiers = "min[0.00001]",
+	        description = "See the cost formula for the 'addMult' parameter. "
+	        		+ "This parameter adds an exponent to the formula.  For a linear " 
+	        		+ "rank cost, use a value of 1.0 for this parameter. Use a value " 
+	        		+ "greater than 1.0, such as 1.2 for slightly more agressive cost "
+	        		+ "calculation. Since cost is a IEEE double, there is a risk of " 
+	        		+ "lost precision with numbers greater than 16 digits. "
+	        		+ "cost = (initialCost * rankPosition * addMult)^exponent.") 
+    				double exponent ) {
     	
 		
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
@@ -559,6 +568,12 @@ public class LadderCommands
             return;
         }
 
+        
+        if ( exponent <= 0 ) {
+        	sender.sendMessage("Error: ranks ladder resetRankCosts: Exponent parameter must be greater than zero.");
+        	return;
+        }
+        
         // Force a backup:
     	PrisonBackups prisonBackup = new PrisonBackups();
     	
@@ -573,10 +588,10 @@ public class LadderCommands
         
         int ranksChanged = 0;
         
-        int i = 0;
+        int i = 1;
         for (Rank rank : ladder.getRanks() ) {
 			
-        	double cost = initialCost * (i++ + 1) * addMult;
+        	double cost = Math.pow(initialCost * i++ * addMult, exponent );
         	
         	if ( rank.getRawRankCost() != cost ) {
         		rank.setRawRankCost( cost );
