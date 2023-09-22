@@ -418,9 +418,9 @@ public class SpigotPrison
        
        
        
-       // Setup mine bombs:
+       // Setup mine bombs and validate to spigot version:
        PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();
-       
+       PrisonUtilsMineBombs.getInstance().validateMineBombsSpigotVersion();
 
        // Enable Temp spigot commands:
        new SpigotCommand();

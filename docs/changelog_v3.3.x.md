@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-21
+# 3.3.0-alpha.15e 2023-09-22
+
+
+* **MineBombs: validate all mine bombs upon server startup to validate the sound effects, visual effects, and shape based upon the version of spigot that they are running.**
+This mostly is to clean up the default mine bombs where they have sound and visual effects for versions of spigot so something will happen.  This removes the invalid ones for the version so there are less errors at run time.
 
 
 * **MineBombs: Add support for customModelData for the item used for the bomb.**

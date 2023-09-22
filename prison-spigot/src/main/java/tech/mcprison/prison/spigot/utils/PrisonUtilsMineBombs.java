@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -88,6 +89,8 @@ public class PrisonUtilsMineBombs
 	@Override
 	protected Boolean initialize()
 	{
+		//validateMineBombs();
+		
 		return true;
 	}
 
@@ -456,6 +459,7 @@ public class PrisonUtilsMineBombs
 			sender.sendMessage( messages.toArray( new String[0] ) );
 		}
 	}
+
 
 	
 	@Command(identifier = "prison utils bomb give", 
@@ -1022,6 +1026,149 @@ public class PrisonUtilsMineBombs
 	}
 	
 	
+	public boolean validateMineBombsSpigotVersion() {
+		boolean results = true;
+		
+		MineBombs mBombs = MineBombs.getInstance();
+		
+		Map<String, MineBombData> bombs = mBombs.getConfigData().getBombs();
+		
+		Set<String> keys = bombs.keySet();
+		for ( String key : keys ) {
+			MineBombData mbData = bombs.get( key );
+			
+			List<MineBombEffectsData> deleteSounds = new ArrayList<>();
+			for ( MineBombEffectsData sEffect : mbData.getSoundEffects() ) {
+				
+				if ( !utilsMineBombsValidate( "sounds", sEffect.getEffectName() ) ) {
+					results = false;
+					deleteSounds.add( sEffect );
+					
+					Output.get().logInfo( "MineBomb Validation Error: Invalid sound removed: %s : [%s]", 
+							mbData.getName(), sEffect.toString() );
+				}
+			}
+			if ( deleteSounds.size() > 0 ) {
+				mbData.getSoundEffects().removeAll( deleteSounds );
+			}
+
+			List<MineBombEffectsData> deleteVisuals = new ArrayList<>();
+			for ( MineBombEffectsData sEffect : mbData.getVisualEffects() ) {
+				
+				if ( !utilsMineBombsValidate( "visuals", sEffect.getEffectName() ) ) {
+					results = false;
+					deleteVisuals.add( sEffect );
+					
+					Output.get().logInfo( "MineBomb Validation Error: Invalid visual removed: %s : [%s]", 
+							mbData.getName(), sEffect.toStringShort() );
+				}
+			}
+			if ( deleteVisuals.size() > 0 ) {
+				mbData.getVisualEffects().removeAll( deleteSounds );
+			}
+			
+			if ( !utilsMineBombsValidate( "shapes", mbData.getExplosionShape() ) ) {
+				results = false;
+				
+				Output.get().logInfo( "MineBomb Validation Error: Invalid shape changed to 'sphere': %s : [%s]", 
+						mbData.getName(), mbData.getExplosionShape() );
+
+				mbData.setExplosionShape( ExplosionShape.sphere.name() );
+				
+			}
+			
+
+		}
+		
+		if ( !results ) {
+			// There was an invalid setting.  Save the changed configs:
+			Output.get().logInfo( "MineBomb Validation: Saving mine bombs due to changes in the configs." ); 
+
+			mBombs.saveConfigJson();
+		}
+		
+		return results;
+	}
+	
+
+	public boolean utilsMineBombsValidate( String mbObjectType,
+			String name
+			) {
+		
+		boolean results = false;
+		
+		if ( mbObjectType == null ) {
+			Output.get().logInfo( "Prison util MineBomb: utilsMineBombsValidate: Error: objectType is null" );
+		}
+		else if ( name == null ) {
+			Output.get().logInfo( "Prison util MineBomb: utilsMineBombsValidate: Error: name is null" );
+		}
+		
+		else if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else {
+			
+			
+			if ( mbObjectType.equalsIgnoreCase( "shapes" ) ) {
+				
+				List<String> shapes = ExplosionShape.asList();
+				for (String shape : shapes) {
+					if ( shape.equalsIgnoreCase( name ) ) {
+						results = true;
+						break;
+					}
+				}
+
+			}
+			
+			else if ( mbObjectType.equalsIgnoreCase( "sounds" ) ) {
+
+				
+				for ( XSound p : XSound.values() ) {
+					if ( p.name().equalsIgnoreCase( name ) ) {
+						results = true;
+						break;
+					}
+				}
+
+			}
+			
+			else if ( mbObjectType.equalsIgnoreCase( "visuals" ) ) {
+				
+				// bukkit 1.8.8:
+//				Effect.values()
+				
+				// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
+				boolean is1_8 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+
+				if ( is1_8 ) {
+					for ( Effect p : Effect.values() ) {
+						if ( p.name().equalsIgnoreCase( name ) ) {
+							results = true;
+							break;
+						}
+					}
+					
+				}
+				else {
+					
+					for ( Particle p : Particle.values() ) {
+						if ( p.name().equalsIgnoreCase( name ) ) {
+							results = true;
+							break;
+						}
+					}
+				}
+			}
+			
+		}
+		
+		return results;
+	}
+
+
 	
 //	public void placeMineBombItem( MineBombData bomb, SpigotBlock sBlock, SpigotItemStack item ) {
 //	
