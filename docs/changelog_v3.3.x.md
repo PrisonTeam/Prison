@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15e 2023-09-19
+# 3.3.0-alpha.15e 2023-09-21
+
+
+* **Update the Double vs BigDecimal example.  Increased from 25 to 35 iterations, and expanded all columns to adjust for the wider output.**
 
 
 * **Block Converters: event triggers:  More work. Got it working to the point that it's ready for production.**
