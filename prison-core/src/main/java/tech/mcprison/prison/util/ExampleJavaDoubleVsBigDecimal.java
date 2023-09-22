@@ -13,11 +13,13 @@ public class ExampleJavaDoubleVsBigDecimal {
 		ArrayList<String> out = app.runSample();
 		
 		String header = String.format( 
-				"%s %45s  %55s  %35s    %s",
+				"%s %45s  %3s  %55s %3s  %35s %s",
 				"Int Digits   ", 
 				" double  ",
+				"Row",
 				" BigDecimal  ",
-				"Delta  ",
+				"Row",
+				"Delta - loss of double precision ",
 				"Row" );
 		
 		System.out.println( header );
@@ -34,7 +36,7 @@ public class ExampleJavaDoubleVsBigDecimal {
 		StringBuilder sb = new StringBuilder();
 		sb.append( ".111111" );
 		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.00000" );
+		DecimalFormat dFmt = new DecimalFormat( "#,##0.000000" );
 //		DecimalFormat iFmt = new DecimalFormat( "#,##0.00000" );
 		
 		for ( int i = 1; i < 35; i++ ) {
@@ -46,10 +48,12 @@ public class ExampleJavaDoubleVsBigDecimal {
 			BigDecimal delta = bigD.subtract( BigDecimal.valueOf(dub) );
 			
 			String rpt = String.format( 
-					"%3d  %55s  %55s  %35s  %3d",
+					"%3d %55s  %3d %55s  %3d %35s  %3d",
 					i, 
 					dFmt.format( dub ), 
+					i, 
 					dFmt.format( bigD ), 
+					i, 
 					dFmt.format( delta ),
 					i					);
 			
