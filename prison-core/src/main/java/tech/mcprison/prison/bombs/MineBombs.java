@@ -129,6 +129,9 @@ public class MineBombs
 		
 		File configFile = getConfigFile( fio );
 		
+		// Ensure it's set to the correct data version so it won't falsely resave on reload:
+		getConfigData().setDataFormatVersion( MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION );
+		
 		fio.saveJsonFile( configFile, getConfigData() );
 		
 	}

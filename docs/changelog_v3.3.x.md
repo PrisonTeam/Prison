@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15e 2023-09-21
 
 
+* **MineBombs: Add support for customModelData for the item used for the bomb.**
+This will only work on spigot version 1.14.x and higher.
+
+
 * **Prison compatibility: Added support for block metadata customModelData.**
 This is only compatible with spigot 1.14.x and higher.
 

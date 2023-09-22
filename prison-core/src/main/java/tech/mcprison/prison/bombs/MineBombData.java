@@ -179,6 +179,10 @@ public class MineBombData {
 	private boolean autosell = false;
 	
 	
+	
+	private int customModelData = 0;
+	
+	
 	/**
 	 * <p>This is a list of mine names where a mine bomb is allowed to be used.
 	 * This setting overrides any global setting to disallow a specific mine, which
@@ -267,6 +271,9 @@ public class MineBombData {
 		this.glowing = false;
 		this.gravity = true;
 		
+		this.autosell = false;
+		this.customModelData = 0;
+		
 	}
 	
 	
@@ -303,6 +310,8 @@ public class MineBombData {
 		
 		cloned.setAutosell( isAutosell() );
 		cloned.setActivated( isActivated() );
+		
+		cloned.setCustomModelData( getCustomModelData() );
 		
 		
 		for ( String l : getLore() ) {
@@ -502,6 +511,13 @@ public class MineBombData {
 	}
 	public void setAutosell( boolean autosell ) {
 		this.autosell = autosell;
+	}
+
+	public int getCustomModelData() {
+		return customModelData;
+	}
+	public void setCustomModelData(int customModelData) {
+		this.customModelData = customModelData;
 	}
 
 	public List<String> getAllowedMines() {

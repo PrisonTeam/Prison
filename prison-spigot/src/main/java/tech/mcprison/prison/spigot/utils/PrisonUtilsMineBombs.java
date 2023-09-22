@@ -698,6 +698,7 @@ public class PrisonUtilsMineBombs
 				
 				bombs.setLore( lore );
 
+				// SpigotCompatibility.getInstance().setCustomModelData( bombs, bombData.getCustomModelData() );
 				
 				sItemStack = bombs.getBukkitStack();
 			}
@@ -709,6 +710,11 @@ public class PrisonUtilsMineBombs
 //				nbtItem = new NBTItem( sItemStack, true );
 //				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
 
+				
+				// Set the customModelData on the bomb to allow for custom skins:
+				SpigotCompatibility.getInstance().setCustomModelData( sItemStack, bombData.getCustomModelData() );
+
+				
 				if ( Output.get().isDebug() ) {
 					Output.get().logInfo( "getItemStackBombs ntb: %s", PrisonNBTUtil.nbtDebugString(sItemStack) );
 				}
