@@ -287,7 +287,7 @@ public class AutoManagerBlockBreakEvents
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "&9### ** handleBlockBreakEvent ** ### " +
+		debugInfo.append( String.format( "### ** handleBlockBreakEvent ** ### " +
 				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
@@ -506,7 +506,7 @@ public class AutoManagerBlockBreakEvents
     	if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) ) {
 
     		pmEvent.getDebugInfo().append( Output.get().getColorCodeWarning());
-    		pmEvent.performSellAllOnPlayerInventoryLogged( "BlockBreakEvent sellall");
+    		pmEvent.performSellAllOnPlayerInventoryLogged( "FORCED BlockBreakEvent sellall");
     		pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
     	}
     	
