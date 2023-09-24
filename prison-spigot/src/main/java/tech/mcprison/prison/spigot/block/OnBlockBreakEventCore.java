@@ -372,7 +372,7 @@ public abstract class OnBlockBreakEventCore
 		
 		StringBuilder debugInfo = pmEvent.getDebugInfo();
 
-		debugInfo.append( "{br}  validateEvent:: " );
+		debugInfo.append( "{br}||  validateEvent:: " );
 		
 		SpigotBlock sBlockHit = pmEvent.getSpigotBlock();
 
@@ -777,7 +777,7 @@ public abstract class OnBlockBreakEventCore
 		}
 		
 		
-		debugInfo.append( "{br}  blocks(" )
+		debugInfo.append( " blocks(" )
 			.append( pmEvent.getBlock() == null ? "0" : "1" )
 			.append( "+" )
 			.append( pmEvent.getExplodedBlocks().size() )
@@ -1030,7 +1030,7 @@ public abstract class OnBlockBreakEventCore
 		}
 
 		
-		debugInfo.append( "{br}  " );
+//		debugInfo.append( "{br}||  " );
 		
 		return results;
 	}

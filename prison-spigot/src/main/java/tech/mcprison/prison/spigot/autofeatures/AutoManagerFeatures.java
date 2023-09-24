@@ -160,7 +160,7 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent != null && pmEvent.getDebugInfo().length() > 0 ) {
 			
 			long stop = System.nanoTime();
-			pmEvent.getDebugInfo().append( "{br}### ** End Event Debug Info ** ### [" )
+			pmEvent.getDebugInfo().append( "{br}|| ### ** End Event Debug Info ** ### [" )
 					.append( (stop - start) / 1000000d )
 					.append( " ms]" );
 			
@@ -548,7 +548,7 @@ public abstract class AutoManagerFeatures
 		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
-			pmEvent.getDebugInfo().append( "{br}  (applyAutoEvents: " )
+			pmEvent.getDebugInfo().append( "{br}||  (applyAutoEvents: " )
 				.append( pmEvent.getSpigotBlock().getBlockName() );
 			
 			if ( !isAutoFeaturesEnabled ) {
@@ -612,7 +612,7 @@ public abstract class AutoManagerFeatures
 				
 				if ( configNormalDrop ) {
 					pmEvent.getDebugInfo()
-						.append( "{br}  (NormalDrop handling enabled: " )
+						.append( "{br}||  (NormalDrop handling enabled: " )
 						.append( "normalDropSmelt[" )
 						.append( configNormalDropSmelt ? "enabled" : "disabled" )
 						.append( "] " )
@@ -813,7 +813,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			debugInfo.append( "{br}  [autoPickupDrops:beforeFortune:: " ).append( sb ).append( "] ");
+			debugInfo.append( " [autoPickupDrops:beforeFortune:: " ).append( sb ).append( "] ");
 			
 			
 			
@@ -845,7 +845,7 @@ public abstract class AutoManagerFeatures
 						.append( ":" )
 						.append( itemStack.getAmount() );
 				}
-				debugInfo.append( "{br}  [totalDrops:afterFortune:: " ).append( sb ).append( "] ");
+				debugInfo.append( " [totalDrops:afterFortune:: " ).append( sb ).append( "] ");
 			}
 			
 			
@@ -1002,7 +1002,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 
-						debugInfo.append( "{br}  (WARNING: autosell leftovers: " + itemStack.getName() + 
+						debugInfo.append( "{br}||  (WARNING: autosell leftovers: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + 
 								" - " + 
 								( amount == 0 ? " Items NOT in sellall shop!" : " CouldNotSell?") +
@@ -1016,7 +1016,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 						
-						debugInfo.append( "{br}  (Debug-unsold-value-check: " + itemStack.getName() + 
+						debugInfo.append( " (Debug-unsold-value-check: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + ") ");
 					}
 					
@@ -1052,7 +1052,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "{br}  [autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
+				debugInfo.append( "{br}||  [autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
 						"  unsellableCount: " + autosellUnsellableCount );
 				
 				if ( nanoTime > 0 ) {
@@ -1135,7 +1135,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			pmEvent.getDebugInfo().append( "{br}  [normalDrops:: " ).append( sb ).append( "] ");
+			pmEvent.getDebugInfo().append( "{br}||  [normalDrops:: " ).append( sb ).append( "] ");
 			
 
 			// Need better drop calculation that is not using the getDrops function.
@@ -1186,7 +1186,7 @@ public abstract class AutoManagerFeatures
 //			}
 			
 			
-			pmEvent.getDebugInfo().append( "{br}  " );
+//			pmEvent.getDebugInfo().append( "{br}||  " );
 			
 			double autosellTotal = 0;
 			
@@ -1239,7 +1239,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				pmEvent.getDebugInfo().append( "{br}  [normalDrops total: qty: " + count + " value: " + autosellTotal + "] ");
+				pmEvent.getDebugInfo().append( "{br}||  [normalDrops total: qty: " + count + " value: " + autosellTotal + "] ");
 				
 			}
 			

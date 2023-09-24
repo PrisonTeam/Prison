@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15f 2023-09-22
 
 
+* **Auto features: change a few of the new line breaks so there are fewer.**
+
+
 * **Changed the default color code from `&9` (dark blue) to `&b` (light blue) for debug logging since the dark blue could be difficult to see on some consoles. 
 
 

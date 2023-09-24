@@ -115,7 +115,7 @@ public class OnBlockBreakMines
 						getSpigotBlock().getLocation().toWorldCoordinates();
 			
 			return String.format( 
-					"{br}  EventInfo: %s %s Mine: %s %s %s ", 
+					"{br}||  EventInfo: %s %s Mine: %s %s %s ", 
 					getResultsReason().name(),
 //					getBbPriority().name(),
 					getSpigotPlayer().getName(),
