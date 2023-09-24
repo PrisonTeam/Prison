@@ -23,6 +23,42 @@
 debug: false
 
 
+
+# Prison support: 
+#   Prison has a lot of built in tools to help us provide you with a higher degree of
+#   support, and to help make it easier for you.
+#   One of these features, is the ability to submit details about your server's
+#   Prison setup so we can review many of the features and settings without having
+#   to ask tons of questions. It also helps to improve the quality of our help by
+#   eliminating miscommunication and trying to provide answers off of incorrect 
+#   settings. 
+#   Prison is able to gather various informmation and send it in one or more documents
+#   and then provide you with one URL to copy and paste to share with us.
+#   
+#   submit-service:
+#     PRIVATEBIN-NET - New default option - This uses an encrypted payload and no one
+#                      can read the posts without the password. All posts are eligable
+#                      to be purged in 1 week.
+#           URL:       privatebin.net - hosted in sweeden
+#           Options: 
+#				expire: [one_week, one_day, one_hour]
+#               password: PrisonSupport - default - Do not change this unless you tell
+#                      support team what it is. Odds of someone reading your post is 
+#                      limited to only those who may be on our support discord server.
+#     PASTE-HELPCHAT - This was the default serivce.  We no longer recommend using this
+#                      service because: the posts do not expire and are not deletable,
+#                      anyone with the URL can view the contents (improbable the can 
+#                      find it due to random URL), and limited to 400k.
+#           URL:       paste.helpch.at - Ran by the folks who publish placeholderAPI.
+#           Options:   none\
+#
+prison-support:
+  submit-service: PRIVATEBIN-NET
+  expire: 1week
+  password: PrisonSupport
+
+
+
 # Upon server startup prison will check to see if a newer version has been released.
 check-updates: true
 

@@ -102,7 +102,14 @@ local.properties
 *.war
 *.ear
 
+
+# Prison libs: .jar files are usally ignored, so must add these libraries:
 !/prison-spigot/lib/**/*.jar
+!/prison-core/lib/**/*.jar
+
+# but exclude this directory:
+prison-spigot/lib/old/
+
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

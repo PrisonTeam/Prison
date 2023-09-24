@@ -1426,7 +1426,11 @@ public class PrisonCommand
     	}
     	
     	
-    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();
+    	StringBuilder text = new StringBuilder();
+    	
+    	text.append( "NOTE: Listeners and Configs information is provided below.\n\n" );
+    			
+    	text.append( Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData() );
     	
     	int idx = text.indexOf("{br}");
     	while ( idx != -1 ) {
@@ -1464,6 +1468,9 @@ public class PrisonCommand
 //		}
 
     	
+
+    	text.append( Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData() );
+    	
     	
     	
     	if ( getSupportFile() != null ) {
@@ -1498,55 +1505,55 @@ public class PrisonCommand
 
 
     
-    @Command(identifier = "prison support submit configs", 
-    		description = "For Prison support: This will copy the contents of Prison's config " +
-    				"file to paste.helpch.at so it can be easily shared with Prison's " +
-    				"support staff.  This will include the following: config.yml plugin.yml " +
-    				"autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
-    				"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml", 
-    				onlyPlayers = false, permissions = "prison.debug" )
-    public void supportSubmitConfigs(CommandSender sender
-    		) {
-    	
-    	
-    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		sender.sendMessage( "The support name needs to be set prior to using this command." );
-    		sender.sendMessage( "Use &7/prison support setSupportName help" );
-    		
-    		return;
-    	}
-    	
-    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData();
-    	
-    	
-    	
-    	if ( getSupportFile() != null ) {
-    		
-    		getSupportFile().saveToSupportFile( text, getSupportName() );
-
-    		sender.sendMessage("  - Support 'configs' data was just added to the support output file." );
-    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
-    	}
-    	else {
-    		
-    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-    		
-    		String helpURL = pasteChat.postKeepColorCodes( text.toString() );
-    		
-    		getSupportURLs().put( "Submit configs:", helpURL );
-    		
-    		if ( helpURL != null ) {
-    			
-    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    					"paste this URL in to Prison's Discord server." );
-    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
-    		}
-    		else {
-    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
-    		}
-    		
-    	}
-    }
+//    @Command(identifier = "prison support submit configs", 
+//    		description = "For Prison support: This will copy the contents of Prison's config " +
+//    				"file to paste.helpch.at so it can be easily shared with Prison's " +
+//    				"support staff.  This will include the following: config.yml plugin.yml " +
+//    				"autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
+//    				"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml", 
+//    				onlyPlayers = false, permissions = "prison.debug" )
+//    public void supportSubmitConfigs(CommandSender sender
+//    		) {
+//    	
+//    	
+//    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+//    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+//    		sender.sendMessage( "Use &7/prison support setSupportName help" );
+//    		
+//    		return;
+//    	}
+//    	
+//    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData();
+//    	
+//    	
+//    	
+//    	if ( getSupportFile() != null ) {
+//    		
+//    		getSupportFile().saveToSupportFile( text, getSupportName() );
+//
+//    		sender.sendMessage("  - Support 'configs' data was just added to the support output file." );
+//    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
+//    	}
+//    	else {
+//    		
+//    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+//    		
+//    		String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+//    		
+//    		getSupportURLs().put( "Submit configs:", helpURL );
+//    		
+//    		if ( helpURL != null ) {
+//    			
+//    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+//    					"paste this URL in to Prison's Discord server." );
+//    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+//    		}
+//    		else {
+//    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+//    		}
+//    		
+//    	}
+//    }
 
 
     @Command(identifier = "prison support submit ranks", 
@@ -1912,43 +1919,43 @@ public class PrisonCommand
 	}
     
     
-    @Command(identifier = "prison support submit listeners", 
-    		description = "For Prison support: This will copy the server's active listeners " +
-    				"for blockBreak, chat, and playerInteracts to paste.helpch.at so it can be " +
-    				"easily shared with Prison's support staff.", 
-    				onlyPlayers = false, permissions = "prison.debug" )
-    public void supportSubmitListeners(CommandSender sender
-    		) {
-    	
-    	
-    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		sender.sendMessage( "The support name needs to be set prior to using this command." );
-    		sender.sendMessage( "Use &7/prison support setSupportName help" );
-    		
-    		return;
-    	}
-    	
- 
-    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" );
-    	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-    	
-    	String helpURL = pasteChat.post( text.toString() );
-    	
-    	getSupportURLs().put( "Submit Listeners:", helpURL );
-    	
-    	if ( helpURL != null ) {
-    		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
-    	}
-    	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
-    	}
-    	
-    	
-    }
+//    @Command(identifier = "prison support submit listeners", 
+//    		description = "For Prison support: This will copy the server's active listeners " +
+//    				"for blockBreak, chat, and playerInteracts to paste.helpch.at so it can be " +
+//    				"easily shared with Prison's support staff.", 
+//    				onlyPlayers = false, permissions = "prison.debug" )
+//    public void supportSubmitListeners(CommandSender sender
+//    		) {
+//    	
+//    	
+//    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+//    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+//    		sender.sendMessage( "Use &7/prison support setSupportName help" );
+//    		
+//    		return;
+//    	}
+//    	
+// 
+//    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" );
+//    	
+//    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+//    	
+//    	String helpURL = pasteChat.post( text.toString() );
+//    	
+//    	getSupportURLs().put( "Submit Listeners:", helpURL );
+//    	
+//    	if ( helpURL != null ) {
+//    		
+//    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+//    				"paste this URL in to Prison's Discord server." );
+//    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+//    	}
+//    	else {
+//    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+//    	}
+//    	
+//    	
+//    }
 
 
     

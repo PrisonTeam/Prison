@@ -23,7 +23,12 @@ These change logs represent the work that has been going on within prison.
 * **Changed the default color code from `&9` (dark blue) to `&b` (light blue) for debug logging since the dark blue could be difficult to see on some consoles. 
 
 
-**v3.3.0-alpha.15f 2023-09-22**
+**v3.3.0-alpha.15f 2023-09-23**
+
+
+* **Prison Support: Added a more secure method and server (privatebin) for submitting server information under prison support submit commands.**
+Can now control some of the settings that are used, including password, in the config.yml file.
+May need to refresh config.ymml to see now settings.
 
 
 * **MineBombs: validate all mine bombs upon server startup to validate the sound effects, visual effects, and shape based upon the version of spigot that they are running.**

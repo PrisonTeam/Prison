@@ -25,10 +25,21 @@ compileTestJava.options.encoding = "UTF-8"
 
 repositories {
     mavenCentral()
+    
+    //maven { url = "https://jitpack.io" }
 }
 
 dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+	//implementation 'com.github.InstantlyMoist:privatebin-java-api:1.0.2'
+
+	//implementation 'org.json:json:20230227'
+	
+	implementation fileTree(dir: 'lib', 
+    			include: ['privatebin-java-api-1.0.2.jar',
+    						'json-20230227.jar'])
+	
 }
 
 /*
@@ -46,7 +57,15 @@ shadowJar {
         // https://mvnrepository.com/artifact/com.google.code.gson/gson
 		include(dependency('com.google.code.gson:gson:2.10.1'))
         //include(dependency('com.google.code.gson:gson:2.8.6'))
+        
+        include(dependency('org.json:json:20230227'))
+        include(dependency('com.github.InstantlyMoist:privatebin-java-api:*'))
     }
+    
+    relocate 'org.json', 'tech.mcprison.prison.orgjson'
+    relocate 'com.github.InstantlyMoist', 'tech.mcprison.prison.privatebin8'
+    
+    
     classifier 'API'
     archiveVersion = null
 }
