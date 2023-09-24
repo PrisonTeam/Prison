@@ -23,7 +23,12 @@ These change logs represent the work that has been going on within prison.
 * **Changed the default color code from `&9` (dark blue) to `&b` (light blue) for debug logging since the dark blue could be difficult to see on some consoles. 
 
 
-**v3.3.0-alpha.15f 2023-09-23**
+**v3.3.0-alpha.15f 2023-09-24**
+
+
+* **TopNPlayer: Task could not startup if ranks are enabled but there are no default ranks.**
+Log a message in the console that the task cannot start because ranks are enabled and there are no ranks. 
+Request that Ranks module is disabled, or add default ranks and then restart the server.
 
 
 * **Prison Support: Added a more secure method and server (privatebin) for submitting server information under prison support submit commands.**

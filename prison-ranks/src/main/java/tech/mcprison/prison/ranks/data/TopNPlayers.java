@@ -12,6 +12,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.file.FileIOData;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.tasks.TopNPlayerUpdateAsyncTask;
 
@@ -132,7 +133,9 @@ public class TopNPlayers
 		
 		if ( PrisonRanks.getInstance() != null &&
 				PrisonRanks.getInstance().isEnabled() &&
-				PrisonRanks.getInstance().getPlayerManager() != null ) {
+				PrisonRanks.getInstance().getPlayerManager() != null &&
+						PrisonRanks.getInstance().getDefaultLadder().getRanks().size() > 0
+				) {
 			
 			Long delayTicks = Prison.get().getPlatform().getConfigLong( 
 					"topNPlayers.refresh.delay-ticks", DELAY_THIRTY_SECONDS_TICKS );
@@ -141,6 +144,15 @@ public class TopNPlayers
 			
 			
 			TopNPlayerUpdateAsyncTask.submitTaskTimerAsync( this, delayTicks, intervalTicks );
+		}
+		else if ( PrisonRanks.getInstance() != null &&
+				PrisonRanks.getInstance().isEnabled() &&
+						PrisonRanks.getInstance().getDefaultLadder().getRanks().size() == 0 ) {
+			
+			Output.get().logWarn( "TopNPlayer: Cannot start the TopNPlayer task. Ranks are "
+					+ "enabled, but there are no default ranks setup. "
+					+ "Either turn off the Ranks Module, or add ranks and "
+					+ "then restart the server to get the TopNPlayer task running.");
 		}
 		
 	}
