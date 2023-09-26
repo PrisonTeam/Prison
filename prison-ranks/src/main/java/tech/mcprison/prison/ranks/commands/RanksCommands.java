@@ -965,23 +965,35 @@ public class RanksCommands
         		new BulletedListComponent.BulletedListBuilder();
         
         DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
+        DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
         
         // Here's the deal... With color codes, Java's String.format() cannot detect the correct
         // length of a tag. So go through all tags, strip the colors, and see how long they are.
         // We need to know the max length so we can pad the others with periods to align all costs.
         int maxRankNameSize = 0;
         int maxRankTagNoColorSize = 0;
+        int maxRankCostSize = 0;
+        
         for (Rank rank : ladder.getRanks()) {
-        	if ( rank.getName().length() > maxRankNameSize ) {
-        		maxRankNameSize = rank.getName().length();
+        	String nameNoColor = Text.stripColor( rank.getName() );
+        	if ( nameNoColor.length() > maxRankNameSize ) {
+        		maxRankNameSize = nameNoColor.length();
         	}
         	String tag = rank.getTag() == null ? "" : rank.getTag();
         	String tagNoColor = Text.stripColor( tag );
         	if ( tagNoColor.length() > maxRankTagNoColorSize ) {
         		maxRankTagNoColorSize = tagNoColor.length();
         	}
+        	
+        	int costSize = iFmt.format( rank.getRawRankCost() ).length();
+        	if ( costSize > maxRankCostSize ) {
+        		maxRankCostSize = costSize;
+        	}
         }
+        maxRankCostSize++;
         
+        String nameStringFormat = "%-" + maxRankNameSize + "s  ";
+        String tagStringFormat = "%-" + maxRankTagNoColorSize + "s  ";
 
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         
@@ -991,12 +1003,24 @@ public class RanksCommands
         	boolean defaultRank = (LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladder.getName() ) && first);
         	
         	
+        	String nameNoColor = Text.stripColor( rank.getName() );
+        	String tag = rank.getTag() == null ? "" : rank.getTag();
+        	String tagNoColor = Text.stripColor( tag );
+//        	String rankCost = iFmt.format( rank.getRawRankCost() );
+        	
+        	String nameFormatted = String.format( nameStringFormat, nameNoColor );
+        	nameFormatted = nameFormatted.replace( nameNoColor, rank.getName() );
+        	
+        	String tagFormatted = String.format( tagStringFormat, tagNoColor );
+        	tagFormatted = tagFormatted.replace( tagNoColor, tag );
+        	
+        	
         	// Since the formatting gets confused with color formatting, we must 
         	// strip the color codes and then inject them back in.  So instead, this
         	// provides the formatting rules for both name and rank tag, thus 
         	// taking in to consideration the color codes and if the hasPerms is
         	// true. To prevent variable space issues, the difference is filled in with periods.
-        	String textRankNameString = padRankName( rank, maxRankNameSize, maxRankTagNoColorSize, hasPerm );
+//        	String textRankNameString = padRankName( rank, maxRankNameSize, maxRankTagNoColorSize, hasPerm );
         	
 //        	// trick it to deal correctly with tags.  Tags can have many colors, but
 //        	// it will render as if it had the colors stripped.  So first generate the
@@ -1051,26 +1075,43 @@ public class RanksCommands
         	String players = rank.getPlayers().size() == 0 ? "" : 
         		" &dPlayers: &3" + rank.getPlayers().size();
         	
-        	String rawRankId = ( hasPerm ?
-        			String.format( "(rankId: %s%s%s)",
-        					Integer.toString( rank.getId() ),
-        					(rank.getRankPrior() == null ? "" : " -"),
-        					(rank.getRankNext() == null ? "" : " +") )
-        			: "");
+//        	String rawRankId = ( hasPerm ?
+//        			String.format( "(rankId: %s%s%s)",
+//        					Integer.toString( rank.getId() ),
+//        					(rank.getRankPrior() == null ? "" : " -"),
+//        					(rank.getRankNext() == null ? "" : " +") )
+//        			: "");
+        	
+        	
+        	StringBuilder minesSb = new StringBuilder();
+        	for ( ModuleElement mine : rank.getMines() ) {
+				if ( minesSb.length() > 0 ) {
+					minesSb.append( "&6,&7" );
+				}
+				minesSb.append( mine.getTag() );
+			}
+        	if ( minesSb.length() > 0 ) {
+        		minesSb.insert( 0, "  &6Mines: &7" );
+//        		minesSb.append( "8" );
+        	}
         	
         	String text =
-        			String.format("&3%s &7%-17s%s&7 &b%s &3%s %s&7 %s%s", 
-        					textRankNameString, 
-        					Text.numberToDollars( rankCost ),
+        			String.format("&3%s %s &7%" + maxRankCostSize + "s &a%s  &b%s  %s&7 %s%s%s", 
+        					nameFormatted,
+        					tagFormatted,
+        					
+        					iFmt.format( rankCost ),
+//        					Text.numberToDollars( rankCost ),
         					(defaultRank ? "{def}" : ""),
         					
         					rankMultiplier,
         					
-        					rawRankId,
+//        					rawRankId,
         					
         					textCurrency,
         					textCmdCount,
-        					players
+        					players,
+        					minesSb.toString()
         					);
         	
 //        	// Swap the color tag back in:

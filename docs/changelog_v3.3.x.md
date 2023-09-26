@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15f 2023-09-22
+# 3.3.0-alpha.15f 2023-09-25
+
+
+* **Cleanup the '/ranks list' to add mines and better format the name, tag, and cost.**
+Also removed rankId which is not important anymore.
 
 
 * **Auto features: change a few of the new line breaks so there are fewer.**
