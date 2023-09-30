@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15f 2023-09-25
+# 3.3.0-alpha.15f 2023-09-30
+
+
+* **Autosell: Setup the SpigotPlayer object to support functions to identify if the player has autosell enabled.  This is used in a couple of places to eliminate redundancy.**
+Fixes a problem with the block break event not also checking to see if the player has toggled their autosell status for the forced sell after the event is processed, and also the delayed sell.
 
 
 * **Cleanup the '/ranks list' to add mines and better format the name, tag, and cost.**

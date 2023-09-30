@@ -891,23 +891,25 @@ public abstract class AutoManagerFeatures
 					SpigotPrison.getInstance().isSellAllEnabled();
 			
 			
-			boolean isPlayerAutoSellTurnedOff = SellAllUtil.get().isAutoSellPerUserToggleable &&
-					  !SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
-								pmEvent.getSpigotPlayer().getWrapper() );
+//			boolean isPlayerAutoSellTurnedOff = SellAllUtil.get().isAutoSellPerUserToggleable &&
+//					  !SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+//								pmEvent.getSpigotPlayer().getWrapper() );
+//			
+//			if ( isPlayerAutoSellTurnedOff ) {
+//				debugInfo.append( Output.get().getColorCodeWarning() );
+//				debugInfo.append( "(Player toggled off autosell) " );
+//				debugInfo.append( Output.get().getColorCodeDebug() );
+//			}
+//			
+//			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+//			// This is to be used with other auto sell setting, but never on it's own:
+//			boolean isPlayerAutosellEnabled = 
+//							isSellallEnabled &&
+//							(!SellAllUtil.get().isAutoSellPerUserToggleable ||
+//							  SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+//												pmEvent.getSpigotPlayer().getWrapper() ));
 			
-			if ( isPlayerAutoSellTurnedOff ) {
-				debugInfo.append( Output.get().getColorCodeWarning() );
-				debugInfo.append( "(Player toggled off autosell) " );
-				debugInfo.append( Output.get().getColorCodeDebug() );
-			}
-			
-			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
-			// This is to be used with other auto sell setting, but never on it's own:
-			boolean isPlayerAutosellEnabled = 
-							isSellallEnabled &&
-							(!SellAllUtil.get().isAutoSellPerUserToggleable ||
-							  SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
-												pmEvent.getSpigotPlayer().getWrapper() ));
+			boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
 			
 			
 			// In the event, forceAutoSell is enabled, which means the drops must be sold.
@@ -921,13 +923,16 @@ public abstract class AutoManagerFeatures
 							isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
 			
 			// AutoFeature's autosell per block break - per player perms setting
-			boolean autoSellByPerm = 
-							isPlayerAutosellEnabled &&
-							!player.isOp() && 
-							isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
-							!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
-							!"false".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
-							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
+//			boolean autoSellByPerm = 
+//							isPlayerAutosellEnabled &&
+//							!player.isOp() && 
+//							isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
+//							!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+//							!"false".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+//							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
+			
+			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+			
 			
 			// Try to autosell if enabled in any of the following ways:
 			boolean autoSell = ( forceAutoSell || autoSellBySettings || autoSellByPerm );

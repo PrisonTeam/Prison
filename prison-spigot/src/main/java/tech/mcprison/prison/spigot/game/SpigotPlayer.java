@@ -46,13 +46,16 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
@@ -844,5 +847,98 @@ public class SpigotPlayer
 		return results;
 	}
 
+	/**
+	 * <p>This function will identify if the player is able to have 
+	 * autosell enabled for them.  This will take in to consideration 
+	 * global settings, and also if they have toggled off their 
+	 * autosell capabilities ('/sellall autoSellToggle`).
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isAutoSellEnabled() {
+		return isAutoSellEnabled( null );
+	}
+	public boolean isAutoSellEnabled( StringBuilder debugInfo ) {
+		
+		boolean isSellallEnabled = SellAllUtil.get() != null && 
+				SpigotPrison.getInstance().isSellAllEnabled();
+		
+		boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
+		
+		boolean isPlayerAutoSellTurnedOff = isAutoSellPerUserToggleable &&
+				  !SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+							getWrapper() );
+		
+		if ( debugInfo != null && isPlayerAutoSellTurnedOff ) {
+			debugInfo.append( Output.get().getColorCodeWarning() );
+			debugInfo.append( "(Player toggled off autosell) " );
+			debugInfo.append( Output.get().getColorCodeDebug() );
+		}
+		
+		// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+		// This is to be used with other auto sell setting, but never on it's own:
+		boolean isPlayerAutosellEnabled = 
+						isSellallEnabled &&
+						( !isAutoSellPerUserToggleable ||
+								isPlayerAutoSellTurnedOff );
+		
+		return isPlayerAutosellEnabled;
+	}
+	
+	
+	/**
+	 * <p>This will check to see if the player has the perms enabled
+	 * for autosell.  
+	 * </p>
+	 * 
+	 * <p>If the function 'isAutoSellEnabled()' has already
+	 * been called, you can also pass that in as a parameter so it does
+	 * not have to be recalculated.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isAutoSellByPermEnabled() {
+		return isAutoSellByPermEnabled( isAutoSellEnabled() );
+	}
+
+	/**
+	 * <p>This will check to see if the player has the perms enabled
+	 * for autosell.  
+	 * </p>
+	 * 
+	 * <p>If the function 'isAutoSellEnabled()' has already
+	 * been called, you can also pass that in as a parameter so it does
+	 * not have to be recalculated.
+	 * </p>
+	 * 
+	 * @param isPlayerAutosellEnabled
+	 * @return
+	 */
+	public boolean isAutoSellByPermEnabled( boolean isPlayerAutosellEnabled ) {
+		
+		boolean autoSellByPerm = false;
+		
+		AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
+		
+		boolean isSellallEnabled = SellAllUtil.get() != null && 
+				SpigotPrison.getInstance().isSellAllEnabled();
+		
+		if ( isSellallEnabled && isPlayerAutosellEnabled && !isOp() ) {
+			
+			String perm = afw.getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled );
+			
+			autoSellByPerm = 
+					
+					afw.isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
+					!"disable".equalsIgnoreCase( perm ) &&
+					!"false".equalsIgnoreCase( perm ) &&
+					hasPermission( perm );
+		}
+		
+
+		return autoSellByPerm;
+	}
 
 }

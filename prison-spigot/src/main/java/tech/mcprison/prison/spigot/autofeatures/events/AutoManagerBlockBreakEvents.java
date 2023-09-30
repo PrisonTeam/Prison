@@ -502,15 +502,37 @@ public class AutoManagerBlockBreakEvents
 //    		}
     		
     	}
+    	
+    	
+		boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
+		
+		
+//		// In the event, forceAutoSell is enabled, which means the drops must be sold.
+//		// The player's toggle cannot disable this.
+//		boolean forceAutoSell = isSellallEnabled && pmEvent.isForceAutoSell();
+//		
+		
+//		// AutoFeature's autosell per block break - global setting
+//		boolean autoSellBySettings = 
+//						isPlayerAutosellEnabled &&
+//						isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
+		
+		
+		boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+		
+		
+    	
 
-    	if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) ) {
+    	if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
+    			( isPlayerAutosellEnabled || isPlayerAutoSellByPerm )) {
 
     		pmEvent.getDebugInfo().append( Output.get().getColorCodeWarning());
     		pmEvent.performSellAllOnPlayerInventoryLogged( "FORCED BlockBreakEvent sellall");
     		pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
     	}
     	
-    	if ( isBoolean( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires ) ) {
+    	if ( isBoolean( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
+    			( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) ) {
     		
     		if ( !getDelayedSellallPlayers().contains( pmEvent.getSpigotPlayer() ) ) {
     			
