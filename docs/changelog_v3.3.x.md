@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15f 2023-09-30
+# 3.3.0-alpha.15f 2023-10-01
+
+
+* **Placeholders:  Added the ability to specify a player name in all placeholder attributes.**
+This can allow the use of placeholders that are player centric in plugins that cannot support player based placeholder requests.
 
 
 * **Autosell: Setup the SpigotPlayer object to support functions to identify if the player has autosell enabled.  This is used in a couple of places to eliminate redundancy.**

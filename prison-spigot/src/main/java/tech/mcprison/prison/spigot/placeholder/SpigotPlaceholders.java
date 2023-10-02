@@ -203,7 +203,7 @@ public class SpigotPlaceholders
     
     /**
      * <p>Provides placeholder translation for any placeholder identifier
-     * that is provided.  This not the full text with one or more placeholders,
+     * that is provided.  This not for full text with one or more placeholders,
      * but it is strictly just the placeholder.
      * </p>
      * 

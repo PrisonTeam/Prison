@@ -52,6 +52,8 @@ public class PlaceholderAttributeText
 	private boolean hex2 = false;
 	private boolean debug = false;
 	
+	private String player = null;
+	
 	public PlaceholderAttributeText( ArrayList<String> parts, String raw ) {
 		super();
 		
@@ -64,6 +66,22 @@ public class PlaceholderAttributeText
 		this.hex = parts.remove( "hex" );
 		this.hex2 = parts.remove( "hex2" );
 		this.debug = parts.remove( "debug" );
+		
+
+		// Search for 'player=':
+		for (String part : parts) {
+			if ( part.toLowerCase().startsWith( "player=" ) ) {
+				this.player = part;
+				break;
+			}
+		}
+		// extract the player's name:
+		if ( this.player != null ) {
+			if ( parts.remove( this.player ) ) {
+				this.player = this.player.toLowerCase().replaceAll("player=", "");
+			}
+		}
+		
 		
 	}
 	
@@ -132,5 +150,11 @@ public class PlaceholderAttributeText
 		this.debug = debug;
 	}
 
+	public String getPlayer() {
+		return player;
+	}
+	public void setPlayer(String player) {
+		this.player = player;
+	}
 
 }

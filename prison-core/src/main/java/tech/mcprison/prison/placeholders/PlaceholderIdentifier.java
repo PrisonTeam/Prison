@@ -167,6 +167,14 @@ public class PlaceholderIdentifier {
 		return results;
 	}
 	
+	/**
+	 * <p>Set the player's object, based upon the player's name, or based upon the 
+	 * placeholder attribute if a player attribute is provided.
+	 * </p>
+	 * 
+	 * @param playerUuid
+	 * @param playerName
+	 */
 	public void setPlayer( UUID playerUuid, String playerName ) {
 		Player player = null;
 		
@@ -194,6 +202,28 @@ public class PlaceholderIdentifier {
 		if ( player != null ) {
 			setPlayer(player);
 		}
+		else {
+			// Check placeholder attributes for a defined player's namme:
+			String pName = getPlayerNameFromPlaceholderAttributes();
+			
+			if ( pName != null ) {
+				
+				setPlayer( null, pName );
+			}
+		}
+	}
+	
+	public String getPlayerNameFromPlaceholderAttributes() {
+		String player = null;
+		
+		for (PlaceholderAttribute phAttr : getAttributes() ) {
+			if ( phAttr.getPlayer() != null ) {
+				player = phAttr.getPlayer();
+				break;
+			}
+		}
+		
+		return player;
 	}
 	
 	public PlaceholderAttributeBar getAttributeBar() {
