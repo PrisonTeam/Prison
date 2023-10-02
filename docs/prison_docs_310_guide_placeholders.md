@@ -252,7 +252,7 @@ Placeholders within prison can now be dynamically customized without having to m
 The **Placeholder Attributes** is additional text that is added at the end of a placeholder but within the escape characters.  The placeholder attribute always begins with a double colon `::` and each parameter is separated with a single colon `:`.  Some placeholders cannot use the attributes, and not all attributes can be used on a placeholder.  See additional information below that pertains to each attribute.
 
 
-**Player based placeholders** require player based requests that includes the player. Plugins that provide player based context would be like chat prefixes, scoreboards, and other placeholder consumers that need to use the player based placeholders.  Some examples of placeholder consumers that will not have player based contexts, are with scoreboards and some script environments; these requests for player based placeholders would normally fail under regular conditions.  To use player based placeholders with plugins that cannot support the player, you can solve this issue with the use of placeholder attributes with the **player=<playerName>** attribute. See notes below on all placeholder attribute types.
+**Player based placeholders** require player based requests that includes the player. Plugins that provide player based context would be like chat prefixes, scoreboards, and other placeholder consumers that need to use the player based placeholders.  Some examples of placeholder consumers that will not have player based contexts, are with scoreboards and some script environments; these requests for player based placeholders would normally fail under regular conditions.  To use player based placeholders with plugins that cannot support the player, you can solve this issue with the use of placeholder attributes with the **player=&lt;playerName&gt;** attribute. See notes below on all placeholder attribute types.
 
 
 As of v3.3.0-alpha.11h one placeholder can have more than one Placeholder Attribute, but they have to be of a different type.  At this time, this really is not beneficial since the Placeholder Attributes are specific to a certain type of data.  But this opens the door to future possibilities that are not possible currently, such as hybrid between a bar graph with a value super-imposed on top of it.
@@ -369,7 +369,7 @@ Example of this attribute's usage is as follows, using descriptions for each par
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
   
-- **player=<playerName>**: **Optional.** Case insensitive. Non-positional; can be 
+- **player=&lt;playerName&gt;**: **Optional.** Case insensitive. Non-positional; can be 
 				placed anywhere.  If provided, it will try to use the specified 
 				player as the primary player for the placeholder.  If the current 
 				user is provided, then this parameter may be ignored.
@@ -441,7 +441,7 @@ Example of this attribute's usage is as follows, using descriptions for each par
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.					
    
-- **player=<playerName>**: **Optional.** Case insensitive. Non-positional; can be 
+- **player=&lt;playerName&gt;**: **Optional.** Case insensitive. Non-positional; can be 
 				placed anywhere.  If provided, it will try to use the specified 
 				player as the primary player for the placeholder.  If the current 
 				user is provided, then this parameter may be ignored.
@@ -509,7 +509,7 @@ Example of this attribute's usage is as follows, using descriptions for each par
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
   
-- **player=<playerName>**: **Optional.** Case insensitive. Non-positional; can be 
+- **player=&lt;playerName&gt;**: **Optional.** Case insensitive. Non-positional; can be 
 				placed anywhere.  If provided, it will try to use the specified 
 				player as the primary player for the placeholder.  If the current 
 				user is provided, then this parameter may be ignored.
