@@ -2132,6 +2132,9 @@ public class SpigotPlatform
 				
 				results.add( " " );
 			}
+	        else {
+	        	results.add( "&7Ranks: &9Not Enabled." );
+	        }
 		}
 		
 		
@@ -2165,6 +2168,9 @@ public class SpigotPlatform
         	
         	results.add( mineDetails );
         }
+        else {
+        	results.add( "&7Mines: &9Not Enabled." );
+        }
         
         
     	
@@ -2179,7 +2185,13 @@ public class SpigotPlatform
     	
     	
     	boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );
-    	results.add( String.format("AutoManager Enabled:&b %s", isAutoManagerEnabled) );
+    	
+    	String autoMangerHeader = "&7AutoManager: " + 
+    				( isAutoManagerEnabled ? 
+    						"&9Enabled" :
+    						"&9Not Enabled" );
+    	
+    	results.add( autoMangerHeader );
     	
     	if ( isAutoManagerEnabled ) {
     		
@@ -2200,78 +2212,98 @@ public class SpigotPlatform
     				Boolean.toString( bbeCabebd ) ) );
     		
     		
-        	
-        	
-    		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
-    		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
-    		results.add( String.format(".   '&7org.bukkit.BlockBreakEvent&3' Priority:&b %s", 
-    				blockBreakPriority.name() ) );
     		
-    		String pebbePriority = afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-    		boolean isPebbeEnabled = pebbePriority != null && !"DISABLED".equalsIgnoreCase( pebbePriority );
-    		BlockBreakPriority pebbeEventPriority = BlockBreakPriority.fromString( pebbePriority );
-    		results.add( String.format("%s.   Prison's own '&7ExplosiveBlockBreakEvent&3' Priority:&b %s %s", 
-    				(isPebbeEnabled ? "" : "+" ), 
-    				pebbeEventPriority.name(),
-    				(isPebbeEnabled ? "&2Enabled" : "&cDisabled")
-    				) );
+    		results.add( formatAFEvent( "'&7org.bukkit.BlockBreakEvent&3'", AutoFeatures.blockBreakEventPriority ) );
+    		results.add( formatAFEvent( "Prison's own '&7ExplosiveBlockBreakEvent&3'", AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
+    		results.add( formatAFEvent( "Pulsi_'s PrisonEnchants '&7PEExplosiveEvent&3'", AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
+    		results.add( formatAFEvent( "TokenEnchant '&7BlockExplodeEvent&3'", AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
     		
-    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-    		boolean isPeeeEnabled = peeePriority != null && !"DISABLED".equalsIgnoreCase( peeePriority );
-    		BlockBreakPriority peeeEventPriority = BlockBreakPriority.fromString( peeePriority );
-    		results.add( String.format("%s.   Pulsi_'s PrisonEnchants '&7PEExplosiveEvent&3' Priority:&b %s %s", 
-    				(isPeeeEnabled ? "" : "+" ), 
-    				peeeEventPriority.name(),
-    				(isPeeeEnabled ? "&2Enabled" : "&cDisabled")
-    				) );
+    		results.add( formatAFEvent( "CrazyEnchant '&7BlastUseEvent&3'", AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
+    		results.add( formatAFEvent( "RevEnchant '&7ExplosiveEvent&3'", AutoFeatures.RevEnchantsExplosiveEventPriority ) );
+    		results.add( formatAFEvent( "RevEnchant '&7JackHammerEvent&3'", AutoFeatures.RevEnchantsJackHammerEventPriority ) );
+    		results.add( formatAFEvent( "Zenchantments '&7BlockShredEvent&3'", AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
     		
-    		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-    		boolean isTebeEnabled = tebePriority != null && !"DISABLED".equalsIgnoreCase( tebePriority );
-    		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
-    		results.add( String.format("%s.   TokenEnchant '&7BlockExplodeEvent&3' Priority:&b %s %s", 
-    				(isTebeEnabled ? "" : "+" ), 
-    				tebEventPriority.name(),
-    				(isTebeEnabled ? "&2Enabled" : "&cDisabled")
-    				) );
-    		
-    		
-    		String reeePriority = afw.getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority );
-    		boolean isReeeEnabled = reeePriority != null && !"DISABLED".equalsIgnoreCase( reeePriority );
-    		BlockBreakPriority reeEventPriority = BlockBreakPriority.fromString( reeePriority );
-    		results.add( String.format("%s.   RevEnchant '&7ExplosiveEvent&3' Priority:&b %s %s", 
-    				(isReeeEnabled ? "" : "+" ), 
-    				reeEventPriority.name(),
-    				(isReeeEnabled ? "&2Enabled" : "&cDisabled")
-    				) );
-    		
-    		String rejhePriority = afw.getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority );
-    		boolean isRejheEnabled = rejhePriority != null && !"DISABLED".equalsIgnoreCase( rejhePriority );
-    		BlockBreakPriority rejhEventPriority = BlockBreakPriority.fromString( rejhePriority );
-    		results.add( String.format("%s.   RevEnchant '&7JackHammerEvent&3' Priority:&b %s %s", 
-    				(isRejheEnabled ? "" : "+" ), 
-    				rejhEventPriority.name(),
-    				(isRejheEnabled ? "&2Enabled" : "&cDisabled")
-    				) );
-    		
-    		
-    		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-    		boolean isCebueEnabled = cebuePriority != null && !"DISABLED".equalsIgnoreCase( cebuePriority );
-    		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
-    		results.add( String.format("%s.   CrazyEnchant '&7BlastUseEvent&3' Priority:&b %s %s", 
-    				(isCebueEnabled ? "" : "+" ), 
-    				cebuEventPriority.name(),
-    				(isCebueEnabled ? "&2Enabled" : "&cDisabled")
-    				 ) );
-    		
-    		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-    		boolean isZbseEnabled = zbsePriority != null && !"DISABLED".equalsIgnoreCase( zbsePriority );
-    		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
-    		results.add( String.format("%s.   Zenchantments '&7BlockShredEvent&3' Priority:&b %s %s", 
-    				(isZbseEnabled ? "" : "+" ), 
-    				zbsEventPriority.name(),
-    				(isZbseEnabled ? "&2Enabled" : "&cDisabled")
-    				 ) );
+    		results.add( formatAFEvent( "XPrison '&7ExplosionTriggerEvent&3'", AutoFeatures.XPrisonExplosionTriggerEventPriority ) );
+    		results.add( formatAFEvent( "XPrison '&7LayerTriggerEvent&3'", AutoFeatures.XPrisonLayerTriggerEventPriority ) );
+    		results.add( formatAFEvent( "XPrison '&7NukeTriggerEvent&3'", AutoFeatures.XPrisonNukeTriggerEventPriority ) );
 
+    		
+        	
+//    		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
+//    		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
+//    		results.add( String.format(".   '&7org.bukkit.BlockBreakEvent&3' Priority:&b %s", 
+//    				blockBreakPriority.name() ) );
+    		
+//    		String pebbePriority = afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+//    		boolean isPebbeEnabled = pebbePriority != null && !"DISABLED".equalsIgnoreCase( pebbePriority );
+//    		BlockBreakPriority pebbeEventPriority = BlockBreakPriority.fromString( pebbePriority );
+//    		results.add( String.format("%s.   Prison's own '&7ExplosiveBlockBreakEvent&3' Priority:&b %s %s", 
+//    				(isPebbeEnabled ? "" : "+" ), 
+//    				pebbeEventPriority.name(),
+//    				(isPebbeEnabled ? "&2Enabled" : "&cDisabled")
+//    				) );
+    		
+    		
+//    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+//    		boolean isPeeeEnabled = peeePriority != null && !"DISABLED".equalsIgnoreCase( peeePriority );
+//    		BlockBreakPriority peeeEventPriority = BlockBreakPriority.fromString( peeePriority );
+//    		results.add( String.format("%s.   Pulsi_'s PrisonEnchants '&7PEExplosiveEvent&3' Priority:&b %s %s", 
+//    				(isPeeeEnabled ? "" : "+" ), 
+//    				peeeEventPriority.name(),
+//    				(isPeeeEnabled ? "&2Enabled" : "&cDisabled")
+//    				) );
+//    		
+//    		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+//    		boolean isTebeEnabled = tebePriority != null && !"DISABLED".equalsIgnoreCase( tebePriority );
+//    		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
+//    		results.add( String.format("%s.   TokenEnchant '&7BlockExplodeEvent&3' Priority:&b %s %s", 
+//    				(isTebeEnabled ? "" : "+" ), 
+//    				tebEventPriority.name(),
+//    				(isTebeEnabled ? "&2Enabled" : "&cDisabled")
+//    				) );
+    		
+    		
+//    		String reeePriority = afw.getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority );
+//    		boolean isReeeEnabled = reeePriority != null && !"DISABLED".equalsIgnoreCase( reeePriority );
+//    		BlockBreakPriority reeEventPriority = BlockBreakPriority.fromString( reeePriority );
+//    		results.add( String.format("%s.   RevEnchant '&7ExplosiveEvent&3' Priority:&b %s %s", 
+//    				(isReeeEnabled ? "" : "+" ), 
+//    				reeEventPriority.name(),
+//    				(isReeeEnabled ? "&2Enabled" : "&cDisabled")
+//    				) );
+//    		
+//    		String rejhePriority = afw.getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority );
+//    		boolean isRejheEnabled = rejhePriority != null && !"DISABLED".equalsIgnoreCase( rejhePriority );
+//    		BlockBreakPriority rejhEventPriority = BlockBreakPriority.fromString( rejhePriority );
+//    		results.add( String.format("%s.   RevEnchant '&7JackHammerEvent&3' Priority:&b %s %s", 
+//    				(isRejheEnabled ? "" : "+" ), 
+//    				rejhEventPriority.name(),
+//    				(isRejheEnabled ? "&2Enabled" : "&cDisabled")
+//    				) );
+    		
+    		
+//    		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+//    		boolean isCebueEnabled = cebuePriority != null && !"DISABLED".equalsIgnoreCase( cebuePriority );
+//    		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
+//    		results.add( String.format("%s.   CrazyEnchant '&7BlastUseEvent&3' Priority:&b %s %s", 
+//    				(isCebueEnabled ? "" : "+" ), 
+//    				cebuEventPriority.name(),
+//    				(isCebueEnabled ? "&2Enabled" : "&cDisabled")
+//    				 ) );
+//    		
+//    		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+//    		boolean isZbseEnabled = zbsePriority != null && !"DISABLED".equalsIgnoreCase( zbsePriority );
+//    		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
+//    		results.add( String.format("%s.   Zenchantments '&7BlockShredEvent&3' Priority:&b %s %s", 
+//    				(isZbseEnabled ? "" : "+" ), 
+//    				zbsEventPriority.name(),
+//    				(isZbseEnabled ? "&2Enabled" : "&cDisabled")
+//    				 ) );
+
+    		
+    		
+    		
+    		
 //    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
 //    		boolean isPeeeeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
 //    		BlockBreakPriority peeEventPriority = BlockBreakPriority.fromString( peeePriority );
@@ -2323,13 +2355,34 @@ public class SpigotPlatform
     				(isDurabilityEnabled ? "" : "+"), 
     				isDurabilityEnabled) );
     		
+    		boolean isPreventToolBreakage = afw.isBoolean( AutoFeatures.isPreventToolBreakage );
+    		results.add( String.format("%s.   Prevent Tool Breakage:&b %s", 
+    				(isPreventToolBreakage ? "" : "+"), 
+    				isPreventToolBreakage) );
+    		
+    		results.add( String.format("%s.   Prevent Tool Breakage Threshold:&b %s", 
+    				(isPreventToolBreakage ? "" : "+"), 
+    				afw.getInteger( AutoFeatures.preventToolBreakageThreshold )) );
+    		
+    		
+    		
+    		
     		
     		boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
+    		
     		results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
-    		results.add( String.format("+.  .  Fortune Multiplier:&b %s", 
+
+    		boolean isUseTEFortuneLevel = afw.isBoolean( AutoFeatures.isUseTokenEnchantsFortuneLevel );
+    		results.add( String.format("%s.  .  Use TokenEnchants Fortune Level:&b %b", 
+    				(isUseTEFortuneLevel ? "" : "+"), 
+    				isUseTEFortuneLevel) );
+    		
+    		results.add( String.format("+.  .  Fortune Multiplier Global:&b %s", 
     				afw.getInteger( AutoFeatures.fortuneMultiplierGlobal )) );
     		results.add( String.format("+.  .  Max Fortune Level:&b %s  &3(0 = no max Level)", 
     				afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
+    		results.add( String.format("+.  .  Fortune Bukkit Drops Multiplier:&b %s  &3", 
+    				afw.getDouble( AutoFeatures.fortuneBukkitDropsMultiplier )) );
     		
     		boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
     		results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
@@ -2341,17 +2394,46 @@ public class SpigotPlatform
     				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
     		
     		
+    		boolean isAltFortune = afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled);
     		results.add( "+&3NOTE: If you enable Extended Bukkit Fortune, then it auto disables the following Alt Fortune Cals." );
     		results.add( "+&3NOTE: First try Extended Bukkit Fortune and if it does not work, then disable it and use " +
     				"Alt Fortune." );
-    		results.add( String.format("%s.  .  Calculate Alt Fortune Enabled:&b %s %s", 
+    		results.add( String.format("%s.  .  Calculate Alt Fortune Enabled:&b %s", 
     				(isExtendedBukkitFortune ? "+" : "" ), 
-    				( afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled) ? "&2Enabled" : "&cDisabled"),
-    				( isExtendedBukkitFortune ? "&d[disabled by Exended Bukkit Fortune]" : "")) );
-    		results.add( String.format("%s.  .  Calculate Alt Fortune on all Blocks:&b %s %s", 
+    				( isAltFortune ? "&2Enabled" : "&cDisabled")
+    				) );
+    		results.add( String.format("%s.  .  Calculate Alt Fortune on all Blocks:&b %s", 
     				(isExtendedBukkitFortune ? "+" : "" ), 
-    				( afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled) ? "&2Enabled" : "&cDisabled"),
-    				( isExtendedBukkitFortune ? "&d[disabled by Exended Bukkit Fortune]" : "")) );
+    				( afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled) ? "&2Enabled" : "&cDisabled")
+    				) );
+    		if ( isAltFortune && isExtendedBukkitFortune ) {
+    			results.add( "&dWarning: Alt Fortune is disabled by Exended Bukkit Fortune." );
+    		}
+    		
+    		
+    		boolean isGradientFortune = afw.isBoolean( AutoFeatures.isPercentGradientFortuneEnabled );
+
+    		results.add( String.format("%s.   Percent Gradient Fortune Enabled:&b %s", 
+    				(isGradientFortune ? "" : "+"),
+    				isGradientFortune ) );
+    		
+    		if ( isGradientFortune ) {
+    			
+    			if ( isExtendedBukkitFortune ) {
+    				results.add( "&dWarning: Percent Gradient Fortune is disabled by Exended Bukkit Fortune." );
+    			}
+    			if ( isAltFortune ) {
+    				results.add( "&dWarning: Percent Gradient Fortune is disabled by Alt Fortune." );
+    			}
+    			
+        		results.add( String.format(".  .  Percent Gradient Fortune: Max Fortune Level:&b %s", 
+        				afw.getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel )) );
+        		results.add( String.format(".  .  Percent Gradient Fortune: Max Bonus Blocks: &b %s", 
+        				afw.getInteger( AutoFeatures.percentGradientFortuneMaxBonusBlocks )) );
+        		results.add( String.format(".  .  Percent Gradient Fortune: Min Percent Randomness: &b%s", 
+        				afw.getDouble( AutoFeatures.percentGradientFortuneMinPercentRandomness )) );
+
+    		}
     		
     		
     		results.add( " " );
@@ -2417,6 +2499,25 @@ public class SpigotPlatform
 	}
 	
 	
+	private String formatAFEvent(String description, AutoFeatures autoFeature ) {
+		String results = null;
+		
+		String ePriority = AutoFeaturesWrapper.getInstance().getMessage( autoFeature );
+		
+		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( ePriority );
+
+		boolean isEnabled = eventPriority != BlockBreakPriority.DISABLED;
+		
+		results = String.format("%s.   %s Priority:&b %s %s", 
+					(isEnabled ? "" : "+" ), 
+					description,
+					eventPriority.name(),
+					(isEnabled ? "&2Enabled" : "&cDisabled")
+				 );
+		
+		return results;
+	}
+
 	@Override
 	public void prisonVersionFeatures( ChatDisplay display, boolean isBasic, 
 			boolean showLaddersAndRanks ) {

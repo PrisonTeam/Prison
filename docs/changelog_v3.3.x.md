@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15f 2023-10-01
+# 3.3.0-alpha.15f 2023-10-03
+
+
+* **Prison version: Improve the content of the auto features details.**
 
 
 * **Placeholders:  Added the ability to specify a player name in all placeholder attributes.**
