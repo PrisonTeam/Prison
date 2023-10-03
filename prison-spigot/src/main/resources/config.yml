@@ -119,6 +119,21 @@ prestige:
 #       all functions able to handle new players that have not been added to Prison due to
 #       the degree of complexity of some sections of prison.
 #
+# The 'player-economy-cache-update-delay-ticks' provides the nummber of ticks of a delay
+# from when a player is paid money, until the prison updates the econommy.  The default
+# delay is 3 seconds, or 60 tickks. The purpose of this delayed update is to prevent the
+# frequent player payments while speed-mining fromm overwhelming the economy plugin. 
+# For example, if there are 20 players online, all mining with a highly efficent pickaxe,
+# and with autosell enabled, a single player would recieve payments for each block broken, 
+# of which could quickly exceed 20 to 40 updates per second per player. So with 20 players
+# mining concurrently, the econommy plugin would have to be able to handle 400, to 800 
+# updates per second, if not more.  Some economy plugins cannot handle such loads, and
+# can cause the server to lag becaus they are not using asynchronous updates to the storage
+# of choice, and they mmay not cache the updates to prevent so many updates.
+# If the 3 second delay is too long, and you're wanting something a little quicker, try
+# reducing the number of ticks to like 30, 20, or 10.  Becareful of going too low.  If 
+# you notice potential server deplays, trying incrasing the delays. You can use
+# `/timings` to confirm where the lag is occuring.
 
 ranks:
   startup:
@@ -126,6 +141,7 @@ ranks:
   gui-default-include-rankup-button: true
   gui-prestiges-include-rankup-button: true
   gui-others-include-rankup-button: true
+  player-economy-cache-update-delay-ticks: 60
   
 
 

@@ -100,6 +100,8 @@ public class SellAllUtil
     public boolean isSellAllSignNotifyEnabled;
     public boolean isSellAllSignPermissionToUseEnabled;
     public boolean isSellAllNotificationEnabled;
+    public boolean isSellAllNotificationByActionBar;
+    
     public boolean isSellAllSoundEnabled;
     public boolean isSellAllBackpackItemsEnabled;
     public boolean isSellAllMinesBackpacksPluginEnabled;
@@ -157,10 +159,13 @@ public class SellAllUtil
         isAutoSellPerUserToggleable = getBooleanValue("Options.Full_Inv_AutoSell_perUserToggleable");
         isAutoSellPerUserToggleablePermEnabled = getBooleanValue("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm");
         isSellAllNotificationEnabled = getBooleanValue("Options.Sell_Notify_Enabled");
+        isSellAllNotificationByActionBar = getBooleanValue("Options.Sell_Notify_by_ActionBar");
+        
         isSellAllSoundEnabled = getBooleanValue("Options.Sell_Sound_Enabled");
         isSellAllBackpackItemsEnabled = getBooleanValue("Options.Sell_Prison_BackPack_Items");
         isSellAllMinesBackpacksPluginEnabled = getBooleanValue("Options.Sell_MinesBackPacks_Plugin_Backpack");
         isSellAllDelayEnabled = getBooleanValue("Options.Sell_Delay_Enabled");
+        
         isSellAllSellPermissionEnabled = getBooleanValue("Options.Sell_Permission_Enabled");
         isSellAllItemTriggerEnabled = getBooleanValue("Options.ShiftAndRightClickSellAll.Enabled");
         isSellAllItemTriggerPermissionEnabled = getBooleanValue("Options.ShiftAndRightClickSellAll.PermissionEnabled");
@@ -1460,7 +1465,9 @@ public class SellAllUtil
 
         if (!isPlayerWaitingAutoSellNotification(p)){
             autoSellEarningsNotificationWaiting.put(p, 0.00);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removeFromAutoSellDelayAndNotify(p), 20L * defaultAutoSellEarningNotificationDelay);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(
+            		SpigotPrison.getInstance(), 
+            		() -> removeFromAutoSellDelayAndNotify(p), 20L * defaultAutoSellEarningNotificationDelay);
             return true;
         }
 
@@ -2062,9 +2069,19 @@ public class SellAllUtil
         	
         	String message = sellallAmountEarnedMsg( amt );
         	
+        	SpigotPlayer sPlayer = new SpigotPlayer(p);
+        	
+        	if ( isSellAllNotificationByActionBar ) {
+        		
+        		sPlayer.setActionBar( message );
+        	}
+        	else {
+        		
+        		Output.get().send( sPlayer, message );
+        	}
+        	
 //        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //        	new SpigotPlayer(p).setActionBar( message );
-            Output.get().send( new SpigotPlayer(p), message );
         }
         autoSellEarningsNotificationWaiting.remove(p);
     }
@@ -2427,9 +2444,17 @@ public class SellAllUtil
                 	
                 	String message = sellallAmountEarnedMsg( amt );
                 	
+                	if ( isSellAllNotificationByActionBar ) {
+                		sPlayer.setActionBar( message );
+                	}
+                	else {
+                		
+                		Output.get().send( sPlayer, message );
+                	}
+                	
 //                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //                	new SpigotPlayer(p).setActionBar( message );
-                    Output.get().send( new SpigotPlayer(p), message );
+//                    Output.get().send( sPlayer, message );
 
                 }
             }
@@ -2529,9 +2554,17 @@ public class SellAllUtil
     	        	
     	        	String message = sellallAmountEarnedMsg( amt ) ;
     	        	
+                	if ( isSellAllNotificationByActionBar ) {
+                		sPlayer.setActionBar( message );
+                	}
+                	else {
+                		
+                		Output.get().send( sPlayer, message );
+                	}
+                	
 //    	        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //    	        	new SpigotPlayer(p).setActionBar( message );
-    	            Output.get().send( new SpigotPlayer(p), message );
+//    	            Output.get().send( sPlayer, message );
 
     			}
     		}
@@ -2703,9 +2736,16 @@ public class SellAllUtil
                 	
                 	String message = sellallAmountEarnedMsg( amt );
                 	
+                	if ( isSellAllNotificationByActionBar ) {
+                		sPlayer.setActionBar( message );
+                	}
+                	else {
+                		
+                		Output.get().send( sPlayer, message );
+                	}
+                	
 //                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //                	new SpigotPlayer(p).setActionBar( message );
-                    Output.get().send( new SpigotPlayer(p), message );
 
                 }
             }

@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15f 2023-10-03
 
 
+* **Player Economy Cache Delay: Add the ability to change the player economy cache delay.  Default value is 3 seconds, or 60 ticks.**
+
+
 * **Prison version: Improve the content of the auto features details.**
 
 
