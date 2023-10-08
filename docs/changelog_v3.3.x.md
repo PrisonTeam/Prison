@@ -18,6 +18,10 @@ These change logs represent the work that has been going on within prison.
 
 
 
+* **Bug: sellall auto enabled messages reversed.**
+The command to enable and disable the auto sell feature was reversed, so when turning off, it would report that it was just turned on.  And on when it was turned off.
+
+
 **v3.3.0-alpha.15g 2023-10-03**
 
 
