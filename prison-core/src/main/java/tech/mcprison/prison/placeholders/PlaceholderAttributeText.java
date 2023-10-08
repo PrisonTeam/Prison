@@ -18,7 +18,7 @@ import tech.mcprison.prison.util.Text;
  * 
  * <p>Usage:
  * </p>
- * <pre>::text:hex:hex1:debug</pre>
+ * <pre>::text:hex:hex1:debug:player=&lt;playerName&gt;</pre>
  * 
  * <ul>
  *   <li><b>hex</b>: Optional. Case sensitive. Non-positional; can be placed anywhere.
@@ -37,6 +37,10 @@ import tech.mcprison.prison.util.Text;
  *    				will log to the console the status of this attribute, along with
  *    				any error messages that may occur when applying the attribute.
  *   </li>
+ *   <li><b>player=&lt;playerName&gt;</b>: Optional. Case insensitive. Non-positional; can be
+ *   				placed anywhere.  Provides a player for the placeholder when the 
+ *   				plugin requesting the placeholder cannot request it based upon the player.
+ *   				</li>
  * </ul>
  * 
  *

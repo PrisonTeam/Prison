@@ -46,7 +46,7 @@ public class TextMessage
 				.localize();
 	}
 	
-	protected static String coreOutputTextAndMsg() {
+	public static String coreOutputTextAndMsg() {
 		return Prison.get().getLocaleManager()
 				.getLocalizable( "core_text__and" )
 				.withReplacements( "%s" )
@@ -73,6 +73,14 @@ public class TextMessage
 	protected static String coreOutputTextTimeUnitsPluralMsg() {
 		return Prison.get().getLocaleManager()
 				.getLocalizable( "core_text__time_units_plural" )
+				.withReplacements( "%s" )
+				.setFailSilently()
+				.localize();
+	}
+		
+	protected static String coreOutputTextTimeUnitsShortMsg() {
+		return Prison.get().getLocaleManager()
+				.getLocalizable( "core_text__time_units_short" )
 				.withReplacements( "%s" )
 				.setFailSilently()
 				.localize();

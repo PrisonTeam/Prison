@@ -19,7 +19,7 @@ import tech.mcprison.prison.util.Text;
  * 
  * <p>Usage:
  * </p>
- * <pre>::nFormat:format:spaces:unitType:hex:hex2:debug</pre>
+ * <pre>::nFormat:format:spaces:unitType:hex:hex2:debug:player=&lt;playerName&gt;</pre>
  * 
  * <ul>
  *   <li><b>nFormat</b>: the keyword to identify this attribute.</li>
@@ -66,6 +66,10 @@ import tech.mcprison.prison.util.Text;
  *    				will log to the console the status of this attribute, along with
  *    				any error messages that may occur when applying the attribute.
  *   </li>
+ *   <li><b>player=&lt;playerName&gt;</b>: Optional. Case insensitive. Non-positional; can be
+ *   				placed anywhere.  Provides a player for the placeholder when the 
+ *   				plugin requesting the placeholder cannot request it based upon the player.
+ *   				</li>
  * </ul>
  * 
  *

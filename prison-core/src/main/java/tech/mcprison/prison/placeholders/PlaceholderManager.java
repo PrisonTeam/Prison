@@ -95,7 +95,8 @@ public class PlaceholderManager {
     public enum PlaceholderAttributePrefixes {
     	nFormat,
     	bar,
-    	text;
+    	text,
+    	time;
     	
     	public static PlaceholderAttributePrefixes fromString( String value ) {
     		PlaceholderAttributePrefixes pap = null;
@@ -123,6 +124,27 @@ public class PlaceholderManager {
     		
     		if ( value != null ) {
     			for ( NumberTransformationUnitTypes nTrans : values() ) {
+    				if ( nTrans.name().equalsIgnoreCase( value ) ) {
+    					pap = nTrans;
+    				}
+    			}
+    		}
+    		
+    		return pap;
+    	}
+    }
+    
+    public enum TimeTransformationUnitTypes {
+    	none,
+    	LONG,
+    	SHORT,
+    	colons;
+    	
+    	public static TimeTransformationUnitTypes fromString( String value ) {
+    		TimeTransformationUnitTypes pap = none;
+    		
+    		if ( value != null ) {
+    			for ( TimeTransformationUnitTypes nTrans : values() ) {
     				if ( nTrans.name().equalsIgnoreCase( value ) ) {
     					pap = nTrans;
     				}

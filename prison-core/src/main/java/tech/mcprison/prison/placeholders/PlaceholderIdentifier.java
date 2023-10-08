@@ -265,6 +265,19 @@ public class PlaceholderIdentifier {
 		return phAttribute;
 	}
 	
+	public PlaceholderAttributeTime getAttributeTime() {
+		PlaceholderAttributeTime phAttribute = null;
+		
+		for (PlaceholderAttribute placeholderAttribute : getAttributes() ) {
+			if ( placeholderAttribute instanceof PlaceholderAttributeTime ) {
+				phAttribute = (PlaceholderAttributeTime) placeholderAttribute;
+				break;
+			}
+		}
+		
+		return phAttribute;
+	}
+	
 	public String getIdentifierRaw() {
 		return identifierRaw;
 	}
