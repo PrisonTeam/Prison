@@ -17,8 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15g 2023-10-03
 
 
+* **SellAll messages: Cleaned up some of the US EN messages related to the sellall command.**
 
-* **Bug: sellall auto enabled messages reversed.**
+
+* **Bug: sellall auto sell enabled messages reversed.**
 The command to enable and disable the auto sell feature was reversed, so when turning off, it would report that it was just turned on.  And on when it was turned off.
 
 
