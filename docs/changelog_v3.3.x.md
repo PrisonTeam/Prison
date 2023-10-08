@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15g 2023-10-03
+# 3.3.0-alpha.15g 2023-10-08
+
+
+* **Placeholders: bug fix: If using the placeholder attribute for an off line player, it would cause an error when checking if the player was in a disabled world.**
 
 
 * **SellAll messages: Cleaned up some of the US EN messages related to the sellall command.**

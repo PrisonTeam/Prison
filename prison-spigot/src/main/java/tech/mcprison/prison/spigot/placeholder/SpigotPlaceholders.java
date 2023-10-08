@@ -459,7 +459,9 @@ public class SpigotPlaceholders
 			String replacementText = processPlaceholderIdentifier(identifier);
 			if ( identifier.isFoundAMatch() ) {
 				
-				if ( ignorePlayerInDisabledWorlds( (SpigotPlayer) identifier.getPlayer() )) {
+				if ( identifier.getPlayer() != null &&
+						identifier.getPlayer() instanceof SpigotPlayer &&
+						ignorePlayerInDisabledWorlds( (SpigotPlayer) identifier.getPlayer() )) {
 					replacementText = "";
 				}
 				
