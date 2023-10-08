@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15g 2023-10-08
 
 
+* **Placeholders: Added the ability to provide a shorted output of the command `/prison placeholders test` so it only shows the command header and the results.**
+
+
+
 * **Placeholders: bug fix: If using the placeholder attribute for an off line player, it would cause an error when checking if the player was in a disabled world.**
 
 

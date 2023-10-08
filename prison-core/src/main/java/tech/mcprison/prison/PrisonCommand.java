@@ -538,7 +538,9 @@ public class PrisonCommand
 
     
     @Command(identifier = "prison placeholders test", 
-    		description = "Converts any Prison placeholders in the test string to their values", 
+    		description = "Converts any Prison placeholders in the test string to their values. "
+    				+ "Use '-s' keyword to reduce output text. "
+    				+ "All placeholder attributes are supported.", 
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersTestCommand(CommandSender sender,
     		@Arg(name = "playerName", description = "Player name to use with player rank placeholders (optional)", 
@@ -576,6 +578,10 @@ public class PrisonCommand
     		player = getPlayer( sender );
     	}
     	
+    	boolean isShort = text.startsWith( "-s " );
+    	if ( isShort ) {
+    		text = text.substring( 3 );
+    	}
 
     	ChatDisplay display = new ChatDisplay("Placeholder Test");
     	
@@ -590,18 +596,18 @@ public class PrisonCommand
     	String translated = Prison.get().getPlatform().getPlaceholders()
     					.placeholderTranslateText( playerUuid, playerName, text );
     	
-    	builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
-    	builder.add( String.format( "&a    Use { } to escape the placeholders."));
-    	
-    	// Show player info here like with the search:
-        if ( player != null ) {
-        	builder.add( String.format( "&a    Player: &7%s  &aPlayerUuid: &7%s", player.getName(), 
-        			(playerUuid == null ? "null" : playerUuid.toString())));
-        	
-        }
-        
-    	
-    	builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
+    	if ( !isShort ) {
+    		builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
+    		builder.add( String.format( "&a    Use { } to escape the placeholders."));
+    		
+    		// Show player info here like with the search:
+    		if ( player != null ) {
+    			builder.add( String.format( "&a    Player: &7%s  &aPlayerUuid: &7%s", player.getName(), 
+    					(playerUuid == null ? "null" : playerUuid.toString())));
+    		}
+    		
+    		builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
+    	}
     	
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
