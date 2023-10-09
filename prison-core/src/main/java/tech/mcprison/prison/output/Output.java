@@ -28,6 +28,7 @@ import java.util.UnknownFormatConversionException;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 
 /**
  * Standardized output to the console and to players.
@@ -65,6 +66,8 @@ public class Output
     private Set<DebugTarget> selectiveDebugTargets;
     
     private int debugCountDown = -1;
+    
+    private String debugPlayerName = null;
 
     public enum DebugTarget {
     	all,
@@ -374,24 +377,45 @@ public class Output
     }
     
     public void logDebug(String message, Object... args) {
+    	logDebug( message, null, args );
+    }
+    public void logDebug(String message, Player player, Object... args) {
     	if ( isDebug() ) {
-    		if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
-    			setDebugCountDown( -1 );
-    			setDebug( false );
+
+    		if ( getDebugPlayerName() == null || 
+    				getDebugPlayerName() != null && player != null && 
+    				getDebugPlayerName().equalsIgnoreCase( player.getName() ) ) {
+    			
+    			if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
+    				setDebugCountDown( -1 );
+    				setDebug( false );
+    				setDebugPlayerName( null );
+    			}
+    			log(message, LogLevel.DEBUG, args);
     		}
-    		log(message, LogLevel.DEBUG, args);
     	}
     }
     
     public void logDebug( DebugTarget debugTarget, String message, Object... args) {
+    	logDebug( debugTarget, message, null, args );
+    }
+    
+    public void logDebug( DebugTarget debugTarget, String message, Player player, Object... args) {
     	
     	if ( isDebug( debugTarget ) ) {
-    		if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
-    			setDebugCountDown( -1 );
-    			setDebug( false );
-    		}
-    		log(message, LogLevel.DEBUG, args);
+    		
+       		if ( getDebugPlayerName() == null || 
+    				getDebugPlayerName() != null && player != null && 
+    				getDebugPlayerName().equalsIgnoreCase( player.getName() ) ) {
+
+       			if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
+       				setDebugCountDown( -1 );
+       				setDebug( false );
+       				setDebugPlayerName( null );
+       			}
+       			log(message, LogLevel.DEBUG, args);
 //    		logDebug(message, args );
+       		}
     	}
     	
 //    	// The following is not yet enabled since the user interfaces are not in place to manage the set:
@@ -439,6 +463,9 @@ public class Output
 					setDebugCountDown( -1 );
 					setDebug( false );
 					
+					// If turning off debug mode, then reset only-for-player name to null:
+					setDebugPlayerName( null );
+					
 					log( "Prison Debugger Disabled: Count down timer is disabled: %d", LogLevel.DEBUG, countDownNumber );
 					return;
 				}
@@ -469,9 +496,17 @@ public class Output
     		// No targets were set, so just toggle the debugger:
     		Output.get().setDebug( !Output.get().isDebug() );
 
+
     		// Clear all existing targets:
     		getActiveDebugTargets().clear();
+
     		
+    		// If turning off debug mode, then reset only-for-player name to null:
+    		if ( !isDebug() ) {
+    			setDebugPlayerName( null );
+    		}
+    		
+
     		// Turn off the countdown timer if it was set (not -1):
     		if ( !isDebug() && getDebugCountDown() != -1 ) {
     			setDebugCountDown( -1 );
@@ -652,5 +687,12 @@ public class Output
 		return colorCodeDebug;
 	}
 
+
+	public String getDebugPlayerName() {
+		return debugPlayerName;
+	}
+	public void setDebugPlayerName(String debugPlayerName) {
+		this.debugPlayerName = debugPlayerName;
+	}
     
 }

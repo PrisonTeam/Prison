@@ -167,11 +167,12 @@ public abstract class AutoManagerFeatures
 			if ( !Output.get().isDebug() && pmEvent.isForceDebugLogging() ) {
 				
 				pmEvent.getDebugInfo().insert(0, Output.get().getColorCodeDebug() );
-				Output.get().logInfo( pmEvent.getDebugInfo().toString() );
+				
+				Output.get().logInfo( pmEvent.getDebugInfo().toString(), pmEvent.getSpigotPlayer() );
 			}
 			else {
 				
-				Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString() );
+				Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString(), pmEvent.getSpigotPlayer() );
 			}
 		}
     }

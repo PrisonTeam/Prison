@@ -54,7 +54,7 @@ public class SellAllData {
     public static void debugItemsSold( List<SellAllData> soldItems, SpigotPlayer sPlayer, double multiplier ) {
         if ( Output.get().isDebug() ) {
         	String report = SellAllData.itemsSoldReport( soldItems, sPlayer, multiplier );
-        	Output.get().logInfo( report );
+        	Output.get().logDebug( report, (sPlayer != null ? sPlayer.getName() : null) );
         }
     }
 

@@ -1117,7 +1117,8 @@ public class PrisonCommand
     
     @Command(identifier = "prison debug", 
     		description = "Enables debugging and trouble shooting information. " +
-    				"For internal use only. Do not use unless instructed.", 
+    				"For internal use only. Do not use unless instructed. This will add a lot of "
+    				+ "data to the console.", 
     		onlyPlayers = false, permissions = "prison.debug",
     		aliases = {"prison support debug"} )
     public void toggleDebug(CommandSender sender,
@@ -1125,15 +1126,38 @@ public class PrisonCommand
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target, or set a count down timer. " +
     					"[on, off, targets, (count-down-timer), selective, jarScan, " +
-    					"testPlayerUtil, testLocale, rankup ] " +
+    					"testPlayerUtil, testLocale, rankup, player=<playerName> ] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or 'all' targets if no target is specified. " +
     				"If any targets are enabled, then debug in general will be enabled. Selective will only " +
     				"activate debug with the specified targets. " +
     				"A positive integer value will enable the count down timer mode to enable " +
     				"debug mode for a number of loggings, then debug mode will be turned off. " +
-    				"jarScan will identify what Java version compiled the class files within the listed jars."
+    				"jarScan will identify what Java version compiled the class files within the listed jars. " +
+    				"If a player name is given, all debug messages that are tracked by player name will only be " +
+    				"logged for that player.  Example: `/debug playerName=RoyalBlueRanger 5` will log only " +
+    				"5 debug messages for that player, then debug mode will be disabled.  "
     						) String targets ) {
+    	
+    	String playerName = null;
+    	
+		String playerStr = extractParameter("player=", targets);
+		if ( playerStr != null ) {
+			targets = targets.replace( playerStr, "" );
+			playerName = playerStr.replace( "player=", "" ).trim();
+			
+			if ( playerName != null ) {
+				
+				Output.get().setDebugPlayerName( playerName );
+				
+				sender.sendMessage( "Prison Debug Mode enabled only for player: " + playerName );
+			}
+			else {
+				Output.get().setDebugPlayerName( null );
+				
+				sender.sendMessage( "Prison Debug Only-for-player Mode has been disabled. Debug mode will be logged for all players." );
+			}
+		}
     	
     	if ( targets != null && "jarScan".equalsIgnoreCase( targets ) ) {
     		
@@ -1198,6 +1222,27 @@ public class PrisonCommand
 
     }
     
+    
+	
+	private String extractParameter( String key, String options ) {
+		return extractParameter( key, options, true );
+	}
+	private String extractParameter( String key, String options, boolean tryLowerCase ) {
+		String results = null;
+		int idx = options.indexOf( key );
+		if ( idx != -1 ) {
+			int idxEnd = options.indexOf( " ", idx );
+			if ( idxEnd == -1 ) {
+				idxEnd = options.length();
+			}
+			results = options.substring( idx, idxEnd );
+		}
+		else if ( tryLowerCase ) {
+			// try again, but lowercase the key
+			results = extractParameter( key.toLowerCase(), options, false );
+		}
+		return results;
+	}
     
 
 	@Command(identifier = "prison findCmd", 

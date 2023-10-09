@@ -69,12 +69,14 @@ public class PrisonCommandTasks
 		else if ( Output.get().isDebug() && cmTasksPosition > 0 ) {
 			// Done running all tasks.  If debug is enabled, print:
 			
+			String playerName = getPlayer() != null ? getPlayer().getName() : null;
+			
 			String message = String.format( "Prison Command Debug Details: %d", cmTasksPosition );
-			Output.get().logDebug( message );
+			Output.get().logDebug( message, playerName );
 			
 			for ( PrisonCommandTaskData cmdTask : cmdTasks ) {
 				
-				Output.get().logInfo( cmdTask.getDebugDetails() );
+				Output.get().logDebug( cmdTask.getDebugDetails(), playerName );
 			}
 			
 		}
