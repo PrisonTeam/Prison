@@ -1457,31 +1457,39 @@ public abstract class AutoManagerFeatures
 //			if ( SpigotPrison.getInstance().isSellAllEnabled() ) 
 			{
 				
+				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				
-				SellAllUtil sellAllUtil = SellAllUtil.get();
+				boolean isPlayerAutosellEnabled = sPlayer.isAutoSellEnabled( debugInfo );
 				
-				boolean isSellallEnabled = sellAllUtil != null && 
-						SpigotPrison.getInstance().isSellAllEnabled();
+				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+			
+				if ( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) {
 				
-				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
-				// This is to be used with other auto sell setting, but never on it's own:
-				boolean isPlayerAutosellEnabled = 
-								isSellallEnabled &&
-								(!sellAllUtil.isAutoSellPerUserToggleable ||
-										sellAllUtil.isSellallPlayerUserToggleEnabled( 
-													player ));
+					SellAllUtil sellAllUtil = SellAllUtil.get();
+				
+//				boolean isSellallEnabled = sellAllUtil != null && 
+//						SpigotPrison.getInstance().isSellAllEnabled();
+//				
+//				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+//				// This is to be used with other auto sell setting, but never on it's own:
+//				boolean isPlayerAutosellEnabled = 
+//								isSellallEnabled &&
+//								(!sellAllUtil.isAutoSellPerUserToggleable ||
+//										sellAllUtil.isSellallPlayerUserToggleEnabled( 
+//													player ));
 				
 
 				
-				// On inventory is full, will auto sell if auto sell is enabled in either
-				// the sellall configs, or the auto feature configs.
-				if (sellAllUtil != null && (
-						sellAllUtil.isAutoSellEnabled ||
-						autoSell )) {
-//						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
+//				// On inventory is full, will auto sell if auto sell is enabled in either
+//				// the sellall configs, or the auto feature configs.
+//				if (sellAllUtil != null && (
+//						sellAllUtil.isAutoSellEnabled ||
+//						autoSell )) {
+////						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
 					
 					
-					if ( isPlayerAutosellEnabled ) {
+					// if ( isPlayerAutosellEnabled ) 
+					{
 						
 						boolean saNote = sellAllUtil.isAutoSellNotificationEnabled;
 
@@ -1532,7 +1540,7 @@ public abstract class AutoManagerFeatures
 							
 							debugInfo.append( " ] " );
 							
-							SpigotPlayer sPlayer = new SpigotPlayer( player );
+							//SpigotPlayer sPlayer = new SpigotPlayer( player );
 							PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, debugInfo );
 						}
 						

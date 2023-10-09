@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15g 2023-10-08
 
 
+* **Auto Sell: Bug fix for full inventory when auto sell is toggled off, which was incorrectly selling the player's inventory.**
+
+
 * **Prison Debug: Added support to target some debug logging to a specific player.**
 When enabled, it will ignore all other players. Not all debug messages have been hooked up. More can be added upon request.
 When debug mode is disabled, it will remove the debug player name.
