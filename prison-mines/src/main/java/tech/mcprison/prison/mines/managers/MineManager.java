@@ -794,6 +794,7 @@ public class MineManager
 			if ( mine != null || 
 					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) || 
 					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS )) {
+				
 				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 				DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 //				DecimalFormat fFmt = Prison.get().getDecimalForma("#,##0.00");
@@ -853,6 +854,10 @@ public class MineManager
 
 	        					results = attributeNFormat.format( (long) mine.getResetTime() );
 	        				}
+	        				else if ( attributeTime != null ) {
+	        					
+	        					results = attributeTime.format( (long) mine.getResetTime() );
+	        				}
 	        				else {
 	        					
 	        					double timeMif = mine.getResetTime();
@@ -872,6 +877,10 @@ public class MineManager
 	        				if ( attributeNFormat != null ) {
 
 	        					results = attributeNFormat.format( (long) mine.getRemainingTimeSec() );
+	        				}
+	        				else if ( attributeTime != null ) {
+	        					
+	        					results = attributeTime.format( (long) mine.getResetTime() );
 	        				}
 	        				else {
 	        					results = dFmt.format( mine.getRemainingTimeSec() );

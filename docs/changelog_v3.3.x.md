@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15g 2023-10-08
 
 
+* **Placeholder attribute time: add the time attribute to 4 more placeholders.**
+
+
 * **Auto Sell: Bug fix for full inventory when auto sell is toggled off, which was incorrectly selling the player's inventory.**
 
 
@@ -29,7 +32,7 @@ When debug mode is disabled, it will remove the debug player name.
 
 
 * **Placeholders: Added the ability to provide a shorted output of the command `/prison placeholders test` so it only shows the command header and the results.**
-
+Use the '-s' flag as in: '/prison placeholders test -s'
 
 
 * **Placeholders: bug fix: If using the placeholder attribute for an off line player, it would cause an error when checking if the player was in a disabled world.**
