@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15g 2023-10-08
+# 3.3.0-alpha.15g 2023-10-26
+
+
+* **Updated nbt-api and fixed a new issue that was introduced with mc 1.20.2.**
 
 
 * **Placeholder attribute time: add the time attribute to 4 more placeholders.**

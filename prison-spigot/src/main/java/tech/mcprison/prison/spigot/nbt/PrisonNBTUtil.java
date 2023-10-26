@@ -1,9 +1,12 @@
 package tech.mcprison.prison.spigot.nbt;
 
+import java.util.function.Function;
+
 import org.bukkit.inventory.ItemStack;
 
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
 import tech.mcprison.prison.output.Output;
 
 /**
@@ -40,7 +43,10 @@ public class PrisonNBTUtil {
 	public static String getNBTString( ItemStack bukkitStack, String key ) {
 		String results = null;
 		
-		results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
+		Function<ReadableItemNBT, String> gsFnc = nbt -> nbt.getString(key);
+		
+		results = NBT.get(bukkitStack, gsFnc );
+//		results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
 		
 		return results;
 	}
@@ -59,7 +65,10 @@ public class PrisonNBTUtil {
 	public static boolean getNBTBoolean( ItemStack bukkitStack, String key ) {
 		boolean results = false;
 		
-		results = NBT.get(bukkitStack, nbt -> nbt.getBoolean(key));
+		Function<ReadableItemNBT, Boolean> gbFnc = nbt -> nbt.getBoolean(key);
+
+		results = NBT.get(bukkitStack, gbFnc );
+//		results = NBT.get(bukkitStack, nbt -> nbt.getBoolean(key));
 		
 		return results;
 	}
