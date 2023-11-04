@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15g 2023-10-26
+# 3.3.0-alpha.15g 2023-11-04
+
+
+* **GUI: Add support for changing the gui item names for Ranks and Mines.  Ranks can now set their material type too.**
 
 
 * **Updated nbt-api and fixed a new issue that was introduced with mc 1.20.2.**

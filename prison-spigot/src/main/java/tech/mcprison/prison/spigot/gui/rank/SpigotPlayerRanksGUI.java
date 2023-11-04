@@ -157,6 +157,11 @@ public class SpigotPlayerRanksGUI
 
         PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerRanksGUI"));
 
+        
+        
+        String guiItemNameDefault = guiConfig.getString( "Options.Ranks.GuiItemNameDefault" );
+
+        
         // Not sure how you want to represent this:
         XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
         XMaterial materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
@@ -184,9 +189,34 @@ public class SpigotPlayerRanksGUI
         
         for ( Rank rank : ranksDisplay )
 		{
-        	// hasAccess uses access by rank, and access by perm:
-        	boolean playerHasThisRank = getRankPlayer() != null && getRankPlayer().hasAccessToRank( rank );
+        	
+            String guiItemName = guiConfig.getString( "Options.Ranks.GuiItemNames." + rank.getName() );
 
+            // Get Rank Name. First use 'guiItemName' if not null, then try to use 'guiItemNameDefault'
+            // if not null, and then use the rank's tag, or if that's null, then use the name:
+            String rankName =
+            		guiItemName != null ? guiItemName :
+            			guiItemNameDefault != null ? guiItemNameDefault :
+            				rank.getTag() != null ? rank.getTag() :
+            					rank.getName();
+    
+            
+            // hasAccess uses access by rank, and access by perm:
+            boolean playerHasThisRank = getRankPlayer() != null && getRankPlayer().hasAccessToRank( rank );
+            
+           	
+        	// The valid names to use for Options.Ranks.MaterialType.<MaterialName> must be
+        	// based upon the XMaterial enumeration name, or supported past names.
+        	String materialTypeStr = guiConfig.getString("Options.Ranks.MaterialType." + rank.getName());
+        	XMaterial materialType =
+        			materialTypeStr == null ? null :
+        				XMaterial.valueOf( materialTypeStr.toUpperCase() );
+        	
+        	materialType = 
+        			!playerHasThisRank ? materialHasNot : 
+        				materialType != null ? materialType :
+        					materialHas;
+        	
         	String rankLoreKey = "EditableLore.Rank." + ladderName + "." + rank.getName();
         	List<String> rankLore = new ArrayList<>( configCustomLore );
         	List<String> rankLore2 = guiConfig.getStringList( rankLoreKey );
@@ -215,7 +245,7 @@ public class SpigotPlayerRanksGUI
             }
 
             for ( String stringValue : rankLore ) {
-            	
+                
             	String currency = (rank.getCurrency() == null || 
         				"default".equalsIgnoreCase( rank.getCurrency()) ||
 							rank.getCurrency().trim().length() == 0  ?
@@ -246,9 +276,10 @@ public class SpigotPlayerRanksGUI
             }
 
             Button itemRank = new Button(null, 
-            		playerHasThisRank ? materialHas : materialHasNot, 
+            		materialType,
+//            		playerHasThisRank ? materialHas : materialHasNot, 
             				showNumber ? amount : 1, ranksLore, 
-            						rank.getTag() );
+            						rankName );
 
             amount++;
 
