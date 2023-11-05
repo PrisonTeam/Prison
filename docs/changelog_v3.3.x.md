@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15g 2023-11-04
+# 3.3.0-alpha.15g 2023-11-05
+
+
+* **Player Cache: Put some of the player cache numbers in to the config.yml file so they can be fine tuned if desired.**
+See the changes to config.yml for information to what the new setting controls.
 
 
 * **GUI: Add support for changing the gui item names for Ranks and Mines.  Ranks can now set their material type too.**

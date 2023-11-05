@@ -279,21 +279,6 @@ storageType: "json"
 
 
 
-# Hesitancy Delay Penalty - The purpose of the Hesitancy Delay Penalty is to encourage players
-# to rankup to the next rank.  Once a player exceeds the rankup cost, they start to incurr a 
-# rankup penalty.  The penalty would be based upon the amount over the rankup cost.  So if a player
-# has 1.1 million, then only 0.1 million will be subject to the penalty and the penalty will be 20%.
-# The max value a player can achieve for a rank will be the rankup cost, then the Hesitancy 
-# Delay Penalty will be subtracted from that amount. 
-# For example, if the rankup cost would be 1.0 million and a player has 1.1 million, then their 
-# max "score" they can achieve is 1.0 million, but the 20% penalty on the 0.1 million will be 
-# subtracted from the "score".  So their adjusted score would be:
-#   1.0 million - 0.1 million * 0.2 = 1.0 m - 20,000 = 0.8 m
-#
-top-stats:
-  rank-players:
-    hesitancy-delay-penalty: true
-
 
 # Prison mines reset gap is the number of milliseconds that are used to 
 # space out the mine resets when starting the server.  This value should 
@@ -536,3 +521,60 @@ topNPlayers:
     interval-ticks: 6000
 
 
+# Hesitancy Delay Penalty - The purpose of the Hesitancy Delay Penalty is to encourage players
+# to rankup to the next rank.  Once a player exceeds the rankup cost, they start to incurr a 
+# rankup penalty.  The penalty would be based upon the amount over the rankup cost.  So if a player
+# has 1.1 million, then only 0.1 million will be subject to the penalty and the penalty will be 20%.
+# The max value a player can achieve for a rank will be the rankup cost, then the Hesitancy 
+# Delay Penalty will be subtracted from that amount. 
+# For example, if the rankup cost would be 1.0 million and a player has 1.1 million, then their 
+# max "score" they can achieve is 1.0 million, but the 20% penalty on the 0.1 million will be 
+# subtracted from the "score".  So their adjusted score would be:
+#   1.0 million - 0.1 million * 0.2 = 1.0 m - 20,000 = 0.8 m
+#
+top-stats:
+  rank-players:
+    hesitancy-delay-penalty: true
+
+
+
+
+
+# Player-Cache: The player cache stores and tracks a lot of detailed information for
+# all players. There are a few settings that can help improve performance, or help 
+# adjust for your server's requiremments.
+# write-delay-sec: Default 60 seconds - There is a player cache task that runs every 
+#                  x seconds, based upon this setting. It maintains the cache by 
+#                  saving 'dirty' entries, purging entries that have expired (off-line
+#                  player cache entries that have been loaded for longer than the 
+#                  time to live value). etc... This task provides the house keeping 
+#                  functions, with the most critical aspect being saving changed cached
+#                  entries.  This value need to be carefully balanced to help ensure the
+#                  entries are save frequently to protect against loss if the server 
+#                  crashes, but also it should be long enough so it does not consume
+#                  too many resources.
+#                  One minute may be a good starting point, but on stable servers, you 
+#                  could push it back to about 5 mins, 15 mins, or longer.
+#                  When the server shuts down normally, all dirty entries in the cache
+#                  are tried to be written before the server process is hard-terminated,
+#                  so consideration need to be applied to how many changes can be saved 
+#                  before the server gives up and hard-terminates the saves, which could
+#                  result in lost data.
+# time-to-live-sec: Default 30 mins.  For off line players, if there have been no 
+#                   interactions, or usage of their cache entries, they will be purged
+#                   from the cache.  This may also apply to online players too, but 
+#                   they would have to inactive for this duration.  If a player is 
+#                   purged from cache, then they will be reloaded when the rejoin the
+#                   server, or there is a need to update, or access their cache entry.
+# update-player-stats-sec: Default 30 seconds.  Checks to see if all players within the
+#                          player cache who are marked as active are still online.
+#                          This does not update any files and does not interact with 
+#                          bukkit/spigot. Very, very minimal impact on server, but
+#                          important to recording player's activity level on the server.
+player-cache:
+  write-delay-sec: 60
+  time-to-live-sec: 1800
+  update-player-stats-sec: 30
+  
+  
+  
