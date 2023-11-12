@@ -25,6 +25,7 @@ include 'prison-mines'
 include 'prison-ranks'
 include 'prison-sellall'
 
+include 'prison-misc'
 
 include 'prison-worldguard6'
 include 'prison-worldguard7'

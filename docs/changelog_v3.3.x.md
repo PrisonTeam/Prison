@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15h 2023-11-12
 
 
+* **Economy support for CoinsEngine: support has been initially added**, but it is unsure if it is working correctly.  This request originated from pingu and they said it's not working, but has not provided any more information.  Unsure how it's not working, or if they cannot use it the way they originally envisioned because sellall cannot support different currencies for different items within sellall.
+Because of the lack of an API jar to be used, a new sub-project 'prison-misc' was created to be able to generate a pseudo-shell api for the CoinsEngine plugin.  This pseduo api jar is used strictly to allow the successful compiling of the prison's economy hooks for CoinsEngine.
+
+
 * **Block Converters: Change the usage to Player instead of RankPlayer since if ranks are disabled then RankPlayer could not exist.**
 
 
