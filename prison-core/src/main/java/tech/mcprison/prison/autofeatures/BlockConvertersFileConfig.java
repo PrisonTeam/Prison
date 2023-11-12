@@ -10,9 +10,9 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.ranks.data.RankPlayer;
 
 public class BlockConvertersFileConfig {
 
@@ -55,7 +55,7 @@ public class BlockConvertersFileConfig {
 		
 	}
 	
-	public boolean processAutoFeaturesForBlock( RankPlayer player, String blockName ) {
+	public boolean processAutoFeaturesForBlock( Player player, String blockName ) {
 		boolean results = isProcessAutoFeaturesAllBlocks( player );
 		
 		if ( !results ) {
@@ -65,7 +65,7 @@ public class BlockConvertersFileConfig {
 		return results;
 	}
 
-	public BlockConverterResults getBlockConverterItemStacks( RankPlayer player, 
+	public BlockConverterResults getBlockConverterItemStacks( Player player, 
 			String blockName, int blockQuantity,
 			BlockConverterTypes bcType ) {
 		
@@ -126,7 +126,7 @@ public class BlockConvertersFileConfig {
 	 * @param blockName
 	 * @return
 	 */
-	public BlockConverter getBlockConverter( RankPlayer player, String blockName, 
+	public BlockConverter getBlockConverter( Player player, String blockName, 
 			BlockConverterTypes bcType ) {
 		BlockConverter results = null;
 		
@@ -194,7 +194,7 @@ public class BlockConvertersFileConfig {
 	 * @param bc
 	 * @return
 	 */
-	private List<BlockConverterOutput> getBlockConverterOutputs(RankPlayer player, BlockConverter bc) {
+	private List<BlockConverterOutput> getBlockConverterOutputs(Player player, BlockConverter bc) {
 		
 		List<BlockConverterOutput> outputs = new ArrayList<>();
 		
@@ -202,7 +202,7 @@ public class BlockConvertersFileConfig {
 			
 			for ( BlockConverterOutput bcOutput : bc.getOutputs() ) {
 				
-				if ( bcOutput.isEnabled() ) {
+				if ( bcOutput.isEnabled() ) { 
 					
 					// If chance, and the random number is greater than the chance, then skip this output:
 					if ( bcOutput.getChance() != null && 
@@ -253,7 +253,7 @@ public class BlockConvertersFileConfig {
 	 * @param player
 	 * @return
 	 */
-	public Boolean isProcessAutoFeaturesAllBlocks( RankPlayer player ) {
+	public Boolean isProcessAutoFeaturesAllBlocks( Player player ) {
 		
 		if ( !getBcData().getProcessAutoFeaturesAllBlocks().containsKey( player.getName() ) ) {
 			BlockConverterResults allBlocksBCR = getBlockConverterItemStacks( player, "*all*", 1, BlockConverterTypes.autoPickupFeatures );
@@ -381,7 +381,7 @@ public class BlockConvertersFileConfig {
 	 * @param blockName
 	 * @return
 	 */
-	public List<BlockConverterOptionEventTrigger> findEventTrigger(RankPlayer rPlayer, String blockName) {
+	public List<BlockConverterOptionEventTrigger> findEventTrigger( Player rPlayer, String blockName) {
 		List<BlockConverterOptionEventTrigger> eventTriggers = null;
 		
 		BlockConverterEventTrigger bcet = (BlockConverterEventTrigger) 

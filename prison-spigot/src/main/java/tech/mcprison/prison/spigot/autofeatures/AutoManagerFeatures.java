@@ -3274,11 +3274,16 @@ public abstract class AutoManagerFeatures
 		
 		long start = System.currentTimeMillis();
 		
-		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
+		if ( PrisonRanks.getInstance().isEnabled() ) {
+			
+		}
+		
+		SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
+//		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
 		String blockName = pmEvent.getSpigotBlock().getBlockName();
 		
 		List<BlockConverterOptionEventTrigger> eventTriggers = 
-							AutoFeaturesWrapper.getBlockConvertersInstance().findEventTrigger( rPlayer, blockName );
+							AutoFeaturesWrapper.getBlockConvertersInstance().findEventTrigger( sPlayer, blockName );
 		
 		if ( eventTriggers != null ) {
 			StringBuilder sb = new StringBuilder();

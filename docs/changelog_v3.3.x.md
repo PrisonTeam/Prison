@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15h 2023-11-05
+# 3.3.0-alpha.15h 2023-11-12
+
+
+* **Block Converters: Change the usage to Player instead of RankPlayer since if ranks are disabled then RankPlayer could not exist.**
 
 
 ** 3.3.0-alpha.15h  2023-11-05**
