@@ -81,6 +81,7 @@ import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.customblock.CustomItems;
+import tech.mcprison.prison.spigot.economies.CoinsEngineEconomy;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
@@ -943,6 +944,7 @@ public class SpigotPrison
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
         registerIntegration(new GemsEconomy());
+        registerIntegration(new CoinsEngineEconomy());
 
         registerIntegration(new VaultPermissions());
         registerIntegration(new LuckPerms5());
