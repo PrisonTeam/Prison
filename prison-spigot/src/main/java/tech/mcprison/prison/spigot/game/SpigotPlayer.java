@@ -860,7 +860,9 @@ public class SpigotPlayer
 		return isAutoSellEnabled( null );
 	}
 	public boolean isAutoSellEnabled( StringBuilder debugInfo ) {
-		
+	    if(SellAllUtil.get() == null) {
+	      return false;
+	    } else {
 		boolean isSellallEnabled = SellAllUtil.get() != null && 
 				SpigotPrison.getInstance().isSellAllEnabled();
 		
@@ -884,6 +886,8 @@ public class SpigotPlayer
 								isPlayerAutoSellTurnedOff );
 		
 		return isPlayerAutosellEnabled;
+	    }
+		
 	}
 	
 	
