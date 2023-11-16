@@ -16,6 +16,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -332,32 +333,35 @@ public class PrisonMinesBlockBreakEvent
 		
 	}
 	public String performSellAllOnPlayerInventoryString( String description ) {
-		
-		final long nanoStart = System.nanoTime();
-		
-		boolean isUsingSign = false;
-		boolean completelySilent = false;
-		boolean notifyPlayerEarned = false;
-		boolean notifyPlayerDelay = false;
-		boolean notifyPlayerEarningDelay = true;
-		boolean playSoundOnSellAll = false;
-		boolean notifyNothingToSell = false;
-		
-		boolean success = SellAllUtil.get().sellAllSell( getPlayer(), 
-				isUsingSign, completelySilent, 
-				notifyPlayerEarned, notifyPlayerDelay, 
-				notifyPlayerEarningDelay, playSoundOnSellAll, 
-				notifyNothingToSell, null );
-		final long nanoStop = System.nanoTime();
-		double milliTime = (nanoStop - nanoStart) / 1000000d;
-		
-		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append( "(" )
-		.append( description)
-		.append( ": " + (success ? "success" : "failed"))
-		.append( " ms: " + dFmt.format( milliTime ) + ") ");
+		if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
+			
+			final long nanoStart = System.nanoTime();
+			
+			boolean isUsingSign = false;
+			boolean completelySilent = false;
+			boolean notifyPlayerEarned = false;
+			boolean notifyPlayerDelay = false;
+			boolean notifyPlayerEarningDelay = true;
+			boolean playSoundOnSellAll = false;
+			boolean notifyNothingToSell = false;
+			
+			boolean success = SellAllUtil.get().sellAllSell( getPlayer(), 
+					isUsingSign, completelySilent, 
+					notifyPlayerEarned, notifyPlayerDelay, 
+					notifyPlayerEarningDelay, playSoundOnSellAll, 
+					notifyNothingToSell, null );
+			final long nanoStop = System.nanoTime();
+			double milliTime = (nanoStop - nanoStart) / 1000000d;
+			
+			DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+			
+			sb.append( "(" )
+				.append( description)
+				.append( ": " + (success ? "success" : "failed"))
+				.append( " ms: " + dFmt.format( milliTime ) + ") ");
+		}
 		
 		return sb.toString();
 	}

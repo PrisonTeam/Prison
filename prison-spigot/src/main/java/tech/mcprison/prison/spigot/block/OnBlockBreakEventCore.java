@@ -915,27 +915,26 @@ public abstract class OnBlockBreakEventCore
 
 				debugInfo.append( "(BLOCKEVENTS processing) " );
 				
-				SellAllUtil sellAllUtil = SellAllUtil.get();
-				boolean isSellallEnabled = sellAllUtil != null && 
-						SpigotPrison.getInstance().isSellAllEnabled();
-				
-				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
-				// This is to be used with other auto sell setting, but never on it's own:
-				boolean isPlayerAutosellEnabled = 
-								isSellallEnabled &&
-								(!sellAllUtil.isAutoSellPerUserToggleable ||
-										sellAllUtil.isSellallPlayerUserToggleEnabled( 
-													pmEvent.getPlayer() ));
-				
-				
-				
-				// AutoSell on full inventory when using BLOCKEVENTS:
-				if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
-						isPlayerAutosellEnabled &&
-						pmEvent.getSpigotPlayer().isInventoryFull() ) {
+				if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
 					
-					pmEvent.performSellAllOnPlayerInventoryLogged("BLOCKEVENTS priority sellall");
+					SellAllUtil sellAllUtil = SellAllUtil.get();
 					
+					// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+					// This is to be used with other auto sell setting, but never on it's own:
+					boolean isPlayerAutosellEnabled = 
+							(!sellAllUtil.isAutoSellPerUserToggleable ||
+									sellAllUtil.isSellallPlayerUserToggleEnabled( 
+											pmEvent.getPlayer() ));
+					
+					
+					
+					// AutoSell on full inventory when using BLOCKEVENTS:
+					if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
+							isPlayerAutosellEnabled &&
+							pmEvent.getSpigotPlayer().isInventoryFull() ) {
+						
+						pmEvent.performSellAllOnPlayerInventoryLogged("BLOCKEVENTS priority sellall");
+						
 //					final long nanoStart = System.nanoTime();
 //					boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
 //											false, false, false, true, true, false);
@@ -948,6 +947,7 @@ public abstract class OnBlockBreakEventCore
 //					
 //					PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
 //					
+					}
 				}
 			}
 			

@@ -860,30 +860,29 @@ public class SpigotPlayer
 		return isAutoSellEnabled( null );
 	}
 	public boolean isAutoSellEnabled( StringBuilder debugInfo ) {
+		boolean results = false;
 		
-		boolean isSellallEnabled = SellAllUtil.get() != null && 
-				SpigotPrison.getInstance().isSellAllEnabled();
-		
-		boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
-		
-		boolean isPlayerAutoSellTurnedOff = isAutoSellPerUserToggleable &&
-				  !SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+		if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
+			
+			boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
+			
+			boolean isPlayerAutoSellTurnedOff = isAutoSellPerUserToggleable &&
+					!SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
 							getWrapper() );
-		
-		if ( debugInfo != null && isPlayerAutoSellTurnedOff ) {
-			debugInfo.append( Output.get().getColorCodeWarning() );
-			debugInfo.append( "(Player toggled off autosell) " );
-			debugInfo.append( Output.get().getColorCodeDebug() );
+			
+			if ( debugInfo != null && isPlayerAutoSellTurnedOff ) {
+				debugInfo.append( Output.get().getColorCodeWarning() );
+				debugInfo.append( "(Player toggled off autosell) " );
+				debugInfo.append( Output.get().getColorCodeDebug() );
+			}
+			
+			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+			// This is to be used with other auto sell setting, but never on it's own:
+			results = !isAutoSellPerUserToggleable ||
+							isPlayerAutoSellTurnedOff;
 		}
 		
-		// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
-		// This is to be used with other auto sell setting, but never on it's own:
-		boolean isPlayerAutosellEnabled = 
-						isSellallEnabled &&
-						( !isAutoSellPerUserToggleable ||
-								isPlayerAutoSellTurnedOff );
-		
-		return isPlayerAutosellEnabled;
+		return results;
 	}
 	
 	
@@ -922,8 +921,7 @@ public class SpigotPlayer
 		
 		AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
 		
-		boolean isSellallEnabled = SellAllUtil.get() != null && 
-				SpigotPrison.getInstance().isSellAllEnabled();
+		boolean isSellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
 		
 		if ( isSellallEnabled && isPlayerAutosellEnabled && !isOp() ) {
 			

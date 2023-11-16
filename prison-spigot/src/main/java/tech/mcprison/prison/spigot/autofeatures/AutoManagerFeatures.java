@@ -888,8 +888,7 @@ public abstract class AutoManagerFeatures
 			
 			long nanoTime = 0L;
 			
-			boolean isSellallEnabled = SellAllUtil.get() != null && 
-					SpigotPrison.getInstance().isSellAllEnabled();
+			boolean isSellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
 			
 			
 //			boolean isPlayerAutoSellTurnedOff = SellAllUtil.get().isAutoSellPerUserToggleable &&
@@ -1202,7 +1201,7 @@ public abstract class AutoManagerFeatures
 				count += itemStack.getAmount();
 				
 				// Since this is not auto pickup, then only autosell if set in the pmEvent:
-				if ( pmEvent.isForceAutoSell() && SellAllUtil.get() != null ) {
+				if ( pmEvent.isForceAutoSell() && SpigotPrison.getInstance().isSellAllEnabled() ) {
 					
 					Player player = pmEvent.getPlayer();
 
@@ -1227,7 +1226,7 @@ public abstract class AutoManagerFeatures
 					
 						pmEvent.getDebugInfo().append( "(dropping: " + itemStack.getName() + " qty: " + itemStack.getAmount() );
 						
-						if ( SellAllUtil.get() != null ) {
+						if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
 							
 							double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
 							autosellTotal += amount;

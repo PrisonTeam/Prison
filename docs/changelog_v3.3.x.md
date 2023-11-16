@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.15h 2023-11-12
+# 3.3.0-alpha.15h 2023-11-16
+
+
+* **Sellall: Standardize how sellall is being checked to see if it's enabled.**
+There are still a few ways it can be improved, but this is a step in the right direction.
+There was a problem with the older way things were being handled that was causing an NPE with the SpigotPlayer, which was brought to my attention by DinoFengz, but I noticed there were other problems that needed to also be addressed.
 
 
 * **Economy support for CoinsEngine: support has been initially added**, but it is unsure if it is working correctly.  This request originated from pingu and they said it's not working, but has not provided any more information.  Unsure how it's not working, or if they cannot use it the way they originally envisioned because sellall cannot support different currencies for different items within sellall.

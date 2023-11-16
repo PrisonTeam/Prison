@@ -7,6 +7,7 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
@@ -34,10 +35,10 @@ public class PrisonSpigotGUISellAllCommands
             return;
         }
 
-        SellAllUtil sellAllUtil = SellAllUtil.get();
-        if (sellAllUtil == null){
+        if ( !SpigotPrison.getInstance().isSellAllEnabled() ){
             return;
         }
+        SellAllUtil sellAllUtil = SellAllUtil.get();
 
         if (!sellAllUtil.openSellAllGUI( p, page, "sellall gui", "close" )){
             // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
