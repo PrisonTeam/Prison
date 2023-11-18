@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.15h 2023-11-18
 
 
+* **Fixed an issue with ranks being disabled.  It now skips over this processing when ranks are disabled.**
+
+
+
 * **Modules: Changed the way some of the module management is used to help prevent errors when a module is disabled.**
 Suppress disabled modules from the placeholder list... only Ranks and Mines, which covers all of the placeholders.
 

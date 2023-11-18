@@ -3049,31 +3049,38 @@ public class SpigotPlatform
 	public String getRanksListString() {
 		StringBuilder sb = new StringBuilder();
 		
-		LadderCommands lc = 
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			
+			LadderCommands lc = 
 					PrisonRanks.getInstance().getRankManager().getLadderCommands();
-		
-		RanksCommands rc = 
+			
+			RanksCommands rc = 
 					PrisonRanks.getInstance().getRankManager().getRanksCommands();
-		
-		sb.append( "\n\n" );
-		
-		ChatDisplay displayLadders = lc.getLadderList();
-
-		sb.append( displayLadders.toStringBuilder() );
-		sb.append( "\n" );
-		
-		
-		RankPlayer rPlayer = null;
-		
-		ChatDisplay displayRanks = new ChatDisplay("Ranks");
-		rc.listAllRanksByLadders( displayRanks, true, rPlayer );
-		
-		sb.append( displayRanks.toStringBuilder() );
-		sb.append( "\n" );
-		
-				
-    	rc.listAllRanksByInfo( sb );
+			
+			sb.append( "\n\n" );
+			
+			ChatDisplay displayLadders = lc.getLadderList();
+			
+			sb.append( displayLadders.toStringBuilder() );
+			sb.append( "\n" );
+			
+			
+			RankPlayer rPlayer = null;
+			
+			ChatDisplay displayRanks = new ChatDisplay("Ranks");
+			rc.listAllRanksByLadders( displayRanks, true, rPlayer );
+			
+			sb.append( displayRanks.toStringBuilder() );
+			sb.append( "\n" );
+			
+			
+			rc.listAllRanksByInfo( sb );
 //    	rc.allRanksInfoDetails( sb );
+		}
+		else {
+			sb.append( "Ranks are disabled.\n\n" );
+		}
+		
 		
     	return sb.toString();
 //		return Text.stripColor( sb.toString() );
