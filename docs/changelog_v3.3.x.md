@@ -4,7 +4,7 @@
 
 ## Change logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
- - [v3.2.0 through v3.3.0-alpha.14](prison_changelogs.md)
+ - [v3.2.0 through v3.3.0-alpha.16](prison_changelogs.md)
  
 * [Known Issues - Open](knownissues_v3.2.x.md)
 * [Known Issues - Resolved](knownissues_v3.2.x_resolved.md)
@@ -17,7 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16 2023-11-18
 
 
-# 3.3.0-alpha.16 2023-11-18
+**v3.3.0-alpha.16 2023-11-18**
+
+* Update change logs for v3.3.0-alpha.16
 
 
 * **Fixed an issue with ranks being disabled.  It now skips over this processing when ranks are disabled.**
@@ -548,367 +550,24 @@ This tries to find the remapped command for all commands by updating the SpigotC
 * **Fixed an issue where the setting isAutoFeaturesEnabled was not being applied to the permissions which resulted in the perms always being enabled when OPd.**
 
 
+
+
 * **2023-07-07 v3.3.0-alpha.15 Released**
 
 
-* **This doc was failing to generate github docs due to issues with non utf-8 characters.**
-Changed them to dashes.  Not sure what caused these characters to become non-compliant.
 
+See [Prison Change log v3.2.3-alpha.15](prison_changelog_v3.3.0-alpha.15.md)
 
-* **Update the known issues doc...**
-
-
-* **Doc updates for the latest alpha.15 release.**
-
-
-* **Added comments to the prison-spigot/build.gradle configs to add more descriptive comments.**
-Checked the libraries and all are up to date.
-
-
-* **Setup the topN stats to be included in the /prison version information.**
-
-
-* **Added the language files for the three new topN messages.**
-
-
-* **Update the topN command to eliminate the use of the save file.**
-All players are dynamically loaded by the refresh task.  Stats have been added and are not a new option for the command.
-To act as a form of debugging feature, the save of the topN data has been disconnected from the current process.
-
-
-* **Updated ItemsAdder from v3.2.5 to v3.5.0b**
-because github's build was failing to find v3.2.5 online and was killing the prison build.
-
-
-* **Update topN Stats.**  This is not the same as topNPlayers and this is not yet being used.
-This tracks topN on blocks mined, tokens, and the player's ranks and balances. 
-The comparator was not correct and was fixed.
-
-
-* **MC 1.18 new world height support.**
-Prison now supports the newer world heights as found in mc 1.18.x and newer. 
-The new range for Y is from -64 to 320.
-
-
-* **Bug fix: found that under a rare situation that it was trying to use an empty String with decimal formatting.**
-This was found while testing some placeholders while players were offline.
-
-
-* **I made a mistake when adding the new feature to skip player scans on startup.**
-I added a new root perm in config.yml that started with `prison-ranks` when `ranks` already existed.  Therefore, I changed the defaults in config.sys to fix this and changed the code to allow the old version of the config (the bad version) and the newer version.
-
-
-* **Changes to the help for `/rankup` and `/prestige` commands to make it a little more clearer** as to what is expected with perms and to provide more details.
-Added a new config setting to disable the need to use the prestige perm `ranks.rankup.presetiges` which may make it easier to get presetiges working on most servers.
-Prestiges still requires the use of the `ranks.user` perm which is the same perm used for `/rankup`.
-
-
-* **Updated the PrisonJarReporter tool to include java versions 19, 20, and 21.**
-Also fixed a bug in which if the version signature is not known, then it was returning a null.  Now it returns an enum of type "JavaSE_UnknownVersion" which will prevent future errors.
-
-
-
-* **2023-06-20: Version 3.3.0-alpha.14c released**
-
-
-* **Totally stupid change: github's compiler forgot how to use overloaded functions so it was trying to use the wrong one.**
-Renaming the function should help it's anti-AI skill sets.
-
-
-* **Fixed the way prison was using the nbt-api.**
-Now using the correct repo and the newer API functions.
-
-
-* **Trying to get nbt-api setup properly with shadowing.**  It looks like it's correctly shadowed, but it's being improperly reported as not being shadowed.  I have a conversation with the developer open to figure out what's going on with this issue.
-
-
-* **Update the item-nbt-api library to v2.11.3 from v2.11.2.**
-Turned out the maven repo they actually use was not mavencentral.com, of which, has not yet pulled in the updated version.  Using the correct repo now.
-
-
-* **Update libraries:**
-Update bstats from v3.0.0 to v3.0.2.
-Update XSeries from v9.2.0 to v9.4.0.
-Update vaultAPI from v1.7.0 to v1.7.1.
-
-
-* **Changed config.yml to be able to bypass the add new player at prison startup.**  This would be more related to servers that already have a large player base when they switch to this plugin.
-NOTE: It's not possible to fully test all conditions where a player object may be null. Use at your own risk if you do not allow prison to scan for new players at startup.  If an error is found, please contact support ASAP in our discord server so we can get it fixed for you.
-
-
-2023-06-13 : 
-* **Update how the player objects are written when dirty.** There were some situations where the RankPlayer object would be written to the file system 2 or 3 times for one change.
-The logic of how things are nested remains the same (to minimize breakage of the code), but the RankPlayer is not utilizing a dirty flag internally so if it's saved once, it skip the other attempts to save without changes.
-
-
-* **Simple example illustrating the weakness of doubles with large values.**
-
-
-* **Update nbt api to v2.11.2 from v2.11.1**
-
-
-* **Added ExaltedEconomy to the soft depends so prison will wait until it is loaded before trying to startup.** 2023-05-24
-
-
-* **Fixed an issue that if the prison config files are manually modified and as a result, the block events cannot be parsed, this fix prevents a null value being inserted in to the loaded block events.**
-For example, a trailing comma would produce a null block event because the parser that prison uses will read the comma, then with nothing else following it, it injects a null in to the collection of raw data for the block events.  Then when that raw data is parsed, it passed along that null as a valid block event.  The fix, prevents any of the nulls from being added to the active block events.
-
-
-* **A sellall gui message that was supposed to say that the gui was not enabled only said sellall was not enabled.  Added a  new message to clearly state it's the gui that is not enabled.**
-
-
-* **Get part of sellall to work if ranks are disabled.  The command /sellall sell works, but the other sellall commands need to be tested and fixed.**
-
-
-* **Bug fix: bstats and topn was using the wrong function to check to see if ranks were enabled.**
-
-
-* **Fixed an issue when cannot get a player from bukkit**
-
-
-* **AutoFeatures bug fix: If normal drops is enabled (no auto pickup), and sellall was disabled, then normal drops were being disabled.**
-The location of checking for if sellall was active was in the wrong location, which was preventing prison from actually dropping the blocks for the player.
-
-
-* **Fixed an issue with prison utils potions where if the player was null, then it was throwing an NPE.  **
-
-
-* **AutoFeatures: Rev Enchants JackHammerEvent: Bug fix: The jackhammer event was not returning a list of all of the blocks involved in the event, which could be excluding hundreds if not more than 1000 blocks.**
-The fix, uses the two points to calculate which blocks to include, and then include them through that cuboid instead of getting a list of blocks from the event.
-
-
-* **BugFix: Fixes an issue with sellall where it is trying to sell an invalid ItemStack.**
-As a result, the sellall pays the player for the itemstack but the itemstack is not removed.  This fixes it by not trying to sell the questionable itemstacks.
-
-
-* **AutoFeatures: Add a bukkit drops multiplier which is applied to the bukkit drops before the fortune calculations are performed.**
-This can be used to reduce the total number of drops if a value less than 1.0 is used.  A value of 1.0 does nothing.  A value greater than one will increase the bukkit drops.  All values are floored and are integers.
-
-
-**Update to v3.3.0-alpha.14b** 2023-02-26
-
-
-* **AutoFeatures bug fix: If global fortune multiplier is set to a value lower than 1, then there is a risk of zero drops; this prevents zero drops and returns a drop of one.**
-
-
-* **Fixed an issue with the initial event check for events that will break multiple blocks.**
-The issue is that the initial check will ignore the event if the primary block is air.  The issue is that since the events are fired based upon the BlockBreakEvent then the odds of the primary block is AIR is very high.  So for those events, the primary block should not be checked for AIR to be bypassed.  This fix allows things like explosions to work.
-
-
-**Update to v3.3.0-alpha.14a** 2023-02-25
-
-
-* **Enhanced the debug reporting for fortune calculations and fixed a few uses of the newer fortune settings, some of which were used in the wrong locations.**
-
-
-* **Updated the formatting on the prison's mine wand for debug reporting of which blocks are clicked on.**
-The information has been cleaned up to be easier to read and follow.  It's now being logged in the console too so the details can more easily be reported back for troubleshooting.
-
-
-* **Updated the auto features config file to include the ACCESS priorities in the list of priorities so its better understood what the real options are.**
-
-
-* **Enhanced some of the auto features logging related to fortune, silk touch, and event and drop canceling to eliminate ambiguity and provide more specific details.**
-
-
-* **Fixed an issue with player counts being doubled.  Counts should no longer be done within the auto pickup or the normal drops... it's being handled at a higher level for consistency with other priorities.**
-
-
-* **Added a fortune multiplier that is applied to all fortune calculations, which allows for increasing or decreasing the results of the fortune.**
-
-
-* **French support added by Maxcension. Thanks Maxcension!**
-
-
-* **Move the check for access to the OnBlockBreakMines.ignoreMinesBlockBreakEvent so it is logged with the other conditions.**
-
-
-* **Setup minecraft statistics so prison can report block mining through a new setting within the auto features.**
-
-
-* **Enable silk touch enchantment by dropping the actual blocks that are being broke.**
-If alt fortune is being used, then fortune will apply to these silked drops.
-If players place silked blocks back in the mines (fi that feature is enabled), prison will ignore those blocks and won't break them... it will let bukkit or another plugin deal with them, but it will not apply any fortune to them. 
-
-
-* **Bug Fix autosell: was trying to access autosell when it was disabled.**
-
-
-* **Update google gson (json IO tool) from v2.8.6 to v2.10.1**
-
-
-* **Update google guava from v19.0 to v31.1-jre.  Guava is used for internal event listeners.**
-
-
-* **Prison Debug Block Inspector: Expand and enhanced the prison tool to provide an inspection of the block break events.**
-Added event block details and drops being canceled for each listener. Reformatted to make it easier to read.
-
-
-* **Remove the optional from getModule functions since java 17.0.6 was failing.**
-Not sure if it's an actual java issue, or a problem caused by another plugin, or etc... this works well with java 17.0.2.
-
-
-* **Minor improvements to the EventResultsReasons to show a success and more detailed debug logging.**
-
-
-* **Relocate the ACCESS failure which will trigger a TP to an accessible mine...**
-this is relocated because it's not an event, but a behavior triggered by an event condition.
-
-
-* **Setup a temp test to test ItemsAdder.**
-
-
-* **AutoFeatures: new feature to process MONITOR and BLOCKEVENTS only if the block is AIR.**
-The reason for this is that if we are monitoring a blockbreak event, then we can assume that the block should be AIR.  This setting is important for enchantment plugins handling the block break events, since a non-AIR value would indicate that the player was not successful in breaking the block.  
-Added more detailed debugging logging if the event is fast-failed or under normal conditions.
-
-
-* **Change the block break priority BLOCKEVENTS to MONITOR.  Updated the docs too.**
-
-
-* **Add new autoFeature setting to allow non-prison placed blocks to be handled by bukkit: ifBlockIsAlreadyCountedThenCancelEvent: true. (default setting).**
-Prison was canceling the event if it found a block placed in the mine that it did not place during a mine reset.  This would allow players to place blocks and then remove them if they have the worldguard perms to do block breaks.
-These blocks are not tracked in prison and are not handled.  Prison just ignores them.
-
-
-* **Fixed the gui config which it needed to load after loading ranks and mines.  So it's initialized a second time in the startup process.**
-
-
-* **Gui Player Mine config settings:  Added `Options.Mines.MaterialType.NoMineAccess` which defaults to REDSTONE_BLOCK.**
-If it does not exist in a player's GuiConfig.yml file, it will now be auto added.
-Also if the `Options.Mines.MaterialType` block list of material types to use for each mine does not exist, it will auto add them, using the first block in the mine's block list.
-
-
-* **Some adjustments to AutoFeatures and monitor priority... it was processing block events under some conditions.**
-
-
-* **Mine BlockEvents: Enables the use of pipes in commands and messages now.**
-
-
-* **MineBombs: Added a new field specifically for the item name for the bomb.**
-The mine bombs now auto load upon startup and will auto update now if there is a change in mine data versions.
-
-
-* Changed the example world names in the config.yml file where Prison is disabled. Too many people were running in to the problem where they just happened to have those worlds, and that's where they were trying to use prison.  So they were thinking Prison was not working instead of Prison being disable in those worlds because that's what was in the configs.
 
 
 **Prison v3.3.0-alpha.14 2023-01-23**
 
 
-The following are significant changes that are included in the alpha.14 release since the alpha.13 release was posted.
-
-* Support for RevEnchants
-
-
-* Added more flexibility in supporting Prison Event Listener priorities for block break events so prison is better suited to support more enchantment plugins under more conditions. Added ACCESS, ACCESSBLOCKBREAKS, and ACCESSMONITOR to provide far more flexibility when prison is NOT managing the block breakage.
-
-
-* General improvements in how Auto Features manages the event listeners for all of the block break events. Includes some bug fixes and performance improvements too.
-
-
-* Preparing to support ItemsAdder... will be available in next alpha release.*
-
-
-* Prison Placeholders: Added a few more, fixed a few bugs, and improved documentation so its easier to understand how to use them. Added more features to the command `/prison placeholders stats`.  The stats command can actually be used to troubleshoot issues with third-party plugins trying to use prison placeholders.
-
-
-* Top-n reports and placeholders: bug fixes and added a few more features.
-
-
-* Mine commands: refactor and improvements to some of the general mine commands.
-
-
-* Prison Placeholders: general bug fixes and performance improvements with the placeholder cache.
-
-
-* Prison's bstats: Expanded the reports that are being included.
-
-
-* Prison Command Handler: ability to lockout players from commands and tab-completes based upon perms.
-
-
-* Mines GUI Bug fixes: fixed a few issues.
-
-
-* Issue with vault not working with essentials: Not able to access player's balances through vault and provided alternative paths to resolve this issue.
-
-
-* Prison support new feature: tracking command usage along with average run times: `/prison support cmdStats`. 
-
-
-* Improved some of the `/prison support submit` features to include more of the newer data that prison is using.
-
-
-* Updates to a number of libraries that prison uses: 
-placeholderApi: v2.10.9 to v2.11.2
-XSeries: v9.0.0 to v9.2.0
-item-nbt-api: v2.10.0 to v2.11.1
-
-
-* Removal of support for MVDW placeholders since it's not able to support some of prison's advanced features, plus it's 100% redundant since PlaceholderAPI works in conjunction with it. No loss of service since PAPI is a better solution and works with MVDW.
-
-
-* Added a Prison Backup feature that can make a backup of all the settings within prison's plugin directory (small zip file backups).  It is setup to make a backup whenever it detects a change in the prison versions.  In the future, it could be automated to make snapshots of all settings and player status so there can be abilities to "rollback" to a prior instance.
-
-
-* Added new translations: Finnish, Chinese, 
-
-
-* Enhanced the player GUIs for mines and ranks to use NBT to control the options to simplify how the options work. Eliminated a lot of old code and added more flexibility.
-
-
-* Enable the sellall command to be ran from the console or from a prison command.
-
-
-* Enhanced the debug logging detail related to the auto features. Provides better logging for troubleshooting.
-
-
-* Using a static global setting for decimal formatting to better control how numeric formatting works with various language settings.
-
-
-* Able to now control suffocation in the mines, so you can now allow players to die if they logged out within a mine and they log back buried in rock.
-
-
-* Able to control mine reset teleportation controls.
-
-
-* Added direct support for translating placeholders through the Prison API so its easier to use externally through another plugin.
-
-
-* Now able to set a prestige rank tag to use for players that do not have a prestige rank. This allows for better customization for chat prefixes.
-
-
-* Fixed a bug when trying to move a mine from one world to another world.  There was a conflict with an internal value not being cleared/reset.
-
-
-* Fixed a Prison Mine Bomb bug that was making them incompatible with bukkit 1.8.8.
-
-
-* Fixed a bug with how a vector's length was being calculated. Not sure how frequently this would have been used.
-
-
-* Refactoring Prison Backpacks. Getting ready to hook them up to a new internal backpack cache to improve performance.  Not yet completed.
-
-
-* Fixed bug with /rankupmax and rewrote prestiges to better align it with the ranks module instead of relying upon the GUI code to manage it.
-
-
-* Enhanced many mine and rank commands to apply changes to all ranks or all mines with one command to make it easier to customize prison.
-
-
-* New feature setting (optional): Forced rankup as soon as the player earns enough money through sellall.
-
-
-* New feature setting (optional): Forced sellall before performing a prestige.
-
-
-* New feature setting (optional): Prevent access to prior mines when ranking up. This foces the player to only have access to mines that are linked to the current rank.  This feature allows the use of Mine and TP access by rank instead of having to setup complex settings with perms through a permission plugin.
+See [Prison Change log v3.2.3-alpha.14](prison_changelog_v3.3.0-alpha.14.md)
 
 
 
 ---------------------------
-
-
 
 
 

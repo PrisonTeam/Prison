@@ -4,6 +4,8 @@
 
 These known issues are an informal list of concerns and bugs. Also includes some wish-list items too.
 
+Not everything is logged here.  Please see the changelog for fixes and new features that were actually added. 
+
 These are notes for personal references.  These are not intended to explain anything useful, but they do track some issues and perspectives that may not be fully expressed in the change logs because initial impressions may not turn out to be the actual problem or the final course of changes and enhancements.
 
 
