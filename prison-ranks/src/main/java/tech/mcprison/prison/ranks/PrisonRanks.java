@@ -28,6 +28,7 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
+import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
@@ -55,7 +56,8 @@ import tech.mcprison.prison.store.Database;
 public class PrisonRanks 
 	extends PrisonRanksMessages {
 	
-	public static final String MODULE_NAME = "Ranks";
+	public static final String MODULE_NAME = ModuleManager.MODULE_NAME_RANKS;
+//	public static final String MODULE_NAME = "Ranks";
     /*
      * Fields & Constants
      */

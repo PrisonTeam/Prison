@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.modules.ModuleManager;
+
 public class PlaceholderManager {
 
     public static final String PRISON_PLACEHOLDER_PREFIX = "prison";
@@ -799,11 +802,34 @@ public class PlaceholderManager {
 			
 			boolean hasDeprecated = false;
 			
+			
+			boolean isMinesEnabled = Prison.get().getModuleManager().isEnabled( ModuleManager.MODULE_NAME_MINES );
+			boolean isRanksEnabled = Prison.get().getModuleManager().isEnabled( ModuleManager.MODULE_NAME_RANKS );
+		   	
+			
 			int totalCount = 0;
 			for ( PlaceholderFlags type : PlaceholderFlags.values() )
 			{
 				if ( type == PlaceholderFlags.ALIAS || type == PlaceholderFlags.SUPRESS ) {
-					break;
+					continue;
+				}
+				
+				if ( !isMinesEnabled && ( 
+						type == PlaceholderFlags.MINES ||
+						type == PlaceholderFlags.MINEPLAYERS ||
+						type == PlaceholderFlags.PLAYERBLOCKS ||
+						type == PlaceholderFlags.STATSMINES )) {
+					continue;
+				}
+				
+				if ( !isRanksEnabled && ( 
+//						type == PlaceholderFlags.PLAYER && placeholder.name().toLowerCase().contains("rank") || 
+						type == PlaceholderFlags.LADDERS || 
+						type == PlaceholderFlags.RANKS || 
+						type == PlaceholderFlags.RANKPLAYERS || 
+						type == PlaceholderFlags.STATSPLAYERS || 
+						type == PlaceholderFlags.STATSRANKS )) {
+					continue;
 				}
 				
 				int pos = results.size();
@@ -842,6 +868,11 @@ public class PlaceholderManager {
 				int count = 0;
 				for ( PrisonPlaceHolders ph : values() )
 				{
+					if ( !isRanksEnabled && ( 
+							type == PlaceholderFlags.PLAYER && ph.name().toLowerCase().contains("rank") )) {
+						break;
+					}
+					
 					if ( ph.getFlags().contains( type ) &&
 							( !omitSuppressable || 
 							omitSuppressable && !ph.isSuppressed() && !ph.isAlias() )) {

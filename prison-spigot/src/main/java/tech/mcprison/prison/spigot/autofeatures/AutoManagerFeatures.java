@@ -3273,10 +3273,6 @@ public abstract class AutoManagerFeatures
 		
 		long start = System.currentTimeMillis();
 		
-		if ( PrisonRanks.getInstance().isEnabled() ) {
-			
-		}
-		
 		SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
 //		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
 		String blockName = pmEvent.getSpigotBlock().getBlockName();

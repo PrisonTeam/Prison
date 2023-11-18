@@ -38,6 +38,7 @@ import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.util.Location;
@@ -49,7 +50,9 @@ import tech.mcprison.prison.util.Text;
  * @author The MC-Prison Team
  */
 public class PrisonMines extends Module {
-	public static final String MODULE_NAME = "Mines";
+
+	public static final String MODULE_NAME = ModuleManager.MODULE_NAME_MINES;
+//	public static final String MODULE_NAME = "Mines";
 
     private static PrisonMines i = null;
     private MinesConfig config;
