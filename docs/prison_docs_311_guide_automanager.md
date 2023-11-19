@@ -466,6 +466,45 @@ Remember that the settings for `fortuneBukkitDropsMultiplier`, `fortuneMultiplie
     * Formula: raw_adjusted_drops x 
 
 
+**Prison's Percent Gradient Fortune Calculation**
+
+New as of v3.3.0-alpha.15e
+
+This is a new fortune calculation type, which defines a max fortune amount, and a max bonus payout that is possible.  Then based upon the fortune level on the player's tool, it will payout a linear maximum amount, adjusted by a random range.
+
+To enable, you need to setup the following settings within the autoFeaturesConfig.yml file.  If you just upgraded prison, restart prison, and the new settings will be injected in to the config file for you.  Then modify those settings, and then use `/prison reload autoFeatures`.
+
+These settings must be set to these values to use this new fortune calculation:
+
+```yml
+
+  fortuneFeature:
+    isCalculateFortuneEnabled: true
+    isExtendBukkitFortuneCalculationsEnabled: false
+    isCalculateAltFortuneEnabled: false
+    percentGradientFortune:
+      isPercentGradientFortuneEnabled: true
+
+      percentGradientFortuneMaxFortuneLevel: 1000
+      percentGradientFortuneMaxBonusBlocks: 200
+      percentGradientFortuneMinPercentRandomness: 25.0
+```
+
+The last three listed settings can be customized however you need them to be.
+
+
+Percent Gradient Fortune is an alternative fortune calculation that will only be enabled if extendedBukkitFortune and altFortune is turned off.  
+
+Percent Gradient Fortune will always drop a minimum of 1 block with fortune 0 and higher. The max it will ever drop, will be 1 + MaxBonusBlocks-amount.  The calculation of the MaxBonusBlocks will be a random roll resulting in 0 bonus blocks, to the MaxBonusBlocks amount IF the player has the max fortune on their tool. 
+
+For fortune amounts less than the maxFortuneLevel, it will be treated as a linear percentage gradient of the max amount. For example, MaxFortuneLevel= 1000, and MaxBonusBlocks= 200. Therefore if the player has a fortune 500, the max bonus they could get would be only 100 blocks, but could be as low as zero bonus blocks since it's a random roll on each calculation. If they have a fort 250, then it will be 25% of 200, or 50 blocks as a max bonus. 
+
+For better control of the randomness applied to the bonus block calculations, the MinPercentRandomness sets the lowest range for the randomness. What this means, is for a maxFortuneLevel= 1000 and a maxBonusBlocks of= 200, and a tool with fort 500, the calcs would be for a bonus between '0' and (500 / 1000 * 200 =) 100 bonus blocks.  But with the minPercentRandomness= 25, then the range would be '25%' to 100% of the 100 bonus blocks. The minePercentRandomness would ensure a higher payout of bonus blocks, without effecting the max payout. minPercentRandomness has a valid range of 0.0 (off) to 99.0 percent. 
+
+No other fortune multipliers will apply to these calculations.  
+
+The percentage gradient is a very controlled way of paying out fortune bonuses.
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 

@@ -13,6 +13,10 @@ This document provides some important information on how to find help in setting
 
 # Overview
 
+We take support seriously.  We realize that being a Prison plugin, we are working with a lot of different aspects of minecraft, and that there are many other plugins that may cross paths with Prison.  We cannot support every single plugin out there, but we will try to resolve and identify all problems that are brought to our attention..
+
+Because we are so very concerned with your server's functionality, we have put a lot of effort in trying to create support tools to better understand what is happening. We cannot control other plugins, but prison is capable of tracking and reporting many fine-grained details about how it works and what is happening step-by-step.  This can allow us to figure out difficult problems.  
+
 If you are having problem, please take a quick look at the following documents as found in the Table of Contents:
 
 * Setting up prison and various plugins - If special conditions for their configurations become apparent in order for prison to work, notes will be added there.  If you notice there is a special configuration consideration that we did not document, please share with us so we can update the documents.
@@ -127,6 +131,77 @@ You can also submit a help ticket on the Prison github Issues tab, but the respo
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
+
+
+# Prison Support Submit Information
+
+Prison now has a built in way to share your configurations and settings with support personnel.
+
+More information will be documented in the future, but for now, here are the basics on how to use it.
+
+When requested by the Prison support team, you would first enter the following command to set your name that will be included on all reports to help identify who the are related to.  It doesn't have to be your full discord name, but enough characters to allow us to identify who you are.
+
+
+These commands will collect all of the related information from your Prison setup, and send it to the website `https://paste.helpch.at`.  It will provide you with an URL.  All you need to do is to copy and paste that URL in to the discord chat so the Prison support team can help with your issue.
+
+
+`/prison support setSupportName <yourName>`
+
+Once entered, it will enable the following submit tools:
+
+`/prison support submit`  - Show the available tools.
+
+```
+/prison support submit version
+/prison support submit ranks
+/prison support submit mines
+/prison support submit configs
+/prison support submit listeners
+/prison support submit latestLogs
+```
+
+**Version** This is generally the most requested information needed for support.  Provides general overall information on Prison and it's environment on the server.  This is similar to the command `/prison version all` plus a few other features such as listeners, and the command cache.
+
+**Ranks** This is everything related to ranks.  Includes ladders, ranks lists, and rank details.  It also includes all of the raw save file for these items too.
+
+**Mines** This is everything related to mines.  Includes the mine list, mine info, and the related files for each mine.
+
+**Configs** These are all of the other config files that are within prison.  These do not include any of the files included in ranks or mines.
+
+**Listeners** These are dumps of the event listeners for BlockBreak, chat, and playerinteract.  See the command `/prison support listeners help` for more detailed information.
+
+**LatestLogs** This will send the latest log file, up to a max allowed amount.
+
+
+Here are two examples that I generated from one of my test servers on 2021-12-03 and 2023-07-24.  I have no idea how long the content remains available, but for support purposes, we only need this information for a few hours.  It appears like this information is never deleted?  As such, here are two different versions which shows you how much more information has been added. 
+  [https://paste.helpch.at/silihuxaja](https://paste.helpch.at/silihuxaja) From Prison v3.3.0-alpha.15a
+  [https://paste.helpch.at/itejovejeh](https://paste.helpch.at/itejovejeh) From Prison v3.2.11-alpha.9
+
+
+# Prison Support HTML Output Files
+
+As a brand new feature, Prison now is able to generate HTML files that are stored within the `plugins/Prison/backups/` directory.  It includes information from version, ranks, mines, listeners, and configs.  See above.  The nice thing about this support format is that it reproduces all of the colors as found in the console version of these commands.
+
+This file format is also good for server owners who do not want to post their server information on another website.
+
+To generate the file, use the command:
+`/prison support saveToFile help`
+
+To generate with the defaults settings:
+`/prison support saveToFile basic`
+
+If an existing file exists, it will generate the next one in the series.  When ran, it will identify what the current file is.  Please send this file to support.
+
+
+
+If you want to use this format instead of the above file that are sent to paste.helpch.at, then generate the file and you can DM it to either Blue or Madog.  It's best to ask before sending to confirm we are available to respond to your needs.
+
+
+NOTE: Hyperlinks and table of contents will be added to this HTML support document.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Prison Debugger

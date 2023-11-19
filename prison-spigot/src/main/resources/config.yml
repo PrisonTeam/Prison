@@ -23,6 +23,42 @@
 debug: false
 
 
+
+# Prison support: 
+#   Prison has a lot of built in tools to help us provide you with a higher degree of
+#   support, and to help make it easier for you.
+#   One of these features, is the ability to submit details about your server's
+#   Prison setup so we can review many of the features and settings without having
+#   to ask tons of questions. It also helps to improve the quality of our help by
+#   eliminating miscommunication and trying to provide answers off of incorrect 
+#   settings. 
+#   Prison is able to gather various informmation and send it in one or more documents
+#   and then provide you with one URL to copy and paste to share with us.
+#   
+#   submit-service:
+#     PRIVATEBIN-NET - New default option - This uses an encrypted payload and no one
+#                      can read the posts without the password. All posts are eligable
+#                      to be purged in 1 week.
+#           URL:       privatebin.net - hosted in sweeden
+#           Options: 
+#				expire: [one_week, one_day, one_hour]
+#               password: PrisonSupport - default - Do not change this unless you tell
+#                      support team what it is. Odds of someone reading your post is 
+#                      limited to only those who may be on our support discord server.
+#     PASTE-HELPCHAT - This was the default serivce.  We no longer recommend using this
+#                      service because: the posts do not expire and are not deletable,
+#                      anyone with the URL can view the contents (improbable the can 
+#                      find it due to random URL), and limited to 400k.
+#           URL:       paste.helpch.at - Ran by the folks who publish placeholderAPI.
+#           Options:   none\
+#
+prison-support:
+  submit-service: PRIVATEBIN-NET
+  expire: 1week
+  password: PrisonSupport
+
+
+
 # Upon server startup prison will check to see if a newer version has been released.
 check-updates: true
 
@@ -83,6 +119,21 @@ prestige:
 #       all functions able to handle new players that have not been added to Prison due to
 #       the degree of complexity of some sections of prison.
 #
+# The 'player-economy-cache-update-delay-ticks' provides the nummber of ticks of a delay
+# from when a player is paid money, until the prison updates the econommy.  The default
+# delay is 3 seconds, or 60 tickks. The purpose of this delayed update is to prevent the
+# frequent player payments while speed-mining fromm overwhelming the economy plugin. 
+# For example, if there are 20 players online, all mining with a highly efficent pickaxe,
+# and with autosell enabled, a single player would recieve payments for each block broken, 
+# of which could quickly exceed 20 to 40 updates per second per player. So with 20 players
+# mining concurrently, the econommy plugin would have to be able to handle 400, to 800 
+# updates per second, if not more.  Some economy plugins cannot handle such loads, and
+# can cause the server to lag becaus they are not using asynchronous updates to the storage
+# of choice, and they mmay not cache the updates to prevent so many updates.
+# If the 3 second delay is too long, and you're wanting something a little quicker, try
+# reducing the number of ticks to like 30, 20, or 10.  Becareful of going too low.  If 
+# you notice potential server deplays, trying incrasing the delays. You can use
+# `/timings` to confirm where the lag is occuring.
 
 ranks:
   startup:
@@ -90,6 +141,7 @@ ranks:
   gui-default-include-rankup-button: true
   gui-prestiges-include-rankup-button: true
   gui-others-include-rankup-button: true
+  player-economy-cache-update-delay-ticks: 60
   
 
 
@@ -120,12 +172,27 @@ integrations:
 
 
 
-# NEW: This enables new physics to be applied when jumpping on slime blocks.
+# This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can
 # jump even higher to heights of 40 to 60+ blocks.
-slime-fun: false
+# Boosters are items held in the primary hand of the player, which boosts the 
+# jump with each bounce.
+slime-fun:
+  enabled: false
+  display-messages: true
+  boosters:
+    diamond_pickkaxe: 3.0
+    gold_pickaxe: 2.85
+    iron_pickaxe: 2.85
+    stone_pickaxe: 2.85
+    wood_pickaxe: 2.85
+    diamond_block: 1.65
+    gold_block: 1.45
+    iron_block: 1.20
 
-# NEW: Prison now has GUIs for most features and actions. For more options
+
+
+# Prison now has GUIs for most features and actions. For more options
 # please check the GuiConfig.yml. 
 # Access with /gui
 prison-gui-enabled: true
@@ -212,21 +279,6 @@ storageType: "json"
 
 
 
-# Hesitancy Delay Penalty - The purpose of the Hesitancy Delay Penalty is to encourage players
-# to rankup to the next rank.  Once a player exceeds the rankup cost, they start to incurr a 
-# rankup penalty.  The penalty would be based upon the amount over the rankup cost.  So if a player
-# has 1.1 million, then only 0.1 million will be subject to the penalty and the penalty will be 20%.
-# The max value a player can achieve for a rank will be the rankup cost, then the Hesitancy 
-# Delay Penalty will be subtracted from that amount. 
-# For example, if the rankup cost would be 1.0 million and a player has 1.1 million, then their 
-# max "score" they can achieve is 1.0 million, but the 20% penalty on the 0.1 million will be 
-# subtracted from the "score".  So their adjusted score would be:
-#   1.0 million - 0.1 million * 0.2 = 1.0 m - 20,000 = 0.8 m
-#
-top-stats:
-  rank-players:
-    hesitancy-delay-penalty: true
-
 
 # Prison mines reset gap is the number of milliseconds that are used to 
 # space out the mine resets when starting the server.  This value should 
@@ -271,6 +323,39 @@ prison-mines:
   access-to-prior-mines: true
   tp-to-spawn-on-mine-resets: true
   enable-suffocation-in-mines: false
+  mine-bombs:
+    prevent-usage-in-mines: 
+    - GoldMine
+    - SampleMineName
+  world-guard:
+    region-mine:
+      enable: true
+      name-prefix: prison_mine_
+      permission-prefix: "g:prison.mines."
+      priority: 10
+      deny-non-members: true
+      deny-message: You must rankup to access this mine.
+      flags:
+        block-break: true
+        item-pickup: true
+        xp-drops: true
+        item-drop: true
+    region-mine-area:
+      enable: true
+      name-prefix: prison_mine_area_
+      increase-x: 15
+      increase-z: 15
+      increase-y: 9999
+      permission-prefix: "g:prison.mines."
+      priority: 10
+      deny-non-members: true
+      deny-message: You must rankup to access this mine.
+      flags:
+        block-break: false
+        item-pickup: true
+        xp-drops: true
+        item-drop: true
+    
 
 
 
@@ -385,6 +470,7 @@ prisonCommandHandler:
   exclude-worlds:
   - miniGameWorld
   - playerPlotWorld
+  disable-player-placeholders-in-excluded-worlds: false
   exclude-non-ops:
     exclude-related-aliases: true
     commands:
@@ -435,3 +521,60 @@ topNPlayers:
     interval-ticks: 6000
 
 
+# Hesitancy Delay Penalty - The purpose of the Hesitancy Delay Penalty is to encourage players
+# to rankup to the next rank.  Once a player exceeds the rankup cost, they start to incurr a 
+# rankup penalty.  The penalty would be based upon the amount over the rankup cost.  So if a player
+# has 1.1 million, then only 0.1 million will be subject to the penalty and the penalty will be 20%.
+# The max value a player can achieve for a rank will be the rankup cost, then the Hesitancy 
+# Delay Penalty will be subtracted from that amount. 
+# For example, if the rankup cost would be 1.0 million and a player has 1.1 million, then their 
+# max "score" they can achieve is 1.0 million, but the 20% penalty on the 0.1 million will be 
+# subtracted from the "score".  So their adjusted score would be:
+#   1.0 million - 0.1 million * 0.2 = 1.0 m - 20,000 = 0.8 m
+#
+top-stats:
+  rank-players:
+    hesitancy-delay-penalty: true
+
+
+
+
+
+# Player-Cache: The player cache stores and tracks a lot of detailed information for
+# all players. There are a few settings that can help improve performance, or help 
+# adjust for your server's requiremments.
+# write-delay-sec: Default 60 seconds - There is a player cache task that runs every 
+#                  x seconds, based upon this setting. It maintains the cache by 
+#                  saving 'dirty' entries, purging entries that have expired (off-line
+#                  player cache entries that have been loaded for longer than the 
+#                  time to live value). etc... This task provides the house keeping 
+#                  functions, with the most critical aspect being saving changed cached
+#                  entries.  This value need to be carefully balanced to help ensure the
+#                  entries are save frequently to protect against loss if the server 
+#                  crashes, but also it should be long enough so it does not consume
+#                  too many resources.
+#                  One minute may be a good starting point, but on stable servers, you 
+#                  could push it back to about 5 mins, 15 mins, or longer.
+#                  When the server shuts down normally, all dirty entries in the cache
+#                  are tried to be written before the server process is hard-terminated,
+#                  so consideration need to be applied to how many changes can be saved 
+#                  before the server gives up and hard-terminates the saves, which could
+#                  result in lost data.
+# time-to-live-sec: Default 30 mins.  For off line players, if there have been no 
+#                   interactions, or usage of their cache entries, they will be purged
+#                   from the cache.  This may also apply to online players too, but 
+#                   they would have to inactive for this duration.  If a player is 
+#                   purged from cache, then they will be reloaded when the rejoin the
+#                   server, or there is a need to update, or access their cache entry.
+# update-player-stats-sec: Default 30 seconds.  Checks to see if all players within the
+#                          player cache who are marked as active are still online.
+#                          This does not update any files and does not interact with 
+#                          bukkit/spigot. Very, very minimal impact on server, but
+#                          important to recording player's activity level on the server.
+player-cache:
+  write-delay-sec: 60
+  time-to-live-sec: 1800
+  update-player-stats-sec: 30
+  
+  
+  

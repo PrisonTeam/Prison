@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
+import java.util.TreeSet;
+
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -12,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
@@ -21,6 +24,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
 public class AutoManagerBlockBreakEvents 
@@ -29,11 +33,19 @@ public class AutoManagerBlockBreakEvents
 {
 	private BlockBreakPriority bbPriority;
 	
+	
+	private TreeSet<SpigotPlayer> delayedSellallPlayers;
+	
+	
 	public AutoManagerBlockBreakEvents() {
         super();
+        
+        this.delayedSellallPlayers = new TreeSet<>();
     }
 	public AutoManagerBlockBreakEvents( BlockBreakPriority bbPriority ) {
 		super();
+
+		this.delayedSellallPlayers = new TreeSet<>();
 		
 		this.bbPriority = bbPriority;
 	}
@@ -49,7 +61,10 @@ public class AutoManagerBlockBreakEvents
 	@Override
 	public void registerEvents() {
 	
-		initialize();
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 	
 	
@@ -272,7 +287,7 @@ public class AutoManagerBlockBreakEvents
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "&9### ** handleBlockBreakEvent ** ### " +
+		debugInfo.append( String.format( "### ** handleBlockBreakEvent ** ### " +
 				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
@@ -280,6 +295,8 @@ public class AutoManagerBlockBreakEvents
 				) );
 		
 		debugInfo.append( eventResults.getDebugInfo() );
+		
+		
 		
 		// Process all priorities if the event has not been canceled, and 
 		// process the MONITOR priority even if the event was canceled:
@@ -318,6 +335,22 @@ public class AutoManagerBlockBreakEvents
         		return;
         	}
     		
+        	
+    		// Check for BlockConverters Event Triggers:
+        	// If this function returns a true, then the event should be canceled so no other plugins
+        	// process the block after the triggered plugin has processed it.
+        	// If the eventTrigger is marked to remove block without drops, then the 
+        	// block break event priority will be set to MONITOR and will force the 
+        	// block to be removed by prison.
+    		if ( checkBlockConverterEventTrigger( pmEvent, e ) ) {
+
+    			e.setCancelled( true );
+    			
+//    			printDebugInfo( pmEvent, start );
+//    			return;
+    		}
+    		
+        	
     		// Validate the event. 
     		if ( !validateEvent( pmEvent ) ) {
     			
@@ -338,6 +371,14 @@ public class AutoManagerBlockBreakEvents
     		else if ( pmEvent.getBbPriority().isMonitor() ) {
     			// Stop here, and prevent additional processing. 
     			// Monitors should never process the event beyond this.
+    			
+    			// NOTE: BlockConverters EventTriggers will force processing to MONITOR
+    			//       plus require the block to be removed with no drops with 
+    			//       no block events.
+    			if ( pmEvent.isForceBlockRemoval() ) {
+
+    				finalizeBreakTheBlocks( pmEvent );
+    			}
     		}
     		
     		
@@ -460,16 +501,76 @@ public class AutoManagerBlockBreakEvents
 //    			debugInfo.append( "(logic bypass) " );
 //    		}
     		
+    		
+    		boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
+    		
+    		
+//		// In the event, forceAutoSell is enabled, which means the drops must be sold.
+//		// The player's toggle cannot disable this.
+//		boolean forceAutoSell = isSellallEnabled && pmEvent.isForceAutoSell();
+//		
+    		
+//		// AutoFeature's autosell per block break - global setting
+//		boolean autoSellBySettings = 
+//						isPlayerAutosellEnabled &&
+//						isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
+    		
+    		
+    		boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+    		
+    		
+    		
+    		
+    		if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
+    				( isPlayerAutosellEnabled || isPlayerAutoSellByPerm )) {
+    			
+    			pmEvent.getDebugInfo().append( Output.get().getColorCodeWarning());
+    			pmEvent.performSellAllOnPlayerInventoryLogged( "FORCED BlockBreakEvent sellall");
+    			pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
+    		}
+    		
+    		if ( isBoolean( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
+    				( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) ) {
+    			
+    			if ( !getDelayedSellallPlayers().contains( pmEvent.getSpigotPlayer() ) ) {
+    				
+    				getDelayedSellallPlayers().add( pmEvent.getSpigotPlayer() );
+    				
+    				int ticks = getInteger( AutoFeatures.isEnabledDelayedSellAllOnInventoryDelayInTicks );
+    				
+    				pmEvent.getDebugInfo().append( Output.get().getColorCodeError());
+    				pmEvent.getDebugInfo().append( "(BlockBreakEvent delayed sellall submitted: no details available, see sellall debug info) " );
+    				pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
+    				
+    				final PrisonMinesBlockBreakEvent pmEventFinal = pmEvent;
+    				
+    				new BukkitRunnable() {
+    					@Override
+    					public void run() {
+    						
+    						String message = pmEventFinal.performSellAllOnPlayerInventoryString("delayed sellall");
+    						getDelayedSellallPlayers().remove( pmEventFinal.getSpigotPlayer() );
+    						
+    						Output.get().logDebug(message);
+    					}
+    				}.runTaskLater( SpigotPrison.getInstance(), ticks );
+    			}
+    		}
+    		
+    		printDebugInfo( pmEvent, start );
     	}
-
-		printDebugInfo( pmEvent, start );
+    	
 	}
 	
+
 	protected int checkBonusXp( Player player, Block block, ItemStack item ) {
 		int bonusXp = 0;
 		
 		return bonusXp;
 	}
-
+	
+	public TreeSet<SpigotPlayer> getDelayedSellallPlayers() {
+		return delayedSellallPlayers;
+	}
 
 }

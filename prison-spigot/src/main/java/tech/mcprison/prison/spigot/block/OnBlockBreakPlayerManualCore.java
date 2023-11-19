@@ -267,12 +267,13 @@ public class OnBlockBreakPlayerManualCore
 
 
 
-	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, Player p, StringBuilder debugInfo ) {
+	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, 
+								Player p, StringBuilder debugInfo ) {
 
 		if ( autoSmelt && source != null && target != null ) {
 			
 			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
-			dropExtra( overflow, p, debugInfo );
+			dropExtra( overflow, p, debugInfo, false );
 
 		}
 	}
@@ -283,11 +284,12 @@ public class OnBlockBreakPlayerManualCore
 	}
 
 	
-	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, int ratio, Player p, StringBuilder debugInfo  ) {
+	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, int ratio, 
+								Player p, StringBuilder debugInfo  ) {
 
 		if ( autoBlock && source != null && target != null ) {
 			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
-			dropExtra( overflow, p, debugInfo );
+			dropExtra( overflow, p, debugInfo, false );
 			
 		}
 	}

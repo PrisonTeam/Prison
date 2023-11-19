@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.util.Text;
 
 public class SlimeBlockFunEventData {
@@ -24,10 +25,15 @@ public class SlimeBlockFunEventData {
 	private double recordBoost = 0.0;
 	private double recordVelocity = 0.0;
 	
+	private boolean displayMessages = false;
+	
+	private final int worldHeight;
+	
+	
 	private DecimalFormat sFmt = Prison.get().getDecimalFormat("#,##0.0");
 	private DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 	
-	public SlimeBlockFunEventData( Long playerUUIDLSB, double y ) {
+	public SlimeBlockFunEventData( Long playerUUIDLSB, double y, int worldHeight ) {
 		super();
 		
 		this.playerUUIDLSB = playerUUIDLSB;
@@ -38,6 +44,11 @@ public class SlimeBlockFunEventData {
 		this.jumping = false;
 		this.recordHeight = 0.0;
 		this.recordY = 0.0;
+		
+		this.worldHeight = worldHeight;
+		
+		this.displayMessages = SpigotPrison.getInstance().getConfig()
+							.getBoolean("slime-fun.display-messages", true);
 	}
 
 	public void addJumpEvent( double y, double boost, double velocityY ) {
@@ -68,11 +79,16 @@ public class SlimeBlockFunEventData {
 			}
 			else if ( currentY < getMaxY() ) {
 				
-				if ( currentY >= 255 ) {
-					player.sendMessage( "SlimeFun: You jumped out of the world! " + 
-							" y= " + dFmt.format( currentY ));
+				if ( isDisplayMessages() ) {
+					
+					if ( currentY >= getWorldHeight() ) {
+//					if ( currentY >= 255 ) {
+						player.sendMessage( "SlimeFun: You jumped out of the world! " + 
+								" y= " + dFmt.format( currentY ));
+					}
+					
 				}
-
+				
 				// Just starting to go back down!!
 				// Stop recording the jump:
 				atTopOfJump( player );
@@ -102,26 +118,29 @@ public class SlimeBlockFunEventData {
 			setRecordVelocity( getVelocityY() );
 		}
 		
-		String message1 = Text.translateAmpColorCodes(  
-				String.format("&a%s  &3Height: &7%s    &a%s      &3maxY: &7%s  &a%s",
-						(recY || recH || recB || recV ? "&6.-=New=-." : "__Slime__"),
-						sFmt.format(height), 
-						(recH ? "&6" : "" ) + sFmt.format( getRecordHeight() ),
-						sFmt.format(getMaxY()), 
-						(recY ? "&6" : "" ) + sFmt.format( getRecordY())
-						));
-		
-		String message2 = Text.translateAmpColorCodes(  
-				String.format("&a%s  &3Boost: &7%s  &b%s  &a%s   &3Velocity: &7%s  &a%s",   
-						(recY || recH || recB || recV ? "&6-Record!-" : "__Fun!!__"),
-						
-						dFmt.format(getBoost()), Integer.toString( getBoostCount()),
-						(recB ? "&6" : "" ) + dFmt.format( getRecordBoost() ),
-						dFmt.format(getVelocityY()),
-						(recV ? "&6" : "" ) + dFmt.format(getRecordVelocity())
-						));
-		player.sendMessage( message1 );
-		player.sendMessage( message2 );
+		if ( isDisplayMessages() ) {
+			
+			String message1 = Text.translateAmpColorCodes(  
+					String.format("&a%s  &3Height: &7%s    &a%s      &3maxY: &7%s  &a%s",
+							(recY || recH || recB || recV ? "&6.-=New=-." : "__Slime__"),
+							sFmt.format(height), 
+							(recH ? "&6" : "" ) + sFmt.format( getRecordHeight() ),
+							sFmt.format(getMaxY()), 
+							(recY ? "&6" : "" ) + sFmt.format( getRecordY())
+							));
+			
+			String message2 = Text.translateAmpColorCodes(  
+					String.format("&a%s  &3Boost: &7%s  &b%s  &a%s   &3Velocity: &7%s  &a%s",   
+							(recY || recH || recB || recV ? "&6-Record!-" : "__Fun!!__"),
+							
+							dFmt.format(getBoost()), Integer.toString( getBoostCount()),
+							(recB ? "&6" : "" ) + dFmt.format( getRecordBoost() ),
+							dFmt.format(getVelocityY()),
+							(recV ? "&6" : "" ) + dFmt.format(getRecordVelocity())
+							));
+			player.sendMessage( message1 );
+			player.sendMessage( message2 );
+		}
 		
 		// Reset key values:
 		setJumping( false );
@@ -228,6 +247,17 @@ public class SlimeBlockFunEventData {
 	}
 	public void setRecordVelocity( double recordVelocity ) {
 		this.recordVelocity = recordVelocity;
+	}
+
+	public boolean isDisplayMessages() {
+		return displayMessages;
+	}
+	public void setDisplayMessage(boolean displayMessages) {
+		this.displayMessages = displayMessages;
+	}
+
+	public int getWorldHeight() {
+		return worldHeight;
 	}
 	
 }

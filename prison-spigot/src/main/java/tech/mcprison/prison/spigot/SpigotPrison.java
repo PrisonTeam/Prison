@@ -40,6 +40,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.alerts.Alerts;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.integration.IntegrationType;
@@ -66,7 +67,9 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.bstats.PrisonBStats;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotGUIBackPackCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotGUISellAllCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
@@ -78,6 +81,7 @@ import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.customblock.CustomItems;
+import tech.mcprison.prison.spigot.economies.CoinsEngineEconomy;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
@@ -311,7 +315,10 @@ public class SpigotPrison
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
 
         
-        if ( getConfig().getBoolean( "slime-fun" ) ) {
+        boolean slimeFunEnabled1 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun");
+		boolean slimeFunEnabled2 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun.enabled");
+		
+        if ( slimeFunEnabled1 || slimeFunEnabled2 ) {
         	Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
         }
         
@@ -330,6 +337,14 @@ public class SpigotPrison
         // Sellall set to disabled since it will be set to the correct value in enableModulesAndCommands():
         isSellAllEnabled = false;
         
+
+        
+		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
+    	AutoFeaturesWrapper.getInstance();
+    	AutoFeaturesWrapper.getBlockConvertersInstance();
+    	
+        
+		
         // This is the loader for modules and commands:
         enableModulesAndCommands();
 
@@ -346,6 +361,7 @@ public class SpigotPrison
         
         
         // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
+        // Auto features will prevent this if it's disabled.
         getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
         
         
@@ -403,9 +419,9 @@ public class SpigotPrison
        
        
        
-       // Setup mine bombs:
+       // Setup mine bombs and validate to spigot version:
        PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();
-       
+       PrisonUtilsMineBombs.getInstance().validateMineBombsSpigotVersion();
 
        // Enable Temp spigot commands:
        new SpigotCommand();
@@ -928,6 +944,7 @@ public class SpigotPrison
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
         registerIntegration(new GemsEconomy());
+        registerIntegration(new CoinsEngineEconomy());
 
         registerIntegration(new VaultPermissions());
         registerIntegration(new LuckPerms5());
@@ -1031,14 +1048,18 @@ public class SpigotPrison
 
         YamlConfiguration modulesConf = loadConfig("modules.yml");
         
+        boolean isMinesEnabled = false;
         boolean isRanksEnabled = false;
 
         // TODO: This business logic needs to be moved to the Module Manager:
         if (modulesConf.getBoolean("mines")) {
+        	isMinesEnabled = true;
+        	
             Prison.get().getModuleManager()
                     .registerModule(new PrisonMines(getDescription().getVersion()));
 
-            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+            // The GUI handler for mines... cannot be hooked up here:
+//            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
             
         } else {
             Output.get().logInfo("&7Modules: &cPrison Mines are disabled and were not Loaded. ");
@@ -1116,13 +1137,14 @@ public class SpigotPrison
         // Do not enable sellall if ranks is not loaded since it uses player ranks:
         if ( isRanksEnabled ) {
         	
-        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+        	// enable under GUI:
+//        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
         	
-        	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
-        	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
-        		// Enable the setup of the prestige related commands only if prestiges is enabled:
-        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
-        	}
+//        	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+//        	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+//        		// Enable the setup of the prestige related commands only if prestiges is enabled:
+//        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+//        	}
         	
             
         }
@@ -1133,11 +1155,46 @@ public class SpigotPrison
         }
 
         
-        // This registers the admin's /gui commands
-        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
-        if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
+        // The following will enable all of the GUI related commands.  It's important that they
+        // cannot be enabled elsewhere, or at least the 'prison-gui-enabled' must control 
+        // their registration:
+        if ( Prison.get().getPlatform().getConfigBooleanFalse( "prison-gui-enabled" ) ) {
+
+        	// Prison's primary GUI commands:
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
+        	
+        	
+        	if ( isMinesEnabled ) {
+              // The GUI handler for mines... cannot be hooked up here:
+              Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+        	}
+        	
+        	
+        	if ( isRanksEnabled ) {
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+        		
+            	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+            	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+            		// Enable the setup of the prestige related commands only if prestiges is enabled:
+            		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+            	}
+        	}
+        	
+        	
+        	if ( isBackPacksEnabled ) {
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUIBackPackCommands() );	
+        	}
+        	
+        	
+        	if ( isSellAllEnabled ) {
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUISellAllCommands() );	
+        	}
         }
+        
+//        // This registers the admin's /gui commands
+//        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
+//        if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
+//        }
 
         
         // Register prison utility commands:

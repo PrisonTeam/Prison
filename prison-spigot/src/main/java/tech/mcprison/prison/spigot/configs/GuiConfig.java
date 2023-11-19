@@ -14,6 +14,8 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
@@ -218,6 +220,95 @@ public class GuiConfig extends SpigotConfigComponents{
         	
         	conf.set("Options.Mines.MaterialType.NoMineAccess", noMineAccess );
         	changeCount++;
+        }
+        
+        
+        
+        if ( conf.get( "Options.Ranks.MaterialType" ) == null ) {
+        	
+        	if ( PrisonRanks.getInstance() != null ) {
+        		
+        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        		
+        		map.put("NoRankAccess", XMaterial.REDSTONE_BLOCK.name() );
+
+        		// Example to preset all ranks: Only do the first 10:
+        		int count = 0;
+        		for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
+        			map.put( rank.getName(), XMaterial.TRIPWIRE_HOOK.name() );
+        			if ( ++count >= 10 ) {
+        				break;
+        			}
+        		}
+        		
+        		conf.set("Options.Ranks.MaterialType", map);
+        		changeCount++;
+        	}
+        }
+        else if ( conf.get( "Options.Ranks.MaterialType.NoMineAccess" ) == null ) {
+        	
+        	String noMineAccess = XMaterial.REDSTONE_BLOCK.name();
+        	
+        	conf.set("Options.Ranks.MaterialType.NoMineAccess", noMineAccess );
+        	changeCount++;
+        }
+        
+        
+        
+        if ( conf.get( "Options.Mines.GuiItemNameDefault" ) == null ) {
+        	
+        	String defaultName = "{mineTag}";
+        	
+        	conf.set("Options.Mines.GuiItemNameDefault", defaultName );
+        	changeCount++;
+        }
+        
+        if ( conf.get( "Options.Mines.GuiItemNames" ) == null ) {
+        	
+        	if ( PrisonMines.getInstance() != null ) {
+
+        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        		
+        		// Example to preset all mines: Only do the first 10:
+        		int count = 0;
+        		for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
+        			map.put( mine.getName(), mine.getTag() );
+        			if ( ++count >= 10 ) {
+        				break;
+        			}
+        		}
+        		
+        		conf.set("Options.Mines.GuiItemNames", map);
+        		changeCount++;
+        	}
+        }
+
+        
+        if ( conf.get( "Options.Ranks.GuiItemNameDefault" ) == null ) {
+        	
+        	String defaultName = "{rankTag}";
+        	
+        	conf.set("Options.Ranks.GuiItemNameDefault", defaultName );
+        	changeCount++;
+        }
+        if ( conf.get( "Options.Ranks.GuiItemNames" ) == null ) {
+        	
+        	if ( PrisonRanks.getInstance() != null ) {
+        		
+        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        		
+        		// Example to preset all ranks: Only do the first 10:
+        		int count = 0;
+        		for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
+        			map.put( rank.getName(), rank.getTag() );
+        			if ( ++count >= 10 ) {
+        				break;
+        			}
+        		}
+        		
+        		conf.set("Options.Ranks.GuiItemNames", map);
+        		changeCount++;
+        	}
         }
         
         // Count and save

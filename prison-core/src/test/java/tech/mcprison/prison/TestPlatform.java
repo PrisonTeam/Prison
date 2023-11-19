@@ -295,10 +295,23 @@ public class TestPlatform implements Platform {
 	}
 
 	@Override
-	public List<?> getConfigStringArray( String key ) {
+	public List<String> getConfigStringArray( String key ) {
 		return new ArrayList<String>();
 	}
 
+	/**
+	 * <p>Given the path to a hash, this will return all of the keys within 
+	 * the hash at the root level.  It will not traverse deeper.
+	 * The list of keys can then be used to access all of the values.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public List<String> getConfigHashKeys(String hashPrefix) {
+		return new ArrayList<String>();
+	}
+
+	
 	@Override
 	public boolean isWorldExcluded( String worldName ) {
 		return false;
@@ -421,6 +434,13 @@ public class TestPlatform implements Platform {
 		
 	}
 	
+
+	@Override
+	public boolean isMineNameValid(String mineName) {
+		return false;
+	}
+
+	
 	@Override
 	public String getMinesListString() {
 		return "";
@@ -532,5 +552,14 @@ public class TestPlatform implements Platform {
 	@Override
 	public int getMaxY() {
 		return 255;
+	}
+	
+	public String getLadderByFileName(String name) {
+		return "default";
+	}
+
+
+	public String getRankByFileName(String name) {
+		return "a";
 	}
 }

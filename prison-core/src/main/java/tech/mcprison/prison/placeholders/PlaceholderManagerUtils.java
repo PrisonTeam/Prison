@@ -97,7 +97,8 @@ public class PlaceholderManagerUtils {
 		
 		if ( rawAttribute != null && !rawAttribute.isEmpty() ) {
 			ArrayList<String> parts = new ArrayList<>();
-			parts.addAll( Arrays.asList( rawAttribute.split( PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR )) );
+			parts.addAll( Arrays.asList( 
+						rawAttribute.split( PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR )) );
 			
 			if ( parts.size() >= 0 ) {
 				PlaceholderAttributePrefixes pap = PlaceholderAttributePrefixes.fromString( parts.get( 0 ) );
@@ -116,6 +117,12 @@ public class PlaceholderManagerUtils {
 						
 					case text:
 						attribute = new PlaceholderAttributeText( parts, rawAttribute );
+						break;
+						
+					case time:
+						// Insert the dummy value "format" as the second element of 'parts' since Time does not use it:
+						parts.add(1, "");
+						attribute = new PlaceholderAttributeTime( parts, rawAttribute );
 						break;
 						
 					default:

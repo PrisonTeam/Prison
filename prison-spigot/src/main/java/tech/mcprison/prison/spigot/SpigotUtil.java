@@ -99,7 +99,9 @@ public class SpigotUtil {
     
     public static XMaterial getXMaterial( PrisonBlock prisonBlock ) {
     	
-    	XMaterial xMat = getXMaterial( prisonBlock.getBlockName());
+    	XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial(prisonBlock);
+    	
+//    	XMaterial xMat = getXMaterial( prisonBlock.getBlockName());
     	
     	return xMat;
     }

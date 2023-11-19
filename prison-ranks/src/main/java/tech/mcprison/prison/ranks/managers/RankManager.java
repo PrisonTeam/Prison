@@ -37,6 +37,7 @@ import tech.mcprison.prison.placeholders.PlaceHolderKey;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeBar;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
+import tech.mcprison.prison.placeholders.PlaceholderAttributeTime;
 import tech.mcprison.prison.placeholders.PlaceholderIdentifier;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
@@ -718,6 +719,7 @@ public class RankManager
     	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
     	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
     	PlaceholderAttributeText attributeText = identifier.getAttributeText();
+    	PlaceholderAttributeTime attributeTime = identifier.getAttributeTime();
 		
 		int sequence = identifier.getSequence();
     	
@@ -1570,6 +1572,19 @@ public class RankManager
     	getTranslatedPlaceHolderKeys();
     }
 	
+    
+
+	public String getRankByFileName(String fileName) {
+		String results = "";
+		
+		for (Rank rank : loadedRanks) {
+			String rankFileName = rank.filename() + ".json";
+			if ( rankFileName.equalsIgnoreCase(fileName) ) {
+				results = rank.getName();
+			}
+		}
+		return results;
+	}
 	
 	private List<Rank> getLoadedRanks() {
 		return loadedRanks;

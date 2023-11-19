@@ -100,7 +100,10 @@ public class SpigotPlayerMinesGUI
         // Create GUI but use the gui title as defined within the ConfigGui.yml file:
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerMinesGUI"));
 
+        
+        String guiItemNameDefault = guiConfig.getString( "Options.Mines.GuiItemNameDefault" );
 
+        
         // Load the generic mine LORE that would be displayed first:
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Mines");
         
@@ -122,6 +125,9 @@ public class SpigotPlayerMinesGUI
         for (Mine m : minesDisplay) {
 //        	for (Mine m : mines.getSortedList()) {
 
+            String guiItemName = guiConfig.getString( "Options.Mines.GuiItemNames." + m.getName() );
+
+        	
             // Init the lore array with default values for ladders
             ButtonLore minesLore = new ButtonLore();
             
@@ -140,8 +146,13 @@ public class SpigotPlayerMinesGUI
 //            Material material;
 
 
-            // Get Mine Name.
-            String mineName = m.getName();
+            // Get Mine Name. First use 'guiItemName' if not null, then try to use 'guiItemNameDefault'
+            // if not null, and then use the mine's tag, or if that's null, then use the name:
+            String mineName =
+            		guiItemName != null ? guiItemName :
+            			guiItemNameDefault != null ? guiItemNameDefault :
+            				m.getTag() != null ? m.getTag() :
+            					m.getName();
 
 //            // Add mineName lore for TP.
 //            minesLore.addLineLoreAction( "&3" + mineName );
@@ -261,7 +272,8 @@ public class SpigotPlayerMinesGUI
             }
 
             
-            Button itemMine = new Button(null, xMat, minesLore, "&3" + mineTag);
+            Button itemMine = new Button(null, xMat, minesLore, mineName );
+//            Button itemMine = new Button(null, xMat, minesLore, "&3" + mineTag);
             
             String mineTeleportCommand = 
             		Output.stringFormat( 
@@ -269,7 +281,7 @@ public class SpigotPlayerMinesGUI
             				m.getName(),
             				p.getName() );
             
-            // Before adding the button, add an NBT tag for the command and rank name:
+            // Before adding the button, add an NBT tag for the command and mine name:
 //			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
 //			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemMine.getButtonItem());
 			PrisonNBTUtil.setNBTBoolean( itemMine.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, true);

@@ -127,6 +127,10 @@ public class AutoFeaturesFileConfig {
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	
+		    	XPrisonExplosionTriggerEventPriority(blockBreakEvents, "DISABLED"),
+		    	XPrisonLayerTriggerEventPriority(blockBreakEvents, "DISABLED"),
+		    	XPrisonNukeTriggerEventPriority(blockBreakEvents, "DISABLED"),
+		    	
 		    	
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 
 		    			"Use the following event priorities with the blockBreakEvents: " +
@@ -180,12 +184,45 @@ public class AutoFeaturesFileConfig {
 		    	
 
 				isAutoSellPerBlockBreakEnabled(inventory, false),
-				permissionAutoSellPerBlockBreakEnabled(inventory, "prison.automanager.autosell"),
 				
-				permissionAutoSellPerBlockBreakEnabled__ReadMe(inventory, 
-						"If OP then you cannot use this permission node since it would always " +
-						"be enabled. Using a value of 'disable' will turn it off for everyone."),
+				permissionAutoSellPerBlockBreakEnabled(inventory, "prison.automanager.autosell"),
+				permissionAutoSellPerBlockBreakEnabled__readme(inventory, 
+						"AutoSell by permission can be disabled with the use of 'disable', " + 
+						"or 'false', for the perm name. " +
+						"Players cannot use the autosell permission while OP'd."),
+				
+				
+				
+//				permissionAutoSellPerBlockBreakEnabled__ReadMe(inventory, 
+//						"If OP then you cannot use this permission node since it would always " +
+//						"be enabled. Using a value of 'disable' will turn it off for everyone."),
 //				
+				isAutoSellLeftoversForceDebugLogging(inventory, true),
+				isAutoSellLeftoversForceDebugLogging__ReadMe(inventory, 
+						"If autosell is enabled and could not sell all blocks, then force " +
+						"Prison's debug logging of transaction to help identify why. This only " +
+						"applies if debug mode is turned off."),
+
+				
+				isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires(inventory, false),
+				isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires__readme(inventory, 
+						"AutoManager's autosell does not touch the player's inventory. So this feature " +
+						"will perform a sellall on the player's inventory at the end of handling " +
+						"the bukkkit's BlockBreakEvent. This will not apply to anyother event. " +
+						"This can be enabled without enabling the autosell."),
+				
+				
+				isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires(inventory, false),
+				isEnabledDelayedSellAllOnInventoryDelayInTicks(inventory, 2),
+				isEnabledDelayedSellAllOnInventoryDelayInTicks__readme(inventory, 
+						"This option adds a delay to a sellall event. The delay can be set to " +
+						"a range of 0 or more ticks, with 2 ticks being the default.  When a " +
+						"player breaks a block through the BlockBreakEvent, if this is enabled, " +
+						"then a task will be submitted to perform a sellall transaction for " +
+						"the player.  Only one task per player can be submitted at a time, so " +
+						"if the player is agressivly mining, they cannot queue up many sellalls."),
+				
+				
 //				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				isAutoSellIfInventoryIsFull(inventory, true),
@@ -273,6 +310,8 @@ public class AutoFeaturesFileConfig {
     			
 	    		isCalculateFortuneEnabled(fortuneFeature, true),
 
+	    		isUseTokenEnchantsFortuneLevel(fortuneFeature, false ),
+	    		
 	    		
 	    		fortuneMultiplierGlobal(fortuneFeature, 1.0 ),
 	    		fortuneMultiplierMax(fortuneFeature, 0 ),
@@ -293,7 +332,40 @@ public class AutoFeaturesFileConfig {
 	    		isCalculateAltFortuneOnAllBlocksEnabled(fortuneFeature, false),
 	    		
 	    		
+	    		percentGradientFortune(fortuneFeature),
 
+		    		isPercentGradientFortuneEnabled(percentGradientFortune, false),
+		    		isPercentGradientFortuneEnabled__readme(percentGradientFortune, 
+		    				"Percent Gradient Fortune is an alternative fortune calculation that "
+		    				+ "will only be enabled if extendedBukkitFortune and altFortune is "
+		    				+ "turned off.  Percent Gradient Fortune will always drop a minimum of "
+		    				+ "1 block with fortune 0 and higher. The max it will ever drop, will "
+		    				+ "be 1 + MaxBonusBlocks amount.  The calculation of the MaxBonusBlocks "
+		    				+ "will be a random roll resulting in 0 bonus blocks, to the MaxBonusBlocks "
+		    				+ "amount IF the player has the max fortune on their tool. For fortune "
+		    				+ "ammounts less than the maxFortuneLevel, it will be treated as a "
+		    				+ "linear percentage gradient of the max amount. "
+		    				+ "For example, MaxFortuneLevel= 1000, and MaxBonusBlocks= 200. "
+		    				+ "Therefore if the player has a fortune 500, the max bonus they could get would "
+		    				+ "be only 100 blocks, but could be as low as zero bonus blocks since it's a random "
+		    				+ "roll on each calculation. If they have a fort 250, then it will be 25% of 200, or 50 "
+		    				+ "blocks as a max bonus. "
+		    				+ "For better control of the randomness applied to the bonus block calculations, "
+		    				+ "the MinPercentRandomness sets the lowest range for the randomness. What this means, "
+		    				+ "is for a maxFortuneLevel= 1000 and a maxBonusBlocks of= 200, and a tool with "
+		    				+ "fort 500, the calcs would be for a bonus between '0' and (500 / 1000 * 200 =) 100 "
+		    				+ "bonus blocks.  But with the minPercentRandomness= 25, then the range would be "
+		    				+ "'25%' to 100% of the 100 bonus blocks. The minePercentRandomness would ensure a "
+		    				+ "higher payout of bonus blocks, without effecting the max payout. "
+		    				+ "minPercentRandomness has a valid range of 0.0 (off) to 99.0 percent. "
+		    				+ "No other fortune multipliers will apply to these calculations.  The percentage "
+		    				+ "gradient is a very controlled way of paying out fortune bonuses."),
+	
+		    		percentGradientFortuneMaxFortuneLevel(percentGradientFortune, 1000 ),
+		    		percentGradientFortuneMaxBonusBlocks(percentGradientFortune, 200 ),
+		    		
+		    		percentGradientFortuneMinPercentRandomness(percentGradientFortune, 25.0 ),
+		    		
 	    		
 	    		
 	    	pickupFeature(options),
@@ -360,6 +432,21 @@ public class AutoFeaturesFileConfig {
 		    	blockCopperBlock(blockFeature, true),
 		   
 		    	
+		    	
+		    blockConverters(options),
+			    isEnabledBlockConverters(blockConverters, false ),
+			    
+		    	blockConverters_readme(blockConverters, 
+		    			"Block converters are a new experimental component to prison that will "
+		    			+ "provide much more control over all things related to blocks, including "
+		    			+ "access through perms, ranks, or special functional behaviors. Eventually "
+		    			+ "this will replace the list of hard coded blocks listed above for "
+		    			+ "blocking and smelting."),
+    	
+    			isEnabledBlockConvertersEventTriggers(blockConverters, false )
+		    	
+    			
+    			
 //		examplesOnlyNotUsed,    	
 //		    exampleOfBlockConversions(examplesOnlyNotUsed),
 //		    
@@ -1034,6 +1121,7 @@ public class AutoFeaturesFileConfig {
 			
 			bStatsDetailPriority( AutoFeatures.blockBreakEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority, tm );
+			
 			bStatsDetailPriority( AutoFeatures.TokenEnchantBlockExplodeEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.CrazyEnchantsBlastUseEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.RevEnchantsExplosiveEventPriority, tm );
@@ -1042,14 +1130,43 @@ public class AutoFeaturesFileConfig {
 			bStatsDetailPriority( AutoFeatures.ZenchantmentsBlockShredEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.PrisonEnchantsExplosiveEventPriority, tm );
 
+			bStatsDetailPriority( AutoFeatures.XPrisonExplosionTriggerEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.XPrisonLayerTriggerEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.XPrisonNukeTriggerEventPriority, tm );
+			
+			
 			
 			bStatsDetailBoolean( AutoFeatures.isCalculateFoodExhustion, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateSilkEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateDropAdditionsEnabled, tm );
+
 			bStatsDetailBoolean( AutoFeatures.isCalculateXPEnabled, tm );
 			bStatsDetailBoolean( AutoFeatures.givePlayerXPAsOrbDrops, tm );
 			
+			bStatsDetailBoolean( AutoFeatures.ifBlockIsAlreadyCountedThenCancelEvent, tm );
+			bStatsDetailBoolean( AutoFeatures.processMonitorEventsOnlyIfPrimaryBlockIsAIR, tm );
+			bStatsDetailBoolean( AutoFeatures.isMinecraftStatsReportingEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine, tm );
+			
+			
+			
+			
 			bStatsDetailBoolean( AutoFeatures.isAutoSellPerBlockBreakEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.permissionAutoSellPerBlockBreakEnabled, tm );
+			
+			bStatsDetailPriority( AutoFeatures.isAutoSellLeftoversForceDebugLogging, tm );
+			bStatsDetailPriority( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires, tm );
+
+			bStatsDetailPriority( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires, tm );
+			bStatsDetailPriority( AutoFeatures.isEnabledDelayedSellAllOnInventoryDelayInTicks, tm );
+			
 			bStatsDetailBoolean( AutoFeatures.isAutoSellIfInventoryIsFull, tm );
+			bStatsDetailBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority, tm );
 			bStatsDetailBoolean( AutoFeatures.dropItemsIfInventoryIsFull, tm );
+			
+			bStatsDetailBoolean( AutoFeatures.actionBarMessageIfInventoryIsFull, tm );
+
+			
 			
 			
 			bStatsDetailBoolean( AutoFeatures.isAutoFeaturesEnabled, tm );
@@ -1070,11 +1187,32 @@ public class AutoFeaturesFileConfig {
 			
 			
 			bStatsDetailBoolean( AutoFeatures.tokensEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.tokensBlocksPerToken, tm );
 
+			
+			
+			bStatsDetailBoolean( AutoFeatures.isLoreEnabled, tm );
+			if ( isFeatureBoolean( AutoFeatures.isLoreEnabled )) {
+				
+				bStatsDetailBoolean( AutoFeatures.loreTrackBlockBreakCount, tm );
+				bStatsDetailBoolean( AutoFeatures.loreDurabiltyResistance, tm );
+			}
+			
+			
+			
 			bStatsDetailBoolean( AutoFeatures.isCalculateDurabilityEnabled, tm );
 			bStatsDetailBoolean( AutoFeatures.isPreventToolBreakage, tm );
+			bStatsDetailBoolean( AutoFeatures.preventToolBreakageThreshold, tm );
+			
+
+			
 			bStatsDetailBoolean( AutoFeatures.isCalculateFortuneEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.fortuneMultiplierGlobal, tm );
+			bStatsDetailBoolean( AutoFeatures.fortuneMultiplierMax, tm );
+			bStatsDetailBoolean( AutoFeatures.fortuneBukkitDropsMultiplier, tm );
+			
 			bStatsDetailBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled, tm );
+			
 			bStatsDetailBoolean( AutoFeatures.isCalculateAltFortuneEnabled, tm );
 			bStatsDetailBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled, tm );
 			

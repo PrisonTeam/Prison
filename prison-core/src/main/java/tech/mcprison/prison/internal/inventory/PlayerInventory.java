@@ -28,6 +28,14 @@ import tech.mcprison.prison.internal.ItemStack;
  */
 public interface PlayerInventory extends Inventory {
 
+	
+	public ItemStack[] getContents();
+	public void setContents( ItemStack[] items );
+	
+	public ItemStack[] getExtraContents();
+	public void setExtraContents( ItemStack[] items );
+	
+	
     /**
      * Gets the armor this player is wearing
      *

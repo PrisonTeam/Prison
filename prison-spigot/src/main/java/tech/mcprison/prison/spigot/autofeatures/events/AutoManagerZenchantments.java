@@ -50,8 +50,10 @@ public class AutoManagerZenchantments
 	@Override
 	public void registerEvents() {
 	
-		initialize();
-
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 
 	  
@@ -325,6 +327,14 @@ public class AutoManagerZenchantments
         		return;
         	}
         	
+        	
+    		
+    		// Check to see if the blockConverter's EventTrigger should have
+    		// it's blocks suppressed from explosion events.  If they should be
+    		// removed, then it's removed within this funciton.
+    		removeEventTriggerBlocksFromExplosions( pmEvent );
+    		
+  
         	
     		if ( !validateEvent( pmEvent ) ) {
     			

@@ -1,11 +1,13 @@
 package tech.mcprison.prison.spigot.slime;
 
 import java.text.DecimalFormat;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,21 +21,69 @@ import org.bukkit.util.Vector;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 
 public class SlimeBlockFunEventListener 
 	implements Listener {
 	
 	private boolean enabled = false;
-
+	
 	private final TreeMap<Long, SlimeBlockFunEventData> playerSlimeJumpCache;
+	
+	private final TreeMap<String,Double> boosters;
 
+	private final int worldHeight;
+	
 	
 	public SlimeBlockFunEventListener() {
 		super();
 		
 		this.playerSlimeJumpCache = new TreeMap<>();
 		
-		this.enabled = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun");
+		this.boosters = new TreeMap<>();
+		
+		boolean enabled1 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun");
+		boolean enabled2 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun.enabled");
+		
+		this.enabled = enabled1 || enabled2;
+		
+		
+		ConfigurationSection mults = SpigotPrison.getInstance().getConfig().getConfigurationSection( "slime-fun.boosters" );
+		
+		if ( mults != null ) {
+			
+			Set<String> keys = mults.getKeys( false );
+			
+			for (String key : keys) {
+				double mult = mults.getDouble( key );
+				
+				if ( mult != 0 ) {
+					getBoosters().put( key.toLowerCase(), mult );
+				}
+			}
+		}
+		else {
+			// No config is setup, so use these defaults:
+			getBoosters().put( "diamond_pickkaxe", 3.0 );
+			getBoosters().put( "gold_pickaxe", 2.85 );
+			getBoosters().put( "iron_pickaxe", 2.85 );
+			getBoosters().put( "stone_pickaxe", 2.85 );
+			getBoosters().put( "wood_pickaxe", 2.85 );
+			getBoosters().put( "diamond_block", 1.65 );
+			getBoosters().put( "gold_block", 1.45 );
+			getBoosters().put( "iron_block", 1.20 );
+		}
+
+		
+		BluesSemanticVersionData bsvd = new BluesSemanticVersionData( Prison.get().getMinecraftVersion() );
+		BluesSemanticVersionData bsvd18 = new BluesSemanticVersionData("1.18");
+				
+		if ( bsvd.compareTo(bsvd18) >= 0 ) {
+			this.worldHeight = 320;
+		}
+		else {
+			this.worldHeight = 256;
+		}
 		
 	}
 
@@ -91,11 +141,16 @@ public class SlimeBlockFunEventListener
 					// Record player's System time stamp on Jump Boost:
 					// Add player jump data to the cache:
 					if ( !getPlayerSlimeJumpCache().containsKey( playerUUIDLSB ) ) {
-						SlimeBlockFunEventData moveEventData = new SlimeBlockFunEventData( playerUUIDLSB, loc.getY() );
+						SlimeBlockFunEventData moveEventData = 
+									new SlimeBlockFunEventData( playerUUIDLSB, loc.getY(), getWorldHeight() );
 						getPlayerSlimeJumpCache().put( playerUUIDLSB, moveEventData );
 						
-						player.sendMessage( "SlimeFun: Use at your own risk. Jumpping out of the " +
-												"world may crash the server." );
+//						if ( moveEventData.isDisplayMessage() ) {
+//							
+//							player.sendMessage( "SlimeFun: Use at your own risk. Jumpping out of the " +
+//									"world may crash the server." );
+//						}
+						
 					}
 					
 					getPlayerSlimeJumpCache().get( playerUUIDLSB )
@@ -132,10 +187,18 @@ public class SlimeBlockFunEventListener
 		
 		
 		if ( velocityY > 1024.0 ) {
-			DecimalFormat f4Fmt = Prison.get().getDecimalFormat("#,##0.0000");
 			
-			player.sendMessage( "SlimeFun: Exceeded max velocity!! velY:" + 
+			// Record player's System time stamp on Jump Boost:
+			Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
+
+			if ( getPlayerSlimeJumpCache().containsKey( playerUUIDLSB ) &&
+					getPlayerSlimeJumpCache().get( playerUUIDLSB ).isDisplayMessages() ) {
+				
+				DecimalFormat f4Fmt = Prison.get().getDecimalFormat("#,##0.0000");
+				
+				player.sendMessage( "SlimeFun: Exceeded max velocity!! velY:" + 
 						f4Fmt.format( velocityY ) );
+			}
 			
 			velocityY = 1024.0;
 		}
@@ -157,24 +220,30 @@ public class SlimeBlockFunEventListener
 		// being ran.
 		Material holding = itemInHand.getType();
 		
-		if ( holding == Material.DIAMOND_PICKAXE ) {
-			boost *= 3.0;
+		String itemName = holding.name().toLowerCase();
+		
+		if ( getBoosters().containsKey(itemName) ) {
+			boost *= getBoosters().get( itemName );
 		}
-		else if ( holding == Material.matchMaterial( "GOLD_PICKAXE" ) ||
-				  holding == Material.IRON_PICKAXE ||
-				  holding == Material.STONE_PICKAXE ||
-				  holding == Material.matchMaterial( "WOOD_PICKAXE" ) ) {
-			boost *= 2.85;
-		}
-		else if ( holding == Material.DIAMOND_BLOCK ) {
-			boost *= 1.65;
-		}
-		else if ( holding == Material.GOLD_BLOCK ) {
-			boost *= 1.45;
-		}
-		else if ( holding == Material.IRON_BLOCK ) {
-			boost *= 1.20;
-		}
+		
+//		if ( holding == Material.DIAMOND_PICKAXE ) {
+//			boost *= 3.0;
+//		}
+//		else if ( holding == Material.matchMaterial( "GOLD_PICKAXE" ) ||
+//				  holding == Material.IRON_PICKAXE ||
+//				  holding == Material.STONE_PICKAXE ||
+//				  holding == Material.matchMaterial( "WOOD_PICKAXE" ) ) {
+//			boost *= 2.85;
+//		}
+//		else if ( holding == Material.DIAMOND_BLOCK ) {
+//			boost *= 1.65;
+//		}
+//		else if ( holding == Material.GOLD_BLOCK ) {
+//			boost *= 1.45;
+//		}
+//		else if ( holding == Material.IRON_BLOCK ) {
+//			boost *= 1.20;
+//		}
 		
 		
 //		switch ( itemInHand.getType() )
@@ -245,6 +314,14 @@ public class SlimeBlockFunEventListener
 	public TreeMap<Long, SlimeBlockFunEventData> getPlayerSlimeJumpCache()
 	{
 		return playerSlimeJumpCache;
+	}
+
+	public TreeMap<String, Double> getBoosters() {
+		return boosters;
+	}
+
+	public int getWorldHeight() {
+		return worldHeight;
 	}
 	
 }

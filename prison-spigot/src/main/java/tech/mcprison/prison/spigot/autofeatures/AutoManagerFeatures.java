@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,15 +18,20 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventException;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredListener;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.vk2gpz.tokenenchant.api.TokenEnchantAPI;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.BlockConverterOptionEventTrigger;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -33,6 +39,8 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
@@ -152,9 +160,20 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent != null && pmEvent.getDebugInfo().length() > 0 ) {
 			
 			long stop = System.nanoTime();
-			pmEvent.getDebugInfo().append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			pmEvent.getDebugInfo().append( "{br}|| ### ** End Event Debug Info ** ### [" )
+					.append( (stop - start) / 1000000d )
+					.append( " ms]" );
 			
-			Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString() );
+			if ( !Output.get().isDebug() && pmEvent.isForceDebugLogging() ) {
+				
+				pmEvent.getDebugInfo().insert(0, Output.get().getColorCodeDebug() );
+				
+				Output.get().logInfo( pmEvent.getDebugInfo().toString(), pmEvent.getSpigotPlayer() );
+			}
+			else {
+				
+				Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString(), pmEvent.getSpigotPlayer() );
+			}
 		}
     }
     
@@ -236,7 +255,7 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
 				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
 			
-			pmEvent.getDebugInfo().append( "(normal processing initiating) " );
+			pmEvent.getDebugInfo().append( "(Fire pmEvent) " );
 			
 			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
 			// Needed since processing of the block will lose track of which mine it came from.
@@ -256,8 +275,11 @@ public abstract class AutoManagerFeatures
 //    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
 			Bukkit.getServer().getPluginManager().callEvent( pmEvent );
 			if ( pmEvent.isCancelled() ) {
+				
+				pmEvent.setDebugColorCodeWarning();
 				pmEvent.getDebugInfo().append( 
-						"(normal processing: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+						"(Fire pmEvent: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			else {
 				
@@ -287,17 +309,19 @@ public abstract class AutoManagerFeatures
 				}
 				else {
 					
-					pmEvent.getDebugInfo().append( "(doAction failed without details) " );
+					pmEvent.setDebugColorCodeWarning();
+					pmEvent.getDebugInfo().append( "(fire pmEvent:doAction failed without details) " );
+					pmEvent.setDebugColorCodeDebug();
 				}
 				
 			}
 			
 			
-			pmEvent.getDebugInfo().append( "(normal processing completed) " );
+			pmEvent.getDebugInfo().append( "(Fire pmEvent completed) " );
 		}
 		else {
 			
-			pmEvent.getDebugInfo().append( "(logic bypass) " );
+			pmEvent.getDebugInfo().append( "(Fire pmEvent bypassed) " );
 		}
 		return cancelBy;
 	}
@@ -359,15 +383,35 @@ public abstract class AutoManagerFeatures
 		return results;
 	}
 	
-	protected short getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
-		short fortLevel = (short) 0;
+	protected int getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
+		int fortLevel = 0;
+		boolean usedTEFortune = false;
+		
+		if ( isBoolean( AutoFeatures.isUseTokenEnchantsFortuneLevel ) && 
+				itemInHand != null && 
+				itemInHand.getBukkitStack() != null ) {
+			
+			try {
+				if ( TokenEnchantAPI.getInstance() != null ) {
+					
+					 fortLevel = TokenEnchantAPI.getInstance().getEnchantments( itemInHand.getBukkitStack() )
+					 		.get( TokenEnchantAPI.getInstance().getEnchantment("Fortune"));
+					
+					 usedTEFortune = true;
+				}
+			}
+			catch ( Exception e ) {
+				// ignore: could not use TE.
+			}
+		}
 		
 		try {
-			if ( itemInHand != null && 
+			if ( !usedTEFortune &&
+					itemInHand != null && 
 					itemInHand.getBukkitStack() != null && 
 					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
 					itemInHand.getBukkitStack().getEnchantments() != null ) {
-				fortLevel = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+				fortLevel = itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 			}
 		}
 		catch ( NullPointerException e ) {
@@ -375,14 +419,14 @@ public abstract class AutoManagerFeatures
 			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
 		}
 		
-		short results = (short) fortLevel;
+		int results = fortLevel;
 //		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
 		DecimalFormat iFmt = new DecimalFormat( "#,##0" );
 		
 		int maxFortuneLevel = getInteger( AutoFeatures.fortuneMultiplierMax );
 		String maxFort = "";
 		if ( maxFortuneLevel > 0 && fortLevel > maxFortuneLevel ) {
-			results = (short) maxFortuneLevel;
+			results = maxFortuneLevel;
 			maxFort = String.format(" max=%s result=%s", 
 					iFmt.format( maxFortuneLevel ),
 					iFmt.format( results ));
@@ -470,11 +514,12 @@ public abstract class AutoManagerFeatures
 		boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
 		boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
 		
-		boolean permPickup = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-		boolean permSmelt = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
-		boolean permBlock = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
-		
 		boolean isAutoFeaturesEnabled = isBoolean( AutoFeatures.isAutoFeaturesEnabled );
+		
+		boolean permPickup = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		boolean permSmelt = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
+		boolean permBlock = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
+		
 		
 		boolean configPickup = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoPickupEnabled );
 		boolean configSmelt = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoSmeltEnabled );
@@ -504,11 +549,16 @@ public abstract class AutoManagerFeatures
 		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
-			pmEvent.getDebugInfo().append( "(applyAutoEvents: " )
+			pmEvent.getDebugInfo().append( "{br}||  (applyAutoEvents: " )
 				.append( pmEvent.getSpigotBlock().getBlockName() );
 			
 			if ( !isAutoFeaturesEnabled ) {
-				pmEvent.getDebugInfo().append("isAutoFeaturesEnabled=false (disabled)");
+				pmEvent.getDebugInfo().append(" isAutoFeaturesEnabled=false (");
+				
+				pmEvent.getDebugInfo().append( Output.get().getColorCodeError() );
+				pmEvent.getDebugInfo().append("disabled");
+				pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug() );
+				pmEvent.getDebugInfo().append(")");
 			}
 			else {
 				
@@ -563,7 +613,7 @@ public abstract class AutoManagerFeatures
 				
 				if ( configNormalDrop ) {
 					pmEvent.getDebugInfo()
-						.append( "(NormalDrop handling enabled: " )
+						.append( "{br}||  (NormalDrop handling enabled: " )
 						.append( "normalDropSmelt[" )
 						.append( configNormalDropSmelt ? "enabled" : "disabled" )
 						.append( "] " )
@@ -755,7 +805,7 @@ public abstract class AutoManagerFeatures
 					.append( amt );
 				if ( amt != amtBukkit ) {
 					sItemStack.setAmount( amt );
-					sb.append( "(").append( amtBukkit ).append( ")" );
+					sb.append( "(bukkitAmt:").append( amtBukkit ).append( ")" );
 				}
 			}
 			if ( bukkitDropsMultiplier != 1.0d ) {
@@ -764,7 +814,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			debugInfo.append( "[autoPickupDrops:: " ).append( sb ).append( "] ");
+			debugInfo.append( " [autoPickupDrops:beforeFortune:: " ).append( sb ).append( "] ");
 			
 			
 			
@@ -779,15 +829,24 @@ public abstract class AutoManagerFeatures
 			
 			// Add fortune to the items in the inventory
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
-				short fortuneLevel = getFortune(itemInHand, debugInfo );
+				sb.setLength(0);
+				int fortuneLevel = getFortune(itemInHand, debugInfo );
 
 //				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
 				
 				for ( SpigotItemStack itemStack : drops ) {
+					if ( sb.length() > 0 ) {
+						sb.append( "," );
+					}
 					
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
 					calculateFortune( itemStack, fortuneLevel, pmEvent.getDebugInfo() );
+					
+					sb.append( itemStack.getName() )
+						.append( ":" )
+						.append( itemStack.getAmount() );
 				}
+				debugInfo.append( " [totalDrops:afterFortune:: " ).append( sb ).append( "] ");
 			}
 			
 			
@@ -798,14 +857,14 @@ public abstract class AutoManagerFeatures
 			
 			// Smelt
 			if ( isAutoSmelt ) {
-				debugInfo.append( "(autoSmelting: itemStacks)" );
+				debugInfo.append( "(autoSmelting: drops)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			// Block
 			if ( isAutoBlock ) {
-				debugInfo.append( "(autoBlocking: itemStacks)" );
+				debugInfo.append( "(autoBlocking: drops)" );
 				normalDropBlock( drops );
 			}
 			
@@ -831,29 +890,70 @@ public abstract class AutoManagerFeatures
 			
 			boolean isSellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
 			
-			// This is true if the player cannot toggle the autosell, and it's
-			// true if they can, and the have it enabled:
-			boolean isPlayerAutosellEnabled = isSellallEnabled &&
-					SellAllUtil.get() != null && 
-					SellAllUtil.get().checkIfPlayerAutosellIsActive( 
-							pmEvent.getSpigotPlayer().getWrapper() ) 
-					;
 			
+//			boolean isPlayerAutoSellTurnedOff = SellAllUtil.get().isAutoSellPerUserToggleable &&
+//					  !SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+//								pmEvent.getSpigotPlayer().getWrapper() );
+//			
+//			if ( isPlayerAutoSellTurnedOff ) {
+//				debugInfo.append( Output.get().getColorCodeWarning() );
+//				debugInfo.append( "(Player toggled off autosell) " );
+//				debugInfo.append( Output.get().getColorCodeDebug() );
+//			}
+//			
+//			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+//			// This is to be used with other auto sell setting, but never on it's own:
+//			boolean isPlayerAutosellEnabled = 
+//							isSellallEnabled &&
+//							(!SellAllUtil.get().isAutoSellPerUserToggleable ||
+//							  SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
+//												pmEvent.getSpigotPlayer().getWrapper() ));
+			
+			boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
+			
+			
+			// In the event, forceAutoSell is enabled, which means the drops must be sold.
+			// The player's toggle cannot disable this.
+			boolean forceAutoSell = isSellallEnabled && pmEvent.isForceAutoSell();
+			
+			
+			// AutoFeature's autosell per block break - global setting
+			boolean autoSellBySettings = 
+							isPlayerAutosellEnabled &&
+							isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
+			
+			// AutoFeature's autosell per block break - per player perms setting
+//			boolean autoSellByPerm = 
+//							isPlayerAutosellEnabled &&
+//							!player.isOp() && 
+//							isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
+//							!"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+//							!"false".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+//							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
+			
+			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+			
+			
+			// Try to autosell if enabled in any of the following ways:
+			boolean autoSell = ( forceAutoSell || autoSellBySettings || autoSellByPerm );
 			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
 				
 						
-				// Try to autosell if enabled:
-				if ( isSellallEnabled &&
-						
-						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
-								isPlayerAutosellEnabled || 
-						pmEvent.isForceAutoSell() || 
-						!player.isOp() && !"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
-						player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
-						isPlayerAutosellEnabled ) {
+				// Try to autosell if enabled in any of the following ways:
+				if ( autoSell ) {
+					
+//				// Try to autosell if enabled:
+//				if ( isSellallEnabled &&
+//						
+//						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
+//								isPlayerAutosellEnabled || 
+//								pmEvent.isForceAutoSell() || 
+//								!player.isOp() && !"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+//								player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
+//						isPlayerAutosellEnabled ) {
 					
 					final long nanoStart = System.nanoTime();
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
@@ -875,7 +975,9 @@ public abstract class AutoManagerFeatures
 					else {
 						
 						// Unable to sell since amount was zero.  Not configured to be sold.
+						pmEvent.setDebugColorCodeWarning();
 						debugInfo.append( "(unsellable: " + itemStack.getName() + " qty: " + itemStack.getAmount() + ") ");
+						pmEvent.setDebugColorCodeDebug();
 						autosellUnsellableCount += itemStack.getAmount();
 					}
 					
@@ -887,13 +989,39 @@ public abstract class AutoManagerFeatures
 				// it will have an amount of more than 0.
 				if ( itemStack.getAmount() > 0 ) {
 					
+					
+					// AutoSell failure... some items may be unsellable due to not being setup in the sellall shop:
+					if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
+						
+						// Force debug printing for this entry even if debug mode is turned off:
+						pmEvent.setForceDebugLogging( true );
+						
+						if ( !Output.get().isDebug() && 
+								isBoolean(AutoFeatures.isAutoSellLeftoversForceDebugLogging) ) {
+							pmEvent.setForceDebugLogging( true );
+						}
+						
+						pmEvent.setDebugColorCodeError();
+						
+						// Just get the calculated value for the drops... do not sell:
+						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
+						autosellTotal += amount;
+
+						debugInfo.append( "{br}||  (WARNING: autosell leftovers: " + itemStack.getName() + 
+								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + 
+								" - " + 
+								( amount == 0 ? " Items NOT in sellall shop!" : " CouldNotSell?") +
+								") ");
+						pmEvent.setDebugColorCodeDebug();
+					}
+					
 					if ( Output.get().isDebug() && isSellallEnabled ) {
 						
 						// Just get the calculated value for the drops... do not sell:
-						double amount = SellAllUtil.get().getSellMoney( player, itemStack );
+						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 						
-						debugInfo.append( "(Debug-unsold-value-check: " + itemStack.getName() + 
+						debugInfo.append( " (Debug-unsold-value-check: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + ") ");
 					}
 					
@@ -920,7 +1048,7 @@ public abstract class AutoManagerFeatures
 //					}
 					
 					
-					dropExtra( extras, player, debugInfo );
+					dropExtra( extras, player, debugInfo, autoSell );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
 				
@@ -929,7 +1057,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
+				debugInfo.append( "{br}||  [autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
 						"  unsellableCount: " + autosellUnsellableCount );
 				
 				if ( nanoTime > 0 ) {
@@ -1012,11 +1140,11 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			pmEvent.getDebugInfo().append( "[normalDrops:: " ).append( sb ).append( "] ");
+			pmEvent.getDebugInfo().append( "{br}||  [normalDrops:: " ).append( sb ).append( "] ");
 			
 
 			// Need better drop calculation that is not using the getDrops function.
-			short fortuneLevel = getFortune( pmEvent.getItemInHand(), pmEvent.getDebugInfo() );
+			int fortuneLevel = getFortune( pmEvent.getItemInHand(), pmEvent.getDebugInfo() );
 
 //			calculateSilkTouch( pmEvent.getItemInHand(), drops );
 			
@@ -1040,13 +1168,13 @@ public abstract class AutoManagerFeatures
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
-				pmEvent.getDebugInfo().append( "(normSmelting: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normSmelting: drops)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
-				pmEvent.getDebugInfo().append( "(normBlocking: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normBlocking: drops)" );
 				normalDropBlock( drops );
 			}
 			
@@ -1063,6 +1191,7 @@ public abstract class AutoManagerFeatures
 //			}
 			
 			
+//			pmEvent.getDebugInfo().append( "{br}||  " );
 			
 			double autosellTotal = 0;
 			
@@ -1072,7 +1201,7 @@ public abstract class AutoManagerFeatures
 				count += itemStack.getAmount();
 				
 				// Since this is not auto pickup, then only autosell if set in the pmEvent:
-				if ( pmEvent.isForceAutoSell() && SellAllUtil.get() != null ) {
+				if ( pmEvent.isForceAutoSell() && SpigotPrison.getInstance().isSellAllEnabled() ) {
 					
 					Player player = pmEvent.getPlayer();
 
@@ -1097,7 +1226,7 @@ public abstract class AutoManagerFeatures
 					
 						pmEvent.getDebugInfo().append( "(dropping: " + itemStack.getName() + " qty: " + itemStack.getAmount() );
 						
-						if ( SellAllUtil.get() != null ) {
+						if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
 							
 							double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
 							autosellTotal += amount;
@@ -1115,7 +1244,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				pmEvent.getDebugInfo().append( "[normalDrops total: qty: " + count + " value: " + autosellTotal + ") ");
+				pmEvent.getDebugInfo().append( "{br}||  [normalDrops total: qty: " + count + " value: " + autosellTotal + "] ");
 				
 			}
 			
@@ -1316,7 +1445,8 @@ public abstract class AutoManagerFeatures
 	 * @param player
 	 * @param block
 	 */
-	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player, StringBuilder debugInfo ) {
+	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, 
+						Player player, StringBuilder debugInfo, boolean autoSell ) {
 
 		if ( SpigotPrison.getInstance().isSellAllEnabled() && (
 				 extra != null && extra.size() > 0 ||
@@ -1326,17 +1456,39 @@ public abstract class AutoManagerFeatures
 //			if ( SpigotPrison.getInstance().isSellAllEnabled() ) 
 			{
 				
+				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				
-				SellAllUtil sellAllUtil = SellAllUtil.get();
+				boolean isPlayerAutosellEnabled = sPlayer.isAutoSellEnabled( debugInfo );
 				
-				// On inventory is full, will auto sell if auto sell is enabled in either
-				// the sellall configs, or the auto feature configs.
-				if (sellAllUtil != null && (
-						sellAllUtil.isAutoSellEnabled ||
-						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
+				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+			
+				if ( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) {
+				
+					SellAllUtil sellAllUtil = SellAllUtil.get();
+				
+//				boolean isSellallEnabled = sellAllUtil != null && 
+//						SpigotPrison.getInstance().isSellAllEnabled();
+//				
+//				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+//				// This is to be used with other auto sell setting, but never on it's own:
+//				boolean isPlayerAutosellEnabled = 
+//								isSellallEnabled &&
+//								(!sellAllUtil.isAutoSellPerUserToggleable ||
+//										sellAllUtil.isSellallPlayerUserToggleEnabled( 
+//													player ));
+				
+
+				
+//				// On inventory is full, will auto sell if auto sell is enabled in either
+//				// the sellall configs, or the auto feature configs.
+//				if (sellAllUtil != null && (
+//						sellAllUtil.isAutoSellEnabled ||
+//						autoSell )) {
+////						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
 					
 					
-					if ( sellAllUtil.checkIfPlayerAutosellIsActive(player) ) {
+					// if ( isPlayerAutosellEnabled ) 
+					{
 						
 						boolean saNote = sellAllUtil.isAutoSellNotificationEnabled;
 
@@ -1387,7 +1539,7 @@ public abstract class AutoManagerFeatures
 							
 							debugInfo.append( " ] " );
 							
-							SpigotPlayer sPlayer = new SpigotPlayer( player );
+							//SpigotPlayer sPlayer = new SpigotPlayer( player );
 							PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, debugInfo );
 						}
 						
@@ -2592,7 +2744,48 @@ public abstract class AutoManagerFeatures
 						);
 				debugInfo.append( msg );
 			}
+			
+			else if ( isBoolean( AutoFeatures.isPercentGradientFortuneEnabled ) ) {
+				
+				int bonusBlocks = 0;
+				double rnd = 1.0;
+						
+				double maxFortune = getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel );
+				int maxBonusBlocks = getInteger( AutoFeatures.percentGradientFortuneMaxBonusBlocks );
+				double minPctRnd = getDouble( AutoFeatures.percentGradientFortuneMinPercentRandomness );
+				
+				double fortLevel = fortuneLevelOriginal > maxFortune ? maxFortune : fortuneLevelOriginal;
 
+				if ( maxFortune > 0 && maxBonusBlocks > 1 ) {
+					
+					minPctRnd = 
+							minPctRnd < 0.0 ? 0.0 : 
+								minPctRnd > 100.00 ? 99.0 : minPctRnd;
+								
+					rnd = ((1.0 - (minPctRnd / 100)) * getRandom().nextDouble()) + (minPctRnd / 100);
+								
+					
+					bonusBlocks = (int) Math.round( ( fortLevel / maxFortune ) * maxBonusBlocks );
+					
+					bonusBlocks *= rnd;
+				}
+				
+				// The count has the final value so set it as the amount:
+				blocks.setAmount( 1 + bonusBlocks );
+			
+				String msg = String.format(
+						"(gradientFortune blocks: 1 + bonusBlocks=%s == (fortLevel=%s / maxFortLevel=%s) * "
+						+ "maxBonusBlocks=%s * rnd=%s [with minPctRnd=%s]) ",
+						iFmt.format( bonusBlocks ),
+						iFmt.format( fortLevel ),
+						iFmt.format( maxFortune ),
+						iFmt.format( maxBonusBlocks ),
+						dFmt.format( rnd ),
+						dFmt.format( minPctRnd )
+						);
+				
+				debugInfo.append( msg );
+			}
 		}
 
 	}
@@ -3075,6 +3268,190 @@ public abstract class AutoManagerFeatures
 		return adds;
 	}
 
+	public boolean checkBlockConverterEventTrigger(PrisonMinesBlockBreakEvent pmEvent, BlockBreakEvent event ) {
+		boolean terminate = false;
+		
+		long start = System.currentTimeMillis();
+		
+		SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
+//		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
+		String blockName = pmEvent.getSpigotBlock().getBlockName();
+		
+		List<BlockConverterOptionEventTrigger> eventTriggers = 
+							AutoFeaturesWrapper.getBlockConvertersInstance().findEventTrigger( sPlayer, blockName );
+		
+		if ( eventTriggers != null ) {
+			StringBuilder sb = new StringBuilder();
+			
+			for (BlockConverterOptionEventTrigger eventTrigger : eventTriggers) {
+				RegisteredListener listener = null;
+				
+				if ( eventTrigger.getExternalResource() == null ) {
+					// Try to hook in to the external resource (the plugin listener):
+					// Adding this listener to the eventTrigger will be  like a cache:
+					
+					listener = findBlockBreakEventListener( 
+							eventTrigger.getEventPluginName(), 
+							eventTrigger.getEventPluginPriority(), 
+							eventTrigger.getEventPluginClassName() );
+					
+					if ( listener != null ) {
+						eventTrigger.setExternalResource( listener );
+					}
+				}
+				
+				if ( listener == null && eventTrigger.getExternalResource() != null ) {
+					
+					listener = (RegisteredListener) eventTrigger.getExternalResource();
+				}
+				
+				if ( listener != null ) {
+					
+					try {
+						
+						if ( sb.length() > 0 ) {
+							sb.append( " " );
+						}
+						sb.append( eventTrigger.getEventPluginName() );
+						
+						// This is where the magic happens... triggers the event listener:
+						listener.callEvent( event );
+						
+						if ( !eventTrigger.isAllowPrisonToProccessDrops() ) {
+							terminate = true;
+						}
+						
+						if ( eventTrigger.isRemoveBlockWithoutDrops() ) {
+							pmEvent.setForceBlockRemoval( true );
+							pmEvent.setBbPriority( BlockBreakPriority.MONITOR );
+							
+							finalizeBreakTheBlocks( pmEvent, pmEvent.getSpigotBlock(), pmEvent.getTargetBlock() );
+						}
+					} 
+					catch (EventException e) {
+					}
+				}
+				
+			}
+			
+			long stop = System.currentTimeMillis();
+			double durationMs = (stop - start) / 1_000_000.0d;
+			
+			DecimalFormat dFmt = new DecimalFormat( "#,##0.000" );
+			
+			String msg = String.format( 
+						"(BlockConverter eventTrigger: %s : %s ms) ",
+						sb, 
+						dFmt.format( durationMs ) );
+			pmEvent.getDebugInfo().append( msg );
+		}
+		
+		return terminate;
+	}
+	
+	
+	public void removeBlockForTriggerEvent( PrisonMinesBlockBreakEvent pmEvent) {
+		
+		finalizeBreakTheBlocks( pmEvent );
+		
+	}
+
+	public void removeEventTriggerBlocksFromExplosions( PrisonMinesBlockBreakEvent pmEvent ) {
+		
+		if ( pmEvent.getUnprocessedRawBlocks().size() > 0 &&
+				AutoFeaturesWrapper.getBlockConvertersInstance().getEventTriggerBlockNames().size() > 0 ) {
+			
+			long start = System.currentTimeMillis();
+			
+//			RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( pmEvent.getSpigotPlayer() );
+			
+			
+			TreeMap<String,Integer> blockCounts = new TreeMap<>();
+
+			List<String> blockNamesToRemove = AutoFeaturesWrapper.getBlockConvertersInstance().getEventTriggerBlockNames();
+			List<Block> removeBlocks = new ArrayList<>();
+			
+			for (Block block : pmEvent.getUnprocessedRawBlocks()) {
+				SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
+				String blockName = sBlock.getBlockName().toLowerCase();
+				
+				if ( blockNamesToRemove.contains( blockName ) ) {
+					removeBlocks.add( block );
+					
+					if ( !blockCounts.containsKey(blockName) ) {
+						blockCounts.put( blockName, 1 );
+					}
+					else {
+						int count = blockCounts.get( blockName );
+						blockCounts.put( blockName, ++count );
+					}
+				}
+			}
+			
+			if ( removeBlocks.size() > 0 ) {
+				pmEvent.getUnprocessedRawBlocks().removeAll( removeBlocks );
+				
+				
+//				if ( eventTrigger.isRemoveBlockWithoutDrops() ) {
+////					pmEvent.setForceBlockRemoval( true );
+////					pmEvent.setBbPriority( BlockBreakPriority.MONITOR );
+//					
+//					finalizeBreakTheBlocks( pmEvent, pmEvent.getSpigotBlock(), pmEvent.getTargetBlock() );
+//				}
+			}
+			
+			
+			long stop = System.currentTimeMillis();
+			double durationMs = (stop - start) / 1_000_000.0d;
+
+			
+			// Log if blocks were removed, or if duration is >= 0.5:
+			if  ( blockCounts.size() > 0 || durationMs > 0.5 ) {
+				
+				StringBuilder sb = new StringBuilder();
+				
+				Set<String> keys = blockCounts.keySet();
+				for (String key : keys) {
+					if ( sb.length() > 0 ) {
+						sb.append(",");
+					}
+					sb.append( key ).append( ":" ).append( blockCounts.get(key).toString() );
+				}
+				
+				if ( sb.length() == 0 ) {
+					sb.append( "none" );
+				}
+				DecimalFormat dFmt = new DecimalFormat( "#,##0.000" );
+				
+				String msg = String.format( 
+						"(BlockConverter eventTrigger: blocks removed: [%s] %s ms) ",
+						sb, 
+						dFmt.format( durationMs ) );
+				pmEvent.getDebugInfo().append( msg );
+			}
+			
+		}
+		
+	}
+	
+	private RegisteredListener findBlockBreakEventListener( String plugin, String priority, String className ) {
+		RegisteredListener results = null;
+		
+		for ( RegisteredListener listener : BlockBreakEvent.getHandlerList().getRegisteredListeners() ) {
+			
+			if ( plugin.equalsIgnoreCase( listener.getPlugin().getName() ) && 
+				priority.equalsIgnoreCase( listener.getPriority().name() ) && 
+				listener.getListener().getClass().getName().endsWith( className ) 
+					) {
+				
+				results = listener;
+				break;
+			}
+			
+		}
+		return results;
+	}
+	
 	public Random getRandom() {
 		return random;
 	}

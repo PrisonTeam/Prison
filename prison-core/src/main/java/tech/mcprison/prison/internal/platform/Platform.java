@@ -303,6 +303,15 @@ public interface Platform {
 
 	public double getConfigDouble( String key, double defaultValue );
 	
+	/**
+	 * <p>Given the path to a hash, this will return all of the keys within 
+	 * the hash at the root level.  It will not traverse deeper.
+	 * The list of keys can then be used to access all of the values.
+	 * </p>
+	 * 
+	 */
+	public List<String> getConfigHashKeys(String hashPrefix);
+
 	
 	public boolean isWorldExcluded( String worldName );
 
@@ -379,6 +388,8 @@ public interface Platform {
 
 	public void saveResource( String string, boolean replace );
 
+	
+	public boolean isMineNameValid(String mineName);
 
 	public String getMinesListString();
 
@@ -435,7 +446,7 @@ public interface Platform {
 	public TreeSet<String> getExcludedWorlds();
 
 
-	public List<?> getConfigStringArray( String key );
+	public List<String> getConfigStringArray( String key );
 
 
 	public int compareServerVerisonTo( String comparisonVersion );
@@ -459,5 +470,11 @@ public interface Platform {
 	public int getMinY();
 
 	public int getMaxY();
+
+
+	public String getLadderByFileName(String name);
+
+
+	public String getRankByFileName(String name);
 
 }

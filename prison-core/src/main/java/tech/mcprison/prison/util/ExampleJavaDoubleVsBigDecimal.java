@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import tech.mcprison.prison.Prison;
-
 public class ExampleJavaDoubleVsBigDecimal {
 	
 	public static void main( String[] args ) {
@@ -15,11 +13,13 @@ public class ExampleJavaDoubleVsBigDecimal {
 		ArrayList<String> out = app.runSample();
 		
 		String header = String.format( 
-				"%s %30s  %35s  %16s  %s",
+				"%s %45s  %3s  %55s %3s  %35s %s",
 				"Int Digits   ", 
 				" double  ",
+				"Row",
 				" BigDecimal  ",
-				"Delta  ",
+				"Row",
+				"Delta - loss of double precision ",
 				"Row" );
 		
 		System.out.println( header );
@@ -36,9 +36,10 @@ public class ExampleJavaDoubleVsBigDecimal {
 		StringBuilder sb = new StringBuilder();
 		sb.append( ".111111" );
 		
-		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.00000" );
+		DecimalFormat dFmt = new DecimalFormat( "#,##0.000000" );
+//		DecimalFormat iFmt = new DecimalFormat( "#,##0.00000" );
 		
-		for ( int i = 1; i < 25; i++ ) {
+		for ( int i = 1; i < 35; i++ ) {
 			sb.insert( 0, "1" );
 			
 			double dub = Double.parseDouble( sb.toString() );
@@ -47,12 +48,14 @@ public class ExampleJavaDoubleVsBigDecimal {
 			BigDecimal delta = bigD.subtract( BigDecimal.valueOf(dub) );
 			
 			String rpt = String.format( 
-					"%2d  %40s  %35s  %16s  %2d",
+					"%3d %55s  %3d %55s  %3d %35s  %3d",
 					i, 
 					dFmt.format( dub ), 
-					bigD.toString(), delta.toString(),
-					i
-					);
+					i, 
+					dFmt.format( bigD ), 
+					i, 
+					dFmt.format( delta ),
+					i					);
 			
 			out.add( rpt );
 			

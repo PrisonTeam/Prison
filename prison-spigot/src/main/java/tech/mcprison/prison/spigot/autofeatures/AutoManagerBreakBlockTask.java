@@ -76,13 +76,16 @@ public class AutoManagerBreakBlockTask
 			int count = 0;
 			for ( SpigotBlock spigotBlock : blocks )
 			{
-				if ( count++ % 10 == 0 && mineStateMutexClone != null && 
-						!mine.getMineStateMutex().isValidState( mineStateMutexClone ) ) {
-					return;
+				if ( spigotBlock != null && !spigotBlock.isEmpty() ) {
+					
+					if ( count++ % 10 == 0 && mineStateMutexClone != null && 
+							!mine.getMineStateMutex().isValidState( mineStateMutexClone ) ) {
+						return;
+					}
+					
+					spigotBlock.setPrisonBlock( PrisonBlock.AIR );
+					
 				}
-				
-				spigotBlock.setPrisonBlock( PrisonBlock.AIR );
-				
 			}
 		}
 	}

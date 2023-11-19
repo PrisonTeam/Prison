@@ -51,8 +51,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	@Override
 	public void registerEvents() {
 	
-		initialize();
-		
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 
 	
@@ -321,7 +323,18 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			//       than one.
 			if ( e.getMineBomb() != null ) {
 				pmEvent.setCalculateDurability( false );
+				
+				// Set if forced autoSell:
+				pmEvent.setForceAutoSell( e.getMineBomb().isAutosell() );
 			}
+			
+    		
+    		// Check to see if the blockConverter's EventTrigger should have
+    		// it's blocks suppressed from explosion events.  If they should be
+    		// removed, then it's removed within this funciton.
+    		removeEventTriggerBlocksFromExplosions( pmEvent );
+    		
+  
 			
 			if ( !validateEvent( pmEvent ) ) {
 				

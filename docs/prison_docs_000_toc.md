@@ -2,15 +2,14 @@
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-*Documented updated: 2022-12-30*
+*Documented updated: 2023-11-18*
 
 ## Project Related
 
 * **[Prison README](prison_readme.md)** High level information, plus how to use with gradle builds.
 * **[Prison License](prison_license.md)** GNU General Public License
 * **[Prison Change logs](prison_changelogs.md)** Detailed changes to prison.
-* **[Prison Known Issues - Open](knownissues_v3.3.x.md)** Known Issues and To Do's.
-* **[Prison Known Issues - Resolved](knownissues_v3.3.x_resolved.md)** Resolved Known Issues and To Do's.
+
 
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 

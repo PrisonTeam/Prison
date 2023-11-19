@@ -455,7 +455,19 @@ public class RankUpCommand
 
     	
         RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
+
+
+        PlayerRank rankCurrent = rankPlayer.getPlayerRank(ladder);
         
+        
+        // If the player has a rank on the target ladder, mmake sure the next rank is not null
+        if ( rankCurrent != null && rankCurrent.getRank().getRankNext() == null ) {
+        	rankupAtLastRankMsg(sender);
+        	return false;
+        }
+        
+        // If at last rank on ladder, then cannot /rankup
+//        if ( rankPlayer.getran)
         
         
         // Get the player's next rank on default ladder, or if at end then it will return the next

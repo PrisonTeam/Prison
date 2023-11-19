@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.block;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -36,7 +35,6 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
-import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.util.Text;
 
 public abstract class OnBlockBreakEventCore
@@ -276,7 +274,7 @@ public abstract class OnBlockBreakEventCore
 			int count = 0;
 			for ( SpigotBlock spigotBlock : blocks ) {
 				
-				if ( count++ % 10 == 0 && pmEvent.getMine() != null && 
+				if ( count++ % 20 == 0 && pmEvent.getMine() != null && 
 						!pmEvent.getMine().getMineStateMutex().isMinable() ) {
 					
 					SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
@@ -328,6 +326,30 @@ public abstract class OnBlockBreakEventCore
 		return blocks;
 	}
 
+	
+	/**
+	 * <p>Used with BlockConverters event triggers.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 * @param minedBlock
+	 * @param targetBlock
+	 * @return
+	 */
+	protected SpigotBlock finalizeBreakTheBlocks( PrisonMinesBlockBreakEvent pmEvent, 
+							SpigotBlock minedBlock, MineTargetPrisonBlock targetBlock  ) {
+		SpigotBlock results = null;
+		
+		if ( targetBlock.getPrisonBlock().getBlockName().equalsIgnoreCase( minedBlock.getBlockName() ) ) {
+			results = minedBlock;
+			targetBlock.setAirBroke( true );
+			
+			// Count the blocks that were mined:
+			countBlocksMined( pmEvent, pmEvent.getTargetBlock() );
+		}
+					
+		return results;
+	}
 
 	
 	/**
@@ -350,6 +372,8 @@ public abstract class OnBlockBreakEventCore
 		
 		StringBuilder debugInfo = pmEvent.getDebugInfo();
 
+		debugInfo.append( "{br}||  validateEvent:: " );
+		
 		SpigotBlock sBlockHit = pmEvent.getSpigotBlock();
 
 		// Mine should already be set:
@@ -398,7 +422,9 @@ public abstract class OnBlockBreakEventCore
 			// NOTE: I have no idea why 25 blocks and less should be bypassed for validation:
 			boolean bypassMatchedBlocks = pmEvent.getMine().getBounds().getTotalBlockCount() <= 25;
 			if ( bypassMatchedBlocks ) {
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "(TargetBlock match requirement is disabled [blocks<=25]) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			
 			boolean matchedBlocks = isBlockAMatch( targetBlock, sBlockHit );
@@ -407,6 +433,7 @@ public abstract class OnBlockBreakEventCore
 			// and the block has not been mined before, then allow the breakage by 
 			// setting bypassMatchedBlocks to true to allow normal processing:
 			if ( !matchedBlocks &&
+					targetBlock != null &&
 					!targetBlock.isMined() && 
 					sBlockHit.isAir() &&
 					pmEvent.getBbPriority().isMonitor() ) {
@@ -421,6 +448,8 @@ public abstract class OnBlockBreakEventCore
 					 targetBlock.isExploded()) ) {
 				
 //				debugInfo.setLength( 0 );
+				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "(Primary TargetBlock forcedFastFail validateEvent [ ");
 				if ( targetBlock.isIgnoreAllBlockEvents() ) {
 					debugInfo.append( "ignoreAllBlockEvents " );
@@ -429,6 +458,7 @@ public abstract class OnBlockBreakEventCore
 					debugInfo.append( "alreadyExploded" );
 				}
 				debugInfo.append( "]) " );
+				pmEvent.setDebugColorCodeDebug();
 				
 				pmEvent.setForceIfAirBlock( false );
 				
@@ -529,7 +559,9 @@ public abstract class OnBlockBreakEventCore
 						// This block has already been mined and is not a mine bomb, so fail the validation
 						// and cancel the event since if it's not an air block, it may be another effect that
 						// is placing a block within the mine, such as a prison util's decay function.
+						pmEvent.setDebugColorCodeWarning();
 						debugInfo.append( "VALIDATION_FAILED_BLOCK_ALREADY_MINED " );
+						pmEvent.setDebugColorCodeDebug();
 						
 						results = false;
 						
@@ -541,7 +573,9 @@ public abstract class OnBlockBreakEventCore
 			else {
 				noTargetBlock++;
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "VALIDATION_FAILED_NO_TARGETBLOCK " );
+				pmEvent.setDebugColorCodeDebug();
 				
 				results = false;
 			}
@@ -675,8 +709,10 @@ public abstract class OnBlockBreakEventCore
 			}
 			if ( unbreakable > 0 ) {
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
 						" blocks, event not canceled) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			if ( outsideOfMine > 0 ) {
 				
@@ -700,8 +736,10 @@ public abstract class OnBlockBreakEventCore
 			}
 			if ( blockTypeNotExpected > 0 ) {
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "BLOCK_TYPE_NOT_EXPECTED__CANNOT_PROCESS (" + blockTypeNotExpected + 
 						" ) " );
+				pmEvent.setDebugColorCodeDebug();
 			}
 			
 			
@@ -729,7 +767,9 @@ public abstract class OnBlockBreakEventCore
 				// Ignore event and clear debugInfo:
 //				debugInfo.setLength( 0 );
 				
+				pmEvent.setDebugColorCodeWarning();
 				debugInfo.append( "(TargetBlock forcedFastFail validateEvent [BlockAlreadyMined]) " );
+				pmEvent.setDebugColorCodeDebug();
 				
 				return results;
 			}
@@ -737,7 +777,7 @@ public abstract class OnBlockBreakEventCore
 		}
 		
 		
-		debugInfo.append( "blocks(" )
+		debugInfo.append( " blocks(" )
 			.append( pmEvent.getBlock() == null ? "0" : "1" )
 			.append( "+" )
 			.append( pmEvent.getExplodedBlocks().size() )
@@ -753,14 +793,18 @@ public abstract class OnBlockBreakEventCore
 //					"&cYour tool is worn-out and cannot be used." );
 			
 			pmEvent.setCancelOriginalEvent( true );
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		if ( mine != null && BlockUtils.getInstance().isUnbreakable( sBlockHit ) ) {
 			// The block is unbreakable because a utility has it locked:
 			
 			pmEvent.setCancelOriginalEvent( true );
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (event canceled) " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
@@ -772,9 +816,11 @@ public abstract class OnBlockBreakEventCore
 				mine.isAccessPermissionEnabled() ? "Perms" : "Other?";
 			
 			pmEvent.setCancelOriginalEvent( true );
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "ACCESS_DENIED (event canceled - Access by " )
 						.append( accessType )
 						.append( ") " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		
@@ -849,7 +895,9 @@ public abstract class OnBlockBreakEventCore
 		else if ( results && pmEvent.getBbPriority().isMonitor() && mine == null ) {
 			// bypass all processing since the block break is outside any mine:
 			
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "(MONITOR bypassed: no mine) " );
+			pmEvent.setDebugColorCodeDebug();
 			results = false;
 		}
 		
@@ -867,32 +915,39 @@ public abstract class OnBlockBreakEventCore
 
 				debugInfo.append( "(BLOCKEVENTS processing) " );
 				
-				// This is true if the player cannot toggle the autosell, and it's
-				// true if they can, and the have it enabled:
-				boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
-						SellAllUtil.get().checkIfPlayerAutosellIsActive( 
-								pmEvent.getSpigotPlayer().getWrapper() ) 
-						;
-				
-				// AutoSell on full inventory when using BLOCKEVENTS:
-				if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
-						SpigotPrison.getInstance().isSellAllEnabled() &&
-						isPlayerAutosellEnabled &&
-						pmEvent.getSpigotPlayer().isInventoryFull() ) {
+				if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
+					
+					SellAllUtil sellAllUtil = SellAllUtil.get();
+					
+					// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+					// This is to be used with other auto sell setting, but never on it's own:
+					boolean isPlayerAutosellEnabled = 
+							(!sellAllUtil.isAutoSellPerUserToggleable ||
+									sellAllUtil.isSellallPlayerUserToggleEnabled( 
+											pmEvent.getPlayer() ));
 					
 					
-					final long nanoStart = System.nanoTime();
-					boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
-											false, false, false, true, true, false);
-					final long nanoStop = System.nanoTime();
-					double milliTime = (nanoStop - nanoStart) / 1000000d;
 					
-					DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
-					debugInfo.append( "(autosell BLOCKEVENTS: " + (success ? "success" : "failed") + 
-							" ms: " + dFmt.format( milliTime ) + ") ");
-					
-					PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
-					
+					// AutoSell on full inventory when using BLOCKEVENTS:
+					if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
+							isPlayerAutosellEnabled &&
+							pmEvent.getSpigotPlayer().isInventoryFull() ) {
+						
+						pmEvent.performSellAllOnPlayerInventoryLogged("BLOCKEVENTS priority sellall");
+						
+//					final long nanoStart = System.nanoTime();
+//					boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
+//											false, false, false, true, true, false);
+//					final long nanoStop = System.nanoTime();
+//					double milliTime = (nanoStop - nanoStart) / 1000000d;
+//					
+//					DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+//					debugInfo.append( "(autosell BLOCKEVENTS: " + (success ? "success" : "failed") + 
+//							" ms: " + dFmt.format( milliTime ) + ") ");
+//					
+//					PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
+//					
+					}
 				}
 			}
 			
@@ -969,9 +1024,13 @@ public abstract class OnBlockBreakEventCore
 			debugInfo.append( "(PassedValidation) " );
 		}
 		else {
+			pmEvent.setDebugColorCodeWarning();
 			debugInfo.append( "(ValidationFailed) " );
+			pmEvent.setDebugColorCodeDebug();
 		}
 
+		
+//		debugInfo.append( "{br}||  " );
 		
 		return results;
 	}
@@ -1233,7 +1292,9 @@ public abstract class OnBlockBreakEventCore
 			success = true;
 		}
 		else {
+			pmEvent.setDebugColorCodeWarning();
 			pmEvent.getDebugInfo().append( "(fail:totalDrops=0) ");
+			pmEvent.setDebugColorCodeDebug();
 		}
 		
 		return success;
@@ -1707,7 +1768,8 @@ public abstract class OnBlockBreakEventCore
 						try {
 							results += Integer.parseInt(val);
 						} catch (NumberFormatException e1) {
-							Output.get().logError("AutoManager: tool durability failure. lore= [" + s + "] val= [" + val + "] error: " + e1.getMessage());
+							Output.get().logError("AutoManager: tool durability failure. "
+									+ "lore= [" + s + "] val= [" + val + "] error: " + e1.getMessage());
 						}
 
 						break;

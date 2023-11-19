@@ -1,0 +1,116 @@
+/*
+ *  Prison is a Minecraft plugin for the prison game mode.
+ *  Copyright (C) 2017 The Prison Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+group 'tech.mcprison'
+
+apply plugin: 'java'
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
+
+//sourceCompatibility = 1.8
+
+repositories 
+{
+    mavenCentral()
+.
+	maven {
+	    url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+	
+	    // As of Gradle 5.1, you can limit this to only those
+	    // dependencies you expect from it
+	    content {
+	      includeGroup 'org.bukkit'
+	      includeGroup 'org.spigotmc'
+	    }
+	 }
+	 /*
+	   As Spigot-API depends on the BungeeCord ChatComponent-API,
+	  we need to add the Sonatype OSS repository, as Gradle,
+	  in comparison to maven, doesn't want to understand the ~/.m2
+	  directory unless added using mavenLocal(). Maven usually just gets
+	  it from there, as most people have run the BuildTools at least once.
+	  This is therefore not needed if you're using the full Spigot/CraftBukkit,
+	  or if you're using the Bukkit API.
+	  */
+	 maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+	 maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+	  
+  // mavenLocal() // This is needed for CraftBukkit and Spigot.
+//    maven { 
+//    	url "https://mvnrepository.com/artifact" 
+//    }
+
+    //maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
+    
+    //maven { url = "https://maven.enginehub.org/repo/" }
+
+}
+
+
+
+dependencies {
+    implementation project(':prison-core')
+//    implementation project(':prison-mines')
+//    implementation project(':prison-ranks')
+//    implementation project(':prison-sellall')
+
+
+    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+
+
+
+	// https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-core
+	implementation 'com.sk89q.worldedit:worldedit-core:7.2.15'
+	
+	// https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-bukkit
+	compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.15'
+
+
+
+
+	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-core
+	compileOnly 'com.sk89q.worldguard:worldguard-core:7.0.8'
+
+	// https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-bukkit
+	compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
+
+	// https://mvnrepository.com/artifact/com.sk89q.worldguard.worldguard-libs/core
+	implementation 'com.sk89q.worldguard.worldguard-libs:core:7.0.8'
+
+
+  
+
+	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
+//    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
+	// 1.12.2-R0.1-SNAPSHOT works well:
+//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+	// 1.13.2 fails since deprecated functions have been removed.
+    //compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+
+
+
+
+
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+
+}
+
+
+

@@ -37,6 +37,7 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -897,6 +898,8 @@ public class MinesCommands
         DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
+        
+        chatDisplay.addSupportHyperLinkData( "Mine %s", m.getName() );
 
         {
         	RowComponent row = new RowComponent();
@@ -1882,7 +1885,7 @@ public class MinesCommands
     @Command(identifier = "mines set resetTime", permissions = "mines.set", 
     		description = "Set a mine's auto reset time as expressed in seconds.")
     public void resetTimeCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "mineName", description = "The name of the mine to edit, or '*all' to apply to all mines.") String mineName,
         @Arg(name = "time", description = "Time in seconds for the mine to auto reset. " +
         		"With a minimum value of "+ MineData.MINE_RESET__TIME_SEC__MINIMUM + " seconds. " +
         				"Using '*disable*' will turn off the auto reset.  Use of "
@@ -1915,7 +1918,7 @@ public class MinesCommands
 				return;
 			}
     	}
-    	if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
+    	if ( !"*disable*".equalsIgnoreCase( time ) && resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
     		Output.get().sendWarn( sender, 
     				"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
     				mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
@@ -2775,25 +2778,41 @@ public class MinesCommands
     }
     
 
-    @Command(identifier = "mines set tracer", permissions = "mines.set", 
-    				description = "Clear the mine and set a tracer around the outside")
+    @Command(identifier = "mines set tracer", 
+    		description = "Clears the mine of all blocks and sest a tracer of "
+    				+ "pink glass blocks around the outside",
+		    permissions = "mines.set")
     public void setTracerCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to set the tracer in.") String mineName) {
+        @Arg(name = "mineName", 
+        	description = "The name of the mine to set the tracer in.") String mineName,
+        @Arg(name = "options", def = "outline",
+        	description = "Options to control how the tracer is set. "
+        			+ "Defaults to 'outline' which draws a pink glass block around the edges of the mine. "
+        			+ "The option 'corners' will only place blocks within the corners of the mine. "
+        			+ "The option of 'clear' will just clear the mine and will not place any tracers. "
+        			+ "[outline corners clear]") String option ) {
     	
     	if (!performCheckMineExists(sender, mineName)) {
     		return;
     	}
 
+    	MineResetType resetType = MineResetType.fromString(option);
+    	
+    	if ( resetType != MineResetType.corners && resetType != MineResetType.clear ) {
+    		resetType = MineResetType.tracer;
+    	}
+    	
+    	
         PrisonMines pMines = PrisonMines.getInstance();
         Mine mine = pMines.getMine(mineName);
-        
+         
         
         if ( mine.isVirtual() ) {
         	sender.sendMessage( "&cMine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
         	return;
         }
 
-        mine.enableTracer();
+        mine.enableTracer( resetType );
 
     }
 
@@ -3311,6 +3330,53 @@ public class MinesCommands
     	}
     }
 
+    
+    
+    @Command(identifier = "mines top", 
+    		description = "TP to the top of the current mine. Will default to the mine's " +
+    		"spawn location if set, but can specify the target [spawn, mine]. If not in a "
+    		+ "mine, then it will be the same as '/mtp' where it will take you to a mine that "
+    		+ "is linked to your current rank. This command has no options.", 
+    		aliases = "mtop",
+    		altPermissions = {"access-by-rank", "mines.tp"})
+    public void mineTpTop(CommandSender sender ) {
+    	
+
+    	Player player = getPlayer( sender );
+    	//oboolean isOp = sender.isOp();
+    	
+    	
+    	if ( player == null || !player.isOnline() ) {
+    		
+    		teleportPlayerMustBeIngameMsg( sender );
+    		return;
+    	}
+    	
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	
+    	Mine mine = pMines.findMineLocationExact( player.getLocation() );
+
+    	
+    	if ( mine != null ) {
+    		if ( mine.isVirtual() ) {
+    			teleportCannotUseVirtualMinesMsg( sender );
+    			return;
+    		}
+    		else {
+    			
+    			mineTp( sender, mine.getName(), "", "spawn");
+    		}
+    	}
+    	else {
+    		// Player is not in a mine, so issue `/mtp` command for them:
+    		mineTp( sender, "", "", "");
+    	}
+    	
+    	
+
+    }
+    
     private void teleportPlayer( Player player, Mine mine, String target ) {
     	
     	if ( Prison.get().getPlatform().getConfigBooleanFalse( "prison-mines.tp-warmup.enabled" ) ) {

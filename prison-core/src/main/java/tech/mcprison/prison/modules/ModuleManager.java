@@ -37,6 +37,9 @@ public class ModuleManager {
 
 	public static final String MODULE_MANAGER_DIRECTORY = "module_conf";
 	
+	public static final String MODULE_NAME_MINES = "Mines";
+	public static final String MODULE_NAME_RANKS = "Ranks";
+	
     private List<Module> modules;
     private List<String> disabledModules;
     private File moduleRoot;
@@ -48,6 +51,14 @@ public class ModuleManager {
         moduleRoot = getModuleRootDefault();
     }
 
+    
+    public boolean isEnabled( String moduleName ) {
+    	
+    	Module module = getModule( moduleName );
+    	
+    	return module != null && module.isEnabled();
+    }
+    
     public static File getModuleRootDefault() {
     	 File moduleRoot = new File(PrisonAPI.getPluginDirectory(), MODULE_MANAGER_DIRECTORY);
          if (!moduleRoot.exists()) {

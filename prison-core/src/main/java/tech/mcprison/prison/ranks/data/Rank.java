@@ -403,10 +403,15 @@ public class Rank
 	}
 
     /**
-     * This new implementation of position is lazy loaded and should never be saved.
-     * This is to provide a quick reference to the position within the ladder's rank's
-     * ArrayList. This should never be used to access a rank or to refer to a rank; the
+     * <p>This provides a quick reference to the position within the ladder's rank's
+     * ArrayList. This value is zero based, where the first rank on the ladders has
+     * a position of 0.
+     * </p>
+     * 
+     * <p>This new implementation of position is lazy loaded and should never be saved.
+     * This should never be used to access a rank or to refer to a rank; the
      * actual objects should be used for that.
+     * </p>
      * 
      * @return
      */

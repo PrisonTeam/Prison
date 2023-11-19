@@ -1,16 +1,20 @@
 package tech.mcprison.prison.ranks.commands;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.backups.PrisonBackups;
+import tech.mcprison.prison.backups.PrisonBackups.BackupTypes;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
+import tech.mcprison.prison.ranks.managers.RankManager;
 
 /**
  * @author Faizaan A. Datoo
@@ -94,7 +98,57 @@ public class LadderCommands
     @Command(identifier = "ranks ladder list", description = "Lists all rank ladders.", 
     								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderList(CommandSender sender) {
-        ChatDisplay display = new ChatDisplay("Ladders");
+        
+    	ChatDisplay display = getLadderList();
+    	
+//    	ChatDisplay display = new ChatDisplay("Ladders");
+//
+//    	display.addSupportHyperLinkData( "Ladder List" );
+//        
+//        BulletedListComponent.BulletedListBuilder list =
+//        					new BulletedListComponent.BulletedListBuilder();
+//        
+////        DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
+//        
+////        String header = String.format( 
+////        		"&d%-12s   %16s   %5s   %12s   %12s",
+////        		"Ladder",
+////        		"Rank Cost Mult",
+////        		"Ranks",
+////        		"First Rank",
+////        		"Last Rank"
+////        		);
+//        
+//        list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoHeader() );
+//        
+//        for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders()) {
+//        	
+////        	int rankCount = ladder.getRanks() == null ? 0 : ladder.getRanks().size();
+////        	
+////        	Rank firstRank = rankCount == 0 ? null : ladder.getRanks().get(0);
+////        	Rank lastRank = rankCount == 0 ? null : ladder.getRanks().get( rankCount - 1 );
+////        	
+////        	String ladderInfo = String.format(
+////        			"&7%-12s   %16s   %4d   %-12s   %-12s", 
+////        			ladder.getName(),
+////        			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
+////        			rankCount,
+////        			firstRank.getName(),
+////        			lastRank.getName()
+////        			);
+//        	
+//            list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoDetail( ladder ) );
+//        }
+//        
+//        display.addComponent(list.build());
+
+        display.send(sender);
+    }
+    
+    public ChatDisplay getLadderList() {
+    	ChatDisplay display = new ChatDisplay("Ladders");
+    	
+        display.addSupportHyperLinkData( "Ladder List" );
         
         BulletedListComponent.BulletedListBuilder list =
         					new BulletedListComponent.BulletedListBuilder();
@@ -132,8 +186,8 @@ public class LadderCommands
         }
         
         display.addComponent(list.build());
-
-        display.send(sender);
+    
+    	return display;
     }
 
 //    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
@@ -316,12 +370,44 @@ public class LadderCommands
 
 
 	@Command( identifier = "ranks ladder rankCostMultiplier", 
-			description = "Sets or removes a ladder's Rank Cost Multiplier.  Setting the " +
-					"value to zero will remove the multiplier from the calculations.  The " +
-					"Rank Cost Multiplier from all ladders a player has active, will be " +
-					"summed together and applied to the cost of all of their ranks. The Rank " +
-					"Cost Multiplier represents a percentage, and can be either postive or " +
-					"negative. ", 
+			description = "Sets a ladder's rank cost multiplier which is used to calculate " +
+					"a rank's cost on ladders that have them enabled. " +
+					"Setting the value to zero will remove that ladder's rank multiplier from " +
+					"the calculations. " +
+					"Rank Cost Multiplier represents a percentage, and can be either postive or " +
+					"negative, and is multiplied by the rank's position (1's based). " +
+					"This means that for ladders have have a rank cost multiplier, the " +
+					"multiplier increases by the rank's position, such that if the prestige " +
+					"ladder has a ranks cost multiplier of 0.1, the P1=0.1, P2=0.2, P3=0.3, etc... {br}" +
+	
+					"All rank cost multipliers for the player's rank on that ladder, are " +
+					"combined from all ladders the player is on, " +
+					"then this value is added to a value of 1.0 before being multiplied to the rank cost. " +
+					"This will result in a progressively more expensive rank cost for the " + 
+					"player as they advance on multiple ladders. " +
+					"If a ladder has 'applyRankCostMultiplier' disabled, then rank costs on that " +
+					"ladder will not use the player's combined rank cost multiplier. {br}" +
+					
+					"This calculates " +
+					"what a player would have to pay when ranking up.  " +
+					"It should be understood that a ladder can contribute to the total " +
+					"ranks multiplier, but yet it could ignore the ranks multiplier when " +
+					"calculating the rank costs for that ladder. {br}" +
+					
+					"Example of this kind of setup would be to have the " +
+					"default ladder apply the rank cost multiplier to its rank's costs, " +
+					"but yet have the default ladder set it's rank cost multiplier to a value of 0.0. " +
+					"Then have the prestige ladder ignore " +
+					"them, but have the prestige ladder contribute to the global rank " +
+					"cost multipliers. This configuration will result in rank costs increasing " + 
+					"for the default ladder's ranks, as the player increases their prestige ranks. " + 
+					"But yet the prestiges ladder rank costs will not be impacted " +
+					"by the rank cost multipliers. Using the example above for p1, p2, p3, etc, " +
+					"the rank costs on the default ladder will increase by 10 percent each time " +
+					"the player prestiges.  At a 10% increase, the default rank costs will be " +
+					"twice as expensive when the are at P10, compared to when they were at " +
+					"p0 (no prestige rank)." 
+					, 
 			onlyPlayers = false, permissions = "ranks.ladder" )
 	public void ladderSetRankCostMultiplier( CommandSender sender, 
 			@Arg( name = "ladderName" ) String ladderName,
@@ -379,15 +465,15 @@ public class LadderCommands
 
 	
 	@Command( identifier = "ranks ladder applyRankCostMultiplier", 
-			description = "Controls if the rank costs multiplier should apply to the" +
-					"ranks on this ladder.  If the ladder has a rank cost multipiler " +
-					"enabled, this setting will not effect its contribution to other " +
-					"the multiplier.", 
+			description = "Controls if the rank costs multiplier should apply to the " +
+					"ranks on this ladder. This is an 'ON' or 'OFF' situation for the whole " +
+					"ladder, where the Rank Cost Multiplier will be ignored for a ladder " +
+					"if this is disabled.", 
 					onlyPlayers = false, permissions = "ranks.ladder" )
 	public void ladderApplyRankCostMultiplier( CommandSender sender, 
 			@Arg( name = "ladderName" ) String ladderName,
 			@Arg( name = "applyRankCostMultiplier", def = "apply", 
-			description = "Applies or disables the ranks on this ladder "
+				description = "Applies or disables the ranks on this ladder "
 					+ "from applying the rank multiplier to the rank cost for players."
 					) 
 			String applyRankCostMultiplier )
@@ -433,4 +519,118 @@ public class LadderCommands
 	}
 	
   
+	@Command( identifier = "ranks ladder resetRankCosts", 
+			description = "For a given ladder, this command will reset all rank costs "
+					+ "based upon a formula, where each rank is progressivly more "
+					+ "expensive. "
+					+ "This allow easier adjustments to many ranks at the same time. "
+					+ "The ranks within this ladder will not be changed, and they will be "
+					+ "processed in the same order in which they are listed with the "
+					+ "command: '/ranks list <ladderName>'.", 
+					onlyPlayers = false, permissions = "ranks.ladder" )
+    public void ladderResetRankCosts(CommandSender sender, 
+    		@Arg(name = "ladderName") String ladderName,
+    		
+	        @Arg(name = "initialCost",
+	        	def = "1000000000", verifiers = "min[1]",
+	        	description = "The 'initialCost' will set the cost of the first rank on "
+	        			+ "this ladder.  All other rank costs will be based upon this "
+	        			+ "value. The default value is 1_000_000_0000."
+	        		) double initialCost,
+	        @Arg(name = "addMult", def = "1", verifiers = "min[1]",
+	        description = "This is an 'additional multiplier' for all ranks on the ladder, "
+	        		+ "with the default value of 1. The cost for each rank is based upon "
+	        		+ "the initial rank cost, times the rank's level. So the default ranks "
+	        		+ "named 'C', or 'p3', since both are the third rank on their ladders, "
+	        		+ "will be 3 times the cost of the first ranks, 'A' or 'p1', with this "
+	        		+ "additional multiplier being multiplied against that value.  "
+	        		+ "So for default values for a rankk in the third position, "
+	        		+ "with a 1.75 multipler will have a "
+	        		+ "cost = 1_000_000_000 * 3 * 1.75.") double addMult,
+	        @Arg(name = "exponent", def = "1", verifiers = "min[0.00001]",
+	        description = "See the cost formula for the 'addMult' parameter. "
+	        		+ "This parameter adds an exponent to the formula.  For a linear " 
+	        		+ "rank cost, use a value of 1.0 for this parameter. Use a value " 
+	        		+ "greater than 1.0, such as 1.2 for slightly more agressive cost "
+	        		+ "calculation. Since cost is a IEEE double, there is a risk of " 
+	        		+ "lost precision with numbers greater than 16 digits. "
+	        		+ "cost = (initialCost * rankPosition * addMult)^exponent.") 
+    				double exponent ) {
+    	
+		
+		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
+		RankManager rm = PrisonRanks.getInstance().getRankManager();
+		
+        RankLadder ladder = lm.getLadder(ladderName);
+        
+        if ( ladder == null ) {
+        	ladderDoesNotExistsMsg( sender, ladderName );
+            return;
+        }
+
+        
+        if ( exponent <= 0 ) {
+        	sender.sendMessage("Error: ranks ladder resetRankCosts: Exponent parameter must be greater than zero.");
+        	return;
+        }
+        
+        // Force a backup:
+    	PrisonBackups prisonBackup = new PrisonBackups();
+    	
+    	String backupComment = String.format( 
+    							"Resetting all rank costs on ladder %s.", 
+    							ladder.getName() );
+    	String message = prisonBackup.startBackup( BackupTypes.auto, backupComment );
+    	
+    	sender.sendMessage( message );
+    	sender.sendMessage( "Forced a Backup of prison configs prior to changing rank costs." );
+
+        
+        int ranksChanged = 0;
+        
+        int i = 1;
+        for (Rank rank : ladder.getRanks() ) {
+			
+        	double cost = Math.pow(initialCost * i++ * addMult, exponent );
+        	
+        	if ( rank.getRawRankCost() != cost ) {
+        		rank.setRawRankCost( cost );
+        		
+        		rm.saveRank( rank );
+        		
+        		ranksChanged++;
+        	}
+        	
+		}
+
+        if ( ranksChanged > 0 ) {
+        	// Reload the placeholders: 
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        	
+        	String msg = String.format(
+        			"Done resetting all rank costs on the '%s' ladder. "
+        			+ "There were %d ranks that had cost changes.", 
+        			ladder.getName(),
+        			ranksChanged );
+        	
+        	Output.get().logInfo( msg );
+        }
+        
+//        for ( int i = 0; i < prestigeRanks; i++ ) {
+//			String name = "P" + (i + 1);
+//			String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
+//			double cost = prestigeCost * (i + 1) * prestigeMult;
+//			
+//			// Only add prestige ranks if they do not already exist:
+//			if ( PrisonRanks.getInstance().getRankManager().getRank( name ) == null ) {
+//				
+//				createRank(sender, name, cost, LadderManager.LADDER_PRESTIGES, tag, "noPlaceholderUpdate");
+//				prestigesCount++;
+//			}
+//		}
+
+
+    }
+
+	
 }

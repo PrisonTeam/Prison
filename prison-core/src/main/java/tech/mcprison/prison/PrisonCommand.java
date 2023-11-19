@@ -43,6 +43,7 @@ import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.RegisteredCommand;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.discord.PrisonPasteChat;
+import tech.mcprison.prison.discord.PrisonSupportFiles;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
@@ -73,6 +74,7 @@ public class PrisonCommand
 	private List<String> prisonStartupDetails;
 	
 	private String supportName = null;
+	private PrisonSupportFiles supportFile = null;
 	private TreeMap<String, String> supportURLs;
 	
 	
@@ -536,7 +538,9 @@ public class PrisonCommand
 
     
     @Command(identifier = "prison placeholders test", 
-    		description = "Converts any Prison placeholders in the test string to their values", 
+    		description = "Converts any Prison placeholders in the test string to their values. "
+    				+ "Use '-s' keyword to reduce output text. "
+    				+ "All placeholder attributes are supported.", 
     		onlyPlayers = false, permissions = "prison.placeholder")
     public void placeholdersTestCommand(CommandSender sender,
     		@Arg(name = "playerName", description = "Player name to use with player rank placeholders (optional)", 
@@ -574,6 +578,10 @@ public class PrisonCommand
     		player = getPlayer( sender );
     	}
     	
+    	boolean isShort = text.startsWith( "-s " );
+    	if ( isShort ) {
+    		text = text.substring( 3 );
+    	}
 
     	ChatDisplay display = new ChatDisplay("Placeholder Test");
     	
@@ -588,18 +596,18 @@ public class PrisonCommand
     	String translated = Prison.get().getPlatform().getPlaceholders()
     					.placeholderTranslateText( playerUuid, playerName, text );
     	
-    	builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
-    	builder.add( String.format( "&a    Use { } to escape the placeholders."));
-    	
-    	// Show player info here like with the search:
-        if ( player != null ) {
-        	builder.add( String.format( "&a    Player: &7%s  &aPlayerUuid: &7%s", player.getName(), 
-        			(playerUuid == null ? "null" : playerUuid.toString())));
-        	
-        }
-        
-    	
-    	builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
+    	if ( !isShort ) {
+    		builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
+    		builder.add( String.format( "&a    Use { } to escape the placeholders."));
+    		
+    		// Show player info here like with the search:
+    		if ( player != null ) {
+    			builder.add( String.format( "&a    Player: &7%s  &aPlayerUuid: &7%s", player.getName(), 
+    					(playerUuid == null ? "null" : playerUuid.toString())));
+    		}
+    		
+    		builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
+    	}
     	
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
@@ -873,24 +881,54 @@ public class PrisonCommand
     		sender.sendMessage( filePath );
     	}
     	catch ( IOException e ) {
-    		// Ingore
+    		// Ignore
     	}
-    	try {
+//    	try {
+//    		
+//    		if ( AutoFeaturesWrapper.getInstance().getBlockConvertersConfig() != null ) {
+//    			
+//    			File bcFile = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig().getConfigFile();
+//    			if ( bcFile != null && bcFile.exists() ) {
+//    				
+//    				String filePath = bcFile.getCanonicalPath();
+//    				sender.sendMessage( filePath );
+//    			}
+//    		}
+//    		
+//    	}
+//    	catch ( IOException e ) {
+//    		// Ignore
+//    	}
+    }
+    
+    
+    @Command(identifier = "prison reload blockConverters", 
+    		description = "BlockConverters reload: Reloads the block converter settings. The current " +
+    				"settings will be discarded before reloading the configuration file.", 
+    				onlyPlayers = false, permissions = "prison.autofeatures")
+    public void reloadBlockConverters(CommandSender sender ) {
+    	
+    	if ( AutoFeaturesWrapper.getBlockConvertersInstance() != null ) {
     		
-    		if ( AutoFeaturesWrapper.getInstance().getBlockConvertersConfig() != null ) {
-    			
-    			File bcFile = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig().getConfigFile();
+    		AutoFeaturesWrapper.getBlockConvertersInstance().reloadConfig();
+    		
+    		String message = "&7BlockConverters were reloaded. The new settings are now in effect. ";
+    		sender.sendMessage( message );
+    		
+    		try {
+    			File bcFile = AutoFeaturesWrapper.getBlockConvertersInstance().getConfigFile();
     			if ( bcFile != null && bcFile.exists() ) {
     				
     				String filePath = bcFile.getCanonicalPath();
     				sender.sendMessage( filePath );
     			}
     		}
+    		catch ( IOException e ) {
+    			// Ignore
+    		}
     		
     	}
-    	catch ( IOException e ) {
-    		// Ingore
-    	}
+    	
     }
 
     
@@ -1079,7 +1117,8 @@ public class PrisonCommand
     
     @Command(identifier = "prison debug", 
     		description = "Enables debugging and trouble shooting information. " +
-    				"For internal use only. Do not use unless instructed.", 
+    				"For internal use only. Do not use unless instructed. This will add a lot of "
+    				+ "data to the console.", 
     		onlyPlayers = false, permissions = "prison.debug",
     		aliases = {"prison support debug"} )
     public void toggleDebug(CommandSender sender,
@@ -1087,15 +1126,38 @@ public class PrisonCommand
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target, or set a count down timer. " +
     					"[on, off, targets, (count-down-timer), selective, jarScan, " +
-    					"testPlayerUtil, testLocale, rankup ] " +
+    					"testPlayerUtil, testLocale, rankup, player=<playerName> ] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or 'all' targets if no target is specified. " +
     				"If any targets are enabled, then debug in general will be enabled. Selective will only " +
     				"activate debug with the specified targets. " +
     				"A positive integer value will enable the count down timer mode to enable " +
     				"debug mode for a number of loggings, then debug mode will be turned off. " +
-    				"jarScan will identify what Java version compiled the class files within the listed jars."
+    				"jarScan will identify what Java version compiled the class files within the listed jars. " +
+    				"If a player name is given, all debug messages that are tracked by player name will only be " +
+    				"logged for that player.  Example: `/debug playerName=RoyalBlueRanger 5` will log only " +
+    				"5 debug messages for that player, then debug mode will be disabled.  "
     						) String targets ) {
+    	
+    	String playerName = null;
+    	
+		String playerStr = extractParameter("player=", targets);
+		if ( playerStr != null ) {
+			targets = targets.replace( playerStr, "" );
+			playerName = playerStr.replace( "player=", "" ).trim();
+			
+			if ( playerName != null ) {
+				
+				Output.get().setDebugPlayerName( playerName );
+				
+				sender.sendMessage( "Prison Debug Mode enabled only for player: " + playerName );
+			}
+			else {
+				Output.get().setDebugPlayerName( null );
+				
+				sender.sendMessage( "Prison Debug Only-for-player Mode has been disabled. Debug mode will be logged for all players." );
+			}
+		}
     	
     	if ( targets != null && "jarScan".equalsIgnoreCase( targets ) ) {
     		
@@ -1160,6 +1222,27 @@ public class PrisonCommand
 
     }
     
+    
+	
+	private String extractParameter( String key, String options ) {
+		return extractParameter( key, options, true );
+	}
+	private String extractParameter( String key, String options, boolean tryLowerCase ) {
+		String results = null;
+		int idx = options.indexOf( key );
+		if ( idx != -1 ) {
+			int idxEnd = options.indexOf( " ", idx );
+			if ( idxEnd == -1 ) {
+				idxEnd = options.length();
+			}
+			results = options.substring( idx, idxEnd );
+		}
+		else if ( tryLowerCase ) {
+			// try again, but lowercase the key
+			results = extractParameter( key.toLowerCase(), options, false );
+		}
+		return results;
+	}
     
 
 	@Command(identifier = "prison findCmd", 
@@ -1301,6 +1384,83 @@ public class PrisonCommand
     
     
     
+    @Command(identifier = "prison support saveToFile", 
+    		description = "This sets the  target of the support data to a local file.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSaveToFile(CommandSender sender,
+    		@Wildcard(join=true)
+    @Arg(name = "options", 
+    description = "Enables, or disables the support file. 'basic' will enable the support file " +
+    				"and add 'version', 'ranks', 'mines, and 'configs to the file automatically. " +
+    				"Defaults to 'enable'. [enable, basic, disable]" ) 
+    String options
+    		) {
+
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	if ( options != null && options.toLowerCase().startsWith( "disable" ) ) {
+
+    		setSupportFile( null );
+    	}
+    	else {
+    		
+    		setSupportFile( new PrisonSupportFiles() );
+    		getSupportFile().setupSupportFile( getSupportName() );
+    	}
+    	
+    	
+    	
+    	sender.sendMessage( String.format( "Save the support data to file: %b",
+    														getSupportFile() != null ) );
+    	
+    	if ( getSupportFile() != null ) {
+    		sender.sendMessage( "You can now use the support submit options and they will be save to files." );
+    		
+    		sender.sendMessage( "  Your support save file location: " +
+    				getSupportFile().getSupportFile().getAbsolutePath() );
+    		
+    		if ( options.toLowerCase().equals( "basic" ) ) {
+    			
+    			StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitBasic();
+    			
+    			getSupportFile().saveToSupportFile( text, getSupportName() );
+
+    			sender.sendMessage("  - Support 'basic' data was just added to the support output file." );
+        		sender.sendMessage("  - Includes: version, listeners, command stats, ladders, Ranks, Mines, and all Config files." );
+        		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
+    			
+//    			supportSubmitVersion(sender);
+//    			supportSubmitRanks(sender);
+//    			supportSubmitMines(sender);
+//    			supportSubmitConfigs(sender);
+    		}
+    	}
+    	else {
+    		sender.sendMessage( "Support save file has been disabled. Support files have not been removed." );
+    	}
+    }
+    
+   
+    @Command(identifier = "prison support colorTest", 
+    		description = "Displays a test swatch of minecraft colors .", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportColorTest(CommandSender sender
+    		) {
+    	
+    	StringBuilder sb = Prison.get().getPrisonStatsUtil().getColorTest();
+    	
+    	for (String line : sb.toString().split("\n")) {
+			Output.get().logInfo(line);
+		}
+    }
+    
     @Command(identifier = "prison support submit version", 
     		description = "For Prison support: This will copy the contents of '/prison version all' " +
     				"to paste.helpch.at so it can be easily shared with Prison's support staff .", 
@@ -1317,7 +1477,11 @@ public class PrisonCommand
     	}
     	
     	
-    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();
+    	StringBuilder text = new StringBuilder();
+    	
+    	text.append( "NOTE: Listeners and Configs information is provided below.\n\n" );
+    			
+    	text.append( Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData() );
     	
     	int idx = text.indexOf("{br}");
     	while ( idx != -1 ) {
@@ -1335,84 +1499,112 @@ public class PrisonCommand
 					);
     	
     	// Include the command stats:
-    	text.append( "\n\n" );
-    	List<String> cmdStats = getCommandStats();
-    	for (String cmd : cmdStats) {
-			text.append( cmd ).append( "\n" );
-		}
+    	text.append( Prison.get().getPrisonStatsUtil().getCommandStatsDetailData() );
+//    	text.append( "\n\n" );
+//    	List<String> cmdStats = getCommandStats();
+//    	for (String cmd : cmdStats) {
+//			text.append( cmd ).append( "\n" );
+//		}
 		
     	
     	
     	// Include Prison backup logs:
-    	text.append( "\n\n" );
-    	text.append( "Prison Backup Logs:" ).append( "\n" );
-    	List<String> backupLogs = getPrisonBackupLogs();
+    	text.append( Prison.get().getPrisonStatsUtil().getPrisonBackupLogsData() );
+//    	text.append( "\n\n" );
+//    	text.append( "Prison Backup Logs:" ).append( "\n" );
+//    	List<String> backupLogs = getPrisonBackupLogs();
+//    	
+//    	for (String log : backupLogs) {
+//    		text.append( Output.decodePercentEncoding(log) ).append( "\n" );
+//		}
+
     	
-    	for (String log : backupLogs) {
-    		text.append( Output.decodePercentEncoding(log) ).append( "\n" );
-		}
+
+    	text.append( Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData() );
     	
     	
-		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-		
-		String helpURL = pasteChat.post( text.toString() );
-		
-		getSupportURLs().put( "Submit version:", helpURL );
-		
-		if ( helpURL != null ) {
-			
-			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-					"paste this URL in to Prison's Discord server." );
-			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
-		}
-		else {
-			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
-		}
-		
+    	
+    	if ( getSupportFile() != null ) {
+    		
+    		getSupportFile().saveToSupportFile( text, getSupportName() );
+
+    		sender.sendMessage("  - Support 'version' data was just added to the support output file." );
+    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
+    	}
+    	else {
+    		
+    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    		
+    		String helpURL = pasteChat.post( text.toString() );
+    		
+    		getSupportURLs().put( "Submit version:", helpURL );
+    		
+    		if ( helpURL != null ) {
+    			
+    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    					"paste this URL in to Prison's Discord server." );
+    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		}
+    		else {
+    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		}
+    		
+    	}
+    	
     	
     }
 
 
     
-    @Command(identifier = "prison support submit configs", 
-    		description = "For Prison support: This will copy the contents of Prison's config " +
-    				"file to paste.helpch.at so it can be easily shared with Prison's " +
-    				"support staff.  This will include the following: config.yml plugin.yml " +
-    				"autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
-    				"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml", 
-    				onlyPlayers = false, permissions = "prison.debug" )
-    public void supportSubmitConfigs(CommandSender sender
-    		) {
-    	
-    	
-    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		sender.sendMessage( "The support name needs to be set prior to using this command." );
-    		sender.sendMessage( "Use &7/prison support setSupportName help" );
-    		
-    		return;
-    	}
-    	
-    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData();
-    	
-
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-    	
-    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
-    	
-    	getSupportURLs().put( "Submit configs:", helpURL );
-    	
-    	if ( helpURL != null ) {
-    		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
-    	}
-    	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
-    	}
-    	
-    	
-    }
+//    @Command(identifier = "prison support submit configs", 
+//    		description = "For Prison support: This will copy the contents of Prison's config " +
+//    				"file to paste.helpch.at so it can be easily shared with Prison's " +
+//    				"support staff.  This will include the following: config.yml plugin.yml " +
+//    				"autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
+//    				"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml", 
+//    				onlyPlayers = false, permissions = "prison.debug" )
+//    public void supportSubmitConfigs(CommandSender sender
+//    		) {
+//    	
+//    	
+//    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+//    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+//    		sender.sendMessage( "Use &7/prison support setSupportName help" );
+//    		
+//    		return;
+//    	}
+//    	
+//    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData();
+//    	
+//    	
+//    	
+//    	if ( getSupportFile() != null ) {
+//    		
+//    		getSupportFile().saveToSupportFile( text, getSupportName() );
+//
+//    		sender.sendMessage("  - Support 'configs' data was just added to the support output file." );
+//    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
+//    	}
+//    	else {
+//    		
+//    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+//    		
+//    		String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+//    		
+//    		getSupportURLs().put( "Submit configs:", helpURL );
+//    		
+//    		if ( helpURL != null ) {
+//    			
+//    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+//    					"paste this URL in to Prison's Discord server." );
+//    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+//    		}
+//    		else {
+//    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+//    		}
+//    		
+//    	}
+//    }
 
 
     @Command(identifier = "prison support submit ranks", 
@@ -1432,25 +1624,38 @@ public class PrisonCommand
     	}
     	
     	
+    	// List Ladder and rank lists:
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitRanksData();
     	
+    	// List rank files:
+    	text.append( Prison.get().getPrisonStatsUtil().getSupportSubmitRanksFileData() );
     	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     	
-    	String helpURL = pasteChat.post( text.toString() );
-    	
-    	getSupportURLs().put( "Submit ranks:", helpURL );
-    	
-    	if ( helpURL != null ) {
+    	if ( getSupportFile() != null ) {
     		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		getSupportFile().saveToSupportFile( text, getSupportName() );
+
+    		sender.sendMessage("  - Support 'ranks' data was just added to the support output file." );
+    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
     	}
     	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		
+    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    		
+    		String helpURL = pasteChat.post( text.toString() );
+    		
+    		getSupportURLs().put( "Submit ranks:", helpURL );
+    		
+    		if ( helpURL != null ) {
+    			
+    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    					"paste this URL in to Prison's Discord server." );
+    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		}
+    		else {
+    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		}
     	}
-    	
     	
     }
 
@@ -1476,22 +1681,31 @@ public class PrisonCommand
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitMinesData();
     	
     	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-    	
-    	String helpURL = pasteChat.post( text.toString() );
-    	
-    	getSupportURLs().put( "Submit mines:", helpURL );
-    	
-    	if ( helpURL != null ) {
+    	if ( getSupportFile() != null ) {
     		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		getSupportFile().saveToSupportFile( text, getSupportName() );
+
+    		sender.sendMessage("  - Support 'mines' data was just added to the support output file." );
+    		sender.sendMessage( getSupportFile().getFileStats( text.length() ) );
     	}
     	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		
+    		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    		
+    		String helpURL = pasteChat.post( text.toString() );
+    		
+    		getSupportURLs().put( "Submit mines:", helpURL );
+    		
+    		if ( helpURL != null ) {
+    			
+    			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    					"paste this URL in to Prison's Discord server." );
+    			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    		}
+    		else {
+    			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    		}
     	}
-    	
     	
     }
 
@@ -1756,43 +1970,43 @@ public class PrisonCommand
 	}
     
     
-    @Command(identifier = "prison support submit listeners", 
-    		description = "For Prison support: This will copy the server's active listeners " +
-    				"for blockBreak, chat, and playerInteracts to paste.helpch.at so it can be " +
-    				"easily shared with Prison's support staff.", 
-    				onlyPlayers = false, permissions = "prison.debug" )
-    public void supportSubmitListeners(CommandSender sender
-    		) {
-    	
-    	
-    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		sender.sendMessage( "The support name needs to be set prior to using this command." );
-    		sender.sendMessage( "Use &7/prison support setSupportName help" );
-    		
-    		return;
-    	}
-    	
- 
-    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" );
-    	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
-    	
-    	String helpURL = pasteChat.post( text.toString() );
-    	
-    	getSupportURLs().put( "Submit Listeners:", helpURL );
-    	
-    	if ( helpURL != null ) {
-    		
-    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
-    				"paste this URL in to Prison's Discord server." );
-    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
-    	}
-    	else {
-    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
-    	}
-    	
-    	
-    }
+//    @Command(identifier = "prison support submit listeners", 
+//    		description = "For Prison support: This will copy the server's active listeners " +
+//    				"for blockBreak, chat, and playerInteracts to paste.helpch.at so it can be " +
+//    				"easily shared with Prison's support staff.", 
+//    				onlyPlayers = false, permissions = "prison.debug" )
+//    public void supportSubmitListeners(CommandSender sender
+//    		) {
+//    	
+//    	
+//    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+//    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+//    		sender.sendMessage( "Use &7/prison support setSupportName help" );
+//    		
+//    		return;
+//    	}
+//    	
+// 
+//    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" );
+//    	
+//    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+//    	
+//    	String helpURL = pasteChat.post( text.toString() );
+//    	
+//    	getSupportURLs().put( "Submit Listeners:", helpURL );
+//    	
+//    	if ( helpURL != null ) {
+//    		
+//    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+//    				"paste this URL in to Prison's Discord server." );
+//    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+//    	}
+//    	else {
+//    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+//    	}
+//    	
+//    	
+//    }
 
 
     
@@ -1882,7 +2096,8 @@ public class PrisonCommand
     	
     	ChatDisplay display = new ChatDisplay("Prison Backup Logs:");
     	
-    	List<String> backupLogs = getPrisonBackupLogs();
+    	List<String> backupLogs = Prison.get().getPrisonStatsUtil().getPrisonBackupLogs();
+//    	List<String> backupLogs = getPrisonBackupLogs();
     	
     	for (String log : backupLogs) {
 			display.addText(log);
@@ -1892,11 +2107,11 @@ public class PrisonCommand
     	
     }
     
-    private List<String> getPrisonBackupLogs() {
-    	PrisonBackups prisonBackup = new PrisonBackups();
-    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
-    	return backupLogs;
-    }
+//    private List<String> getPrisonBackupLogs() {
+//    	PrisonBackups prisonBackup = new PrisonBackups();
+//    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
+//    	return backupLogs;
+//    }
 	
     
     @Command(identifier = "prison tokens balance", 
@@ -2010,6 +2225,18 @@ public class PrisonCommand
     	}
     	
     	Player player = getPlayer( playerName );
+    	
+    	if ( player == null ) {
+    		if ( !silent ) {
+    			sender.sendMessage(
+    					String.format(
+    							"Prison Tokens add: Player name not found. [%s] (hardCodedMessag)", 
+    							playerName ));
+    		}
+    		return;
+    	}
+    	
+    	
     	PlayerCachePlayerData pCache = player.getPlayerCachePlayerData();
     	
     	long tokenBal = pCache.getTokens();
@@ -2109,6 +2336,18 @@ public class PrisonCommand
     	
     	Player player = getPlayer( playerName );
     	
+    	
+    	if ( player == null ) {
+    		if ( !silent ) {
+    			sender.sendMessage(
+    					String.format(
+    							"Prison Tokens remove: Player name not found. [%s] (hardCodedMessag)", 
+    							playerName ));
+    		}
+    		return;
+    	}
+    	
+    	
     	if ( forcePlayer ) {
     		
     		player.getPlayerCachePlayerData().removeTokens( amount );
@@ -2182,6 +2421,17 @@ public class PrisonCommand
 //    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	Player player = getPlayer( playerName );
+    	
+    	
+    	if ( player == null ) {
+    		if ( !silent ) {
+    			sender.sendMessage(
+    					String.format(
+    							"Prison Tokens set: Player name not found. [%s] (hardCodedMessag)", 
+    							playerName ));
+    		}
+    		return;
+    	}
 
 //    	// Set to zero:
 //    	long totalTokens = player.getPlayerCachePlayerData().getTokens();
@@ -2296,6 +2546,13 @@ public class PrisonCommand
 	}
 	public void setSupportName( String supportName ) {
 		this.supportName = supportName;
+	}
+
+	public PrisonSupportFiles getSupportFile() {
+		return supportFile;
+	}
+	public void setSupportFile(PrisonSupportFiles supportFile) {
+		this.supportFile = supportFile;
 	}
 
 	public TreeMap<String, String> getSupportURLs() {

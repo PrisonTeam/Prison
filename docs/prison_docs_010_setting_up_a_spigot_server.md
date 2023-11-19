@@ -13,7 +13,7 @@ Buildtools also allows easy setup of many test environments since all you
 would need to do is to just change the version.
 
 
-*Documented updated: 2023-01-14*
+*Documented updated: 2023-07-24*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -24,11 +24,11 @@ If you need more assistance, please search for online documentation since
 there are many good resources out there.
 
 *  First install a copy of Java that is accessible from the command line.
-    - The current version of Java is version 17. Even if you are using jars and other plugins that were compiled with Java 1.8.x, it is recommended to use Java 17.  
-	- If you feel like you must use Java 1.8, it's strongly suggested to use only the latest version 1.8.0_x.
+    - The current recommended version of Java is version 17. Even if you are using jars and other plugins that were compiled with Java 1.8.x, or older, it is recommended to use Java 17.  
+	- If you feel like you must use Java 1.8, it's strongly suggested to use only the latest version 1.8.0_x since there are still current security releases.
     
     
-*  You can download it from [Sun SE Development Kit 8]https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html) for product that you need.
+*  You can download it from [Sun SE Development Kit 8]https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html) for a product that you need.
 
 
 *  You can also use Open JDK if Sun's license does not fit your needs. [OpenJDK Install](https://openjdk.java.net/install/)
@@ -61,6 +61,7 @@ there are many good resources out there.
   java -jar BuildTools.jar --rev 1.17.1
   java -jar BuildTools.jar --rev 1.18.2
   java -jar BuildTools.jar --rev 1.19.3
+  java -jar BuildTools.jar --rev 1.20.1
 ```
 
 *  For example, with BuildTools.jar being in a root directory, create a subdirectory and then start a build within that directory.  The benefit is that you can use the same BuildTools.jar to build multiple different versions of spigot.  This example starts off with building a v1.17.1 instance and then builds a 1.8.8 instance.  Normally you wouldn't build multiple versions of spigot, but this shows how easy and flexible it is to build any version of spigot that has been released.
@@ -79,7 +80,7 @@ there are many good resources out there.
 *  **Updating BuildTools:** Once in a while you will be prompted to update the BuildTools.jar file. To do update it, all you need to do is to just download it, and replace the older one you were using.  
 
 
-*  **Updating the built servers:** Every once in a while, when you are starting a server, there may be a notification that the server software needs to be update.  Just rerun the BuildTools for the same version within the original build directory.  The build tools will update all of the changed resources and then generate the new server jars that you copy to the actual server (see the next step).  
+*  **Updating the built servers:** Every once in a while, when you are starting a server, there may be a notification that the server software needs to be update and the server startup will be paused for about 20 seconds.  Just rerun the BuildTools for the same version within the original build directory.  The build tools will update all of the changed resources and then generate the new server jars that you copy to the actual server (see the next step).  
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

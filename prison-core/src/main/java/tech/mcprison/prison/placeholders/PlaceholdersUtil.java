@@ -48,6 +48,31 @@ public class PlaceholdersUtil
 		}
 	}
 	
+	public static String formattedShortTime( double timeSec, String spaces ) {
+		
+		long durationMs = (long) (timeSec * 1000d);
+		String formattedTime = Text.getTimeUntilShortString( durationMs, spaces );
+		
+		return formattedTime;
+	}
+	public static String formattedColonsTime( double timeSec, String spaces ) {
+		
+		long durationMs = (long) (timeSec * 1000d);
+		String formattedTime = Text.getTimeUntilColonsString( durationMs, spaces );
+		
+		String textAnd = " " + Text.coreOutputTextAndMsg() + " ";
+		
+		formattedTime = formattedTime.replace( textAnd, "" );
+		
+		return formattedTime;
+	}
+	public static String formattedTime( double timeSec, String spaces ) {
+		
+		long durationMs = (long) (timeSec * 1000d);
+		String formattedTime = Text.getTimeUntilString( durationMs, spaces );
+		
+		return formattedTime;
+	}
 	
 	/**
 	 * <p>Formats seconds to 0d 0h 0m 0s.

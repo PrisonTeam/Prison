@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginManager;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
@@ -53,7 +54,10 @@ public class AutoManagerTokenEnchant
 	@Override
 	public void registerEvents() {
 	
-		initialize();
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 
 	
@@ -390,6 +394,16 @@ public class AutoManagerTokenEnchant
     		pmEvent.setForceIfAirBlock( true );
     		
     		pmEvent.setUnprocessedRawBlocks( e.blockList() );
+    		
+    		
+    		
+    		// Check to see if the blockConverter's EventTrigger should have
+    		// it's blocks suppressed from explosion events.  If they should be
+    		// removed, then it's removed within this funciton.
+    		removeEventTriggerBlocksFromExplosions( pmEvent );
+    		
+  
+    		
     		
     		if ( !validateEvent( pmEvent ) ) {
     			

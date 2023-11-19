@@ -12,6 +12,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.file.FileIOData;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.tasks.TopNPlayerUpdateAsyncTask;
 
@@ -130,7 +131,11 @@ public class TopNPlayers
 	 */
 	private void launchTopNPlayerUpdateAsyncTask() {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if ( PrisonRanks.getInstance() != null &&
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null &&
+						PrisonRanks.getInstance().getDefaultLadder().getRanks().size() > 0
+				) {
 			
 			Long delayTicks = Prison.get().getPlatform().getConfigLong( 
 					"topNPlayers.refresh.delay-ticks", DELAY_THIRTY_SECONDS_TICKS );
@@ -139,6 +144,15 @@ public class TopNPlayers
 			
 			
 			TopNPlayerUpdateAsyncTask.submitTaskTimerAsync( this, delayTicks, intervalTicks );
+		}
+		else if ( PrisonRanks.getInstance() != null &&
+				PrisonRanks.getInstance().isEnabled() &&
+						PrisonRanks.getInstance().getDefaultLadder().getRanks().size() == 0 ) {
+			
+			Output.get().logWarn( "TopNPlayer: Cannot start the TopNPlayer task. Ranks are "
+					+ "enabled, but there are no default ranks setup. "
+					+ "Either turn off the Ranks Module, or add ranks and "
+					+ "then restart the server to get the TopNPlayer task running.");
 		}
 		
 	}
@@ -169,7 +183,9 @@ public class TopNPlayers
 	public void loadSaveFile() {
 		
 		// If Ranks module is not loaded, then do not try to load any save file:
-		if ( PrisonRanks.getInstance().getPlayerManager() == null ) {
+		if (  PrisonRanks.getInstance() == null || 
+				!PrisonRanks.getInstance().isEnabled() ||
+				PrisonRanks.getInstance().getPlayerManager() == null ) {
 			
 			// Ranks is not loaded, so reset to empties:
 			setTopNList( new ArrayList<>() );
@@ -242,7 +258,9 @@ public class TopNPlayers
 	 */
 	public void forceReloadAllPlayers() {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if (  PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
 			long start = System.nanoTime();
 
@@ -380,7 +398,9 @@ public class TopNPlayers
 	
 	public void refreshAndSort() {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() == null ) {
+		if ( PrisonRanks.getInstance() == null || 
+				!PrisonRanks.getInstance().isEnabled() ||
+				PrisonRanks.getInstance().getPlayerManager() == null ) {
 			return;
 		}
 		
@@ -491,7 +511,9 @@ public class TopNPlayers
 	
 	private void calculateAllRankScores( ArrayList<TopNPlayersData> topNList ) {
 
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if ( PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
 			for ( TopNPlayersData topN : topNList ) {
 				
@@ -590,7 +612,9 @@ public class TopNPlayers
 	 */
 	public void updatePlayerData( RankPlayer rPlayer ) {
 		
-		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+		if ( PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				 PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
 			addPlayerData( rPlayer);
 			
@@ -662,7 +686,9 @@ public class TopNPlayers
     private RankPlayer getTopNRankPlayer( int rankPosition, boolean archived ) {
     	RankPlayer rPlayer = null;
     	
-    	if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+    	if (  PrisonRanks.getInstance() != null && 
+				PrisonRanks.getInstance().isEnabled() &&
+				PrisonRanks.getInstance().getPlayerManager() != null ) {
     		
     		ArrayList<TopNPlayersData> tList = 
     				archived ? 

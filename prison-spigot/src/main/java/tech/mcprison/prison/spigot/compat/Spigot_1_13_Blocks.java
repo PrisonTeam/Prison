@@ -19,8 +19,8 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.Location;
 
-public abstract class Spigot113Blocks 
-	extends Spigot19Player 
+public abstract class Spigot_1_13_Blocks 
+	extends Spigot_1_9_Player 
 	implements CompatibilityBlocks {
 
 //	@Override

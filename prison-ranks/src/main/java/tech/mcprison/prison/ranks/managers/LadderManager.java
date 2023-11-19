@@ -134,9 +134,13 @@ public class LadderManager
      * @throws IOException If the ladder could not be serialized, or if the ladder could not be saved to the file.
      */
     private void saveLadder(RankLadder ladder) throws IOException {
-        this.saveLadder(ladder, "ladder_" + ladder.getId());
+        this.saveLadder(ladder, getLadderName(ladder));
     }
 
+    private String getLadderName( RankLadder ladder ) {
+    	return "ladder_" + ladder.getId();
+    }
+    
     /**
      * <p>This is the save function that should be used from outside of the LadderManager, such as
      * within the LadderCommands functions because this will be able to handle the possible 
@@ -368,6 +372,18 @@ public class LadderManager
     			);
 		
 		return ladderInfo;
+	}
+
+	public String getLadderByFileName(String fileName) {
+		String results = "";
+		
+		for (RankLadder rankLadder : loadedLadders) {
+			String ladderFileName = getLadderName(rankLadder) + ".json";
+			if ( ladderFileName.equalsIgnoreCase(fileName) ) {
+				results = rankLadder.getName();
+			}
+		}
+		return results;
 	}
 	
 }

@@ -3,45 +3,59 @@ package tech.mcprison.prison.autofeatures;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.file.FileIOData;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.output.Output;
 
-public class BlockConvertersFileConfig
-	implements FileIOData {
+public class BlockConvertersFileConfig {
 
 	public static final String FILE_NAME__BLOCK_CONVERTS_CONFIG_JSON = "/blockConvertersConfig.json";
 	
 	private transient File configFile;
 	
-	private TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters;
+	private transient BlockConvertersData bcData;
 	
-	private TreeMap<String, Boolean> processAutoFeaturesAllBlocks = null;
+	private transient List<String> eventTriggerBlockNames;
+//	private TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters;
+//	private TreeMap<String, BlockConverterEventTrigger> blockConvertersEventTiggers;
+
+	
+//	private TreeMap<String, Boolean> processAutoFeaturesAllBlocks = null;
 	
 
 	public enum BlockConverterTypes {
 		aSample01,
 		autoPickupFeatures,
 		blockFeatures, 
-		smeltFeatures
+		smeltFeatures,
+		eventTriggers
 		;
 	}
 	
 	public BlockConvertersFileConfig() {
 		super();
 		
-		this.blockConverters = new TreeMap<>();
+		this.bcData = new BlockConvertersData();
 		
-		this.processAutoFeaturesAllBlocks = new TreeMap<>();
+		this.eventTriggerBlockNames = null;
+		
+//		this.blockConverters = new TreeMap<>();
+//		this.blockConvertersEventTiggers = new TreeMap<>();
+//		
+//		this.processAutoFeaturesAllBlocks = new TreeMap<>();
+		
+		reloadConfig();
 		
 	}
 	
-	public boolean processAutoFeaturesForBlock( RankPlayer player, String blockName ) {
+	public boolean processAutoFeaturesForBlock( Player player, String blockName ) {
 		boolean results = isProcessAutoFeaturesAllBlocks( player );
 		
 		if ( !results ) {
@@ -51,7 +65,7 @@ public class BlockConvertersFileConfig
 		return results;
 	}
 
-	public BlockConverterResults getBlockConverterItemStacks( RankPlayer player, 
+	public BlockConverterResults getBlockConverterItemStacks( Player player, 
 			String blockName, int blockQuantity,
 			BlockConverterTypes bcType ) {
 		
@@ -112,13 +126,14 @@ public class BlockConvertersFileConfig
 	 * @param blockName
 	 * @return
 	 */
-	public BlockConverter getBlockConverter( RankPlayer player, String blockName, 
+	public BlockConverter getBlockConverter( Player player, String blockName, 
 			BlockConverterTypes bcType ) {
 		BlockConverter results = null;
 		
 		if ( player != null && blockName != null && bcType != null ) {
 			
 			BlockConverter temp = getBlockConverter( blockName, bcType );
+			
 			if ( temp != null && temp.getPermissions().size() == 0 ) {
 				results = temp;
 			}
@@ -150,10 +165,20 @@ public class BlockConvertersFileConfig
 		
 		if ( blockName != null && bcType != null ) {
 			
-			TreeMap<String, BlockConverter> bConverters = getBlockConverters().get(bcType);
+			TreeMap<String, BlockConverter> bConverters = null;
 			
-			if ( bConverters.containsKey( blockName.toLowerCase() ) ) {
-				results = bConverters.get( blockName.toLowerCase() );
+			String key = blockName.toLowerCase();
+			
+			if ( bcType == BlockConverterTypes.eventTriggers ) {
+				bConverters = getBcData().getBlockConvertersEventTiggers( key );
+			}
+			else {
+				
+				bConverters = getBcData().getBlockConverters().get(bcType);
+			}
+			
+			if ( bConverters.containsKey( key ) ) {
+				results = bConverters.get( key );
 			}
 		}
 		
@@ -169,7 +194,7 @@ public class BlockConvertersFileConfig
 	 * @param bc
 	 * @return
 	 */
-	private List<BlockConverterOutput> getBlockConverterOutputs(RankPlayer player, BlockConverter bc) {
+	private List<BlockConverterOutput> getBlockConverterOutputs(Player player, BlockConverter bc) {
 		
 		List<BlockConverterOutput> outputs = new ArrayList<>();
 		
@@ -177,7 +202,7 @@ public class BlockConvertersFileConfig
 			
 			for ( BlockConverterOutput bcOutput : bc.getOutputs() ) {
 				
-				if ( bcOutput.isEnabled() ) {
+				if ( bcOutput.isEnabled() ) { 
 					
 					// If chance, and the random number is greater than the chance, then skip this output:
 					if ( bcOutput.getChance() != null && 
@@ -214,17 +239,60 @@ public class BlockConvertersFileConfig
 		return outputs;
 	}
 	
+	/**
+	 * <p>This function will take a player, and check if that player should have the ability to process all
+	 * blocks under auto features.  This is the "global" setting that bypasses checking individual block types.
+	 * </p>
+	 * 
+	 * <p>If the auto features settings `options.autoFeatures.isAutoFeaturesEnabled: false` is 
+	 * disabled (set to false), then this will apply to the normal drops if 
+	 * `options.normalDrop.handleNormalDropsEvents: true' is enabled (set to true).
+	 * If both of those are set to disabled, then no blocks will be processed.
+	 * </p> 
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public Boolean isProcessAutoFeaturesAllBlocks( Player player ) {
+		
+		if ( !getBcData().getProcessAutoFeaturesAllBlocks().containsKey( player.getName() ) ) {
+			BlockConverterResults allBlocksBCR = getBlockConverterItemStacks( player, "*all*", 1, BlockConverterTypes.autoPickupFeatures );
+			
+			BlockConverter allBlocks = allBlocksBCR.getBlockConverter();
+
+			boolean playerAllBlocks = ( allBlocks != null && allBlocks.isEnabled() );
+			
+			getBcData().getProcessAutoFeaturesAllBlocks().put( player.getName(), playerAllBlocks );
+		}
+		
+		return getBcData().getProcessAutoFeaturesAllBlocks().get( player.getName() );
+	}
 	
-	
+	/**
+	 * <p>This loads the sample block converters.  If a new section is added, it will 
+	 * add the new section, along with the examples, to the existing block 
+	 * converters and then save everything.
+	 * </p>
+	 * 
+	 * <p>This should only be called from the reloadConfig() function.
+	 * </p>
+	 * 
+	 * @return
+	 */
 	private boolean initialConfig() {
 		boolean dirty = false;
 		
+		// Set to null so it will auto reload on next access:
+		setEventTriggerBlockNames( null );
+		
 		BlockConvertersInitializer initializer = new BlockConvertersInitializer();
 		
-		dirty = initializer.checkConfigs( getBlockConverters() );
+		boolean d1 = initializer.checkConfigs( getBcData().getBlockConverters() );
+		boolean d2 = initializer.checkConfigsEventTrigger( getBcData().getBlockConvertersEventTiggers() );
 		
+		dirty = d1 || d2;
 		
-		if ( initializer.validateBlockConverters( getBlockConverters() ) ) {
+		if ( initializer.validateBlockConverters( getBcData().getBlockConverters() ) ) {
 			dirty = true;
 		}
 		
@@ -241,63 +309,149 @@ public class BlockConvertersFileConfig
 		return configFile;
 	}
 	
+	/**
+	 * <p>This actually is how the BlockConverters are loaded and created.
+	 * There should be no other way to load the configs.
+	 * 
+	 * This class can be instantiated, but only if block converters are 
+	 * enabled within the AutoFeatures config file will they be loaded.
+	 * </p>
+	 * 
+	 */
 	public void reloadConfig() {
-		JsonFileIO jfio = new JsonFileIO();
 		
-		BlockConvertersFileConfig temp = (BlockConvertersFileConfig) jfio.readJsonFile( getConfigFile(), this );
-		
-		if ( temp != null ) {
-			setBlockConverters( temp.getBlockConverters() );
+		if ( AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.isEnabledBlockConverters ) ) {
+			JsonFileIO jfio = new JsonFileIO();
+			
+			BlockConvertersData temp = (BlockConvertersData) jfio.readJsonFile( getConfigFile(), getBcData() );
+			
+			if ( temp != null ) {
+				setBcData( temp );
+//				setBlockConverters( temp.getBlockConverters() );
+			}
+			
+			boolean dirty = initialConfig();
+			
+			if ( dirty ) {
+				saveToJson();
+			}
 		}
-		
-		boolean dirty = initialConfig();
-		
-		if ( dirty ) {
-			saveToJson();
-		}
+
 	}
 	
 	public void saveToJson() {
 		JsonFileIO jfio = new JsonFileIO();
 
-		jfio.saveJsonFile(getConfigFile(), this );
+		jfio.saveJsonFile(getConfigFile(), getBcData() );
+		
+		Output.get().logDebug( 
+				"BlockConverters: saved config file: %s", 
+				getConfigFile().getAbsolutePath() );
 	}
 
-	public TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> getBlockConverters() {
-		return blockConverters;
+//	public TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> getBlockConverters() {
+//		return blockConverters;
+//	}
+//	public void setBlockConverters(TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters) {
+//		this.blockConverters = blockConverters;
+//	}
+//
+//	public TreeMap<String, BlockConverterEventTrigger> getBlockConvertersEventTiggers() {
+//		return blockConvertersEventTiggers;
+//	}
+//	public void setBlockConvertersEventTiggers(TreeMap<String, BlockConverterEventTrigger> blockConvertersEventTiggers) {
+//		this.blockConvertersEventTiggers = blockConvertersEventTiggers;
+//	}
+
+
+
+	public BlockConvertersData getBcData() {
+		return bcData;
 	}
-	public void setBlockConverters(TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters) {
-		this.blockConverters = blockConverters;
+	public void setBcData(BlockConvertersData bcData) {
+		this.bcData = bcData;
 	}
 
 	/**
-	 * <p>This function will take a player, and check if that player should have the ability to process all
-	 * blocks under auto features.  This is the "global" setting that bypasses checking individual block types.
+	 * <p>This gets the BlockConverterEventTrigger for the block name provided, based upon player permissions
+	 * if they apply.
 	 * </p>
 	 * 
-	 * <p>If the auto features settings `options.autoFeatures.isAutoFeaturesEnabled: false` is 
-	 * disabled (set to false), then this will apply to the normal drops if 
-	 * `options.normalDrop.handleNormalDropsEvents: true' is enabled (set to true).
-	 * If both of those are set to disabled, then no blocks will be processed.
-	 * </p> 
-	 * 
-	 * @param player
+	 * @param rPlayer
+	 * @param blockName
 	 * @return
 	 */
-	public Boolean isProcessAutoFeaturesAllBlocks( RankPlayer player ) {
+	public List<BlockConverterOptionEventTrigger> findEventTrigger( Player rPlayer, String blockName) {
+		List<BlockConverterOptionEventTrigger> eventTriggers = null;
 		
-		if ( !processAutoFeaturesAllBlocks.containsKey( player.getName() ) ) {
-			BlockConverterResults allBlocksBCR = getBlockConverterItemStacks( player, "*all*", 1, BlockConverterTypes.autoPickupFeatures );
-			
-			BlockConverter allBlocks = allBlocksBCR.getBlockConverter();
-
-			boolean playerAllBlocks = ( allBlocks != null && allBlocks.isEnabled() );
-			
-			processAutoFeaturesAllBlocks.put( player.getName(), playerAllBlocks );
+		BlockConverterEventTrigger bcet = (BlockConverterEventTrigger) 
+						getBlockConverter( rPlayer, blockName, BlockConverterTypes.eventTriggers );
+		
+		if ( bcet != null && bcet.getOptions().size() > 0 ) {
+			eventTriggers = bcet.getOptions();
 		}
 		
-		return processAutoFeaturesAllBlocks.get( player.getName() );
+		return eventTriggers;
+	}
+	
+	
+	
+	
+	public List<String> getEventTriggerBlockNames() {
+		
+		if ( eventTriggerBlockNames == null ) {
+			eventTriggerBlockNames = findEventTriggerBlockNames();
+		}
+		return eventTriggerBlockNames;
 	}
 
+	public void setEventTriggerBlockNames(List<String> eventTriggerBlockNames) {
+		this.eventTriggerBlockNames = eventTriggerBlockNames;
+	}
 
+	/**
+	 * <p>This function gets all of the blocks within the BlockConverterEventTriggers that should be
+	 * ignored, and removed, from explosion events, or multi-block events.  If this feature is 
+	 * enabled, then the only way to break those blocks, or to trigger those plugins that 
+	 * should handle those blocks, is by direct block breakage, and not explosion events. 
+	 * </p>
+	 * 
+	 * <p>The list of blocks, should not be impacted by player's permissions because if they are, then
+	 * those who do not have access to those blocks, would then be able to break those blocks, or at least
+	 * through explosion events.
+	 * </p>
+	 * 
+	 * @param rPlayer
+	 * @return
+	 */
+	private List<String> findEventTriggerBlockNames() {
+		List<String> blockNames = new ArrayList<>();
+		
+		TreeMap<String, BlockConverterEventTrigger> eventTriggers = getBcData().getBlockConvertersEventTiggers();
+		
+		Set<String> keys = eventTriggers.keySet();
+		for (String key : keys) {
+			BlockConverterEventTrigger et = eventTriggers.get(key);
+			
+			String blockName = et.getKeyBlockName().toLowerCase();
+			
+			// Confirm the BlockConverter is active:
+			if ( et.isEnabled() ) {
+				
+				for ( BlockConverterOptionEventTrigger eventTrigger : et.getOptions() ) {
+					if ( eventTrigger.isIgnoreBlockInExplosionEvents() ) {
+						
+						if ( !blockNames.contains(blockName) ) {
+							
+							blockNames.add( blockName );
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		return blockNames;
+	}
+	
 }

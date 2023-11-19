@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
@@ -16,11 +17,18 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 public class PlayerCache {
 	
-	public static final String PLAYER_CACHE_WRITE_DELAY_CONFIG_NAME = "playercache.write_delay";
+	public static final String PLAYER_CACHE_WRITE_DELAY_CONFIG_NAME = "player-cache.write-delay-sec";
+	public static final int PLAYER_CACHE_WRITE_DELAY_VALUE_SEC = 60; // 60 seconds
 	public static final long PLAYER_CACHE_WRITE_DELAY_VALUE_MS = 60000; // 60 seconds
 	
-	public static final String PLAYER_CACHE_TIME_TO_LIVE_CONFIG_NAME = "playercache.time_to_live";
+	public static final String PLAYER_CACHE_TIME_TO_LIVE_CONFIG_NAME = "player-cache.time-to-live-sec";
+	public static final int PLAYER_CACHE_TIME_TO_LIVE_VALUE_SEC = 30 * 60; // 30 mins
 	public static final long PLAYER_CACHE_TIME_TO_LIVE_VALUE_MS = 30 * 60 * 1000; // 30 mins
+	
+	public static final String PLAYER_CACHE_UPDATE_PLAYER_STATS_CONFIG_NAME = "player-cache.update-player-stats-sec";
+	public static final int PLAYER_CACHE_UPDATE_PLAYER_STATS_SEC = 30; // 30 Sec
+	
+	
 	
 	private static PlayerCache instance;
 	
@@ -376,9 +384,13 @@ public class PlayerCache {
 		
 		PlayerCacheSaveAllPlayersTask task = new PlayerCacheSaveAllPlayersTask();
 		
+		long writeTimeTicks = Prison.get().getPlatform()
+				.getConfigInt( PLAYER_CACHE_WRITE_DELAY_CONFIG_NAME, 
+						PLAYER_CACHE_WRITE_DELAY_VALUE_SEC ) * 20;
+		
 		// Submit Timer Task to start running in 10 minutes (6000 ticks) and then
 		// refresh stats every 5 minutes (3000 ticks):
-		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 6000, 3000 );
+		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 6000, writeTimeTicks );
 		task.setTaskId( taskId );
 		
 		return task;
@@ -389,10 +401,14 @@ public class PlayerCache {
 		
 		PlayerCacheCheckTimersTask task = new PlayerCacheCheckTimersTask();
 		
+		int repeatTimeTicks = Prison.get().getPlatform()
+						.getConfigInt( PLAYER_CACHE_UPDATE_PLAYER_STATS_CONFIG_NAME, 
+									   PLAYER_CACHE_UPDATE_PLAYER_STATS_SEC ) * 20;
+		
 		// Submit Timer Task to start running in 30 seconds (600 ticks) and then
 		// refresh stats every 10 seconds (200 ticks). 
 		// This does not update any files or interacts with bukkit/spigot.
-		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, 200 );
+		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, repeatTimeTicks );
 		task.setTaskId( taskId );
 		
 		return task;

@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.api;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -9,16 +10,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.block.OnBlockBreakMines.MinesEventResults;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 
 /**
  * <p>This is an event that prison calls before processing the blocks that
@@ -100,6 +106,12 @@ public class PrisonMinesBlockBreakEvent
 	private boolean forceAutoSell = false;
 	
 	
+	// If forceBlockRemoval is true, then it will remove the block even if the block
+	// break priority is MONITOR. This setting is only used (so far) with the
+	// BlockConverters Event Triggers to bypass prison processing, but will allow prison
+	// to remove the block and then treat it like a MONITOR event so it gets counted.
+	private boolean forceBlockRemoval = false;
+	
 	
 	private BlockBreakPriority bbPriority;
 	
@@ -129,8 +141,9 @@ public class PrisonMinesBlockBreakEvent
 	
 	
 	private StringBuilder debugInfo;
-	
+	private boolean forceDebugLogging;
 
+	
 	public PrisonMinesBlockBreakEvent( 
 				MinesEventResults eventResults,
 //				Block theBlock, Player player, 
@@ -175,7 +188,11 @@ public class PrisonMinesBlockBreakEvent
 		
 		this.bukkitDrops = new ArrayList<>();
 		
-		this.debugInfo = debugInfo;
+		this.debugInfo = new StringBuilder();
+		setDebugColorCodeDebug();
+		this.debugInfo.append( debugInfo );
+		
+		this.forceDebugLogging = false;
 		
 	}
 	
@@ -285,6 +302,71 @@ public class PrisonMinesBlockBreakEvent
 		return results;
 	}
 	
+	
+
+	/**
+	 * <p>This will perform a Prison's sellall on a player's inventory.
+	 * This tracks how many nanoseconds it took to run and will log this
+	 * information if Prison is in debug mode.  This info will be appended
+	 * to the debug info for the block break handling.
+	 * </p>
+	 * 
+	 * @param description
+	 */
+	public void performSellAllOnPlayerInventoryLogged( String description ) {
+
+		debugInfo.append( performSellAllOnPlayerInventoryString(description) );
+		
+//		final long nanoStart = System.nanoTime();
+//		boolean success = SellAllUtil.get().sellAllSell( getPlayer(), 
+//								false, false, false, true, true, false);
+//		final long nanoStop = System.nanoTime();
+//		double milliTime = (nanoStop - nanoStart) / 1000000d;
+//		
+//		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+//		debugInfo.append( "(" )
+//				.append( description)
+//				.append( ": " + (success ? "success" : "failed"))
+//				.append( " ms: " + dFmt.format( milliTime ) + ") ");
+		
+		PlayerAutoRankupTask.autoSubmitPlayerRankupTask( getSpigotPlayer(), debugInfo );
+		
+	}
+	public String performSellAllOnPlayerInventoryString( String description ) {
+		StringBuilder sb = new StringBuilder();
+		
+		if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
+			
+			final long nanoStart = System.nanoTime();
+			
+			boolean isUsingSign = false;
+			boolean completelySilent = false;
+			boolean notifyPlayerEarned = false;
+			boolean notifyPlayerDelay = false;
+			boolean notifyPlayerEarningDelay = true;
+			boolean playSoundOnSellAll = false;
+			boolean notifyNothingToSell = false;
+			
+			boolean success = SellAllUtil.get().sellAllSell( getPlayer(), 
+					isUsingSign, completelySilent, 
+					notifyPlayerEarned, notifyPlayerDelay, 
+					notifyPlayerEarningDelay, playSoundOnSellAll, 
+					notifyNothingToSell, null );
+			final long nanoStop = System.nanoTime();
+			double milliTime = (nanoStop - nanoStart) / 1000000d;
+			
+			DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+			
+			sb.append( "(" )
+				.append( description)
+				.append( ": " + (success ? "success" : "failed"))
+				.append( " ms: " + dFmt.format( milliTime ) + ") ");
+		}
+		
+		return sb.toString();
+	}
+	
+	
 	public Mine getMine() {
 		return mine;
 	}
@@ -382,6 +464,13 @@ public class PrisonMinesBlockBreakEvent
 	public void setForceAutoSell( boolean forceAutoSell ) {
 		this.forceAutoSell = forceAutoSell;
 	}
+	
+	public boolean isForceBlockRemoval() {
+		return forceBlockRemoval;
+	}
+	public void setForceBlockRemoval(boolean forceBlockRemoval) {
+		this.forceBlockRemoval = forceBlockRemoval;
+	}
 
 	public BlockBreakPriority getBbPriority() {
 		return bbPriority;
@@ -433,4 +522,26 @@ public class PrisonMinesBlockBreakEvent
 		this.debugInfo = debugInfo;
 	}
 
+	public boolean isForceDebugLogging() {
+		return forceDebugLogging;
+	}
+	public void setForceDebugLogging(boolean forceDebugLogging) {
+		this.forceDebugLogging = forceDebugLogging;
+	}
+
+	public void setDebugColorCodeInfo() {
+		getDebugInfo().append( Output.get().getColorCodeInfo() );
+	}
+	
+	public void setDebugColorCodeWarning() {
+		getDebugInfo().append( Output.get().getColorCodeWarning() );
+	}
+	
+	public void setDebugColorCodeError() {
+		getDebugInfo().append( Output.get().getColorCodeError() );
+	}
+	
+	public void setDebugColorCodeDebug() {
+		getDebugInfo().append( Output.get().getColorCodeDebug() );
+	}
 }

@@ -114,6 +114,8 @@ public class RankPlayer
 //    private double rankScoreBalanceThreshold = 0;
 //	private long rankScoreCooldown = 0L;
     
+    
+    private long economyCacheUpdateDelayTicks = -1;
 
     public RankPlayer() {
     	super();
@@ -1182,6 +1184,19 @@ public class RankPlayer
 		return unsavedBalance;
 	}
 	
+	
+	public long getEconomyCacheUpdateDelayTicks() {
+	
+		if ( this.economyCacheUpdateDelayTicks == -1 ) {
+			
+			this.economyCacheUpdateDelayTicks = 
+					Prison.get().getPlatform().getConfigLong( 
+							"ranks.player-economy-cache-update-delay-ticks", DELAY_THREE_SECONDS );
+		}
+
+		return this.economyCacheUpdateDelayTicks;
+	}
+	
 	public void addBalance( double amount ) {
 		
 		synchronized ( unsavedBalanceLock )
@@ -1202,7 +1217,7 @@ public class RankPlayer
 								unsavedBalance = 0;
 								ubTaskId = 0;
 							}
-						}, DELAY_THREE_SECONDS );
+						}, getEconomyCacheUpdateDelayTicks() );
 			}
 		}
 		

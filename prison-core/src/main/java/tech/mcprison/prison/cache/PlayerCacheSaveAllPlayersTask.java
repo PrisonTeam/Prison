@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 
 /**
@@ -45,7 +46,7 @@ import tech.mcprison.prison.output.Output;
 public class PlayerCacheSaveAllPlayersTask
 		extends PlayerCacheRunnable
 {
-	public static long LAST_SEEN_INTERVAL_30_MINUTES = 30 * 60 * 1000;
+//	public static long LAST_SEEN_INTERVAL_30_MINUTES = 30 * 60 * 1000;
 
 	@Override
 	public void run()
@@ -54,6 +55,12 @@ public class PlayerCacheSaveAllPlayersTask
 		PlayerCache pCache = PlayerCache.getInstance();
 		
 		List<PlayerCachePlayerData> purge = new ArrayList<>();
+		
+		
+		long lastSeenInterval = Prison.get().getPlatform().getConfigInt( 
+				PlayerCache.PLAYER_CACHE_TIME_TO_LIVE_CONFIG_NAME,
+				PlayerCache.PLAYER_CACHE_TIME_TO_LIVE_VALUE_SEC
+				);
 		
 		Set<String> keys = pCache.getPlayers().keySet();
 		
@@ -74,7 +81,7 @@ public class PlayerCacheSaveAllPlayersTask
 						(playerData.isDirty() ||
 						playerData.getLastSeenDate() == 0 ||
 						(System.currentTimeMillis() - playerData.getLastSeenDate()) 
-									> LAST_SEEN_INTERVAL_30_MINUTES ) ) {
+									> lastSeenInterval ) ) {
 					// Update the player's last seen date only when dirty and they
 					// are online:
 					playerData.setLastSeenDate( System.currentTimeMillis() );

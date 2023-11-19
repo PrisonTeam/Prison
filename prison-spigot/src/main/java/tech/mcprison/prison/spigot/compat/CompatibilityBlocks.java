@@ -70,4 +70,37 @@ public interface CompatibilityBlocks
     
     public int getMaxY();
 	
+    
+
+    /**
+     * Not compatible with Spigot 1.8 through 1.13 so return a value of 0.
+     * Only available with 1.14 and higher.
+     * @param itemStack
+     * @return
+     */
+    public int getCustomModelData( SpigotItemStack itemStack );
+    /**
+     * Not compatible with Spigot 1.8 through 1.13 so return a value of 0.
+     * Only available with 1.14 and higher.
+     * @param itemStack
+     * @return
+     */
+    public int getCustomModelData( ItemStack itemStack );
+    
+    /**
+     * Not compatible with Spigot 1.8 through 1.13 so do nothing.
+     * Only available with 1.14 and higher.
+     * @param itemStack
+     * @return
+     */
+	public void setCustomModelData( SpigotItemStack itemStack, int customModelData );
+    /**
+     * Not compatible with Spigot 1.8 through 1.13 so do nothing.
+     * Only available with 1.14 and higher.
+     * @param itemStack
+     * @return
+     */
+	public void setCustomModelData( ItemStack itemStack, int customModelData );
+
+
 }

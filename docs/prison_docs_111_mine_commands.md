@@ -29,7 +29,7 @@ My personal goals to use this new feature was to dynamically build a large fores
 The family of mine commands are as follows:
 
 ```
-/mines command
+/mines <command>
 ```
 
 <img src="images/prison_docs_111_mine_commands_01.png" alt="Mine Commands" title="Mine Commands" width="600" />  

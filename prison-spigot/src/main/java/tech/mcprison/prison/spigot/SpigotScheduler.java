@@ -65,7 +65,9 @@ public class SpigotScheduler implements Scheduler {
     	if ( player != null && player instanceof SpigotPlayer ) {
     		SpigotPlayer sPlayer = (SpigotPlayer) player;
     		
-    		Bukkit.dispatchCommand( sPlayer.getWrapper(), command );
+    		sPlayer.dispatchCommand( command );
+    		
+//    		Bukkit.dispatchCommand( sPlayer.getWrapper(), command );
     	}
     }
     
@@ -80,7 +82,9 @@ public class SpigotScheduler implements Scheduler {
     			
     			SpigotPlayer sPlayer = (SpigotPlayer) p;
     			
-    			sPlayer.getWrapper().performCommand( command );
+    			sPlayer.dispatchCommand( command );
+    			
+//    			sPlayer.getWrapper().performCommand( command );
     		}
     	}
     }

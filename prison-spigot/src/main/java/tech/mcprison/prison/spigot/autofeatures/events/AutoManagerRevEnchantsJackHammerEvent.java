@@ -15,6 +15,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import me.revils.revenchants.events.JackHammerEvent;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -54,8 +55,10 @@ public class AutoManagerRevEnchantsJackHammerEvent
 	@Override
 	public void registerEvents() {
 		
-		initialize();
-		
+		if ( AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			initialize();
+		}
 	}
 	
 	
@@ -246,7 +249,12 @@ public class AutoManagerRevEnchantsJackHammerEvent
 			// CrazyEnchants is not loaded... so ignore.
 		}
 		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: RevEnchants JackHammerEnchants failed to load. [%s]", e.getMessage() );
+			String causedBy = e.getCause() == null ? "" : e.getCause().getMessage();
+			
+			Output.get().logInfo( "AutoManager: RevEnchants JackHammerEnchants failed to load. "
+					+ "[%s] Caused by: [%s]", 
+					e.getMessage(),
+					causedBy, e.getMessage() );
 		}
 	}
 
@@ -359,6 +367,14 @@ public class AutoManagerRevEnchantsJackHammerEvent
 //				pmEvent.getUnprocessedRawBlocks().add( blocks.get( i ) );
 //			}
 			
+    		
+    		
+    		// Check to see if the blockConverter's EventTrigger should have
+    		// it's blocks suppressed from explosion events.  If they should be
+    		// removed, then it's removed within this funciton.
+    		removeEventTriggerBlocksFromExplosions( pmEvent );
+    		
+  
 			
 			if ( !validateEvent( pmEvent ) ) {
 				

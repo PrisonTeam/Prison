@@ -1,7 +1,8 @@
 package tech.mcprison.prison.spigot.compat;
 
-public class Spigot118 
-	extends Spigot113
+public class Spigot_1_18 
+	extends Spigot_1_14
+	implements Compatibility
 {
 
     

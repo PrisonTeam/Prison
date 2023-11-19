@@ -700,9 +700,11 @@ public class ListenersPrisonManager
                     if (parts[0].equalsIgnoreCase("Backpack")){
                         if (e.isRightClick() && e.isShiftClick()){
                             if (parts[2].equalsIgnoreCase("default")){
-                                Bukkit.dispatchCommand(p, "backpack delete " + parts[1]);
+                                Bukkit.dispatchCommand(p, 
+                                		Prison.get().getCommandHandler().findRegisteredCommand( "backpack delete " + parts[1] ));
                             } else {
-                                Bukkit.dispatchCommand(p, "backpack delete " + parts[1] + " " + parts[2]);
+                                Bukkit.dispatchCommand(p, 
+                                		Prison.get().getCommandHandler().findRegisteredCommand( "backpack delete " + parts[1] + " " + parts[2] ));
                             }
                             p.closeInventory();
                             BackpacksAdminListGUI gui = new BackpacksAdminListGUI(p, parts[1]);
@@ -766,7 +768,8 @@ public class ListenersPrisonManager
 //				}
 //    			
 //    			if ( isPageAction && command != null ) {
-//    				Bukkit.dispatchCommand(p, command);
+//    				Bukkit.dispatchCommand(p, 
+//								    Prison.get().getCommandHandler().findRegisteredCommand( command ));
 //    				
 //    			}
 //    		}
@@ -833,7 +836,8 @@ public class ListenersPrisonManager
                 }
 
                 String finalID = String.valueOf(freeID);
-                Bukkit.dispatchCommand(p, "gui backpack " + finalID);
+                Bukkit.dispatchCommand(p, 
+                		Prison.get().getCommandHandler().findRegisteredCommand( "gui backpack " + finalID ));
             }
 
         } else if (buttonNameMain.equalsIgnoreCase("Backpack")){
@@ -1321,7 +1325,8 @@ public class ListenersPrisonManager
     private void prisonSetupConfirmGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         if (parts[0].equalsIgnoreCase("Confirm:")){
-            Bukkit.dispatchCommand(p, "ranks autoConfigure");
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( "ranks autoConfigure" ));
         } else if (parts[0].equalsIgnoreCase("Cancel:")){
             Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_event_cancelled));
         }
@@ -1406,7 +1411,9 @@ public class ListenersPrisonManager
 
                 // Execute the command
                 if (part4 != null) {
-                    Bukkit.dispatchCommand(p, "mines block set " + part2 + " " + part3 + " " + part4);
+                    Bukkit.dispatchCommand(p, 
+                    		Prison.get().getCommandHandler().findRegisteredCommand( 
+                    				"mines block set " + part2 + " " + part3 + " " + part4 ));
                 }
 
                 // Cancel the event
@@ -1524,7 +1531,9 @@ public class ListenersPrisonManager
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p,"sellall edit " + part2 + " " + part3);
+                Bukkit.dispatchCommand(p,
+                		Prison.get().getCommandHandler().findRegisteredCommand( 
+                				"sellall edit " + part2 + " " + part3 ));
 
                 // Close the inventory
                 p.closeInventory();
@@ -1731,7 +1740,8 @@ public class ListenersPrisonManager
         	else {
         		
         		// Execute the command
-        		Bukkit.dispatchCommand(p, "ranks ladder delete " + buttonNameMain);
+        		Bukkit.dispatchCommand(p, 
+        				Prison.get().getCommandHandler().findRegisteredCommand( "ranks ladder delete " + buttonNameMain ));
         		e.setCancelled(true);
         		p.closeInventory();
         		SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1, "gui ladders", "gui" );
@@ -1776,7 +1786,8 @@ public class ListenersPrisonManager
         	RankLadder rLadder = rank.getLadder();
         	
             // Execute the command.
-            Bukkit.dispatchCommand(p, "ranks delete " + buttonNameMain);
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( "ranks delete " + buttonNameMain ));
             e.setCancelled(true);
             p.closeInventory();
             SpigotRanksGUI gui = new SpigotRanksGUI( p, rLadder, 1, "gui admin ranks", "gui" );
@@ -1802,7 +1813,8 @@ public class ListenersPrisonManager
             // Close the inventory.
             p.closeInventory();
             // Execute the command.
-            Bukkit.dispatchCommand(p, "prestige");
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( "prestige" ));
         }
 
         // Cancel the event.
@@ -1931,7 +1943,9 @@ public class ListenersPrisonManager
         // Check the buttonName and do the actions.
     	String message = Text.stripColor( messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup) );
         if (buttonNameMain.equals(SpigotPrison.format( message ))){
-            Bukkit.dispatchCommand(p, "rankup " + guiConfig.getString("Options.Ranks.Ladder"));
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( 
+            				"rankup " + guiConfig.getString("Options.Ranks.Ladder" )));
             p.closeInventory();
         }
 
@@ -1945,7 +1959,8 @@ public class ListenersPrisonManager
         if (e.isShiftClick() && e.isRightClick()) {
 
             // Execute the command.
-            Bukkit.dispatchCommand(p, "ranks command remove " + buttonNameMain);
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( "ranks command remove " + buttonNameMain ));
             // Cancel the event.
             e.setCancelled(true);
             // Close the inventory.
@@ -1980,7 +1995,8 @@ public class ListenersPrisonManager
             if (e.isLeftClick()){
 
                 // Execute the command.
-                Bukkit.dispatchCommand(p,"ranks set cost " + part2 + " " + part3);
+                Bukkit.dispatchCommand(p,
+                		Prison.get().getCommandHandler().findRegisteredCommand( "ranks set cost " + part2 + " " + part3 ));
 
                 // Close the inventory.
                 p.closeInventory();
@@ -2080,7 +2096,8 @@ public class ListenersPrisonManager
         // Check the clicks.
         if (e.isShiftClick() && e.isRightClick()) {
             // Execute the command.
-            Bukkit.dispatchCommand(p, "mines delete " + buttonNameMain);
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( "mines delete " + buttonNameMain ));
             // Cancel the event.
             e.setCancelled(true);
             // Close the inventory.
@@ -2125,10 +2142,14 @@ public class ListenersPrisonManager
 
             if (errorHasMiningPermission && (p.hasPermission(permission + mineName) ||
                     p.hasPermission(permission.substring(0, permission.length() - 1)))){
-                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+                Bukkit.dispatchCommand(p,
+                		Prison.get().getCommandHandler().findRegisteredCommand( 
+                				SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName )));
             } else if (hasMiningPermission || p.hasPermission(permission + mineName) ||
                     p.hasPermission(permission.substring(0, permission.length() - 1))){
-                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+                Bukkit.dispatchCommand(p, 
+                		Prison.get().getCommandHandler().findRegisteredCommand( 
+                				SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName )));
             }
         }
     }
@@ -2155,13 +2176,16 @@ public class ListenersPrisonManager
                 // Check the clickType and do the actions.
                 if (e.isLeftClick()) {
                     // Execute the command.
-                    Bukkit.dispatchCommand(p, "mines reset " + mineName);
+                    Bukkit.dispatchCommand(p, 
+                    		Prison.get().getCommandHandler().findRegisteredCommand( "mines reset " + mineName ));
                 } else if (e.isRightClick()){
                     // Execute the command.
-                    Bukkit.dispatchCommand(p, "mines set skipReset " + mineName);
+                    Bukkit.dispatchCommand(p, 
+                    		Prison.get().getCommandHandler().findRegisteredCommand( "mines set skipReset " + mineName ));
                 } else if (e.isRightClick() && e.isShiftClick()){
                     // Execute the command.
-                    Bukkit.dispatchCommand(p, "mines set zeroBlockResetDelay " + mineName);
+                    Bukkit.dispatchCommand(p, 
+                    		Prison.get().getCommandHandler().findRegisteredCommand( "mines set zeroBlockResetDelay " + mineName ));
                 }
 
                 // Cancel the event.
@@ -2173,7 +2197,8 @@ public class ListenersPrisonManager
             case "Mine_Spawn:":
 
                 // Execute the command.
-                Bukkit.dispatchCommand(p, "mines set spawn " + mineName);
+                Bukkit.dispatchCommand(p, 
+                		Prison.get().getCommandHandler().findRegisteredCommand( "mines set spawn " + mineName ));
 
                 // Cancel the event.
                 e.setCancelled(true);
@@ -2195,7 +2220,8 @@ public class ListenersPrisonManager
                 p.closeInventory();
 
                 // Execute the Command.
-                Bukkit.dispatchCommand(p, "mines tp " + mineName);
+                Bukkit.dispatchCommand(p, 
+                		Prison.get().getCommandHandler().findRegisteredCommand( "mines tp " + mineName ));
 
                 break;
 
@@ -2245,7 +2271,8 @@ public class ListenersPrisonManager
         if (buttonname.equals("Confirm:")) {
 
             // Confirm
-            Bukkit.dispatchCommand(p, "mines delete " + mineName + " confirm");
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( "mines delete " + mineName + " confirm" ));
 
             // Close the Inventory
             p.closeInventory();
@@ -2254,7 +2281,8 @@ public class ListenersPrisonManager
         } else if (buttonname.equals("Cancel:")) {
 
             // Cancel
-            Bukkit.dispatchCommand(p, "mines delete " + mineName + " cancel");
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( "mines delete " + mineName + " cancel" ));
 
             // Close the inventory
             p.closeInventory();
@@ -2281,7 +2309,9 @@ public class ListenersPrisonManager
         if (e.isShiftClick() && e.isRightClick()) {
 
             // Execute the command
-            Bukkit.dispatchCommand(p, "mines block remove " + mineName + " " + buttonname);
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( 
+            				"mines block remove " + mineName + " " + buttonname ));
 
             // Cancel the event
             e.setCancelled(true);
@@ -2330,7 +2360,9 @@ public class ListenersPrisonManager
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p,"mines set resettime " + part2 + " " + part3);
+                Bukkit.dispatchCommand(p,
+                		Prison.get().getCommandHandler().findRegisteredCommand( 
+                				"mines set resettime " + part2 + " " + part3 ));
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -2445,7 +2477,9 @@ public class ListenersPrisonManager
             typeNotification = "within";
 
             // Execute command
-            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " 0");
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( 
+            				"mines set notification " + mineName + " " + typeNotification + " 0" ));
 
             // Cancel the event and close the inventory
             e.setCancelled(true);
@@ -2471,7 +2505,9 @@ public class ListenersPrisonManager
             typeNotification = "disabled";
 
             // Execute the command
-            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " 0");
+            Bukkit.dispatchCommand(p, 
+            		Prison.get().getCommandHandler().findRegisteredCommand( 
+            				"mines set notification " + mineName + " " + typeNotification + " 0" ));
 
             // Cancel the event and close the inventory
             e.setCancelled(true);
@@ -2512,7 +2548,9 @@ public class ListenersPrisonManager
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p,"mines set notification " + part2 + " " + typeNotification + " " + part3);
+                Bukkit.dispatchCommand(p,
+                		Prison.get().getCommandHandler().findRegisteredCommand( 
+                				"mines set notification " + part2 + " " + typeNotification + " " + part3 ));
 
                 // Cancel the event
                 e.setCancelled(true);

@@ -28,6 +28,7 @@ import java.util.UnknownFormatConversionException;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 
 /**
  * Standardized output to the console and to players.
@@ -40,6 +41,8 @@ public class Output
 	
 	public static final String PERCENT_ENCODING = "&percnt;";
 	public static final String PERCENT_DECODING = "%";
+	public static final String LINE_SPLITING = "\\{br\\}";
+//	public static final String LINE_SPLITING = "\n";
 
     private static Output instance;
     
@@ -52,10 +55,10 @@ public class Output
     private String prefixTemplateError;
     private String prefixTemplateDebug;
     
-    private String colorCodeInfo;
-    private String colorCodeWarning;
-    private String colorCodeError;
-    private String colorCodeDebug;
+    private final String colorCodeInfo;
+    private final String colorCodeWarning;
+    private final String colorCodeError;
+    private final String colorCodeDebug;
     
 
     private boolean debug = false;
@@ -63,6 +66,8 @@ public class Output
     private Set<DebugTarget> selectiveDebugTargets;
     
     private int debugCountDown = -1;
+    
+    private String debugPlayerName = null;
 
     public enum DebugTarget {
     	all,
@@ -279,10 +284,17 @@ public class Output
 //    				msg = msg.replace( PERCENT_ENCODING, PERCENT_DECODING );
 //    			}
     			
-				Prison.get().getPlatform().log(
-						prefixTemplatePrison + " " + 
-						getLogColorCode(level) +
-						msg);
+        		String msgRaw = String.format(msg, args);
+        		boolean includePrefix = true;
+        		for (String  msgSplit : msgRaw.split( LINE_SPLITING )) {
+    				
+        			Prison.get().getPlatform().log(
+        					(includePrefix ? (prefixTemplatePrison + " ") : "") +
+        							getLogColorCode(level) +
+        							msgSplit);
+        			includePrefix = false;
+    			}
+    			
 			}
 			catch ( MissingFormatArgumentException e )
 			{
@@ -365,24 +377,45 @@ public class Output
     }
     
     public void logDebug(String message, Object... args) {
+    	logDebug( message, null, args );
+    }
+    public void logDebug(String message, Player player, Object... args) {
     	if ( isDebug() ) {
-    		if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
-    			setDebugCountDown( -1 );
-    			setDebug( false );
+
+    		if ( getDebugPlayerName() == null || 
+    				getDebugPlayerName() != null && player != null && 
+    				getDebugPlayerName().equalsIgnoreCase( player.getName() ) ) {
+    			
+    			if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
+    				setDebugCountDown( -1 );
+    				setDebug( false );
+    				setDebugPlayerName( null );
+    			}
+    			log(message, LogLevel.DEBUG, args);
     		}
-    		log(message, LogLevel.DEBUG, args);
     	}
     }
     
     public void logDebug( DebugTarget debugTarget, String message, Object... args) {
+    	logDebug( debugTarget, message, null, args );
+    }
+    
+    public void logDebug( DebugTarget debugTarget, String message, Player player, Object... args) {
     	
     	if ( isDebug( debugTarget ) ) {
-    		if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
-    			setDebugCountDown( -1 );
-    			setDebug( false );
-    		}
-    		log(message, LogLevel.DEBUG, args);
+    		
+       		if ( getDebugPlayerName() == null || 
+    				getDebugPlayerName() != null && player != null && 
+    				getDebugPlayerName().equalsIgnoreCase( player.getName() ) ) {
+
+       			if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
+       				setDebugCountDown( -1 );
+       				setDebug( false );
+       				setDebugPlayerName( null );
+       			}
+       			log(message, LogLevel.DEBUG, args);
 //    		logDebug(message, args );
+       		}
     	}
     	
 //    	// The following is not yet enabled since the user interfaces are not in place to manage the set:
@@ -430,6 +463,9 @@ public class Output
 					setDebugCountDown( -1 );
 					setDebug( false );
 					
+					// If turning off debug mode, then reset only-for-player name to null:
+					setDebugPlayerName( null );
+					
 					log( "Prison Debugger Disabled: Count down timer is disabled: %d", LogLevel.DEBUG, countDownNumber );
 					return;
 				}
@@ -460,9 +496,17 @@ public class Output
     		// No targets were set, so just toggle the debugger:
     		Output.get().setDebug( !Output.get().isDebug() );
 
+
     		// Clear all existing targets:
     		getActiveDebugTargets().clear();
+
     		
+    		// If turning off debug mode, then reset only-for-player name to null:
+    		if ( !isDebug() ) {
+    			setDebugPlayerName( null );
+    		}
+    		
+
     		// Turn off the countdown timer if it was set (not -1):
     		if ( !isDebug() && getDebugCountDown() != -1 ) {
     			setDebugCountDown( -1 );
@@ -578,7 +622,11 @@ public class Output
     		if ( level == null ) {
     			level = LogLevel.PLAIN;
     		}
-    		sender.sendMessage(getLogPrefix(level) + String.format(message, args));
+    		String msgRaw = String.format(message, args);
+    		for (String  msg : msgRaw.split( LINE_SPLITING )) {
+				
+    			sender.sendMessage(getLogPrefix(level) + msg);
+			}
     	}
     }
     
@@ -622,4 +670,29 @@ public class Output
         return String.format(prefixTemplate, name);
     }
 
+
+	public String getColorCodeInfo() {
+		return colorCodeInfo;
+	}
+
+	public String getColorCodeWarning() {
+		return colorCodeWarning;
+	}
+
+	public String getColorCodeError() {
+		return colorCodeError;
+	}
+
+	public String getColorCodeDebug() {
+		return colorCodeDebug;
+	}
+
+
+	public String getDebugPlayerName() {
+		return debugPlayerName;
+	}
+	public void setDebugPlayerName(String debugPlayerName) {
+		this.debugPlayerName = debugPlayerName;
+	}
+    
 }

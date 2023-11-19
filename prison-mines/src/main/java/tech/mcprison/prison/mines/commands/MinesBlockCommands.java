@@ -340,7 +340,12 @@ public class MinesBlockCommands
         	prisonBlock = prisonBlockTypes.getBlockTypesByName( block );
         }
         
-        
+        if ( block == null || prisonBlock == null ) {
+        	
+        	sender.sendMessage( 
+        			String.format( "Invalid blockk name: [%s]", block ) );
+        	return;
+        }
         
         // Change behavior: If trying to change a block that is not in the mine, then instead add it:
         if (!m.isInMine(prisonBlock)) {

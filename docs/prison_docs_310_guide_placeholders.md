@@ -7,7 +7,7 @@
 This document covers different aspects of placeholders within Prison.  It explains how they work, how to use them, and different ways to use them.
 
 
-*Documented updated: 2022-08-14*
+*Documented updated: 2023-10-01*
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -59,8 +59,13 @@ Sub-command listing of all placeholders commands:
 
 * **/prison placeholders stats**
 
-> A new command that currently only shows what placeholders have been hitting prison and their total hit count and the total average duration to process. This tool provides a simple pre-cache to more quickly identify which is the correct placeholder to use with the raw placeholder text.  This even include bad placeholder hits so the pre-cache can bypass processing of the junk, which improves server performance.  Eventually this will also include a placeholder value cache.
+> A new command that currently only shows what placeholders have been hitting prison and their total hit count and the total average duration to process. This tool provides a simple pre-cache to more quickly identify which is the correct placeholder to use with the raw placeholder text.  This even includes bad placeholder hits so the pre-cache can bypass processing of the junk, which improves server performance.  Eventually this will also include a placeholder value cache.
 
+> The placeholder cache helps reduce the cost of resolving the correct placeholder. 
+
+> To clear and reset the placeholder cache, use the command `/prison placeholders stats resetCache`.
+
+> NOTE: Viewing and resetting the placeholder cache/stats is a good way to debug possible placeholder problems.  This can confirm if prison is getting requests for the given placeholder, or if a placeholder that you're using is bad or incorrect.
 
 
 * **/prison placeholders reload**
@@ -219,6 +224,8 @@ There are actually two major kinds of player based placeholders; a third type is
 
 The other player based placeholders, which complements the Rank Placeholders, are the ladder placeholders that narrows the ranks down to a specific ladder.  So with our example above, if you only want the ranks from the *default* ladder, that is now possible. Also you can control the order they appear by ordering the ladder placeholders in a specific sequence.  
 
+NOTE: Player based placeholders can now be used with non-player placeholders by using a placeholder attribute's `player=<playerName>` attribute.
+
 The Mine based placeholders provide details about mines, and the mine name becomes part of the placeholder name.  Out of all of the possible mine based placeholders, each one is duplicated for each mine.  So, in rough terms, if there are different mine placeholders and you have 40 mines, then prison will generate about 400 place holders: 40 mines x 10 placeholders each = 400 placeholders for prison.
 
 The same applies to the ladder placeholders as the mine placeholders; for every ladder, there will be a specific placeholder that represents each ladder.  
@@ -243,6 +250,9 @@ Placeholders within prison can now be dynamically customized without having to m
 
 
 The **Placeholder Attributes** is additional text that is added at the end of a placeholder but within the escape characters.  The placeholder attribute always begins with a double colon `::` and each parameter is separated with a single colon `:`.  Some placeholders cannot use the attributes, and not all attributes can be used on a placeholder.  See additional information below that pertains to each attribute.
+
+
+**Player based placeholders** require player based requests that includes the player. Plugins that provide player based context would be like chat prefixes, scoreboards, and other placeholder consumers that need to use the player based placeholders.  Some examples of placeholder consumers that will not have player based contexts, are with scoreboards and some script environments; these requests for player based placeholders would normally fail under regular conditions.  To use player based placeholders with plugins that cannot support the player, you can solve this issue with the use of placeholder attributes with the **player=&lt;playerName&gt;** attribute. See notes below on all placeholder attribute types.
 
 
 As of v3.3.0-alpha.11h one placeholder can have more than one Placeholder Attribute, but they have to be of a different type.  At this time, this really is not beneficial since the Placeholder Attributes are specific to a certain type of data.  But this opens the door to future possibilities that are not possible currently, such as hybrid between a bar graph with a value super-imposed on top of it.
@@ -276,6 +286,12 @@ A few Examples using Placeholder Attributes:
     * **OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOxxxxxxxx**
 
 
+* `{prison_rank_tag::text:player=RoyalBlueRanger}` - When used in non-player supported plugins, such as holographic displays, this will enable the use of player-based placeholders for the specified player.  
+
+
+* `{prison_rankup_cost_remaining_formatted::nFormat:player=RoyalBlueRanger}` - When used in non-player supported plugins, such as holographic displays, this will enable the use of player-based placeholders for the specified player.  
+
+
 
 
 The examples above don't show the color for the bar graphs, but here is a screen print that uses a prison command to test the placeholders dynamically within prison:
@@ -305,13 +321,14 @@ The Numeric Format attribute will only work on placeholders that return plain nu
 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
-`::nFormat:format:spaces:unitType:hex:hex2:debug`
+`::nFormat:format:spaces:unitType:hex:hex2:debug:player=<playerNamme>`
 
 
 
 - **nFormat**: the keyword to identify this attribute.</li>
 - **format**: formatting based upon Java's DecimalFormat class.
-  					**Required.** Defaults to #,##0.00. 
+  					**Required.** Defaults to #,##0.00. Examples of 
+  					how the formatting can be used:
     * #,###
     * #,###.00
     * #,###.00000
@@ -334,7 +351,7 @@ Example of this attribute's usage is as follows, using descriptions for each par
        			KB, MB, GB, TB, PB, EB, ZB, and YB.  
        			
     * *Note:* Other unitTypes can be added along with different style of
-       			reducers.
+       			reducers. Contact support for these requests.
       
 - **hex**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
@@ -352,7 +369,10 @@ Example of this attribute's usage is as follows, using descriptions for each par
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
   
-
+- **player=&lt;playerName&gt;**: **Optional.** Case insensitive. Non-positional; can be 
+				placed anywhere.  If provided, it will try to use the specified 
+				player as the primary player for the placeholder.  If the current 
+				user is provided, then this parameter may be ignored.
 
 
 
@@ -385,7 +405,7 @@ The bar placeholder attribute only works with placeholders with the word bar in 
 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
-`::bar:size:posColor:posSeg:negColor:negSeg:reverse:hex:hex2:debug`
+`::bar:size:posColor:posSeg:negColor:negSeg:reverse:hex:hex2:debug:player=<playerNamme>`
 
 
 
@@ -420,6 +440,11 @@ Example of this attribute's usage is as follows, using descriptions for each par
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.					
+   
+- **player=&lt;playerName&gt;**: **Optional.** Case insensitive. Non-positional; can be 
+				placed anywhere.  If provided, it will try to use the specified 
+				player as the primary player for the placeholder.  If the current 
+				user is provided, then this parameter may be ignored.
   						
 
 
@@ -464,7 +489,7 @@ placeholders.
 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
-`::text:hex:hex2:debug`
+`::text:hex:hex2:debug:player=<playerNamme>`
 
 
       
@@ -483,6 +508,11 @@ Example of this attribute's usage is as follows, using descriptions for each par
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
+  
+- **player=&lt;playerName&gt;**: **Optional.** Case insensitive. Non-positional; can be 
+				placed anywhere.  If provided, it will try to use the specified 
+				player as the primary player for the placeholder.  If the current 
+				user is provided, then this parameter may be ignored.
 
 
 

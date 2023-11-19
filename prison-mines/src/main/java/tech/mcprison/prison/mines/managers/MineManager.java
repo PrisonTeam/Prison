@@ -45,6 +45,7 @@ import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeBar;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
+import tech.mcprison.prison.placeholders.PlaceholderAttributeTime;
 import tech.mcprison.prison.placeholders.PlaceholderIdentifier;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
@@ -775,6 +776,8 @@ public class MineManager
     	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
     	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
     	PlaceholderAttributeText attributeText = identifier.getAttributeText();
+    	PlaceholderAttributeTime attributeTime = identifier.getAttributeTime();
+    	
 		
 		int sequence = identifier.getSequence();
     	
@@ -791,6 +794,7 @@ public class MineManager
 			if ( mine != null || 
 					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) || 
 					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS )) {
+				
 				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 				DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 //				DecimalFormat fFmt = Prison.get().getDecimalForma("#,##0.00");
@@ -828,6 +832,10 @@ public class MineManager
 
 	        					results = attributeNFormat.format( (long) mine.getResetTime() );
 	        				}
+	        				else if ( attributeTime != null ) {
+	        					
+	        					results = attributeTime.format( (long) mine.getResetTime() );
+	        				}
 	        				else {
 	        					
 	        					results = iFmt.format( mine.getResetTime() );
@@ -845,6 +853,10 @@ public class MineManager
 	        				if ( attributeNFormat != null ) {
 
 	        					results = attributeNFormat.format( (long) mine.getResetTime() );
+	        				}
+	        				else if ( attributeTime != null ) {
+	        					
+	        					results = attributeTime.format( (long) mine.getResetTime() );
 	        				}
 	        				else {
 	        					
@@ -865,6 +877,10 @@ public class MineManager
 	        				if ( attributeNFormat != null ) {
 
 	        					results = attributeNFormat.format( (long) mine.getRemainingTimeSec() );
+	        				}
+	        				else if ( attributeTime != null ) {
+	        					
+	        					results = attributeTime.format( (long) mine.getResetTime() );
 	        				}
 	        				else {
 	        					results = dFmt.format( mine.getRemainingTimeSec() );

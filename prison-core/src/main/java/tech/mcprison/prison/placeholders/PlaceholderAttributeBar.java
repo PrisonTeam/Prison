@@ -61,6 +61,8 @@ public class PlaceholderAttributeBar
 	private boolean hex2 = false;
 	private boolean debug = false;
 	
+	private String player = null;
+
 	public PlaceholderAttributeBar(ArrayList<String> parts, 
 					PlaceholderProgressBarConfig defaultBarConfig, String raw ) {
 		super();
@@ -77,6 +79,22 @@ public class PlaceholderAttributeBar
 		
 		boolean isReversed = parts.remove( "reverse" );
 
+
+		// Search for 'player=':
+		for (String part : parts) {
+			if ( part.toLowerCase().startsWith( "player=" ) ) {
+				this.player = part;
+				break;
+			}
+		}
+		// extract the player's name:
+		if ( this.player != null ) {
+			if ( parts.remove( this.player ) ) {
+				this.player = this.player.toLowerCase().replaceAll("player=", "");
+			}
+		}
+		
+		
 		int len = 1;
 		
 		// format:
@@ -182,6 +200,13 @@ public class PlaceholderAttributeBar
 	}
 	public void setDebug( boolean debug ) {
 		this.debug = debug;
+	}
+
+	public String getPlayer() {
+		return player;
+	}
+	public void setPlayer(String player) {
+		this.player = player;
 	}
 
 	public PlaceholderProgressBarConfig getBarConfig() {

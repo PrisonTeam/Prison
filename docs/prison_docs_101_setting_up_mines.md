@@ -15,6 +15,9 @@ This document provides some highlights to how to setup mines.  It is a work in p
 This document should be able to provide the basic information to get your mines configured.  There are many options available within Prison, and also through the use of other plugins, so advanced topics that blend multiple plugins, and their various settings, are beyond the scope of this document.
 
 
+As a side note, if you installed prison, and it appears like it may not be working in a specific world, please see the `config.yml` file to see if prison's command handler is disabled within that world.  If it is, then all prison commands will be turned off in that world, and there will be no way to bypass it unless the config.yml file is changed.
+
+
 Prison has a list of suggested plugins that works well with Prison, and a few that do not work at all with Prison.  Please see the following document for a list of suggested plugins.  If you have a favorite plugin that works well with Prison and it's not in that list, then please reach out to us in our discord server and make a suggestion for it to be added. 
 [Setting up Prison - The Basics](prison_docs_012_setting_up_prison_basics.md)
 
@@ -249,7 +252,11 @@ Some of the highlights of these commands are as follows:
 
 
 * `/mines set liner` : A quick way to wrap your mine with a 2D Pattern in 3D space.  This command also will `repair` the area around a mine, and will effectively erase a liner.  There are six directions that can be specified for change: `north`, `south`, `east`, `west`, `top`, and `bottom`. `walls` also is a shortcut for `north`, `south`, `east`, and `west`.  The patterns available are listed by the command.  There is even a `force` setting that will allow the mine to be wrapped when in air, since the wrappings normally needs blocks in contact with the mine so it is able to conform to the terrain.
+
+
 * `/mines set mineSweeper` : If all else fails to get Prison to monitor and track blocks that are broken within a mine, mostly due to conflicts with other plugins, then this option can provide a last chance effort to monitor the progress within a mine.  It is very rare that you would have to use this setting and the chances are that there are better ways to get the mines working correctly.  The larger the mine, the more costly this setting is to enable.
+
+
 * **Removed:** `/mines set move` is a new command that is not yet enabled. It is still in development, but will be active soon.  This command will move a whole mine as a single unit, be it a few blocks or many (not recommended).  The same effect of moving a mine can be done through the command: `/mine set size` but note it will possibly damage or destory the surrounding builds if not careful.
 
 * **Removed:** `/mines set norank` : Disconnect the mine from a rank. **Note:** This command has been changed to `/mines set rank <mineName> *none*` to delete the rank from the mine.
@@ -266,7 +273,11 @@ Some of the highlights of these commands are as follows:
 * `/mines set sortOrder` : Mines can be sorted for view within `/mines list` or the GUI.  Setting the sortOrder allows you manually set the order in which the mines are listed.  There is even the option to suppress (hide) mines from that list too by setting the sort order to a -1.
 * `/mines set spawn` : Sets the mines spawn point. Whatever you are looking at is what the players will be looking at when they tp to that spot.
 * `/mines set tag` : Set a mine tag value that can be used with placeholders.
-* `/mines set tracer` : Removes all blocks in a mine and replaces them with air, with the exception of the corners, of which are replace with pink_stained_glass.  This function allows for easy viewing of the full mine without the blocks getting in the way.  It also helps when setting the liner of the mine.  Using `/mines reset` returns the mine to normal functionality, or it will reset on its own.
+
+
+* `/mines set tracer help` : Removes all blocks in a mine and replaces them with air.  This is good to allow you to access and work on the liners or ladders.  There are three options with this command: `outline`, `corners` and `clear`.  The option `outline` is the default and will use this option unless the others are specified.  `outline` will apply pink glass blocks along the outline of the mine. `corners` will only place pink stained glass blocks in the 8 corners of the mine.  And `clear` will add no tracers and will result in a fully cleared mine. This function allows for easy viewing of the full mine without the blocks getting in the way.  It also helps when setting the liner of the mine.  Using `/mines reset` returns the mine to normal functionality, or it will reset on its own.
+
+.
 * `/mines set zeroBlockResetDelay` : If the mine runs out of blocks, when enabled, it will force a manual reset after the specified delay. The delay can be zero for instant reset.
 
 

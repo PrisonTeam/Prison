@@ -41,12 +41,21 @@ public class MineBlockEvent {
 		RevEnExplosion,
 		RevEnJackHammer,
 		
+		ExplosionTriggerEvent,
+		LayerTriggerEvent,
+		NukeTriggerEvent,
+		
 		eventTypeAll( all ),
 		eventBlockBreak( blockBreak ),
 		eventTEXplosion( TEXplosion ), 
 		
 		eventRevEnExplosion( RevEnExplosion ),
-		eventRevEnJackHammer( RevEnJackHammer ),
+		eventRevEnJackHammer( RevEnJackHammer ), 
+		
+		XPrisonExplosionTriggerEvent( ExplosionTriggerEvent ),
+		XPrisonLayerTriggerEvent( LayerTriggerEvent ),
+		XPrisonNukeTriggerEvent( NukeTriggerEvent ),
+		
 		
 		;
 		

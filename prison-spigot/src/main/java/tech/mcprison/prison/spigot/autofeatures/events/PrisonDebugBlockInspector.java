@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,12 @@ import tech.mcprison.prison.util.Location;
 public class PrisonDebugBlockInspector
 //	extends OnBlockBreakMines
 {
+	private static PrisonDebugBlockInspector instance;
+	
 	private OnBlockBreakMines obbMines;
+	
+	private long lastAccess = 0;
+//	private boolean active = false;
 	
 	public enum EventDropsStatus {
 		normal,
@@ -35,13 +41,28 @@ public class PrisonDebugBlockInspector
 		notSupported;
 	}
 	
-	public PrisonDebugBlockInspector() {
+	private PrisonDebugBlockInspector() {
 		super();
 		
 		obbMines = new OnBlockBreakMines();
+		
+		init();
+	}
+	
+	public static PrisonDebugBlockInspector getInstance() {
+		if ( instance == null ) {
+			synchronized ( PrisonDebugBlockInspector.class ) {
+				if ( instance == null ) {
+
+						instance = new PrisonDebugBlockInspector();
+				
+				}
+			}
+		}
+		return instance;
 	}
 
-    public void init() {
+    private void init() {
     	
     	
         Prison.get().getEventBus().register(this);
@@ -81,6 +102,15 @@ public class PrisonDebugBlockInspector
     @Subscribe
     public void onPlayerInteract( PrisonPlayerInteractEvent e ) {
     	
+    	List<String> output = new ArrayList<>();
+    	
+    	
+    	// Cool down: run no sooner than every 2 seconds... prevents duplicate runs:
+    	if ( lastAccess != 0 && (System.currentTimeMillis() - lastAccess) < 2000 ) {
+    		return;
+    	}
+    	
+    	this.lastAccess = System.currentTimeMillis();
     	
         ItemStack ourItem = e.getItemInHand();
         ItemStack toolItem = SelectionManager.SELECTION_TOOL;
@@ -107,9 +137,9 @@ public class PrisonDebugBlockInspector
     	
         if ( mine == null ) {
         	
-        	player.sendMessage(
+        	output.add(
         			String.format(
-	        			"&dDebugBlockInfo: &7Not in a mine. &5%s &7%s",
+	        			"-&dDebugBlockInfo: &7Not in a mine. &5%s &7%s",
 	        			sBlock.getBlockName(), location.toWorldCoordinates()) );
         	
         }
@@ -125,56 +155,63 @@ public class PrisonDebugBlockInspector
 //        	checkForCustomBlock( sBlock, targetBlock );
         	
         	String m1 = String.format(
-        					"&dDebugBlockInfo:  &3Mine &7%s  &3Rank: &7%s  " +
-			    			"&5%s  &7%s",
+        					"-&dDebugBlockInfo:  &3Mine &7%s  &3Rank: &7%s  " +
+			    			"&5%s  &7%s ",
 			    			mine.getName(),
 			    			(mine.getRank() == null ? "---" : mine.getRank().getName()),
 			    			sBlock.getBlockName(), 
 			    			location.toWorldCoordinates());
         	
-        	player.sendMessage( m1 );
-        	Output.get().logInfo( m1 );
+        	output.add( m1 );
+//        	player.sendMessage( m1 );
+//        	Output.get().logInfo( m1 );
         	
 			// Get the mine's targetBlock:
 //			MineTargetPrisonBlock tBlock = mine.getTargetPrisonBlock( sBlock );
 
         	if ( targetBlock == null ) {
-        		player.sendMessage( "Notice: Unable to get a mine's targetBlock. This could imply " +
+        		
+        		
+        		output.add( "-Notice: Unable to get a mine's targetBlock. This could imply " +
         				"that the mine was not reset since the server started up, or that the air-block " +
         				"check was not ran yet.  Use `/mine reset " + mine.getName() + "' to reset the " +
         						"target blocks." );
         	}
         	else {
         		
-        		String message = String.format( "    &3TargetBlock: &7%s  " +
-        				"&3Mined: %s%b  &3Broke: &7%b", 
+        		
+        		String message = String.format( "-    &3TargetBlock: &7%s  " +
+        				"&3Mined: %s%b  &3Broke: &7%b  &3Counted: &7%b", 
         				targetBlock.getPrisonBlock().getBlockName(),
         				(targetBlock.isMined() ? "&d" : "&2"),
         				targetBlock.isMined(), 
-        				targetBlock.isAirBroke()
+        				targetBlock.isAirBroke(),
+        				targetBlock.isCounted()
         				);
         		
-        		player.sendMessage( message );
-        		Output.get().logInfo( message );
+        		output.add( message );
+//        		player.sendMessage( message );
+//        		Output.get().logInfo( message );
         		
-        		String message2 = String.format( "    &3Counted: &7%b  &3Edge: &7%b  " +
-        				"&3Exploded: %s%b &3IgnoreAllEvents: &7%b", 
-        				targetBlock.isCounted(),
+        		String message2 = String.format( "-    &3isEdge: &7%b  " +
+        				"&3Exploded: %s%b  &3IgnoreAllEvents: &7%b", 
+        				
         				targetBlock.isEdge(),
         				(targetBlock.isExploded() ? "&d" : "&2"),
         				targetBlock.isExploded(),
         				targetBlock.isIgnoreAllBlockEvents()
         				);
         		
-        		player.sendMessage( message2 );
-        		Output.get().logInfo( message2 );
+        		output.add( message2 );
+//        		player.sendMessage( message2 );
+//        		Output.get().logInfo( message2 );
         		
         	}
         }
         
         
         if ( !isSneaking ) {
-        	player.sendMessage(
+        	output.add( 
         			String.format(
 	        			"  &d(&7Sneak to test BlockBreakEvent with block.&d)"
 	        			) );
@@ -188,11 +225,22 @@ public class PrisonDebugBlockInspector
         	
         	// Debug the block break events:
 
-        	dumpBlockBreakEvent( player, sBlock, targetBlock );
+        	dumpBlockBreakEvent( player, sBlock, targetBlock, output );
         	
         }
         	
+        
+        output.add( " - - End DebugBlockInfo - - " );
         	
+    	for ( String outputLine : output ) {
+    		boolean playerMessage = outputLine.startsWith( "-" );
+    		if ( playerMessage ) {
+    			outputLine = outputLine.substring( 1 );
+    			
+    			player.sendMessage( outputLine );
+    		}
+			Output.get().logInfo( outputLine );
+		}
         	
         	
         
@@ -215,10 +263,15 @@ public class PrisonDebugBlockInspector
 //
 //            checkForEvent(e.getPlayer(), sel);
 //        }
+
+        // disable active prior to exiting function:
+    	//this.active = false;
+
     }
     
-    public void dumpBlockBreakEvent( SpigotPlayer player, SpigotBlock sBlock, MineTargetPrisonBlock targetBlock ) {
-    	List<String> output = new ArrayList<>();
+    public void dumpBlockBreakEvent( SpigotPlayer player, SpigotBlock sBlock, MineTargetPrisonBlock targetBlock,
+    				List<String> output ) {
+//    	List<String> output = new ArrayList<>();
     	
     	SpigotBlock checkBlock = sBlock;
     	
@@ -292,10 +345,23 @@ public class PrisonDebugBlockInspector
     					) );
     	
     	
-    	printEventStatus( bbe, "-initial-", "", checkBlock, targetBlock, tool, output, player );
+    	EventDropsStatus isNs = isDropCanceled( bbe );
+    	
+    	
+    	output.add( "   &3Legend: &7EP&3: EventPriority  &7EC&3: EventCanceled  "
+    			+ "&7DC&3: DropsCanceled  &7EB&3: EventBlock  &7Ds&3: Drops  "
+    			+ "&7ms&3: dur ms" 
+    			+ ( isNs == EventDropsStatus.notSupported ? "  &7NS&3: NotSupported" : "" )
+    			);
+    	
+    	
+    	printEventStatus( bbe, "-initial-", "", checkBlock, targetBlock, tool, output, player, -1 );
     	
     	
     	for ( RegisteredListener listener : bbe.getHandlers().getRegisteredListeners() ) {
+    		
+    		long start = 0;
+    		long stop = 0;
     		
     		try {
 //    			boolean isPrison = listener.getPlugin().getName().equalsIgnoreCase( "Prison" );
@@ -303,7 +369,9 @@ public class PrisonDebugBlockInspector
     			
 //    			if ( !isSpigotListener ) {
     				
+	    			start = System.nanoTime();
     				listener.callEvent( bbe );
+    				stop = System.nanoTime();
 //    			}
     			
 			}
@@ -316,9 +384,15 @@ public class PrisonDebugBlockInspector
 
 			}
     		
+    		double durationNano = (stop - start);
+    		
+    		if ( durationNano > 0 ) {
+    			durationNano = durationNano / 1_000_000;
+    		}
+    		
     		printEventStatus( bbe, 
     				listener.getPlugin().getName(), listener.getPriority().name(), checkBlock, targetBlock, 
-    				tool, output, player );
+    				tool, output, player, durationNano );
     		
     	}
     	
@@ -326,10 +400,10 @@ public class PrisonDebugBlockInspector
     	// Put the heldItem back in the player's hand, which should be the prison wand:
     	SpigotCompatibility.getInstance().setItemInMainHand( player.getWrapper(), heldItem );
     	
-    	for ( String outputLine : output )
-		{
-			Output.get().logInfo( outputLine );
-		}
+//    	for ( String outputLine : output )
+//		{
+//			Output.get().logInfo( outputLine );
+//		}
     }
     
     
@@ -363,9 +437,11 @@ public class PrisonDebugBlockInspector
     		MineTargetPrisonBlock targetBlock,
     		SpigotItemStack tool,
     		List<String> output, 
-    		SpigotPlayer player ) {
+    		SpigotPlayer player, 
+    		double durationNano ) {
     	
     	StringBuilder sb = new StringBuilder();
+    	StringBuilder sb2 = new StringBuilder();
     	sb.append( "  " );
     	
     	boolean isCanceled = bbe.isCancelled();
@@ -375,7 +451,7 @@ public class PrisonDebugBlockInspector
     		dropStats = "&4" + isDropCanceled.name();
     	}
     	else if ( isDropCanceled == EventDropsStatus.notSupported ) {
-    		dropStats = "&d" + isDropCanceled.name();
+    		dropStats = "&dNS"; // + isDropCanceled.name();
     	}
     	
     	// Get a fresh copy of the block to ensure we pickup the latest status:
@@ -386,30 +462,13 @@ public class PrisonDebugBlockInspector
     	bukkitDrops = obbMines.mergeDrops( bukkitDrops );
     	
     	
-    	String msg = String.format( " &3Plugin: &7%-15s &2EventPriority: &7%-9s  "
-    			+ "&2EventCanceled: &7%5s  &2DropsCanceled: &7%s",
-    			plugin,
-    			( priority == null ? "$dnone" : priority ),
-    			( isCanceled ? "&4true " : "false" ),
-    			dropStats
-    			);
-    	sb.append( msg );
-    	
-    	
-
-    	
-    	output.add( sb.toString() );
-    	sb.setLength( 0 );
-    	
     	SpigotBlock eventBlock = SpigotBlock.getSpigotBlock( bbe.getBlock() );
-
-    	String msg2 = String.format( "                           &aEventBlock: &b%s  ",
-    			eventBlock == null ? 
-    					"&4none" : 
-    					eventBlock.getBlockNameFormal() );
-    	sb.append( msg2 );
+    	String eventBlockName = eventBlock == null ? 
+						"&4none" : 
+						eventBlock.getBlockNameFormal();
+		    	
     	
-    	sb.append( "    &aDrops:" );
+    	// Build the drops listing:
     	if ( bukkitDrops.size() > 0 ) {
     		
 //    		List<ItemStack> drops = sBlk.getDrops( tool );
@@ -417,20 +476,68 @@ public class PrisonDebugBlockInspector
     		{
 //    			SpigotItemStack sis = (SpigotItemStack) itemStack;
     			
-    			sb.append( " &b" ).append( itemStack.getName() );
+    			sb2.append( " &b" ).append( itemStack.getName() );
     			if ( itemStack.getAmount() > 0 ) {
-    				sb.append( "&a(&b" ).append( itemStack.getAmount() ).append( "&a)" );
+    				sb2.append( "&a(&b" ).append( itemStack.getAmount() ).append( "&a)" );
     			}
     		}
     	}
     	else { 
-    		sb.append( "&4none" );
+    		sb2.append( "&4none" );
     	}
 
-    	if ( sb.length() > 0 ) {
-    		output.add( sb.toString() );
-    		sb.setLength( 0 );
-    	}
+
+    	DecimalFormat dFmt = new DecimalFormat("#,##0.000000");
+    	String durationNanoStr = durationNano == -1 ? "---" : dFmt.format( durationNano );
+    	
+    	
+    	String msg = String.format( " &3Plugin: &7%-15s &2EP: &7%-9s  "
+    			+ "&2EC: &7%5s  &2DC: &7%s  &aEB: &b%s  &aDs: %s  &ams: &7%s",
+    			plugin,
+    			( priority == null ? "$dnone" : priority ),
+    			( isCanceled ? "&4true " : "false" ),
+    			dropStats,
+    			eventBlockName,
+    			sb2,
+    			durationNanoStr
+    			);
+    	sb.append( msg );
+    	
+    	
+    	output.add( sb.toString() );
+
+    	
+//    	sb.setLength( 0 );
+    	
+
+//    	String msg2 = String.format( "                           &aEventBlock: &b%s  ",
+//    			eventBlock == null ? 
+//    					"&4none" : 
+//    					eventBlock.getBlockNameFormal() );
+//    	sb.append( msg2 );
+    	
+//    	sb.append( "    &aDrops:" );
+//    	if ( bukkitDrops.size() > 0 ) {
+//    		
+////    		List<ItemStack> drops = sBlk.getDrops( tool );
+//    		for ( ItemStack itemStack : bukkitDrops )
+//    		{
+////    			SpigotItemStack sis = (SpigotItemStack) itemStack;
+//    			
+//    			sb.append( " &b" ).append( itemStack.getName() );
+//    			if ( itemStack.getAmount() > 0 ) {
+//    				sb.append( "&a(&b" ).append( itemStack.getAmount() ).append( "&a)" );
+//    			}
+//    		}
+//    	}
+//    	else { 
+//    		sb.append( "&4none" );
+//    	}
+
+//    	if ( sb.length() > 0 ) {
+//    		output.add( sb.toString() );
+//    		sb.setLength( 0 );
+//    	}
     	
     }
     
@@ -438,7 +545,7 @@ public class PrisonDebugBlockInspector
     	EventDropsStatus results = EventDropsStatus.normal;
     	
     	try {
-			if ( bbe.isDropItems() ) {
+			if ( !bbe.isDropItems() ) {
 				results = EventDropsStatus.canceled;
 			}
 			else {

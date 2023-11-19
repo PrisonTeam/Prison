@@ -10,13 +10,17 @@ This document provides information on how to get started quickly using Prison's 
 [Prison Log File Examples - Starting Prison & auto configure](prison_docs_101_auto_configure_log_examples.md)
 
 
-*Documented updated: 2021-12-11*
+*Documented updated: 2023-09-09*
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 # Overview
 
 This document covers how to run `/ranks autoConfigure`, it's options, and what to do after the command runs.
+
+
+It is strongly suggested to run this command and read the current help documentation for the command because a lot of changes have been happening to the commands, but these documents may be out of date:
+`/ranks autoConfigure help`
 
 
 
@@ -38,7 +42,7 @@ Prison's Auto Configure will perform most of the basic configurations to get you
 * Auto assign random Mine Liners to each mine. 
 
 
-* Auto generate 10 Prestige Ranks and have them enabled by default.
+* Auto generate 25 Prestige Ranks and have them enabled by default.
 
 
 * Enable Ladder Base Rank Cost Multiplier for the Prestiges ladder.  Once a player prestiges, this will enable a rank cost multiplier that will increase all rank cost.  As the player ranks upon the prestiges ladder, the rank costs will increase.
@@ -311,13 +315,40 @@ Generally you would never need to use any of the options.  But they do provide f
 * **mult=x** - The default value for the multiplier is 1.5.  This is the multiplier that is used calculate the next rank.  So if the first rank has an initial cost of 50,000 then the second rank cost is 1.5 times that value.  Therefore the second rank will have a cost of 75,000 (50,000 * 1.5).
 
 
-* **Force** - If any mines or ranks exist, normally it will prevent auto configure from running.  **Force** forces it to run, but with consequences.  It will skip over any rank or mine that it would otherwise try to generate.  It will not add rank commands to existing ranks.  It will not add blocks to existing mines.  It will not hook up ranks to mines.  Nor will it configure such features as Mine Access Permissions.  If you decide to use **force** you do so at your own risks.
+* **Force** - If any mines or ranks exist, normally it will prevent auto configure from running.  **Force** forces it to run, but with consequences.  Auto configure will try to merge any preexisting ranks and mines, but it will also replace all blocks in all mines. There maybe some unexpected consequences to forcing an auto configure, so back up your data.  If you decide to use **force** you do so at your own risks.
 
 
-* **ranks** - If specified, it will only generate ranks and not the mines.
+* **forceKeepBlocks** - If forcing auto configure to run again, the 'forceKeepBlocks' will prevent existing mines from having their blocks reset to the defaults.
 
 
-* **mines** - If specified, it will only generate mines and not the ranks.
+* **ranks** - If specified, it will only generate ranks and not the mines or prestigies.
+
+
+* **mines** - If specified, it will only generate mines and not the ranks or prestiges.
+
+* **prestiges** - If specified, it will only generate prestiges and not the mines or ranks.
+
+
+* **prestiges=x** - Will set how many initial prestige ranks to create.
+
+* **prestigeCost=x** - Sets the initial cost for P1; default value is 1_000_000_000.
+
+* **prestigeMult=x** - Is an additional multiplier for presetige ranks, with the default value of 1. The cost for each prestige rank is based upon the initial presetigeCost, times the prestige level so p3 will be 3 times the cost of p1 with the prestige multiplier will multiplied against that value.  So for default values  with a 1.75 multiplier p3 cost = 1_000_000_000 * 3 * 1.75. Default values [full price=50000 mult=1.5 prestiges=25 presetigeCost=1000000000 prestigeMult=1] 
+
+* NOTE: Use of these parameters, you can adjust some of the settings on your server, without replacing preexisting configurations.  
+
+
+Other commands of interest:
+
+* `/ranks ladder rankCostMultiplier help' - Is used to calculate a player's rank cost when they rankup. This is a multiplier based up a ladder, where the ladder's multiplier is multiplied by that ladder's position.  So if a prestige ladder uses a rank cost multiplier of 0.1 (10 percent), then when a player is at P0 (no presetige rank) it will not increase the costs of the default ranks prices.  But when they are at P1, then it will be a 10% increase, and at p10 it will be at a 100% increase (twice as expensive than p0).  A ladder could be set to zero so it does not contribute to the player's total calculated rank cost multipliers.
+
+* `/ranks ladder applyRankCostMultiplier help' - This is a ladder setting where if a ladder applies the player's rank cost multiplier then it's rankup costs on it's ladder will apply the rank cost multiplier.  If the ladder is disabled, then it will use the raw rank cost.  Note a ladder can be disabled, but yet still contribute to the players total rank cost multiplier.
+
+* `/ranks ladder resetRankCosts help' - This resets all rank costs on a ladder based upon a uniform formula.  This is good to use after adding new ranks, and you want each rank to be progressivly more expensive, at a uniform rate.
+
+* '/sellall multiplier addLadder help' - Adds one multiplier per rank for a given ladder. You can control how the multiplier is generated per rank.
+* '/sellall multiplier deleteLadder help' - Deletes all multipliers for a given ladder. This is very useful when adding adding new multipliers by ladder.
+* '/sellall multiplier list help' - can limit the list of multipliers by ladder and can control how many columns are in the display.
 
 
 
@@ -386,7 +417,8 @@ The other method is a little more controlled, and that's using prison wand to se
 Prison has an advanced command handler that is able to do a lot of things.  One of it's features is to provide more information on each command that it has registered.  To activate this feature, just add the keyword `help` to the end of any command.  Here are a few examples.
 
 ```
-/mines info <mine> help
+/ranks autoconfigure help
+/mines info help
 /ranks promote help
 /ranks command add help
 /prison support submit

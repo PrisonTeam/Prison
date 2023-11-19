@@ -127,6 +127,11 @@ subprojects {
     			includeGroup 'org.apache.commons'
     		}
         }
+
+        maven { 
+        	url "https://mvnrepository.com/artifact" 
+
+        }
         
     }
         

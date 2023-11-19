@@ -17,6 +17,9 @@ import javax.net.ssl.HttpsURLConnection;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import nl.kyllian.enums.Expire;
+import nl.kyllian.enums.PasteFormat;
+import nl.kyllian.models.Paste;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Text;
@@ -107,7 +110,24 @@ public class PrisonPasteChat {
 			
 			cleanedText = addHeaders( cleanedText );
 			
-			results = postPaste( cleanedText, raw );
+			String service = Prison.get().getPlatform()
+							.getConfigString( "prison-support.submit-service", "PRIVATEBIN-NET" );
+
+			switch ( service ) {
+			case "PRIVATEBIN-NET":
+				
+				results = postPrivateBin( cleanedText, raw );
+				break;
+
+			case "PASTE-HELPCHAT":
+				
+				results = postPasteHelpchAt( cleanedText, raw );
+				break;
+				
+			default:
+				break;
+			}
+			
 		}
 		catch (Exception e) {
 			Output.get().logInfo( "PrisonPasteChat: Failed to paste to paste.helpch.at. " +
@@ -215,8 +235,42 @@ public class PrisonPasteChat {
 		return (keyName + "                     ").substring( 0,18 );
 	}
 	
-	private String postPaste( String text, boolean raw ) 
+	
+	private String postPrivateBin( String text, boolean raw ) 
 			throws IOException {
+		
+		String expire = Prison.get().getPlatform().getConfigString( "prison-support.expire", "one_week" );
+		String password = Prison.get().getPlatform().getConfigString( "prison-support.password", "PrisonSupport" );
+		
+        Paste paste = new Paste("https://privatebin.net")
+                .setMessage( text )
+                .setExpire( getExpire( expire ) )
+                .setPasteFormat( PasteFormat.PLAINTEXT )
+                .setUserPassword( password )
+//                .removeIps()
+                .encrypt();
+
+        String pasteUrl = paste.send();
+
+		return pasteUrl;
+	}
+	
+	private Expire getExpire( String value ) {
+		Expire results = Expire.ONE_WEEK;
+		
+		for ( Expire ex : Expire.values() ) {
+			if ( ex.name().equalsIgnoreCase( value ) ) {
+				results = ex;
+				break;
+			}
+		}
+		
+		return results;
+	}
+	
+	private String postPasteHelpchAt( String text, boolean raw ) 
+			throws IOException {
+		
 		String results = null;
 		String rawJson = null;
 		
@@ -249,8 +303,8 @@ public class PrisonPasteChat {
 				rawJson = reader.readLine();
 			}
 		} 
-		catch (IOException e) {
-			Output.get().logError( 
+		catch (Exception e) {
+			Output.get().logWarn( 
 					String.format( "Failure in sending paste. %s ", e.getMessage()) , e );
 		}
 		

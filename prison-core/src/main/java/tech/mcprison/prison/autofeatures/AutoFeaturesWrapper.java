@@ -13,17 +13,17 @@ public class AutoFeaturesWrapper
 
 	private AutoFeaturesFileConfig autoFeaturesConfig = null;
 	
-	private BlockConvertersFileConfig blockConvertersConfig = null;
+	private static BlockConvertersFileConfig blockConvertersConfig = null;
 
 	private AutoFeaturesWrapper() {
 		super();
 		
 		this.autoFeaturesConfig = new AutoFeaturesFileConfig();
 		
-		if ( Output.get().isDebug() ) {
+//		if ( Output.get().isDebug() ) {
 			
-			this.blockConvertersConfig = new BlockConvertersFileConfig();
-		}
+//			this.blockConvertersConfig = new BlockConvertersFileConfig();
+//		}
 	}
 	
 	public static AutoFeaturesWrapper getInstance() {
@@ -40,26 +40,42 @@ public class AutoFeaturesWrapper
 	}
 	
 	
+	public static BlockConvertersFileConfig getBlockConvertersInstance() {
+		if ( blockConvertersConfig == null ) {
+			
+			synchronized ( BlockConvertersFileConfig.class ) {
+				if ( blockConvertersConfig == null ) {
+					
+					blockConvertersConfig = new BlockConvertersFileConfig();
+					
+//					blockConvertersConfig.reloadConfig();
+				}
+			}
+		}
+		return blockConvertersConfig;
+	}
+	
+	
 	public void reloadConfigs() {
 		getAutoFeaturesConfig().reloadConfig();
 		
-		if ( Output.get().isDebug() && getBlockConvertersConfig() != null ) {
-			
-			getBlockConvertersConfig().reloadConfig();
-		}
+//		if ( Output.get().isDebug() && getBlockConvertersConfig() != null ) {
+//			
+//			getBlockConvertersConfig().reloadConfig();
+//		}
 	}
 
 	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
 		return autoFeaturesConfig;
 	}
 
-	public BlockConvertersFileConfig getBlockConvertersConfig() {
-		return blockConvertersConfig;
-	}
-
-	public void setBlockConvertersConfig(BlockConvertersFileConfig blockConvertersConfig) {
-		this.blockConvertersConfig = blockConvertersConfig;
-	}
+//	public BlockConvertersFileConfig getBlockConvertersConfig() {
+//		return blockConvertersConfig;
+//	}
+//
+//	public void setBlockConvertersConfig(BlockConvertersFileConfig blockConvertersConfig) {
+//		this.blockConvertersConfig = blockConvertersConfig;
+//	}
 
 	public boolean isBoolean( AutoFeatures feature ) {
 		return autoFeaturesConfig.isFeatureBoolean( feature );
@@ -87,5 +103,6 @@ public class AutoFeaturesWrapper
 		}
 		return results;
 	}
+
 
 }

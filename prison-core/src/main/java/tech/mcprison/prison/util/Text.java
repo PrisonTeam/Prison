@@ -63,6 +63,26 @@ public class Text
         		"minute:minutes", millisPerMinute, 
         		"second:seconds", millisPerSecond);
     
+    private static Map<String, Long> unitMillisShort = CollectionUtil
+    		.map( 
+    				"y", millisPerYear, 
+    				"m", millisPerMonth, 
+    				"w", millisPerWeek, 
+    				"d", millisPerDay, 
+    				"h", millisPerHour, 
+    				"m", millisPerMinute, 
+    				"s", millisPerSecond);
+    
+    private static Map<String, Long> unitMillisColons = CollectionUtil
+    		.map( 
+    				"y", millisPerYear, 
+    				"m", millisPerMonth, 
+    				"w", millisPerWeek, 
+    				"day:", millisPerDay, 
+    				"hour:", millisPerHour, 
+    				"min:", millisPerMinute, 
+    				"", millisPerSecond);
+    
     private static String unit_time_text_prefix = "&3";
     private static String unit_time_text_just_now = "just now";
     private static String unit_time_text_ago = "ago";
@@ -115,6 +135,9 @@ public class Text
     	
     	String timeUnitsSingular = coreOutputTextTimeUnitsSingularMsg();
     	String timeUnitsPlural = coreOutputTextTimeUnitsPluralMsg();
+
+    	String timeUnitsShort = coreOutputTextTimeUnitsShortMsg();
+    	
     	
     	String[] tuS = timeUnitsSingular.split( "," );
     	String[] tuP = timeUnitsPlural.split( "," );
@@ -131,6 +154,40 @@ public class Text
     		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerMinute );
     		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerSecond );
     	}
+    	
+    	
+    	String[] tuShort = timeUnitsShort.split( "," );
+
+    	if ( tuShort.length == 7 ) {
+    		unitMillisShort = new LinkedHashMap<>();
+    		
+    		int i = 0;
+    		unitMillisShort.put( tuShort[i++], millisPerYear );
+    		unitMillisShort.put( tuShort[i++], millisPerMonth );
+    		unitMillisShort.put( tuShort[i++], millisPerWeek );
+    		unitMillisShort.put( tuShort[i++], millisPerDay );
+    		unitMillisShort.put( tuShort[i++], millisPerHour );
+    		unitMillisShort.put( tuShort[i++], millisPerMinute );
+    		unitMillisShort.put( tuShort[i++], millisPerSecond );
+    		
+    	}
+
+    	if ( tuShort.length == 7 ) {
+    		unitMillisColons = new LinkedHashMap<>();
+    		
+    		int i = 0;
+    		unitMillisColons.put( tuShort[i++], millisPerYear );
+    		unitMillisColons.put( tuShort[i++], millisPerMonth );
+    		unitMillisColons.put( tuShort[i++], millisPerWeek );
+    		unitMillisColons.put( "day:", millisPerDay );
+    		unitMillisColons.put( "hour:", millisPerHour );
+    		unitMillisColons.put( "min:", millisPerMinute );
+    		unitMillisColons.put( "", millisPerSecond );
+    		
+    	}
+    	
+    	
+    	
     }
 
     /**
@@ -572,18 +629,33 @@ public class Text
      * @return The human-readable string.
      */
     public static String getTimeUntilString(long millis) {
+    	return getTimeUntilString( millis, unitMillis, unitPrefixSpacer, null );
+    }
+    public static String getTimeUntilString(long millis, String spaces ) {
+    	return getTimeUntilString( millis, unitMillis, spaces, null );
+    }
+    public static String getTimeUntilShortString(long millis, String spaces ) {
+    	return getTimeUntilString( millis, unitMillisShort, spaces, null );
+    }
+    public static String getTimeUntilColonsString(long millis, String spaces ) {
+    	DecimalFormat dFmt = new DecimalFormat( "00" );
+    	return getTimeUntilString( millis, unitMillisColons, spaces, dFmt );
+    }
+    private static String getTimeUntilString(long millis, Map<String,Long> units, 
+    		String unitSpacer, DecimalFormat dFmt ) {
         String ret = unit_time_text_prefix;
 
         double millisLeft = (double) Math.abs(millis);
 
         List<String> unitCountParts = new ArrayList<>();
-        for (Map.Entry<String, Long> entry : unitMillis.entrySet()) {
+        for (Map.Entry<String, Long> entry : units.entrySet()) {
             if (unitCountParts.size() == 3) {
                 break;
             }
+            boolean isColons = ( entry.getKey().endsWith( ":" ) );
             String[] unitNames = entry.getKey().split( ":" );
-            String unitNameSingular = unitNames[0];
-            String unitNamePlural = unitNames.length > 1 ? unitNames[1] : unitNames[0];
+            String unitNameSingular = isColons ? ":" : unitNames[0];
+            String unitNamePlural = isColons ? ":" : unitNames.length > 1 ? unitNames[1] : unitNames[0];
             
             long unitSize = entry.getValue();
             long unitCount = (long) Math.floor(millisLeft / unitSize);
@@ -592,7 +664,9 @@ public class Text
             }
             millisLeft -= unitSize * unitCount;
             
-            unitCountParts.add(unitCount + unitPrefixSpacer +
+            String unitCountStr = dFmt == null ? Long.toString( unitCount ) : dFmt.format( unitCount );
+            
+            unitCountParts.add( unitCountStr + unitSpacer +
             		( unitCount == 1 ? unitNameSingular : unitNamePlural) );
         }
 
