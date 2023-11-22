@@ -248,7 +248,7 @@ public class Localizable {
                 
                 // If the entry has been marked with "*none*" or an empty String then return an empty String:
                 if ( LocaleManager.IGNORE_TEXT_NO_MESSAGE_INTENDED.equalsIgnoreCase(message) || 
-                		message != null && message.trim().length() == 0 ) {
+                		message != null && message.length() == 0 ) {
                 	return "";
                 }
                 
