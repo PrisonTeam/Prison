@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16 2023-11-22
+# 3.3.0-alpha.16 2023-11-24
+
+
+* **Mines: Added support for '*all*' for mine names for the following mine commands: resetDelay, resetThreshhold, notificationPerm, and accessPermission**
 
 
 * **Localizable: Bug fix. Blanks were being removed by the use of trim() so the spaces were being ignored.**
