@@ -6,7 +6,7 @@
 
 This document provides some highlights to how to setup mines.  It is a work in progress so check back for more information.
 
-*Documented updated: 2023-01-13*
+*Documented updated: 2023-11-26*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -351,6 +351,30 @@ Example of a mine reset including a sealantern.  Notice that there is still 19.5
 <img src="images/prison_docs_101_setting_up_mines_12.png" alt="Mine reset with all new blocks" title="Mine reset with all new blocks" width="600" />  
 
 
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Allowing Players to place blocks in mines
+
+Normally, players are not allowed to place blocks in mines.  Prison will identify that the blocks placed by players were not placed by Prison during the last mine reset, and therefore will fast-fail and ignore that block.
+
+By default though, prison will cancel the event, no matter what setting you have for general events, such as cancel events, or canceling the drops.
+
+To override this behavior, so players can actually break blocks within mines, you need to change the autoFeaturesConfig.yml file's setting:
+
+`ifBlockIsAlreadyCountedThenCancelEvent: false`
+
+You can then reload the settings without restarting the server:
+  `/prison reload autoFeatures`
+
+
+By default, this setting is set to "true" so older installs of Prison will not break when they upgrade to a version that supports this feature.
+  
+Just because prison is now ignoring the block break, this does not mean the player can break the block.  This technically means that prison is doing nothing with it; not even canceling the event.  So other plugins will be allowed to process the block.  For example, WorldGuard may reject the player's access and prevent block breakage, and then WorldGuard will cancel the event.  
+
+To address this issue, you would need to setup a WorldGuard region covering the whole mine, and then allowing the players to break blocks within the mine.  This will allow the block to pass through to other plugins.  If not other plugin does anything with the block, then bukkit will break the block normally at the end of handling the BlockBreakEvent.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
