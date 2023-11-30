@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16 2023-11-24
+# 3.3.0-alpha.16 2023-11-30
+
+
+* **Bug Fix: GUI ranks, mines, and prestiges were not using the default item name correctly.**  It was using the template correctly, but was not translating the use of placeholders.  Only name and tag are supported.
+Mines: `{mineName}` and `{mineTag}`
+Ranks and prestiges: `{rankName}` and `{rankTag}`
 
 
 * **Mines: Added support for '*all*' for mine names for the following mine commands: resetDelay, resetThreshhold, notificationPerm, and accessPermission**

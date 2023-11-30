@@ -159,7 +159,7 @@ public class SpigotPlayerRanksGUI
 
         
         
-        String guiItemNameDefault = guiConfig.getString( "Options.Ranks.GuiItemNameDefault" );
+        String guiItemNameDefaultSetting = guiConfig.getString( "Options.Ranks.GuiItemNameDefault" );
 
         
         // Not sure how you want to represent this:
@@ -190,6 +190,14 @@ public class SpigotPlayerRanksGUI
         for ( Rank rank : ranksDisplay )
 		{
         	
+            
+            String guiItemNameDefault = 
+            		(guiItemNameDefaultSetting == null || guiItemNameDefaultSetting.trim().length() == 0) ?
+            				rank.getName() :
+            				guiItemNameDefaultSetting
+            						.replace( "{rankName}", rank.getName() )
+            						.replace( "{rankTag}", rank.getTag() );
+            
             String guiItemName = guiConfig.getString( "Options.Ranks.GuiItemNames." + rank.getName() );
 
             // Get Rank Name. First use 'guiItemName' if not null, then try to use 'guiItemNameDefault'
