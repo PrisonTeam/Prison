@@ -146,11 +146,11 @@ dependencies {
     // https://mvnrepository.com/artifact/me.lucko.luckperms/luckperms-api
     compileOnly 'me.lucko.luckperms:luckperms-api:4.4'
     
-    // jitpack.io:
-//    implementation 'com.github.cryptomorin:xseries:b95d195482'
+    
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:9.4.0'
+	implementation 'com.github.cryptomorin:XSeries:9.7.0'
+	//implementation 'com.github.cryptomorin:XSeries:9.4.0'
 	//implementation 'com.github.cryptomorin:XSeries:9.2.0'
     
 
@@ -265,7 +265,8 @@ shadowJar {
         //include(dependency('me.clip:placeholderapi:2.10.9'))
 
 		// https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-        include(dependency('com.github.cryptomorin:XSeries:9.4.0'))
+        include(dependency('com.github.cryptomorin:XSeries:9.7.0'))
+        //include(dependency('com.github.cryptomorin:XSeries:9.4.0'))
         //include(dependency('com.github.cryptomorin:XSeries:9.2.0'))
         //include(dependency('com.github.cryptomorin:XSeries:9.0.0'))
         //include(dependency('com.github.cryptomorin:XSeries:8.8.0'))

@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16 2023-11-30
+# 3.3.0-alpha.16 2023-12-06
+
+
+* **Upgrade XSeries to v9.7.0 from v9.4.0.**
+
+
+* **Bug Fix: Mine resets and block constraints.**
+This fixes a few issues with block constrains using min and max, along with exclude from top and bottom too.
 
 
 * **Bug Fix: GUI ranks, mines, and prestiges were not using the default item name correctly.**  It was using the template correctly, but was not translating the use of placeholders.  Only name and tag are supported.
