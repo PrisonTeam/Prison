@@ -420,6 +420,13 @@ public abstract class OnBlockBreakEventCore
 			pmEvent.setTargetBlock( targetBlock );
 			
 			// NOTE: I have no idea why 25 blocks and less should be bypassed for validation:
+			//       Perhaps its because small mines, with 25 or less blocks, just need to be
+			//       processed as quickly as possible?  Which could allow breakage even if it 
+			//       does not match?
+			//       Later on, bypassMatchedBlocks is used for monitor events when the 
+			//       target block is AIR which may mean the block was already removed, so
+			//       ignore the block in the event, and just process it if it was not 
+			//       already mined?
 			boolean bypassMatchedBlocks = pmEvent.getMine().getBounds().getTotalBlockCount() <= 25;
 			if ( bypassMatchedBlocks ) {
 				pmEvent.setDebugColorCodeWarning();

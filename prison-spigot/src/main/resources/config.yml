@@ -328,6 +328,7 @@ prison-mines:
     - GoldMine
     - SampleMineName
   world-guard:
+    WARNING: WorldGuard support is not yet available. Coming soon.
     region-mine:
       enable: true
       name-prefix: prison_mine_
