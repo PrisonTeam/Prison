@@ -784,6 +784,7 @@ public abstract class MineData
     		block.setRangeBlockCountHigh( -1 );
     		block.setRangeBlockCountLowLimit( -1 );
     		block.setRangeBlockCountHighLimit( -1 );
+    		block.setIncludeInLayerCalculations( true );
 		}
     	
     	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
@@ -794,6 +795,7 @@ public abstract class MineData
     		block.setRangeBlockCountHigh( -1 );
     		block.setRangeBlockCountLowLimit( -1 );
     		block.setRangeBlockCountHighLimit( -1 );
+    		block.setIncludeInLayerCalculations( true );
     	}
     	
 //    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
@@ -811,10 +813,15 @@ public abstract class MineData
      */
     public PrisonBlockStatusData incrementResetBlockCount( PrisonBlockStatusData statsBlock ) {
     	
-    	PrisonBlockStatusData sBlock = getBlockStats( statsBlock );
-    	if ( sBlock != null ) {
+    	PrisonBlockStatusData sBlock = null;
+    	
+    	if ( statsBlock != null ) {
+    		sBlock = getBlockStats( statsBlock );
     		
-    		sBlock.incrementResetBlockCount();
+    		if ( sBlock != null ) {
+    			
+    			sBlock.incrementResetBlockCount();
+    		}
     	}
     			
     	return sBlock;

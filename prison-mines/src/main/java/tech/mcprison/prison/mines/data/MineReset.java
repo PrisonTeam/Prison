@@ -1736,26 +1736,31 @@ public abstract class MineReset
      */
     private void constraintsApplyMin( PrisonBlockStatusData block )
 	{
-    	if ( block.getConstraintMin() > 0 ) {
+    	
+    	if ( block.getConstraintMin() > 0 && block.getBlockPlacedCount() < block.getConstraintMin() ) {
     		
-    		int maxAttempts = (block.getConstraintMin() - block.getBlockPlacedCount()) * 3;
+    		int maxAttempts = (block.getConstraintMin() - block.getBlockPlacedCount()) + 3;
+    		
     		for ( int i = 0; i < maxAttempts && block.getBlockPlacedCount() < block.getConstraintMin(); i++ ) {
     			
 //    			int maxSize = getMineTargetPrisonBlocks().size();
     			
-    			int rangeLow = block.getRangeBlockCountLowLimit();
-    			int rangeHigh = block.getRangeBlockCountHighLimit();
-//    			int rangeLow = block.getRangeBlockCountLow();
-//    			int rangeHigh = block.getRangeBlockCountHigh();
     			
+    			
+    			// Get an unmatched block in the block's range (not the same block):
+    			int blockPos = block.getRandomBlockPositionInRangeUnmatched( getMineTargetPrisonBlocks() );
+    			
+    			
+//    			int rangeLow = block.getRangeBlockCountLowLimit();
+//    			int rangeHigh = block.getRangeBlockCountHighLimit();
     			
     			// Each block has a valid range in which it can spawn in the mine.  This range
     			// is honored by using the rangeHigh and rangeLow values.
-    			int rndPos = ((int) Math.round( Math.random() * (rangeHigh - rangeLow) )) + rangeLow;
+//    			int rndPos = ((int) Math.round( Math.random() * (rangeHigh - rangeLow) )) + rangeLow;
     			
-    			if ( rndPos < getMineTargetPrisonBlocks().size() ) {
+    			if ( blockPos > -1 && blockPos < getMineTargetPrisonBlocks().size() ) {
     				
-    				MineTargetPrisonBlock targetBlock = getMineTargetPrisonBlocks().get( rndPos );
+    				MineTargetPrisonBlock targetBlock = getMineTargetPrisonBlocks().get( blockPos );
     				
     				if ( targetBlock != null && 
     						targetBlock.getPrisonBlock().getConstraintMin() == 0 &&

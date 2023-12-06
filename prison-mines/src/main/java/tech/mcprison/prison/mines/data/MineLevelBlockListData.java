@@ -47,13 +47,19 @@ public class MineLevelBlockListData
 			totalChance += pBlock.getChance();
 			
 			// If the block has no constraints, or if the block is within the 
-			// mine constraints, add it to our list:
-			if ( pBlock.getConstraintExcludeTopLayers() == 0 && 
+			// mine constraints, add it to our list.  
+			// Check to ensure that the max placement has not been exceeded and if
+			// it has, exclude from this level. Note that past levels may have 
+			// placed more than max.
+			if (
+				( pBlock.getConstraintExcludeTopLayers() == 0 && 
 					pBlock.getConstraintExcludeBottomLayers() == 0 ||
 					
 					pBlock.getConstraintExcludeTopLayers() <= currentMineLevel && 
 						(pBlock.getConstraintExcludeBottomLayers() == 0 || 
-						pBlock.getConstraintExcludeBottomLayers() > currentMineLevel) ) {
+						pBlock.getConstraintExcludeBottomLayers() > currentMineLevel) )
+					
+					) {
 				
 				// Sum the selected blocks:
 				selectedChance += pBlock.getChance();
@@ -65,8 +71,10 @@ public class MineLevelBlockListData
 				// If exclude top layers is enabled, then only try to set the 
 				// rangeBlockCountLowLimit once since we need the lowest possible 
 				// value.  The initial value for getRangeBlockCountLowLimit is -1.
-				if ( pBlock.getRangeBlockCountLowLimit() <= 0 &&
-						currentMineLevel > pBlock.getConstraintExcludeTopLayers() ) {
+				if ( pBlock.getRangeBlockCountLowLimit() == -1 &&
+						(pBlock.getConstraintExcludeTopLayers() <= 0 ||
+						currentMineLevel > pBlock.getConstraintExcludeTopLayers())
+						) {
 					
 					int targetBlockPosition = mine.getMineTargetPrisonBlocks().size();
 					pBlock.setRangeBlockCountLowLimit( targetBlockPosition );
@@ -81,8 +89,9 @@ public class MineLevelBlockListData
 						currentMineLevel > pBlock.getConstraintExcludeTopLayers() ||
 						pBlock.getConstraintExcludeTopLayers() == 0) &&
 						
+						(pBlock.getConstraintExcludeBottomLayers() == 0 || 
 						pBlock.getConstraintExcludeBottomLayers() > 0 && 
-						pBlock.getConstraintExcludeBottomLayers() < currentMineLevel 
+						pBlock.getConstraintExcludeBottomLayers() < currentMineLevel)
 						) { 
 					
 					int targetBlockPosition = mine.getMineTargetPrisonBlocks().size();
@@ -129,8 +138,9 @@ public class MineLevelBlockListData
 					currentMineLevel > pBlock.getConstraintExcludeTopLayers() ||
 					pBlock.getConstraintExcludeTopLayers() == 0) &&
 					
+					(pBlock.getConstraintExcludeBottomLayers() == 0 ||
 					pBlock.getConstraintExcludeBottomLayers() > 0 && 
-					pBlock.getConstraintExcludeBottomLayers() < currentMineLevel 
+					pBlock.getConstraintExcludeBottomLayers() < currentMineLevel)
 					) { 
 				
 				int targetBlockPosition = mine.getMineTargetPrisonBlocks().size();
@@ -152,7 +162,11 @@ public class MineLevelBlockListData
 		
 		for ( PrisonBlock block : selectedBlocks ) {
 			
-			if ( chance <= block.getChance() ) {
+			// If chance falls on this block, then select it as long as it has not
+			// exceed the max count for this block if the max constraint is enabled.
+			// If the block's constraint max is reached, then isIncludedInLayerCalculation will 
+			// prevent more of them from being added to the mine.
+			if ( block.isIncludeInLayerCalculations() && chance <= block.getChance() ) {
 				
 				// If this block is chosen and it was not skipped, then use this block and exit.
 				// Otherwise the chance will be recalculated and tried again to find a valid block,
@@ -163,6 +177,19 @@ public class MineLevelBlockListData
 			} else {
 				chance -= block.getChance();
 			}
+		}
+		
+		// If block reaches it's max amount, remove it from the block list.
+		// Note that the block has not been incremented yet, so add one to the placement count
+		if ( selected != null && 
+				selected.getConstraintMax() > 0 &&
+				(selected.getBlockPlacedCount() + 1) >= selected.getConstraintMax() ) {
+			
+			selected.setIncludeInLayerCalculations( false );
+			
+//			selectedBlocks.remove(selected);
+			
+//			selectedChance -= selected.getChance();
 		}
 		
 		return selected;

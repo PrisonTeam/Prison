@@ -1,6 +1,9 @@
 package tech.mcprison.prison.internal.block;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -37,6 +40,8 @@ public abstract class PrisonBlockStatusData {
 	
 	private boolean gravity = false;
 	
+	private transient boolean includeInLayerCalculations;
+	
 	
 	public PrisonBlockStatusData( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
 		super();
@@ -65,6 +70,8 @@ public abstract class PrisonBlockStatusData {
 		this.rangeBlockCountHighLimit = -1;
 		
 		this.gravity = checkGravityAffects( blockName );
+		
+		this.includeInLayerCalculations = true;
 	}
 
 	
@@ -505,6 +512,77 @@ public abstract class PrisonBlockStatusData {
 	}
 	public void setGravity( boolean gravity ) {
 		this.gravity = gravity;
+	}
+
+
+	
+	public boolean isIncludeInLayerCalculations() {
+		return includeInLayerCalculations;
+	}
+	public void setIncludeInLayerCalculations(boolean includeInLayerCalculations) {
+		this.includeInLayerCalculations = includeInLayerCalculations;
+	}
+
+
+	/**
+	 * <p>This is only used when calculating which blocks should be placed
+	 * in each layer, one layer at a time. This would be used if a block is
+	 * usable for a layer, but it has exceeded it's max constraint, so a 
+	 * value of 'false' would then prevent this block from being used, but
+	 * will allow the stats to continue to collect the max usable range
+	 * in which this block could be placed.
+	 * </p>
+	 * 
+	 * @param targetBlocks
+	 * @return
+	 */
+	public int getRandomBlockPositionInRangeUnmatched(
+			List<MineTargetPrisonBlock> targetBlocks) {
+		return getRandomBlockPositionInRange( targetBlocks, false );
+	}
+
+	public int getRandomBlockPositionInRangeMatched(
+			List<MineTargetPrisonBlock> targetBlocks) {
+		return getRandomBlockPositionInRange( targetBlocks, true );
+	}
+	
+	/**
+	 * <p>This function will select a block position from the
+	 * targetBlocks list that is either of the same block type, or
+	 * that is not equal to the same block type.  This is to 
+	 * find valid blocks to either replace, or to add to the 
+	 * list without randomly trying to select a block to try.
+	 * </p>
+	 * 
+	 * @param targetBlocks
+	 * @param matched
+	 * @return
+	 */
+	private int getRandomBlockPositionInRange(
+						List<MineTargetPrisonBlock> targetBlocks,
+						boolean matched) {
+		int position = -1;
+		
+		int rangeLow = getRangeBlockCountLowLimit();
+		int rangeHigh = getRangeBlockCountHighLimit();
+
+		List<Integer> choices = new ArrayList<>();
+		
+		for ( int i = rangeLow; i < rangeHigh && i < targetBlocks.size(); i++ ) {
+			String bName = targetBlocks.get( i ).getPrisonBlock().getBlockName();
+			
+			if ( matched == getBlockName().equals( bName ) ) {
+				choices.add( i );
+			}
+		}
+		
+		if ( choices.size() > 0 ) {
+			int p = (int) (Math.random() * choices.size());
+			
+			position = choices.get( p );
+		}
+		
+		return position;
 	}
 
 }
