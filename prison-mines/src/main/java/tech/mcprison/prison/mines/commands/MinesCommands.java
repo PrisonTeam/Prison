@@ -3737,8 +3737,8 @@ public class MinesCommands
         	FancyMessage msgCommand = new FancyMessage( String.format( " &a'&7%s&a'", 
         			blockEvent.getCommand() ) )
         			//.command("/mines blockEvent remove " + mineName + " " + blockEvent.getCommand() )
-        			.tooltip("Event Commands - You cannot change a command directly, " +
-        					"delete it and then re-add it.");
+        			.suggest( "/mines blockEvent update " + m.getName() + " " + rowNumber + " " + blockEvent.getCommand() )
+        			.tooltip("BlockEvent Command - Click to Edit");
         	row.addFancy( msgCommand );
         	
         	
@@ -3862,6 +3862,102 @@ public class MinesCommands
         blockEventList( sender, mineName );
     }
 
+	
+	@Command(identifier = "mines blockEvent update", 
+			description = "Updates a mine BlockEvent; must be ran in console, or click on blockevent "
+					+ "number in game when listing each block list.  Due to limitations on auto editing "
+					+ "you need to follow the special instructions as presented.  First run this command "
+					+ "to get a list of block events and their corresponding numbers. ", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void blockEventUpdate(CommandSender sender, 
+			@Arg(name = "mineName" ) String mineName,
+			@Arg(name = "row", def = "0") Integer row, 
+			@Arg(name = "command", def = "") @Wildcard String command ) {
+		
+		if (!performCheckMineExists(sender, mineName)) {
+			return;
+		}
+		
+		setLastMineReferenced(mineName);
+		
+		PrisonMines pMines = PrisonMines.getInstance();
+		Mine m = pMines.getMine(mineName);
+		
+		if ( row == null || row <= 0 ) {
+			
+			ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+			display.addText("&8Hover over values for more information and clickable actions.");
+			generateBlockEventListing( m, display, true );
+			
+			display.addText( 
+					"&7Please provide a valid row number greater than zero. " +
+							"Was row=[&b%d&7]",
+							(row == null ? "null" : row) );
+			
+			display.send(sender);
+			
+			return;        	
+		}
+		
+		
+		if (m.getBlockEvents() == null || m.getBlockEvents().size() == 0) {
+			Output.get().sendInfo(sender, "The mine '%s' contains no BlockEvent commands.", m.getTag());
+			return;
+		}
+		
+		if ( row > m.getBlockEvents().size() ) {
+			sender.sendMessage( 
+					String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+							"Was row=[&b%d&7]",
+							m.getBlockEvents().size(), (row == null ? "null" : row) ));
+			return;
+		}
+		
+		MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+		
+    	
+		
+		if ( blockEvent != null ) {
+			
+			String msg1 = String.format( "Original: '%s'", 
+						blockEvent.getCommand() );
+			sender.sendMessage(msg1);
+			
+			
+			if ( command == null || command.trim().length() == 0 ) {
+				sender.sendMessage( 
+						String.format("&7Please resubmit this command and copy and paste the above original blockevent "
+								+ "to the end.  Edit the command prior to submitting. If you want to remove the "
+								+ "blockevent, then use `/mines blockevent remove help`." ));
+				return;
+			}
+			else if (command.startsWith("/")) {
+				command = command.replaceFirst("/", "");
+			}
+			
+			if ( blockEvent.getCommand().equals( command ) ) {
+				
+				sender.sendMessage( "&7No change detected. Will not update an existing command with the same commmand. "
+						+ "Please review submitted updates and make changes if still needed.");
+				return;
+			}
+			
+			blockEvent.setCommand(command );
+			
+			pMines.getMineManager().saveMine( m );
+			
+			Output.get().sendInfo(sender, "Updated BlockEvent command '%s' in mine '%s'.", 
+					blockEvent.getCommand(), m.getTag());
+		} else {
+			Output.get().sendWarn(sender, 
+					String.format("The mine %s doesn't contain that BlockEvent command. Nothing was changed.", 
+							m.getTag()));
+		}
+		
+		// Redisplay the event list:
+		blockEventList( sender, mineName );
+	}
+	
 	
 
 	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine.  " +
