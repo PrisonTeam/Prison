@@ -609,6 +609,10 @@ public abstract class MineReset
 					
 					PrisonBlock prisonBlock = mineLevelBlockList.randomlySelectPrisonBlock();
 					
+					if ( prisonBlock == null ) {
+						prisonBlock = PrisonBlock.AIR.clone();
+					}
+					
 //						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
 					
 					// Increment the mine's block count. This block is one of the control blocks:

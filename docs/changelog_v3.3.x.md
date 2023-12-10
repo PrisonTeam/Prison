@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16 2023-12-10
 
 
+* **Mine resets: If a suggested block is null, then set it to air.  This was causing an NPE under some conditions.**
+
+
 * **BlockEvents: Added the ability to update block events**
 instead of deleting them and re-adding them.  Follow directions when using '/mines blockevent update help', or whenever a block event listing is shown in game, you can now click on the commands to auto populate the block event update command... then just edit the needed changes and submit.
 
