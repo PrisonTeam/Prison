@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16 2023-12-10
 
 
+* **Performance: Changed the defaults for the mine reset settings to help improve the performance on larger servers.**
+The older settings would allow other commands to backup and it would appear as if there was lag happening, TPS would rarely drop below 20.  This helps to keep performance a little more responsive. 
+The side effect is that there will need to be more "chunks" submitted which could possibly result in longer wall-time for mine resets.
+
+
 * **Mine resets: If a suggested block is null, then set it to air.  This was causing an NPE under some conditions.**
 
 
