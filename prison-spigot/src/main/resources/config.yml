@@ -475,16 +475,18 @@ prisonCommandHandler:
   exclude-non-ops:
     exclude-related-aliases: true
     commands:
-      mines:
-        tp:
-          includeCmdPerms: true
-          includeCmdAltPerms: true
-          perms:
-          - prison.exclude.test
+      prison:
+        support:
+          colorTest:
+            includeCmdPerms: false
+            includeCmdAltPerms: false
+            perms:
+            - prison.exclude.test
   aliases:
-    mines:
-      tp: 
-      - mines teleport
+    prison:
+      support: 
+        colorTest:
+        - pColorTest
 
 
 

@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16 2023-12-16
 
 
+* **config.yml - changed the default values for remapping aliases and restricting players from using commands.**
+The default, which used `/mines tp` was actually causing conflict with normal usage.
+
+
 * **AutoFeatures auto permissions: enable the ability to 'disable' the perms.**  Any op'd player, if perms are enabled, will have these auto features enabled.  There is no other way around this, since this is the correct behavior of OP'd players.
 
 
