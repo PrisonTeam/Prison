@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16 2023-12-10
+# 3.3.0-alpha.16 2023-12-16
+
+
+* **AutoFeatures auto permissions: enable the ability to 'disable' the perms.**  Any op'd player, if perms are enabled, will have these auto features enabled.  There is no other way around this, since this is the correct behavior of OP'd players.
+
+
+* **Mine resets: If a mine reset takes longer than 4 minutes, then that is probably a failure and the mine reset did not complete.**  Therefore, reset the mine reset mutex and try again.  This allows a "crashed" mine reset to auto fix itself if it can.  The 4 minute wait time is LONG, but it will prevent a normal reset from being canceled and restarted in the middle of a restart.
 
 
 * **Performance: Changed the defaults for the mine reset settings to help improve the performance on larger servers.**

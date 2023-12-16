@@ -516,9 +516,19 @@ public abstract class AutoManagerFeatures
 		
 		boolean isAutoFeaturesEnabled = isBoolean( AutoFeatures.isAutoFeaturesEnabled );
 		
-		boolean permPickup = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-		boolean permSmelt = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
-		boolean permBlock = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
+		String permAutoPickup = getMessage( AutoFeatures.permissionAutoPickup );
+		String permAutoSmelt = getMessage( AutoFeatures.permissionAutoSmelt );
+		String permAutoBlock = getMessage( AutoFeatures.permissionAutoBlock );
+		
+		boolean permPickup = isAutoFeaturesEnabled && 
+								!"disable".equalsIgnoreCase( permAutoPickup ) && 
+								player.isPermissionSet( permAutoPickup );
+		boolean permSmelt = isAutoFeaturesEnabled && 
+								!"disable".equalsIgnoreCase( permAutoSmelt ) && 
+								player.isPermissionSet( permAutoSmelt );
+		boolean permBlock = isAutoFeaturesEnabled && 
+								!"disable".equalsIgnoreCase( permAutoBlock ) && 
+								player.isPermissionSet( permAutoBlock );
 		
 		
 		boolean configPickup = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoPickupEnabled );
