@@ -1397,6 +1397,21 @@ public class MinesCommands
         	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
         	return;
         }
+        
+        if ( !m.getMineStateMutex().isMinable() ) {
+        	long resetDuration = m.getMineResetStartTimestamp() == -1 ? 0 : 
+        				m.getMineResetStartTimestamp() - System.currentTimeMillis();
+        	
+        	DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
+        	
+        	sender.sendMessage(
+        			String.format( 
+	        			"&cMine is currently being reset. &7Will try to force an unlock to allow "
+	        			+ "a new reset. May have to wait 4 minutes before the Mutex is releasable. "
+	        			+ "The mine was reset %s seconds ago.",
+	        			dFmt.format( resetDuration / 1000.0d ) )
+	        			);
+        }
 
         try {
         	

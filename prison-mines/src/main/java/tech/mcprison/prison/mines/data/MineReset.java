@@ -916,6 +916,12 @@ public abstract class MineReset
 		
 		incrementResetCount();
 		
+		try {
+			((MineScheduler) this).setMineResetStartTimestamp( -1 );
+		} catch (Exception e) {
+			// ignore...
+		}
+		
 		if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
 			
 			// After reset commands:

@@ -49,12 +49,16 @@ public abstract class MineScheduler
 //	private MineJob currentJob;
 	private Integer taskId = null;
 	
+	private transient long mineResetStartTimestamp;
+	
+	
 	public MineScheduler() {
 		super();
 		
 		this.jobWorkflow = new ArrayList<>();
 		this.jobStack = new Stack<>();
 
+		this.mineResetStartTimestamp = -1;
 	}
 
     /**
@@ -803,10 +807,25 @@ public abstract class MineScheduler
 	private void manualReset( MineResetScheduleType resetType, double delayActionSec, 
 			List<MineResetActions> resetActions ) {
 		
-		if ( isVirtual() || !getMineStateMutex().isMinable() ) {
-			// Nope... nothing to reset...  or it's locked out already with a reset
+		if ( isVirtual() ) {
+			// Nope... nothing to reset...
 			return;
 		}
+		
+		if ( !getMineStateMutex().isMinable() && 
+				getMineResetStartTimestamp() != -1 && 
+				getMineResetStartTimestamp() - System.currentTimeMillis() > 4 * 60000 ) {
+			
+			// Mine reset was trying to run for more than 4 minutes... so it's locked out and failed?
+			
+			// reset mutex and allow the rest to be forced:
+			getMineStateMutex().setMineStateResetFinishedForced();
+			
+			setMineResetStartTimestamp( -1 );
+			
+		}
+		
+		
 		
 		synchronized ( getMineStateMutex() ) {
 
@@ -823,6 +842,8 @@ public abstract class MineScheduler
 
 			
 			getMineStateMutex().setMineStateResetStart();
+			
+			setMineResetStartTimestamp( System.currentTimeMillis() );
 
 			
 //			// Lock the mine's mutex if it's still minable.  Otherwise skip it since the
@@ -901,4 +922,11 @@ public abstract class MineScheduler
 		this.taskId = taskId;
 	}
 
+	public long getMineResetStartTimestamp() {
+		return mineResetStartTimestamp;
+	}
+	public void setMineResetStartTimestamp(long mineResetStartTimestamp) {
+		this.mineResetStartTimestamp = mineResetStartTimestamp;
+	}
+	
 }
