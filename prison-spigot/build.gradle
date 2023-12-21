@@ -149,7 +149,7 @@ dependencies {
     
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:9.7.0'
+	implementation 'com.github.cryptomorin:XSeries:9.8.0'
 	//implementation 'com.github.cryptomorin:XSeries:9.4.0'
 	//implementation 'com.github.cryptomorin:XSeries:9.2.0'
     
@@ -185,14 +185,15 @@ dependencies {
 
  
  // NOTE: mavenrepository.com is not the offical repo.
- // NOTE: This item-nbt MUST use the API and not the plugini version!
+ // NOTE: This item-nbt MUST use the API and not the plugin version!
  // Good: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api/
  // Bad?: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
  // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
  	// https://github.com/tr7zw/Item-NBT-API/wiki/Using-Gradle
 	// https://www.spigotmc.org/resources/nbt-api.7939/
 	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-	implementation 'de.tr7zw:item-nbt-api:2.12.0'
+	implementation 'de.tr7zw:item-nbt-api:2.12.2'
+//	implementation 'de.tr7zw:item-nbt-api:2.12.0'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.2'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
@@ -265,11 +266,7 @@ shadowJar {
         //include(dependency('me.clip:placeholderapi:2.10.9'))
 
 		// https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-        include(dependency('com.github.cryptomorin:XSeries:9.7.0'))
-        //include(dependency('com.github.cryptomorin:XSeries:9.4.0'))
-        //include(dependency('com.github.cryptomorin:XSeries:9.2.0'))
-        //include(dependency('com.github.cryptomorin:XSeries:9.0.0'))
-        //include(dependency('com.github.cryptomorin:XSeries:8.8.0'))
+        include(dependency('com.github.cryptomorin:XSeries:'))
         
         
         // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin

@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16 2023-12-16
+# 3.3.0-alpha.16 2023-12-21
+
+
+* **Upgrade XSeries from v9.7.0 to v9.8.0.
+Upgrade nbt-api from v2.12.0 to v2.12.2.**
 
 
 * **config.yml - changed the default values for remapping aliases and restricting players from using commands.**
