@@ -438,6 +438,19 @@ public class Mine
 						dirty = true;
 					}
 					
+					if ( prisonBlock == null && "grass".equalsIgnoreCase(docBlock) ) {
+						// For spigot v20.0.4 GRASS was changed to SHORT_GRASS
+						
+						String fixedName = "SHORT_GRASS".toLowerCase();
+						
+						prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( fixedName );
+						dirty = true;
+						
+						Output.get().logInfo( "NOTE: Block named GRASS has ben changed to SHORT_GRASS "
+								+ "due to XMaterial's support for spigot v20.0.4. Please verify that "
+								+ "it's spawning correctly on mine resets." );
+					}
+					
 					if ( prisonBlock != null ) {
 						
 						totalBlockCount += prisonBlock.getBlockCountTotal();

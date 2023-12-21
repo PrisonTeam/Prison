@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16 2023-12-21
 
 
+* **Breaking change in XSeries: GRASS has been changed to SHORT_GRASS for v20.0.4!** It's disappointing to say the least that after all of these damn years, XSeries screwed up and pushed a breaking change to their repo.  They should have kept GRASS so they would have remained compatible will all past code and configs that had to refer to GRASS directly, but nope... they opted for causing problems.  Very disappointing.
+Setup a converter to automatically convert all GRASS to SHORT_GRASS as the mines are loaded.
+
+
+
 * **Upgrade XSeries from v9.7.0 to v9.8.0.
 Upgrade nbt-api from v2.12.0 to v2.12.2.**
 

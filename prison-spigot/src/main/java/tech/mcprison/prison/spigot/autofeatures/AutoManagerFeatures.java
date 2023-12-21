@@ -39,8 +39,6 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
@@ -2627,7 +2625,7 @@ public abstract class AutoManagerFeatures
 						xMat == XMaterial.MELON_SEEDS ||
 						xMat == XMaterial.NETHER_WART ||
 						xMat == XMaterial.POTATO ||
-						xMat == XMaterial.GRASS ||
+						xMat == XMaterial.SHORT_GRASS ||
 						xMat == XMaterial.WHEAT ) {
 
 					
