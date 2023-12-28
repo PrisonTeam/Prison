@@ -33,7 +33,6 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.util.Text;
 
@@ -924,20 +923,26 @@ public abstract class OnBlockBreakEventCore
 				
 				if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
 					
-					SellAllUtil sellAllUtil = SellAllUtil.get();
+//					SellAllUtil sellAllUtil = SellAllUtil.get();
 					
 					// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
 					// This is to be used with other auto sell setting, but never on it's own:
 					boolean isPlayerAutosellEnabled = 
-							(!sellAllUtil.isAutoSellPerUserToggleable ||
-									sellAllUtil.isSellallPlayerUserToggleEnabled( 
-											pmEvent.getPlayer() ));
+							pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
 					
+//							(!sellAllUtil.isAutoSellPerUserToggleable ||
+//									sellAllUtil.isSellallPlayerUserToggleEnabled( 
+//											pmEvent.getPlayer() ));
+					
+					
+					boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+		    		
+					 	
 					
 					
 					// AutoSell on full inventory when using BLOCKEVENTS:
 					if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
-							isPlayerAutosellEnabled &&
+							( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) &&
 							pmEvent.getSpigotPlayer().isInventoryFull() ) {
 						
 						pmEvent.performSellAllOnPlayerInventoryLogged("BLOCKEVENTS priority sellall");
