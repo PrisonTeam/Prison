@@ -82,7 +82,6 @@ public class SpigotItemStack
         	
         	
         	
-        	PrisonBlock type = SpigotUtil.getPrisonBlock( xMat );
         	
 //        	BlockType type = SpigotCompatibility.getInstance()
 //        			.getBlockType( bukkitStack );
@@ -97,6 +96,10 @@ public class SpigotItemStack
 //        	else if ( type != null ) {
 //        		displayName = type.getBlockName().toLowerCase();
 //        	}
+        	
+        	
+        	PrisonBlock type = SpigotUtil.getPrisonBlock( xMat, displayName );
+        	
         	
         	List<String> lores = new ArrayList<>();
         	
@@ -147,6 +150,10 @@ public class SpigotItemStack
     public void setPrisonBlock( PrisonBlock pBlock ) {
     	
     	String displayName = pBlock.getBlockName();
+    	
+    	if ( pBlock.getDisplayName() != null ) {
+    		displayName = pBlock.getDisplayName();
+    	}
     	
     	setDisplayName( displayName );
     	

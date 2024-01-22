@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16 2024-01-22
 
 
+* **Prison Block change: Add support for display name, which is optional.**
+Setup sellall so it can use the display name now, so renamed items will not be mistaken for vanilla minecraft items.
+More work needs to be done to hoo up displayName to other features, such as sellall and add prison block to mines.
+
 
 * **Bug fix: Fixed the command `/mines set accessPermission` where it was apply the given perm to all mines.**
  Likewise, all mines parameter was failing to do anything.

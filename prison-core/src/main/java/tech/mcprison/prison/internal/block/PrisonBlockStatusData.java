@@ -3,7 +3,6 @@ package tech.mcprison.prison.internal.block;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -14,6 +13,9 @@ public abstract class PrisonBlockStatusData {
 	// blockName is more of an internal reference:
 	private PrisonBlockType blockType;
 	private String blockName;
+	
+	// displayName is an optional custom name
+	private String displayName;
 	
 	private double chance;
 	
@@ -43,11 +45,22 @@ public abstract class PrisonBlockStatusData {
 	private transient boolean includeInLayerCalculations;
 	
 	
-	public PrisonBlockStatusData( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
+	public PrisonBlockStatusData( 
+			PrisonBlockType blockType, String blockName, String displayName,
+			double chance, long blockCountTotal ) {
+		this( blockType, blockName, chance, blockCountTotal );
+		
+		this.displayName = displayName;
+	}
+	
+	public PrisonBlockStatusData( 
+			PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
 		super();
 		
 		this.blockType = blockType;
 		this.blockName = blockName;
+		
+		this.displayName = null;
 		
 		this.chance = chance;
 		
@@ -76,6 +89,12 @@ public abstract class PrisonBlockStatusData {
 
 	
 
+	/**
+	 * <p>Checks to see if both the blockType and the blockName are equal, 
+	 * and if there is a displayName set, then both need to have their
+	 * displayName is also set to the same value.
+	 * </p>
+	 */
 	@Override
 	public boolean equals( Object obj )
 	{
@@ -84,7 +103,15 @@ public abstract class PrisonBlockStatusData {
 		if ( obj instanceof PrisonBlockStatusData ) {
 			PrisonBlockStatusData pbsBlock = (PrisonBlockStatusData) obj;
 			
-			results = getBlockName().equalsIgnoreCase( pbsBlock.getBlockName() );
+			results = getBlockType() == getBlockType() &&
+					getBlockName().equalsIgnoreCase( pbsBlock.getBlockName() );
+			
+			if ( results ) {
+				
+				results = getDisplayName() == null && pbsBlock.getDisplayName() == null ||
+						getDisplayName() != null && pbsBlock.getDisplayName() != null &&
+						getDisplayName().equalsIgnoreCase( pbsBlock.getDisplayName() );
+			}
 		}
 		
 		return results;
@@ -407,6 +434,13 @@ public abstract class PrisonBlockStatusData {
 	}
 	public void setBlockName( String blockName ) {
 		this.blockName = blockName;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public PrisonBlockType getBlockType() {

@@ -737,7 +737,8 @@ public class SellAllUtil
     }
     
     
-    private List<SellAllData> sellInventoryItems( tech.mcprison.prison.internal.inventory.Inventory inventory, double multiplier ) {
+    private List<SellAllData> sellInventoryItems( tech.mcprison.prison.internal.inventory.Inventory inventory, 
+    					double multiplier ) {
     	List<SellAllData> soldItems = new ArrayList<>();
 
     	if ( inventory != null ) {
@@ -808,8 +809,11 @@ public class SellAllUtil
     	
     	if ( iStack != null ) {
     		
+    		// This converts a bukkit ItemStackk to a PrisonBlock, and it also sets up the
+    		// displayName if that is set on the itemStack.
     		PrisonBlock pBlockInv = iStack.getMaterial();
-    		PrisonBlock pBlockSellAll = sellAllItems.get( pBlockInv.getBlockName().toLowerCase() );
+    		
+    		PrisonBlock pBlockSellAll = sellAllItems.get( pBlockInv.getBlockNameSearch() );
     		
     		if ( pBlockSellAll != null ) {
     			double amount = iStack.getAmount() * pBlockSellAll.getSalePrice() * multiplier;
@@ -1155,6 +1159,12 @@ public class SellAllUtil
             PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock(itemID);
 
             if ( pBlock != null ) {
+            	
+            	String itemDisplayName = sellAllConfig.getString("Items." + itemName + ".ITEM_DISPLAY_NAME");
+            	if ( itemDisplayName != null ) {
+            		pBlock.setDisplayName( itemDisplayName );
+            	}
+            	
             	String saleValueString = sellAllConfig.getString("Items." + itemName + ".ITEM_VALUE");
             	if ( saleValueString != null ) {
             		
@@ -1174,7 +1184,8 @@ public class SellAllUtil
             		} catch (NumberFormatException ignored) {
             		}
             	}
-            	sellAllItems.put( pBlock.getBlockName().toLowerCase(), pBlock );
+            	
+            	sellAllItems.put( pBlock.getBlockNameSearch(), pBlock );
             }
             
 //            Optional<XMaterial> iMatOptional = XMaterial.matchXMaterial(itemID);
@@ -1259,14 +1270,19 @@ public class SellAllUtil
      *
      * @return boolean.
      * */
-    public boolean addSellAllBlock(XMaterial xMaterial, double value){
+    public boolean addSellAllBlock(XMaterial xMaterial, double value) {
+    	return addSellAllBlock( xMaterial, null, value );
+    }
+    
+    public boolean addSellAllBlock(XMaterial xMaterial, String displayName, double value) {
     	
     	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
     	if ( pBlockKey == null ) {
     		Output.get().logDebug( "sellall add: invalid block name (%s)", xMaterial.name());
     		return false;
     	}
-    	String key = pBlockKey.getBlockName().toLowerCase();
+    	String key = pBlockKey.getBlockNameSearch();
+//    	String key = pBlockKey.getBlockName().toLowerCase();
     	
     	PrisonBlock pBlock = sellAllItems.get( key );
 
@@ -1284,6 +1300,11 @@ public class SellAllUtil
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + itemName + ".ITEM_ID", xMaterial.name());
             conf.set("Items." + itemName + ".ITEM_VALUE", value);
+            
+            if ( displayName != null ) {
+            	conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", displayName );
+            }
+            
             if (getBooleanValue("Options.Sell_Per_Block_Permission_Enabled")) {
             	String itemPerm = "Items." + itemName + ".ITEM_PERMISSION";
                 conf.set( itemPerm, sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
@@ -1292,7 +1313,7 @@ public class SellAllUtil
             updateConfig();
 
             pBlockKey.setSalePrice( value );
-            sellAllItems.put( pBlockKey.getBlockName().toLowerCase(), pBlockKey );
+            sellAllItems.put( pBlockKey.getBlockNameSearch(), pBlockKey );
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1584,10 +1605,13 @@ public class SellAllUtil
      *
      * @return boolean.
      * */
-    public boolean editPrice(XMaterial xMaterial, double value){
+    public boolean editPrice(XMaterial xMaterial, double value) {
+    	return editPrice( xMaterial, null, value );
+    }
+    public boolean editPrice(XMaterial xMaterial, String displayName, double value) {
 
     	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
-    	String key = pBlockKey.getBlockName().toLowerCase();
+    	String key = pBlockKey.getBlockNameSearch();
     	
     	PrisonBlock pBlock = sellAllItems.get( key );
     	
@@ -1613,6 +1637,14 @@ public class SellAllUtil
             String itemName = key.toUpperCase();
             conf.set("Items." + itemName + ".ITEM_ID", key );
             conf.set("Items." + itemName + ".ITEM_VALUE", value);
+            
+            if ( displayName != null ) {
+            	conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", value);
+            }
+            else {
+            	//conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", null);
+            }
+            
             
             if ( pBlock.getPurchasePrice() != null ) {
             	
@@ -1683,7 +1715,7 @@ public class SellAllUtil
     public boolean removeSellAllBlock(XMaterial xMaterial){
 
     	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
-    	String key = pBlockKey.getBlockName().toLowerCase();
+    	String key = pBlockKey.getBlockNameSearch();
     	
     	PrisonBlock pBlock = sellAllItems.get( key );
     
