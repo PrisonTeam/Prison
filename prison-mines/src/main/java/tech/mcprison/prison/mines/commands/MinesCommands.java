@@ -2413,7 +2413,8 @@ public class MinesCommands
     		altPermissions = "mines.notification.[mineName]")
     public void setMinePermissionCommand(CommandSender sender,
         @Arg(name = "mineName", 
-        		description = "The name of the mine to add a permission to. Use '*all*' for all mines.") String mineName,
+        		description = "The name of the mine to add a permission to. Use '*all*' for all mines.") 
+    					String mineName,
         @Arg(name = "permission", def="enable", 
         		description = "Permission. Can use a placeholder '{mmine}' to dynamically apply " +
         				"the mine name when using '*all*'. Example using placeholder:  'mines.{mine}' " +
@@ -2429,20 +2430,18 @@ public class MinesCommands
 
         	if ( "*all*".equalsIgnoreCase( mineName ) ) {
         		
-        		setLastMineReferenced(mineName);
-        		Mine m = pMines.getMine(mineName);
-
-        		minesSetAccessPermission(sender, permission, pMines, m);
+        		for ( Mine m : pMines.getMines() ) {
+        			
+        			minesSetAccessPermission(sender, permission, pMines, m);
+        		}
         	}
         	else {
-        		for ( Mine m : pMines.getMines() ) {
-					
-        			minesSetAccessPermission(sender, permission, pMines, m);
-				}
+        		setLastMineReferenced(mineName);
+        		Mine m = pMines.getMine(mineName);
+        		
+        		minesSetAccessPermission(sender, permission, pMines, m);
         	}
 
-            
-            
             
         } 
     }

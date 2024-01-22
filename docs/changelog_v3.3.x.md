@@ -14,7 +14,20 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16 2023-12-21
+# 3.3.0-alpha.16 2024-01-22
+
+
+
+* **Bug fix: Fixed the command `/mines set accessPermission` where it was apply the given perm to all mines.**
+ Likewise, all mines parameter was failing to do anything.
+
+
+* **NOTE: This alpha version "should" support spigot 20.0.4.**
+After a few days, if no other issues surface pertaining to 20.0.4, or other related plugins, this will be released as a public release.
+
+
+* **Fix issue with BlockEvent's SellAll when isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority feature is enabled.**
+This was not using the correct new functions that checks to see if a player can use autsell, or if they have it temporarily toggled off.  This also checks to see if the player has the correct perms, if perms are enabled for the sellall event.
 
 
 * **Breaking change in XSeries: GRASS has been changed to SHORT_GRASS for v20.0.4!** It's disappointing to say the least that after all of these damn years, XSeries screwed up and pushed a breaking change to their repo.  They should have kept GRASS so they would have remained compatible will all past code and configs that had to refer to GRASS directly, but nope... they opted for causing problems.  Very disappointing.
@@ -22,8 +35,8 @@ Setup a converter to automatically convert all GRASS to SHORT_GRASS as the mines
 
 
 
-* **Upgrade XSeries from v9.7.0 to v9.8.0.
-Upgrade nbt-api from v2.12.0 to v2.12.2.**
+* **Upgrade XSeries from v9.7.0 to v9.8.0.**
+* **Upgrade nbt-api from v2.12.0 to v2.12.2.**
 
 
 * **config.yml - changed the default values for remapping aliases and restricting players from using commands.**
