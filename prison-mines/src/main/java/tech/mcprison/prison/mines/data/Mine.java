@@ -69,6 +69,10 @@ public class Mine
 			return results;
 		}
 	}
+	
+	public enum MineUnitTestUsage {
+		TRUE;
+	}
 
     /**
      * Creates a new, empty mine instance
@@ -78,6 +82,23 @@ public class Mine
         
         // Kick off the initialize:
         initialize();
+    }
+
+    /**
+     * <p>This constructor should ONLY be used in unit test since it will NOT run
+     * any of the initialization code so the automated services will not be started,
+     * which are not needed for unit tests.
+     * </p>
+     * 
+     * @param unitTestUsage
+     */
+    public Mine( MineUnitTestUsage unitTestUsage, String mineName ) {
+    	super();
+		
+		setName( mineName );
+		
+		// Kick off the initialize:
+		//initialize();
     }
 
     
