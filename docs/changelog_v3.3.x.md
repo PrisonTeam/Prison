@@ -14,7 +14,15 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16 2024-01-22
+# 3.3.0-alpha.16a 2024-01-24
+
+
+* **Mines: Fixes an issue for when mines are disabled and they are being checked in other processes to see if they are active.**
+If the instance of PrisonMines is null, then it will create a temp instance just to prevent an NPE.
+
+
+* **Mines unit tests: Setup a new constructor for mines that is only to be used with unit tests which allows the mines to be created,** but it does not initialize them since such tasks and processes are not needed in the unit tests. 
+As a side effect, these two unit test run much faster since it's not trying to setup tasks.
 
 
 * **Prison Block change: Add support for display name, which is optional.**

@@ -89,6 +89,11 @@ public class PrisonMines extends Module {
     }
 
     public static PrisonMines getInstance() {
+    	if ( i == null ) {
+    		PrisonMines temp = new PrisonMines("(not loaded yet)");
+    		temp.setEnabled(false);
+    		return temp;
+    	}
         return i;
     }
 
