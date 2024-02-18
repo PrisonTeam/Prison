@@ -196,26 +196,26 @@ public class PlayerManager
      * @throws IOException If one of the players could not be saved.
      * @see #savePlayer(RankPlayer, String)
      */
-    public void savePlayers() throws IOException {
-        for (RankPlayer player : players) {
-        	
-        	// Catch exceptions if a failed save so other players can be saved:
-            try {
-				savePlayer(player);
-			}
-			catch ( Exception e )  {
-				
-				String errorMessage = cannotSavePlayerFile( player.filename() );
-	    		
-    			if ( !getPlayerErrors().contains( errorMessage ) ) {
-    				getPlayerErrors().add( errorMessage );
-    				Output.get().logError( errorMessage );
-    			}
-    			
-//				Output.get().logError(errorMessage, e);
-			}
-        }
-    }
+//    public void savePlayers() throws IOException {
+//        for (RankPlayer player : players) {
+//        	
+//        	// Catch exceptions if a failed save so other players can be saved:
+//            try {
+//				savePlayer(player);
+//			}
+//			catch ( Exception e )  {
+//				
+//				String errorMessage = cannotSavePlayerFile( player.filename() );
+//	    		
+//    			if ( !getPlayerErrors().contains( errorMessage ) ) {
+//    				getPlayerErrors().add( errorMessage );
+//    				Output.get().logError( errorMessage );
+//    			}
+//    			
+////				Output.get().logError(errorMessage, e);
+//			}
+//        }
+//    }
     
     /**
      * <p>If the player does not have a default rank, then assign it to them and
@@ -330,8 +330,8 @@ public class PlayerManager
 //    		dirty = results != null;
     	}
     	
-    	// Save if dirty (change or new):
-    	if ( results != null ) {
+    	// Save if dirty (changed or new):
+    	if ( results != null && results.isDirty() ) {
     		savePlayer( results );
     		
     	}

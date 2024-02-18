@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16a 2024-02-17
 
 
+* **Bug fix: Player manager startup: fixed a problem where all players were being updated** even though they did not have a name change.  Only when name changes are detected are the files updated or when a new player is found.
+
+
 * **Add debug statements to identify how each block was calculated during a mine reset.**
 
 
