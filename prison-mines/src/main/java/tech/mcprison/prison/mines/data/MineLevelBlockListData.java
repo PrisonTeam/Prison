@@ -91,7 +91,7 @@ public class MineLevelBlockListData
 						
 						(pBlock.getConstraintExcludeBottomLayers() == 0 || 
 						pBlock.getConstraintExcludeBottomLayers() > 0 && 
-						pBlock.getConstraintExcludeBottomLayers() < currentMineLevel)
+						currentMineLevel < pBlock.getConstraintExcludeBottomLayers() )
 						) { 
 					
 					int targetBlockPosition = mine.getMineTargetPrisonBlocks().size();

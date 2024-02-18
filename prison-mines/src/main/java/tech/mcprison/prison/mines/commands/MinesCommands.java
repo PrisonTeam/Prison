@@ -196,7 +196,12 @@ public class MinesCommands
     @Override
     
     @Command(identifier = "mines block constraint", permissions = "mines.block", 
-							description = "Optionally enable constraints on a mine's block generation.")
+							description = "Optionally enable constraints on a mine's block generation. "
+							+ "Please note that 'excludeTop' and 'excludeBottom' uses the layer "
+							+ "count from the top, where the top layer is 1.  If "
+							+ "a mine has 20 layers and you want to exclude a block from the "
+							+ "bottomm 5 layers, then you need to use a value of 15, so it will "
+							+ "read as 'excludeBottom from layers 15 and lower'.")
 	public void constraintsBlockCommand(CommandSender sender,
 			@Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
 			@Arg(name = "blockNme", description = "The block's name") String blockName,
