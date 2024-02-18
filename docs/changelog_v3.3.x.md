@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16a 2024-02-17
 
 
+* **Add debug statements to identify how each block was calculated during a mine reset.**
+
+
 * **Bug fix: block constraints: fix an issue with the selection of lower limits.**
 
 

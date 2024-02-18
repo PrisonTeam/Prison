@@ -640,6 +640,37 @@ public abstract class MineReset
 		constraintsApplyMin();
 		
 		
+		if ( Output.get().isDebug() ) {
+			
+	    	DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
+	    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+			
+			for ( PrisonBlockStatusData b : getPrisonBlocks() ) {
+				
+				int rangeLow = b.getRangeBlockCountLowLimit();
+				int rangeHigh = b.getRangeBlockCountHighLimit();
+				int rangeCount = b.getRangeBlockCountHighLimit() - b.getRangeBlockCountLowLimit() + 1;
+				double rangePercent = rangeCount / (double) getBounds().getTotalBlockCount();
+				
+				String msg = String.format(
+						"  Block: %-14s : placed: %-5d  PlacementRange: (%d - %d) "
+						+ "%d out of %d  %s  "
+						+ "min: %d  max: %d  ExcldTop: %d  ExcldBottom: %d ",
+						b.getBlockName(), b.getBlockPlacedCount(),
+						rangeLow, rangeHigh,
+						rangeCount,
+						getBounds().getTotalBlockCount(),
+						dFmt.format( rangePercent ),
+						
+						b.getConstraintMin(), b.getConstraintMax(),
+						b.getConstraintExcludeTopLayers(),
+						b.getConstraintExcludeBottomLayers()
+						);
+				
+				Output.get().logInfo( msg );
+			}
+		}
+		
 		// The reset position is critical in ensuring that all blocks within the mine are reset 
 		// and that when a reset process pages (allows another process to run) then it will be
 		// used to pick up where it left off.
