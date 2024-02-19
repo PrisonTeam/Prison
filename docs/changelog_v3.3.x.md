@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16a 2024-02-17
+# 3.3.0-alpha.16a 2024-02-19
+
+
+* **Placeholders: topn players - bug fix.  If a player did not have a prestige rank, then it would cause a NPE when using the `prison_top_player_rank_prestiges_nnn_tp` placeholder.**
+Just check to ensure its not null... if it is, then return an empty string.
 
 
 * **Bug fix: Player manager startup: fixed a problem where all players were being updated** even though they did not have a name change.  Only when name changes are detected are the files updated or when a new player is found.
