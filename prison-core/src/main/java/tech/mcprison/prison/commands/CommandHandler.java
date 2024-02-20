@@ -801,19 +801,28 @@ public class CommandHandler {
     	
     	if ( !sender.isOp() ) {
     		
-        	String exRAKey = "prisonCommandHandler.exclude-non-ops.exclude-related-aliases";
-        	boolean excludeRelatedAliases = getConfigBoolean( exRAKey );
-        			
-        	String sLabelAlias = !excludeRelatedAliases || rootCommand.getParentOfAlias() == null ? 
-        			null : rootCommand.getParentOfAlias().getCompleteLabel();
-        	
-    		    		
-    		commandAccessPermChecks( sender, rootCommand, label, results );
+    		boolean hasAccess = rootCommand.testPermission(sender);
     		
-    		if ( results.isAccess() && sLabelAlias != null ) {
-
-    			commandAccessPermChecks( sender, rootCommand.getParentOfAlias(), sLabelAlias, results );
+    		if ( !hasAccess ) {
+    			results.setAccess( false );
     		}
+    		else {
+    			
+    			String exRAKey = "prisonCommandHandler.exclude-non-ops.exclude-related-aliases";
+    			boolean excludeRelatedAliases = getConfigBoolean( exRAKey );
+    			
+    			String sLabelAlias = !excludeRelatedAliases || rootCommand.getParentOfAlias() == null ? 
+    					null : rootCommand.getParentOfAlias().getCompleteLabel();
+    			
+    			
+    			commandAccessPermChecks( sender, rootCommand, label, results );
+    			
+    			if ( results.isAccess() && sLabelAlias != null ) {
+    				
+    				commandAccessPermChecks( sender, rootCommand.getParentOfAlias(), sLabelAlias, results );
+    			}
+    		}
+    		
 
     	}
     	

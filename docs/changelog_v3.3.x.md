@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16a 2024-02-19
 
 
+* **Bug fix: Prison command handler.  When players are de-op'd, and they do the commands such as `/ranks help` or `/mines help` it was incorrectly showing other sub commands they did not have access to.**
+This now shows the correct sub commands that they have access to.
+
+
 * **Placeholders: topn players - bug fix.  If a player did not have a prestige rank, then it would cause a NPE when using the `prison_top_player_rank_prestiges_nnn_tp` placeholder.**
 Just check to ensure its not null... if it is, then return an empty string.
 
