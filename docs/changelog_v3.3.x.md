@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16a 2024-02-19
 
 
+* **Mines set resetTime: fix typo in the description where it shows '*all' instead of '*all*'.**
+
+
 * **ranks ladder: applyRanksCostMultiplier command was changed to allow the value of 'true' to be used along with the value of 'apply'.**  This helps to eliminate some confusion on how the command works.
 
 
