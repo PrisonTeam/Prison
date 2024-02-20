@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16a 2024-02-19
 
 
+* **Placeholders: Top player rank was using the wrong ladder, which was incorrectly the prestiges rank and not the default rank.**
+Correcting the rank fixed the problem.  This only was an issue if the player did not have a prestige rank.
+
+
+
 * **Mines set resetTime: fix typo in the description where it shows '*all' instead of '*all*'.**
 
 

@@ -962,7 +962,7 @@ public class RankManager
 				{
 					RankPlayer topRankPlayer = getTopNRankPlayer( sequence );
 					
-					if ( topRankPlayer != null && topRankPlayer.getPlayerRankPrestiges() != null ) {
+					if ( topRankPlayer != null && topRankPlayer.getPlayerRankDefault() != null ) {
 						
 						results = topRankPlayer.getPlayerRankDefault().getRank().getTag();
 					}
