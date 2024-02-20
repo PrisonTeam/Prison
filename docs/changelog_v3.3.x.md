@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16a 2024-02-19
 
 
+* **ranks ladder: applyRanksCostMultiplier command was changed to allow the value of 'true' to be used along with the value of 'apply'.**  This helps to eliminate some confusion on how the command works.
+
+
 * **Bug fix: Prison command handler.  When players are de-op'd, and they do the commands such as `/ranks help` or `/mines help` it was incorrectly showing other sub commands they did not have access to.**
 This now shows the correct sub commands that they have access to.
 
