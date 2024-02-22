@@ -18,7 +18,10 @@ These change logs represent the work that has been going on within prison.
 
 
 
-**3.3.0-alpha.16b 2024-02-20** 
+**3.3.0-alpha.16b 2024-02-22** 
+
+* **Bug fix: prison support submit: if the bukkit system cannot extract a file from the jar**, such as plugin.yml, this will prevent the failure of the command.  This will allow the command to continue being processed, but may just skip the extraction.
+
 
 
 * **Placeholders: Top player rank was using the wrong ladder, which was incorrectly the prestiges rank and not the default rank.**

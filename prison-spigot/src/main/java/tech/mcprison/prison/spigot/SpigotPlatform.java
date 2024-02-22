@@ -2998,7 +2998,15 @@ public class SpigotPlatform
 	
 	@Override
 	public void saveResource( String fileName, boolean replace ) {
-		SpigotPrison.getInstance().saveResource( fileName, replace );
+		
+		try {
+			SpigotPrison.getInstance().saveResource( fileName, replace );
+		} catch (Exception e) {
+			Output.get().logInfo( 
+					"SpigotPlatformm.saveResource(): Error trying to save a resource '%s'  replace=%s : %s",
+					fileName, Boolean.toString(replace), e.getMessage()
+					);
+		}
 	}
 	
 	@Override
