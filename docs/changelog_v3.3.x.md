@@ -21,6 +21,8 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16b 2024-02-24** 
 
 
+* **Bug fix: GUI configuration: Found a problem that when configuring the gui initial settings, that there were problems when trying to access mines and ranks when they don't yet exist.**
+
 
 * **Add prison debug option to filter on blockConstraints when regenerating the blocks within the mines.**
 
