@@ -81,8 +81,9 @@ public class Output
     	
     	targetBlockMismatch,
     	
-    	rankup
+    	rankup,
 //    	support
+    	blockConstraints
     	;
     	
     	public static DebugTarget fromString( String target ) {
