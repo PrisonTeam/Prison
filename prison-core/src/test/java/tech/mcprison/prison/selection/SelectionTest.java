@@ -48,8 +48,9 @@ public class SelectionTest {
 
     @Before public void setUp() throws Exception {
     	TestPlatform testPlatform = new TestPlatform(temporaryFolder.newFolder("test"), false);
-        Prison.get()
-        		.init(testPlatform, "1.12.X-test.1", new File("plugins/Prison"));
+        Prison.get().init(testPlatform, "1.13.X-test.1");
+        
+        Prison.get().init(new File("plugins/Prison"));
     }
 
     @Test public void testSelection() throws Exception {

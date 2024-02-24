@@ -142,7 +142,13 @@ public class Output
 
     public static Output get() {
         if (instance == null) {
-            new Output();
+        	synchronized ( Output.class ) {
+        		if (instance == null) {
+        			
+        			new Output();
+        			
+        		}
+			}
         }
         return instance;
     }

@@ -187,14 +187,17 @@ public class SpigotPlatform
     	
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
-        this.storage = initStorage();
+        
+        
+        this.storage = null;
+//        this.storage = initStorage();
         
         this.placeholders = new SpigotPlaceholders();
 
         ActionBarUtil.init(plugin);
     }
 
-    private Storage initStorage() {
+    public Storage initStorage() {
         String confStorage = plugin.getConfig().getString("storage", "file");
         Storage storage = new FileStorage(plugin.getDataDirectory());
         
@@ -205,6 +208,7 @@ public class SpigotPlatform
                 "Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
         }
         
+        this.storage = storage;
         return storage;
     }
 

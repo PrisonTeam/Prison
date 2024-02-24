@@ -21,6 +21,9 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16b 2024-02-24** 
 
 
+* **Prison startup bug: There was an issue with the prison startup when there was an error and prison tried to log the error**, only to find that resources that were needed for logging were not yet loaded nor were their dependencies.  This fixes some of the entanglements to allow the error messages to be properly logged.
+
+
 * **Bug fix: GUI configuration: Found a problem that when configuring the gui initial settings, that there were problems when trying to access mines and ranks when they don't yet exist.**
 
 

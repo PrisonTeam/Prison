@@ -218,13 +218,20 @@ public class SpigotPrison
         // prior to starting up:
         initCommandMap();
         this.scheduler = new SpigotScheduler(this);
+
+        
+        Prison.get();
         
         SpigotPlatform platform = new SpigotPlatform(this);
+
+        Prison.get().init( platform, Bukkit.getVersion() );
         
+        // Initialize storage after setting the platformm in the Prison.get():
+        platform.initStorage();
+
 
         // Show Prison's splash screen and setup the core components:
-        Prison.get()
-        		.init( platform, Bukkit.getVersion(), getDataFolder() );
+        Prison.get().init( getDataFolder() );
 
         
         
