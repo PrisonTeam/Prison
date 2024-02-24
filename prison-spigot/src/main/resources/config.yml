@@ -274,10 +274,18 @@ number-format-location: en_US
 
 
 # The storage engine that Prison should use to store data.
-# The only valid storageType is json. 
-storageType: "json"
+# The only valid storageType is file. 
+storageType: "file"
 
 
+# The following is experimental and should only be used if advised by a 
+# Prison support team member.
+# 
+storage:
+  file:
+    disable-advanced-saves:
+      enabled: false
+      debug-keep-temp-files: false
 
 
 # Prison mines reset gap is the number of milliseconds that are used to 

@@ -21,6 +21,12 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16b 2024-02-24** 
 
 
+* **File saving: alternative technique for saving files. Do not use!**
+This is a more dangerous technique that could possibly result in lost configurations.  This is being provided as a degraded service if the fail-safe technique is not working ideally on a degraded server.
+This should never be used, unless directed by a prison support admin.
+
+
+
 * **Prison startup bug: There was an issue with the prison startup when there was an error and prison tried to log the error**, only to find that resources that were needed for logging were not yet loaded nor were their dependencies.  This fixes some of the entanglements to allow the error messages to be properly logged.
 
 
