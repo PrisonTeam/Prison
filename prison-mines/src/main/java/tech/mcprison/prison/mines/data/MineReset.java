@@ -28,6 +28,7 @@ import tech.mcprison.prison.mines.features.MineTracerBuilder;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
 import tech.mcprison.prison.mines.tasks.MineTeleportTask;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
 import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.tasks.PrisonRunnable;
@@ -640,7 +641,7 @@ public abstract class MineReset
 		constraintsApplyMin();
 		
 		
-		if ( Output.get().isDebug() ) {
+		if ( Output.get().isDebug() && Output.get().isSelectiveTarget( DebugTarget.blockConstraints ) ) {
 			
 	    	DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 	    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
