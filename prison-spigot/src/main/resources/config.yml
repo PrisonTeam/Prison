@@ -479,6 +479,12 @@ prisonCommandHandler:
   exclude-worlds:
   - miniGameWorld
   - playerPlotWorld
+  command-roots:
+    prison: prison
+    mines: mines
+    ranks: ranks
+    gui: gui
+    sellall: sellall
   disable-player-placeholders-in-excluded-worlds: false
   exclude-non-ops:
     exclude-related-aliases: true

@@ -52,6 +52,8 @@ import tech.mcprison.prison.util.ChatColor;
 
 public class CommandHandler {
 
+    private String rootCommmand;
+    private String commandFallback;
 //	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
 //	public static final String COMMAND_FALLBACK_PREFIX = "prison";
 	public static final String COMMAND_HELP_TEXT = "help";
@@ -98,14 +100,30 @@ public class CommandHandler {
       registerArgumentHandler(PrisonBlock.class, new BlockArgumentHandler());
       
       
+      this.rootCommmand = remapRootCmdIdentifiers( DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND );
+      this.commandFallback = remapRootCmdIdentifiers( DefaultSettings.COMMAND_FALLBACK_PREFIX );
+      
       Output.get().logInfo( "&3Root command: &7/%s   &3fallback-prefix: &7%s",
-      		DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND, DefaultSettings.COMMAND_FALLBACK_PREFIX );
+    		  rootCommmand, commandFallback );
+//      Output.get().logInfo( "&3Root command: &7/%s   &3fallback-prefix: &7%s",
+//    		  DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND, DefaultSettings.COMMAND_FALLBACK_PREFIX );
   }
 
 	   
 
       
-    private PermissionHandler permissionHandler = (sender, permissions) -> {
+    public String getRootCommmand() {
+    	return rootCommmand;
+	}
+	
+	public String getCommandFallback() {
+		return commandFallback;
+	}
+
+
+
+
+	private PermissionHandler permissionHandler = (sender, permissions) -> {
         for (String perm : permissions) {
             if (!sender.hasPermission(perm)) {
                 return false;
@@ -290,8 +308,11 @@ public class CommandHandler {
                 }
             }
             
-            if ( command.getLabel().equalsIgnoreCase( DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND ) && 
+            
+            if ( command.getLabel().equalsIgnoreCase( getRootCommmand() ) && 
             									rootCommands.size() > 1 ) {
+//            	if ( command.getLabel().equalsIgnoreCase( DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND ) && 
+//            			rootCommands.size() > 1 ) {
             	
             	ArrayList<String> rootCommandsMessages = buildHelpRootCommands();
             	if ( rootCommandsMessages.size() > 1 ) {
@@ -367,19 +388,20 @@ public class CommandHandler {
 			ArrayList<String> message = new ArrayList<>();
 			
 			message.add(ChatColor.DARK_AQUA + "Root Commands:");
-                // Force a sorting by use of a TreeSet. Collections.sort() would not work.
-                TreeSet<String> rootCommandSet = new TreeSet<>();
 
-            	// Try adding in all other root commands:
-			Set<PluginCommand> rootKeys = getRootCommands().keySet();
-            	
-            	for ( PluginCommand rootKey : rootKeys ) {
-				StringBuilder sbAliases = new StringBuilder();
-				
-				// Do not list aliases:
-				if ( !(rootKey.getRegisteredCommand().isAlias() && rootKey.getRegisteredCommand().getParentOfAlias() != null) ) {
+			// Force a sorting by use of a TreeSet. Collections.sort() would not work.
+            TreeSet<String> rootCommandSet = new TreeSet<>();
+
+        	// Try adding in all other root commands:
+            Set<PluginCommand> rootKeys = getRootCommands().keySet();
+        	
+        	for ( PluginCommand rootKey : rootKeys ) {
+			StringBuilder sbAliases = new StringBuilder();
+			
+			// Do not list aliases:
+			if ( !(rootKey.getRegisteredCommand().isAlias() && rootKey.getRegisteredCommand().getParentOfAlias() != null) ) {
 //					String isAlias = rootKey.getRegisteredCommand().isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
-            		
+        		
 //					if ( rootKey.getRegisteredCommand().getRegisteredAliases().size() > 0 ) {
 //						for ( RegisteredCommand alias : rootKey.getRegisteredCommand().getRegisteredAliases() ) {
 //							
@@ -391,22 +413,22 @@ public class CommandHandler {
 //								new StringBuilder().append( ChatColor.DARK_AQUA ).
 //								append( "Aliases: " ).append( ChatColor.AQUA ));
 //					}
-					String rootCmd = 
-							String.format( "%s  %s", 
-									rootKey.getUsage(), sbAliases.toString() );
-					
-            		rootCommandSet.add( rootCmd );
-				}
+				String rootCmd = 
+						String.format( "%s  %s", 
+								rootKey.getUsage(), sbAliases.toString() );
+				
+        		rootCommandSet.add( rootCmd );
+			}
 
-            		
-            	}
-            	
-            	for (String rootCmd : rootCommandSet) {
-            		message.add(rootCmd);
-            	}
-			
-			return message;
-            }
+        		
+        	}
+        	
+        	for (String rootCmd : rootCommandSet) {
+        		message.add(rootCmd);
+        	}
+		
+		return message;
+        }
             
 		/**
 		 * This builds a list of all  the aliases that exist.
@@ -647,11 +669,15 @@ public class CommandHandler {
     
 	private RegisteredCommand commandRegisterConfig( Method method, Command commandAnno, 
 						Object methodInstance, String alias ) {
-        String[] identifiers = ( alias == null ? commandAnno.identifier() : alias).split(" ");
+		
+		String cmdIdentifiers = remapRootCmdIdentifiers( commandAnno.identifier() );
+		String cmdAlias = remapRootCmdIdentifiers( alias );
+		
+        String[] identifiers = ( cmdAlias == null ? cmdIdentifiers : cmdAlias).split(" ");
         
-            if (identifiers.length == 0) {
-                throw new RegisterCommandMethodException(method, "Invalid identifiers");
-            }
+        if (identifiers.length == 0) {
+            throw new RegisterCommandMethodException(method, "Invalid identifiers");
+        }
 
         String label = identifiers[0];
 
@@ -738,7 +764,28 @@ public class CommandHandler {
 	}
 
 
-    public static String[] addConfigAliases( String label, String[] aliases )
+    public static String remapRootCmdIdentifiers(String identifier) {
+    	
+    	if ( identifier != null ) {
+
+    		int idx = identifier.indexOf( " " );
+    		String root = idx == -1 ? identifier : identifier.substring( 0, idx );
+    		
+    		String key = "prisonCommandHandler.command-roots." + root;
+    		
+    		String newRoot = Prison.get().getPlatform().getConfigString( key );
+    		
+    		if ( newRoot != null && !root.equals(newRoot) ) {
+
+    			identifier = newRoot +
+    					(idx == -1 ? "" : identifier.substring(idx));
+    		}
+    	}
+    	
+		return identifier;
+	}
+
+	public static String[] addConfigAliases( String label, String[] aliases )
 	{
     	String[] results = aliases;
     	

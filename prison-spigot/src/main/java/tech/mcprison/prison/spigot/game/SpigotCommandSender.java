@@ -29,6 +29,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
@@ -68,12 +69,19 @@ public class SpigotCommandSender implements CommandSender {
      * it then uses the mapped command.
      * </p>
      */
-    @Override public void dispatchCommand(String command) {
-    	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( command );
+    @Override 
+    public void dispatchCommand(String command) {
+    	
+    	command = CommandHandler.remapRootCmdIdentifiers( command );
+    	
+    	String registeredCmd = Prison.get().getCommandHandler()
+    					.findRegisteredCommand( command );
+    	
         Bukkit.getServer().dispatchCommand(bukkitSender, registeredCmd);
     }
 
-    @Override public boolean doesSupportColors() {
+    @Override 
+    public boolean doesSupportColors() {
         return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
     }
 

@@ -21,6 +21,10 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16b 2024-02-24** 
 
 
+* **Prison Command Handler: using config.yml you can now change all of prison's root commands with 'prisonCommandHandler.command-roots'.**
+Can now map 'prison', 'mines', 'ranks', 'gui', 'sellall' to all new command that you want.
+
+
 * **File saving: alternative technique for saving files. Do not use!**
 This is a more dangerous technique that could possibly result in lost configurations.  This is being provided as a degraded service if the fail-safe technique is not working ideally on a degraded server.
 This should never be used, unless directed by a prison support admin.
