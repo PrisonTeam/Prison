@@ -78,4 +78,25 @@ public class MinesCoreCommands
 		return sb.toString();
 	}
 
+	
+	protected String extractParameter( String key, String options ) {
+		return extractParameter( key, options, true );
+	}
+	
+	protected String extractParameter( String key, String options, boolean tryLowerCase ) {
+		String results = null;
+		int idx = options.indexOf( key );
+		if ( idx != -1 ) {
+			int idxEnd = options.indexOf( " ", idx );
+			if ( idxEnd == -1 ) {
+				idxEnd = options.length();
+			}
+			results = options.substring( idx, idxEnd );
+		}
+		else if ( tryLowerCase ) {
+			// try again, but lowercase the key
+			results = extractParameter( key.toLowerCase(), options, false );
+		}
+		return results;
+	}
 }

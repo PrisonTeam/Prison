@@ -113,7 +113,7 @@ public class Mine
     	this( name, selection, MineType.primary );
     }
     
-    public Mine(String name, Selection selection, MineType mineType) {
+    public Mine(String name, Selection selection, MineType mineType, boolean logInfo ) {
     	super();
     	
     	setName(name);
@@ -125,7 +125,7 @@ public class Mine
     	}
     	else {
     		
-    		setBounds(selection.asBounds());
+    		setBounds(selection.asBounds(), logInfo );
     		
     		setWorldName( getBounds().getMin().getWorld().getName());
     		
@@ -134,6 +134,11 @@ public class Mine
         
         // Kick off the initialize:
         initialize();
+    }
+    
+    public Mine(String name, Selection selection, MineType mineType) {
+    	this( name, selection, mineType, true );
+		
     }
     
     /**
