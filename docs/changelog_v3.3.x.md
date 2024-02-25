@@ -21,6 +21,10 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16b 2024-02-24** 
 
 
+* **Import Mines: Added the ability to import mines from JetPrisonMines config files.**
+`/mines import jetprisonmines help`
+
+
 * **Prison Command Handler: using config.yml you can now change all of prison's root commands with 'prisonCommandHandler.command-roots'.**
 Can now map 'prison', 'mines', 'ranks', 'gui', 'sellall' to all new command that you want.
 

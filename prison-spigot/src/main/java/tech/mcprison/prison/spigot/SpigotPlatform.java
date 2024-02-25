@@ -19,6 +19,9 @@
 package tech.mcprison.prison.spigot;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1767,25 +1770,48 @@ public class SpigotPlatform
 		for ( String mineName : rankMineNames ) {
 			
 			Mine mine = mm.getMine( mineName );
+			
+			String msg = 
+					autoCreateMineLinerAssignment( mine, forceLinersBottom, forceLinersWalls );
 
+			if ( msg != null ) {
+				
+				Output.get().logInfo( msg );
+			}
+		}	
+	}
+	
+	@Override
+	public String autoCreateMineLinerAssignment( ModuleElement eMine, 
+			boolean forceLinersBottom, boolean forceLinersWalls ) {
+		String message = null;
+		
+		if ( eMine instanceof Mine ) {
+			
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+//		List<Mine> mines = mm.getMines();
+			
+			Mine mine = (Mine) eMine;
+			
 			String mineLinerData = mine.getLinerData().toSaveString();
 			boolean createLiner = mineLinerData.trim().isEmpty();
 			
 			if ( createLiner ) {
 				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), forceLinersWalls );
 				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), forceLinersBottom );
-
+				
 				mineLinerData = mine.getLinerData().toSaveString();
 				
 				mm.saveMine( mine );
 			}
-
-			String message = String.format( "Mine Liner status: %s %s : %s", 
+			
+			message = String.format( "Mine Liner status: %s %s : %s", 
 					mine.getName(),
 					(createLiner ? "(Created)" : "(AlreadyExists)"),
 					mineLinerData );
-			Output.get().logInfo( message );
-		}	
+		}
+		
+		return message;
 	}
 	
 	private LinerPatterns getRandomLinerType() {
@@ -3359,5 +3385,79 @@ public class SpigotPlatform
 		}
 		
 		return results;
+	}
+	
+	/**
+	 * This loadYaml function will load only text based yaml files, but if the 
+	 * file contains a class serialization (prefixed with '==:') then it will
+	 * purge all references to such classes so the data is loaded as plain text.
+	 */
+	@Override
+	public Map<String,Object> loadYaml( File file ) {
+		Map<String, Object> values = null;
+		
+		try {
+			List<String> lines = Files.readAllLines( file.toPath() );
+
+			StringBuilder sb = new StringBuilder();
+			for (String line : lines ) {
+				// remove object mapping from yaml files:
+				if ( !line.startsWith("  ==: " ) ) {
+					sb.append( line ).append( "\n" );
+				}
+			}
+			
+			try (
+					StringReader sr = new StringReader( sb.toString() );
+					) 
+			{
+				YamlConfiguration yaml = SpigotPrison.getInstance().loadExternalConfig( sr );
+				
+				if ( yaml != null ) {
+					values = yaml.getValues( true );
+				}
+				
+			}
+			
+		} 
+		catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+//		try {
+//			Class worldClass  = Class.forName( "org.bukkit.World" ); 
+//			YamlConfiguration yaml = SpigotPrison.getInstance().loadExternalConfig( file );
+//			
+//			if ( yaml != null ) {
+//				values = yaml.getValues( true );
+//				
+//				
+//				if ( yaml.contains( "teleport_location" ) ) {
+//					
+//					org.bukkit.Location loc = 
+//							(org.bukkit.Location) yaml.getObject( 
+//									"teleport_location", org.bukkit.Location.class );
+//					
+//					org.bukkit.World world = loc.getWorld();
+//					
+//					if ( loc != null ) {
+//						values.put( "teleport_location.world", world.getName() );
+//						values.put( "teleport_location.x", Double.valueOf( loc.getX()) );
+//						values.put( "teleport_location.y", Double.valueOf( loc.getY()) );
+//						values.put( "teleport_location.z", Double.valueOf( loc.getZ()) );
+//						values.put( "teleport_location.pitch", Double.valueOf( loc.getPitch()) );
+//						values.put( "teleport_location.yaw", Double.valueOf( loc.getYaw()) );
+//						
+//					}
+//				}
+//			}
+//			
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+
+		return values;
 	}
 }

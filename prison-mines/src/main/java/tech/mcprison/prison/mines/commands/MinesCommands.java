@@ -75,7 +75,7 @@ import tech.mcprison.prison.util.Text;
  * @author Dylan M. Perks
  */
 public class MinesCommands
-	extends MinesBlockCommands {
+	extends MinesImportCommands {
 	
 	public MinesCommands() {
 		super( "MinesCommands" );
@@ -91,6 +91,47 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "prison.commands")
     public void minesSetSubcommands(CommandSender sender) {
     	sender.dispatchCommand( "mines set help" );
+    }
+    
+    
+    /*
+     * NOTE: The mines import commands are from the class MinesImportCommands.
+     * The command handler setups is here, but the code is within that class.
+     */
+    
+    
+    @Command(identifier = "mines import", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void mineImport(CommandSender sender) {
+    	sender.dispatchCommand( "mines import help" );
+    }
+    
+    @Command(identifier = "mines import jetsPrisonMines", 
+    		description = "Imports mines that were created within the plugin JetsPrisonMines. "
+    				+ "Most settings will be brought over to prison. If the mine already "
+    				+ "exits within prison, it will be skipped. First run this command "
+    				+ "without the option 'save' to confirm what can be imported."
+    				+ " Prison will use the path "
+    				+ "'JetsPrisonMines/mines/' to search for all yaml files that are "
+    				+ "used to store the mine configs, but his can be overridden with the "
+    				+ "'path=' option. Use the option 'world=' to save to a different world "
+    				+ "which can be useful if the world does not exist on your server. "
+    				+ "", 
+    		onlyPlayers = true, permissions = "mines.set")
+    public void minesImportJetsPrisonMines( CommandSender sender,
+    		@Wildcard(join=true)
+        	@Arg(name = "options", 
+        	description = "Options. The following options can customize how prison will perform "
+        			+ "the imports. [addLiner path=<pathToMineFiles> world=<forcedWorld> save] "
+        			+ "'addLiner' will randomly generate a liner for each mine. "
+        			+ "'path=<pathToMineFiles>' the default path is 'JetsPrisonMines/mines/' and "
+        			+ "this option will override this path. "
+        			+ "'world=<forcedWorld>' is the world name to use for mine and spawn placemments, "
+        			+ "which will override the yaml file's world even if it exists on the server. "
+        			+ "'save' must be specified or the imported mines will not be saved.") 
+    			String options ) {
+    	
+    	super.importJetsPrisonMines(sender, options);
     }
     
     

@@ -385,7 +385,13 @@ public class TestPlatform implements Platform {
 					boolean forceLinersBottom, boolean forceLinersWalls ) {
 		
 	}
-	
+		
+	@Override
+	public String autoCreateMineLinerAssignment(ModuleElement eMine, 
+					boolean forceLinersBottom, boolean forceLinersWalls) {
+		return null;
+	}
+
 	@Override
 	public void autoCreateConfigureMines() {
 		
@@ -561,5 +567,9 @@ public class TestPlatform implements Platform {
 
 	public String getRankByFileName(String name) {
 		return "a";
+	}
+	
+	public Map<String, Object> loadYaml(File file) {
+		return new TreeMap<String, Object>();
 	}
 }

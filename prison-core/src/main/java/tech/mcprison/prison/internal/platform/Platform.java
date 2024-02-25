@@ -359,6 +359,9 @@ public interface Platform {
 					boolean forceLinersBottom, boolean forceLinersWalls );
 	
 	
+	public String autoCreateMineLinerAssignment(ModuleElement eMine, 
+					boolean forceLinersBottom, boolean forceLinersWalls);
+	
 	public void autoCreateConfigureMines();
 	
 	
@@ -476,5 +479,9 @@ public interface Platform {
 
 
 	public String getRankByFileName(String name);
+
+
+	public Map<String, Object> loadYaml(File file);
+
 
 }

@@ -20,6 +20,7 @@ package tech.mcprison.prison.spigot;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -1335,6 +1336,14 @@ public class SpigotPrison
 
     public YamlConfiguration loadConfig(String file) {
         return YamlConfiguration.loadConfiguration(getBundledFile(file));
+    }
+    
+    public YamlConfiguration loadExternalConfig(File file) {
+    	return YamlConfiguration.loadConfiguration( file );
+    }
+    
+    public YamlConfiguration loadExternalConfig( Reader reader ) {
+    	return YamlConfiguration.loadConfiguration( reader );
     }
     
     public void saveConfig(String fileName, YamlConfiguration config ) {

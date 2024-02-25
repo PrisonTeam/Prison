@@ -406,6 +406,10 @@ public abstract class MineData
         return bounds;
     }
 
+    public void setBounds(Bounds bounds ) {
+    	setBounds( bounds, true );
+    }
+    
     /**
      * <p>(Re)defines the boundaries for this mine.
      * </p>
@@ -427,7 +431,7 @@ public abstract class MineData
      *
      * @param bounds the new boundaries
      */
-    public void setBounds(Bounds bounds) {
+    public void setBounds(Bounds bounds, boolean logInfo ) {
     	this.bounds = bounds;
     	
     	// if Bounds is null, then clear out the world fields and set mine to virtual and disable the mine:
@@ -454,7 +458,10 @@ public abstract class MineData
         		setVirtual( false );
         		setEnabled( true );
         		
-        		Output.get().logInfo( "&7Mine " + getTag() + "&7: world has been set and is now enabled." );
+        		if ( logInfo ) {
+        			Output.get().logInfo( "&7Mine " + getTag() + "&7: world has been set and is now enabled." );
+        		}
+        		
         	}
         	else {
         		setEnabled( false );
@@ -1084,14 +1091,20 @@ public abstract class MineData
 		this.hasSpawn = hasSpawn;
 	}
 
-	/*
+	/**
 	 * <p>This is the reset time for the mine, in seconds.
 	 * A value of -1 means no timed resets.  They will have to be done manually.
 	 * </p>
-	 */
+	 **/
 	public int getResetTime() {
 		return resetTime;
 	}
+	/**
+	 * <p>This is the reset time for the mine, in seconds.
+	 * A value of -1 means no timed resets.  They will have to be done manually.
+	 * </p>
+	 * @param resetTime
+	 */
 	public void setResetTime( int resetTime ) {
 		this.resetTime = resetTime;
 	}
