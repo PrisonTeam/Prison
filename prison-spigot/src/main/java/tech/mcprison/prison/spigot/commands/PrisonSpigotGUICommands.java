@@ -86,8 +86,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             String perm = getConfig( "Options.Prestiges.Permission_GUI");
 
             if ( !sender.hasPermission( perm ) ){
-                Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" +
-                        perm + "]"));
+                Output.get().sendInfo(sender, SpigotPrison.format(
+                		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + perm + "]"
+                		));
                 return;
             }
         }
@@ -142,8 +144,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             String perm = getConfig( "Options.Mines.Permission_GUI");
 
             if ( !sender.hasPermission( perm ) ){
-                Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" +
-                        perm + "]"));
+                Output.get().sendInfo(sender, SpigotPrison.format( 
+                		getMessages().getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + perm + "]"
+                        ));
                 return;
             }
         }
@@ -225,8 +229,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             String perm = getConfig( "Options.Ranks.Permission_GUI");
             if (!sender.hasPermission(perm)) {
 
-                Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" +
-                        perm + "]"));
+                Output.get().sendInfo(sender, SpigotPrison.format( 
+                		getMessages().getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + perm + "]"
+                        ));
                 return;
             }
         }
@@ -345,8 +351,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     		String perm = getConfig( "Options.Ranks.Permission_GUI");
     		if (!sender.hasPermission(perm)) {
     			
-    			Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" +
-    					perm + "]"));
+    			Output.get().sendInfo(sender, SpigotPrison.format( 
+    					getMessages().getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//    					+ " [" + perm + "]"
+    					));
     			return;
     		}
     	}

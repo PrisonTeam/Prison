@@ -320,7 +320,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                Output.get().sendWarn(new SpigotPlayer(p), 
+                		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission)
+//                		+ " [" + permission + "]"
+                		);
                 return;
             }
         }
@@ -360,7 +363,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                Output.get().sendWarn(new SpigotPlayer(p), 
+                		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + permission + "]"
+                		);
                 return;
             }
         }
@@ -393,7 +399,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                Output.get().sendWarn(new SpigotPlayer(p), 
+                		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + permission + "]"
+                		);
                 return;
             }
         }
@@ -468,7 +477,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                Output.get().sendWarn(new SpigotPlayer(p), 
+                		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + permission + "]"
+                		);
                 return;
             }
         }
@@ -510,7 +522,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                Output.get().sendWarn(new SpigotPlayer(p), 
+                		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + permission + "]"
+                		);
                 return;
             }
         }
@@ -550,7 +565,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+                Output.get().sendWarn(new SpigotPlayer(p), 
+                		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                		+ " [" + permission + "]"
+                		);
                 return;
             }
         }
@@ -598,7 +616,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
         String permission = sellAllUtil.permissionAutoSellPerUserToggleable;
         if (sellAllUtil.isAutoSellPerUserToggleablePermEnabled && (permission != null && !p.hasPermission(permission))){
-            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + permission + "]");
+            Output.get().sendWarn(sender, 
+            		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//            		+ " [" + permission + "]"
+            		);
             return;
         }
 

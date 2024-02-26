@@ -263,7 +263,10 @@ public class ListenersPrisonManager
                             if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))) {
                                 String permissionUseSign = sellAllUtil.permissionUseSign;
                                 if (sellAllUtil.isSellAllSignPermissionToUseEnabled && !p.hasPermission(permissionUseSign)) {
-                                    Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [&3" + permissionUseSign + "&7]");
+                                    Output.get().sendWarn(new SpigotPlayer(p), 
+                                    		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
+//                                    		+ " [&3" + permissionUseSign + "&7]"
+                                    		);
                                     return;
                                 }
 

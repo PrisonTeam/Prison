@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-02-26
 
 
+
+* **Sellall and GUI message failures: a number of messages that would indicate the player does not have access to that command were changed to remove the permission from the message.**
+This was requested by a couple of admins because they did not want the players to see the internal workings that would otherwise control how the software would behave.
+
+
+
 * **Mine imports: Fix some minor issues to get this to work even better.**
 
 
