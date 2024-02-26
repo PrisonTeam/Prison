@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-02-26
 
 
+* **Mine skip reset: If a mine is reset, send a message to players, but only if the message is defined and not empty: 'skip_reset_message='**
+
+
 
 * **Player sellall Multipliers: Fixed the ranks multiplier to include all ranks that are defined within the sellall multipliers.**
 Added a new function that will gather and list all multipliers that go in to the calculation of the player's total multipliers, which includes the rank multipliers (the sellall multipliers) and also permission based multipliers.

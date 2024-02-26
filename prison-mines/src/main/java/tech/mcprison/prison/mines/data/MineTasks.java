@@ -299,6 +299,57 @@ public abstract class MineTasks
 //        setStatsMessageBroadcastTimeMS( stop - start );
     }
     
+	
+	@Override
+	protected void broadcastSkipResetMessageToAllPlayersWithRadius() {
+//    	long start = System.currentTimeMillis();
+		
+		if ( isVirtual() || getResetTime() <= 0 ) {
+			// ignore:
+		}
+		else if ( PrisonMines.getInstance().getMinesMessages()
+				.getLocalizable("skip_reset_message").localize().trim().length() == 0 ) {
+			
+			// NOTE: The mine_skip_reset_message is blank, so do not broadcast it...
+		}
+		else 
+			if ( getNotificationMode() != MineNotificationMode.disabled ) {
+				World world = getBounds().getCenter().getWorld();
+				
+				if ( world != null ) {
+					List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+						Prison.get().getPlatform().getOnlinePlayers());
+					for (Player player : players) {
+						
+						// Check for either mode: Within the mine, or by radius from mines center:
+						if ( getNotificationMode() == MineNotificationMode.within && 
+								getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
+								getNotificationMode() == MineNotificationMode.radius && 
+								getBounds().within(player.getLocation(), getNotificationRadius()) ) {
+							
+							if ( !isUseNotificationPermission() ||
+									isUseNotificationPermission() && 
+									player.hasPermission( getMineNotificationPermissionName() ) ) {
+								
+								
+								PrisonMines.getInstance().getMinesMessages()
+								.getLocalizable("skip_reset_message").withReplacements( getTag() )
+								.sendTo(player);
+								
+//    						player.sendMessage( "The mine " + getName() + " has just reset." );
+							}
+						}
+					}
+					
+				}
+				
+			}
+		
+//        long stop = System.currentTimeMillis();
+		
+//        setStatsMessageBroadcastTimeMS( stop - start );
+	}
+	
     @Override
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
     	

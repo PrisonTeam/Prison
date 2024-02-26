@@ -476,7 +476,9 @@ public abstract class MineReset
     
     protected abstract void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob);
     
-  
+    protected abstract void broadcastSkipResetMessageToAllPlayersWithRadius();
+
+    
 	
 	public int getPlayerCount() {
 		int count = 0;
@@ -1608,6 +1610,9 @@ public abstract class MineReset
 				
 				if ( getSkipResetBypassCount() < getSkipResetBypassLimit() ) {
 					// Skip Reset!!
+					
+					broadcastSkipResetMessageToAllPlayersWithRadius();
+					
 					return;
 				}
 				
