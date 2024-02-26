@@ -147,7 +147,7 @@ public class MinesImportCommands
 				
 				sender.sendMessage( 
 						String.format( 
-								"  %-14s   %7s bytes   %s",
+								"  %-18s  %7s bytes   %s",
 								f.getName(), iFmt.format(f.length()),
 								status ) );
 			}
@@ -188,6 +188,12 @@ public class MinesImportCommands
 
 	private Mine convertJetsPrisonMines(File f, String worldForced ) {
 		Mine mine = null;
+		
+		
+		if ( !f.isFile() || !f.canRead() || f.length() == 0 ) {
+			return mine;
+		}
+		
 
 		Map<String,Object> yaml = null;
 		

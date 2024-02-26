@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-02-26
 
 
+* **Mine imports: Fix some minor issues to get this to work even better.**
+
+
 * **Mine skip reset: If a mine is reset, send a message to players, but only if the message is defined and not empty: 'skip_reset_message='**
 
 
