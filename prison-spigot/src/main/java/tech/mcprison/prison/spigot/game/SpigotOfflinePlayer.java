@@ -20,6 +20,8 @@ import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
@@ -316,6 +318,23 @@ public class SpigotOfflinePlayer
 
     		results = sPlayer.getSellAllMultiplier();
     	}
+    	
+    	return results;
+    }
+    
+    
+    public List<String> getSellAllMultiplierListings() {
+    	List<String> results = new ArrayList<>();
+    	
+    	if ( isPlayer() ) {
+    		
+    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+    		
+    		if ( sellall != null && getWrapper() != null ) {
+    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
+    		}
+    	}
+
     	
     	return results;
     }

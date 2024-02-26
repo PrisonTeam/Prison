@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.internal;
 
+import java.util.List;
+
 /**
  * Represents any entity that may send commands and receive output.
  *
@@ -89,5 +91,7 @@ public interface CommandSender
 
     
     public boolean isPlayer();
+
+	List<String> getSellAllMultiplierListings();
 
 }

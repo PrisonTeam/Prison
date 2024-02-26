@@ -251,5 +251,10 @@ public class TestPlayer
 	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity) {
 		
 	}
+
+	@Override
+	public List<String> getSellAllMultiplierListings() {
+		return new ArrayList<>();
+	}
 	
 }

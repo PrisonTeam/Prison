@@ -184,6 +184,23 @@ public class SpigotCommandSender implements CommandSender {
 //    	return results;
     }
     
+    @Override
+    public List<String> getSellAllMultiplierListings() {
+    	List<String> results = new ArrayList<>();
+    	
+    	if ( isPlayer() ) {
+    		
+    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+    		
+    		if ( sellall != null && getWrapper() != null ) {
+    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
+    		}
+    	}
+
+    	
+    	return results;
+    }
+    
     public List<String> getPermissionsIntegrations( boolean detailed ) {
     	List<String> results = new ArrayList<>();
     	

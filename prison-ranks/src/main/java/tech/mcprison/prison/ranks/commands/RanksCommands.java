@@ -1763,6 +1763,11 @@ public class RanksCommands
 			msgs.add( messageSellallMultiplier );
 //			sendToPlayerAndConsole( sender, messageSellallMultiplier );
 
+			List<String> sellallDetails = player.getSellAllMultiplierListings();
+			for (String sellallDetail : sellallDetails) {
+				msgs.add( "    " + sellallDetail );
+			}
+			
 			
 			
 			msgs.add( "" );

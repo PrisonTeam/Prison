@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -29,6 +30,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -401,33 +403,36 @@ public class SellAllUtil
     public double getPlayerMultiplier(Player p){
 
         if (!isSellAllMultiplierEnabled){
-            return 1;
+            return 1d;
         }
 
 //        long tPoint1 = System.nanoTime();
         
-//        // Get Ranks module.
-//        ModuleManager modMan = Prison.get().getModuleManager();
-//        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
         SpigotPlayer sPlayer = new SpigotPlayer(p);
-        double multiplier = defaultMultiplier;
 
+        double multiplier = 0d;
+        
         if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
         	
         	RankPlayer rPlayer = sPlayer.getRankPlayer();
-//        rPlayer.getSellAllMultiplier(); // NOTE: This actually calls this function
-        	PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
-        	Rank rank = pRank == null ? null : pRank.getRank();
         	
-        	if ( pRank != null ) {
-        		String rankName = rank.getName();
+        	Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
+        	for (RankLadder ladderKey : keys) {
+        		PlayerRank pRank = rPlayer.getLadderRanks().get(ladderKey);
+        		String rankName = pRank.getRank().getName();
+        		
         		String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
         		if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
-        			multiplier = sellAllPrestigeMultipliers.get( rankName );
+        			multiplier += sellAllPrestigeMultipliers.get( rankName );
         		}
-        	}
-        	
+			}
         }
+        
+        if ( multiplier == 0 ) {
+        	multiplier = defaultMultiplier;
+        }
+        
+        
         
 
 //        long tPoint2 = System.nanoTime();
@@ -463,10 +468,13 @@ public class SellAllUtil
         List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
         double multiplierExtraByPerms = 0;
         for (String multByPerm : perms) {
+        	
             double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
-            if (!isSellAllPermissionMultiplierOnlyHigherEnabled) {
+            
+            if ( !isSellAllPermissionMultiplierOnlyHigherEnabled ) {
                 multiplierExtraByPerms += multByPermDouble;
-            } else if (multByPermDouble > multiplierExtraByPerms) {
+            } 
+            else if (multByPermDouble > multiplierExtraByPerms) {
                 multiplierExtraByPerms = multByPermDouble;
             }
         }
@@ -483,6 +491,89 @@ public class SellAllUtil
         return multiplier;
     }
 
+    
+    public List<String> getPlayerMultiplierList( Player p ) {
+    	List<String> results = new ArrayList<>();
+    	
+
+        if (!isSellAllMultiplierEnabled) {
+            results.add( "1.0 - Sellall multipler is disabled. Default value." );
+            
+            return results;
+        }
+
+        DecimalFormat dFmt = Prison.getDecimalFormatStaticDouble();
+
+        SpigotPlayer sPlayer = new SpigotPlayer(p);
+
+        if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+        	
+        	RankPlayer rPlayer = sPlayer.getRankPlayer();
+        	
+        	Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
+        	for (RankLadder ladderKey : keys) {
+        		PlayerRank pRank = rPlayer.getLadderRanks().get(ladderKey);
+        		String rankName = pRank.getRank().getName();
+        		
+        		String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+        		if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
+        			double mult = sellAllPrestigeMultipliers.get( rankName );
+        			String msg = String.format( 
+        					"%s - %s rank Sellall multiplier",
+        					dFmt.format(mult), rankName
+        					);
+        			results.add( msg );
+        		}
+			}
+        }
+        
+        if ( results.size() == 0 ) {
+        	String msg = String.format( 
+        			"%s - default Sellall multiplier - no rank mulitiplers",
+        			dFmt.format(defaultMultiplier)
+        			);
+        	results.add(msg);
+        }
+        
+
+        // Get Multiplier from multipliers permission's if there's any.
+        List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
+        double multiplierExtraByPerms = 0;
+        int count = 0;
+        String greatestPerm = "";
+        for (String multByPerm : perms) {
+        	
+            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
+            
+            if ( !isSellAllPermissionMultiplierOnlyHigherEnabled ) {
+                multiplierExtraByPerms += multByPermDouble;
+                
+                String msg = String.format( 
+                		"%s - Sellall permission multiplier - %s",
+                		dFmt.format(multByPermDouble), multByPerm
+                		);
+                results.add(msg);
+            } 
+            else if (multByPermDouble > multiplierExtraByPerms) {
+                multiplierExtraByPerms = multByPermDouble;
+                count++;
+                greatestPerm = multByPerm;
+            }
+        }
+        
+        if ( isSellAllPermissionMultiplierOnlyHigherEnabled ) {
+        	
+        	String msg = String.format( 
+        			"%s - Sellall permission multiplier - greatest out of %d - %s",
+        			dFmt.format(multiplierExtraByPerms), count, greatestPerm
+        			);
+        	results.add(msg);
+        }
+    	
+    	return results;
+    }
+    
+    
 //    /**
 //     * Get SellAll Money to give, it requires Player because of SellAll perBlockPermission as an option.
 //     * NOTE: This WON'T remove blocks from the HashMap when sold, and won't edit Inventories of Players,

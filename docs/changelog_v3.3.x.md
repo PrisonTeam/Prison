@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16b 2024-02-20
+# 3.3.0-alpha.16b 2024-02-26
+
+
+
+* **Player sellall Multipliers: Fixed the ranks multiplier to include all ranks that are defined within the sellall multipliers.**
+Added a new function that will gather and list all multipliers that go in to the calculation of the player's total multipliers, which includes the rank multipliers (the sellall multipliers) and also permission based multipliers.
+This detailed list of the individual multipliers, is viewable for each player that is online with the command `/ranks player <player>` and reveals the actual details of how it's calculated.
 
 
 

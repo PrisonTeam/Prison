@@ -1826,6 +1826,14 @@ public class RankPlayer
 		this.rankScorePenalty = rankScorePenalty;
 	}
 
+	@Override
+	public List<String> getSellAllMultiplierListings() {
+		
+		Player player = Prison.get().getPlatform().getPlayer(getUUID()).orElse(null);
+		
+		return player == null ? new ArrayList<>() : player.getSellAllMultiplierListings();
+	}
+
 //	public long getRankScoreCooldown() {
 //		return rankScoreCooldown;
 //	}
