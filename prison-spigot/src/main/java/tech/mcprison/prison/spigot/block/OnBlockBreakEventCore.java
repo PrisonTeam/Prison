@@ -935,7 +935,8 @@ public abstract class OnBlockBreakEventCore
 //											pmEvent.getPlayer() ));
 					
 					
-					boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+					boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer()
+									.isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
 		    		
 					 	
 					

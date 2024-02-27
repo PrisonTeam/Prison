@@ -864,22 +864,36 @@ public class SpigotPlayer
 		
 		if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
 			
-			boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
-			
-			boolean isPlayerAutoSellTurnedOff = isAutoSellPerUserToggleable &&
-					!SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
-							getWrapper() );
-			
-			if ( debugInfo != null && isPlayerAutoSellTurnedOff ) {
-				debugInfo.append( Output.get().getColorCodeWarning() );
-				debugInfo.append( "(Player toggled off autosell) " );
-				debugInfo.append( Output.get().getColorCodeDebug() );
+			if ( SellAllUtil.get().isAutoSellPerUserToggleable ) {
+				debugInfo.append( "(sellallEnabled:userToggleable)" );
+				
+//			boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
+				
+				boolean isPlayerAutoSellTurnedOn = 
+						SellAllUtil.get().isSellallPlayerUserToggleEnabled( getWrapper() );
+				
+				if ( debugInfo != null ) {
+					debugInfo.append( Output.get().getColorCodeWarning() );
+					debugInfo.append( 
+							String.format(
+									"(Player toggled %s autosell) ", 
+									isPlayerAutoSellTurnedOn ? "on" : "off" ) );
+					debugInfo.append( Output.get().getColorCodeDebug() );
+				}
+				
+				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+				// This is to be used with other auto sell setting, but never on it's own:
+				results = isPlayerAutoSellTurnedOn;
+				
+			}
+			else {
+				debugInfo.append( "(sellallEnabled)" );
+				results = true;
 			}
 			
-			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
-			// This is to be used with other auto sell setting, but never on it's own:
-			results = !isAutoSellPerUserToggleable ||
-							isPlayerAutoSellTurnedOff;
+		}
+		else {
+			debugInfo.append( "(sellallDisabled)" );
 		}
 		
 		return results;
@@ -898,8 +912,8 @@ public class SpigotPlayer
 	 * 
 	 * @return
 	 */
-	public boolean isAutoSellByPermEnabled() {
-		return isAutoSellByPermEnabled( isAutoSellEnabled() );
+	public boolean isAutoSellByPermEnabled( StringBuilder debugInfo ) {
+		return isAutoSellByPermEnabled( isAutoSellEnabled(), debugInfo );
 	}
 
 	/**
@@ -915,7 +929,7 @@ public class SpigotPlayer
 	 * @param isPlayerAutosellEnabled
 	 * @return
 	 */
-	public boolean isAutoSellByPermEnabled( boolean isPlayerAutosellEnabled ) {
+	public boolean isAutoSellByPermEnabled( boolean isPlayerAutosellEnabled, StringBuilder debugInfo ) {
 		
 		boolean autoSellByPerm = false;
 		
@@ -923,18 +937,30 @@ public class SpigotPlayer
 		
 		boolean isSellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
 		
-		if ( isSellallEnabled && isPlayerAutosellEnabled && !isOp() ) {
+		if ( isSellallEnabled && isPlayerAutosellEnabled && 
+				afw.isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) ) {
 			
 			String perm = afw.getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled );
-			
-			autoSellByPerm = 
+
+			if ( !"disable".equalsIgnoreCase( perm ) &&
+					!"false".equalsIgnoreCase( perm ) ) {
+				
+				if ( isOp() ) {
+					debugInfo.append( "(autosellByPerm:Op-Disabled)" );
+				}
+				else {
 					
-					afw.isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
-					!"disable".equalsIgnoreCase( perm ) &&
-					!"false".equalsIgnoreCase( perm ) &&
-					hasPermission( perm );
+					autoSellByPerm = hasPermission( perm );
+					
+					debugInfo.append( 
+							String.format(
+									"(autosellByPerm:%s)",
+									autoSellByPerm ? "hasPerm" : "noPerm") );
+				}
+				
+			}
+			
 		}
-		
 
 		return autoSellByPerm;
 	}

@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-02-27
 
 
+* **AutoSell: Bug fix: When autosell and sell on inventory is full was all turned off, it would still sell.**
+This fixes some of the logic to simplify the code, and to fix those issues.
+
+
 * **Mine skip reset messaging: Did not have it hooked up in the correct location, so the skip messages were not happening.**
 
 

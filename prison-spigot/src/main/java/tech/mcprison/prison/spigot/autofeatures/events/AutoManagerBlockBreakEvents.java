@@ -516,7 +516,8 @@ public class AutoManagerBlockBreakEvents
 //						isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
     		
     		
-    		boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+    		boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( 
+    							isPlayerAutosellEnabled,  pmEvent.getDebugInfo()  );
     		
     		
     		

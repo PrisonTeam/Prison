@@ -939,7 +939,7 @@ public abstract class AutoManagerFeatures
 //							!"false".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
 //							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
 			
-			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
 			
 			
 			// Try to autosell if enabled in any of the following ways:
@@ -1468,7 +1468,7 @@ public abstract class AutoManagerFeatures
 				
 				boolean isPlayerAutosellEnabled = sPlayer.isAutoSellEnabled( debugInfo );
 				
-				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled, debugInfo );
 			
 				if ( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) {
 				
