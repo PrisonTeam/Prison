@@ -398,8 +398,10 @@ public abstract class MineScheduler
 		    		resetTask.submitTaskAsync();
 		    		
 //					resetAsynchonously();
-				} else {
+				} 
+				else {
 					incrementSkipResetBypassCount();
+					broadcastSkipResetMessageToAllPlayersWithRadius();
 				}
 				
 				break;
