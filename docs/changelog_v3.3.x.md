@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16b 2024-02-27
+# 3.3.0-alpha.16b 2024-03-01
+
+
+
+
+* **Mines import: prevent the processing of an importing of a mine if there are problems with the mine's name, or locations.**
 
 
 * **AutoSell: Bug fix: When autosell and sell on inventory is full was all turned off, it would still sell.**

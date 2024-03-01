@@ -233,6 +233,13 @@ public class MinesImportCommands
 			boolean rUseMessages = getYamlBoolean( yaml, "reset.use_messages" );
 			int rBlocksMined = getYamlInteger( yaml, "reset.blocks_mined" );
 			
+			
+			if ( mineName == null || mineName.trim().length() == 0 ||
+					spawnWorld == null || spawnWorld.trim().length() == 0 ||
+					locWorld == null || locWorld.trim().length() == 0 ) {
+				return mine;
+			}
+				
 
 			World sWorld = Prison.get().getPlatform().getWorld( spawnWorld ).orElse(null);
 			Location spawn = new Location( sWorld, spawnX, spawnY, spawnZ, 
