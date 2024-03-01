@@ -935,15 +935,15 @@ public abstract class OnBlockBreakEventCore
 //											pmEvent.getPlayer() ));
 					
 					
-					boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer()
-									.isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
+//					boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer()
+//									.isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
 		    		
 					 	
 					
 					
 					// AutoSell on full inventory when using BLOCKEVENTS:
 					if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
-							( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) &&
+							isPlayerAutosellEnabled &&
 							pmEvent.getSpigotPlayer().isInventoryFull() ) {
 						
 						pmEvent.performSellAllOnPlayerInventoryLogged("BLOCKEVENTS priority sellall");

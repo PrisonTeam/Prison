@@ -17,6 +17,7 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-03-01
 
 
+* **Sellall and autosell: Refinements were made to the handling of the sellall settings to better stabilize the use of the commands.**  Setting status for the players were moved to the player objects and is now used in all of the related calculations so there is better stability and consistency.
 
 
 * **Mines import: prevent the processing of an importing of a mine if there are problems with the mine's name, or locations.**

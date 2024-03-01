@@ -597,9 +597,13 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
         	return;
         }
+        StringBuilder debugInfo = new StringBuilder();
+        debugInfo.append( "[sellall autoSellToggle] " );
+        	
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
         Player p = getSpigotPlayer(sender);
+        SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         // Sender must be a Player, not something else like the Console.
         if (p == null) {
@@ -614,8 +618,11 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        String permission = sellAllUtil.permissionAutoSellPerUserToggleable;
-        if (sellAllUtil.isAutoSellPerUserToggleablePermEnabled && (permission != null && !p.hasPermission(permission))){
+        boolean hasAutosellPerms = sPlayer.checkAutoSellTogglePerms( debugInfo );
+        
+//        String permission = sellAllUtil.permissionAutoSellPerUserToggleable;
+        if ( sellAllUtil.isAutoSellPerUserToggleablePermEnabled && !hasAutosellPerms ) {
+//        	if (sellAllUtil.isAutoSellPerUserToggleablePermEnabled && (permission != null && !p.hasPermission(permission))){
             Output.get().sendWarn(sender, 
             		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
 //            		+ " [" + permission + "]"
@@ -623,13 +630,22 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        boolean isplayerAutosellEnabled = sellAllUtil.isPlayerAutoSellEnabled(p);
-        if (sellAllUtil.setAutoSellPlayer(p, !isplayerAutosellEnabled)){
-            if ( !isplayerAutosellEnabled ){ // Note this variable was negated then saved, so we need to check the negative:
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_disabled));
-            } else {
-            	Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_enabled));
+        boolean isplayerAutosellEnabled = sellAllUtil.isSellallPlayerUserToggleEnabled(p);
+        if (sellAllUtil.setAutoSellPlayer(p, !isplayerAutosellEnabled)) {
+            if ( isplayerAutosellEnabled  ){ 
+                String msg = messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_disabled);
+            	
+            	Output.get().sendInfo( sPlayer, msg );
+            } 
+            else {
+            	String msg = messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_enabled);
+            	
+            	Output.get().sendInfo( sPlayer, msg );
             }
+        }
+        
+        if ( Output.get().isDebug() ) {
+        	Output.get().logInfo( debugInfo.toString() );
         }
     }
 //

@@ -516,14 +516,16 @@ public class AutoManagerBlockBreakEvents
 //						isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
     		
     		
-    		boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( 
-    							isPlayerAutosellEnabled,  pmEvent.getDebugInfo()  );
+//    		boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( 
+//    							isPlayerAutosellEnabled,  pmEvent.getDebugInfo()  );
     		
     		
     		
     		
     		if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
-    				( isPlayerAutosellEnabled || isPlayerAutoSellByPerm )) {
+    								isPlayerAutosellEnabled ) {
+    			
+//    			( isPlayerAutosellEnabled || isPlayerAutoSellByPerm )) {
     			
     			pmEvent.getDebugInfo().append( Output.get().getColorCodeWarning());
     			pmEvent.performSellAllOnPlayerInventoryLogged( "FORCED BlockBreakEvent sellall");
@@ -531,7 +533,9 @@ public class AutoManagerBlockBreakEvents
     		}
     		
     		if ( isBoolean( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
-    				( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) ) {
+    								isPlayerAutosellEnabled ) {
+    			
+//    			( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) ) {
     			
     			if ( !getDelayedSellallPlayers().contains( pmEvent.getSpigotPlayer() ) ) {
     				

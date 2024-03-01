@@ -917,6 +917,9 @@ public abstract class AutoManagerFeatures
 //							  SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
 //												pmEvent.getSpigotPlayer().getWrapper() ));
 			
+			
+			// isAutoSellEnabled should include perms check too:
+			
 			boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
 			
 			
@@ -939,11 +942,12 @@ public abstract class AutoManagerFeatures
 //							!"false".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
 //							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
 			
-			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
+//			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
 			
 			
 			// Try to autosell if enabled in any of the following ways:
-			boolean autoSell = ( forceAutoSell || autoSellBySettings || autoSellByPerm );
+			boolean autoSell = ( forceAutoSell || autoSellBySettings );
+//			boolean autoSell = ( forceAutoSell || autoSellBySettings || autoSellByPerm );
 			
 			for ( SpigotItemStack itemStack : drops ) {
 				
@@ -999,7 +1003,8 @@ public abstract class AutoManagerFeatures
 					
 					
 					// AutoSell failure... some items may be unsellable due to not being setup in the sellall shop:
-					if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
+					if ( forceAutoSell || autoSellBySettings ) {
+//						if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
 						
 						// Force debug printing for this entry even if debug mode is turned off:
 						pmEvent.setForceDebugLogging( true );
@@ -1468,9 +1473,10 @@ public abstract class AutoManagerFeatures
 				
 				boolean isPlayerAutosellEnabled = sPlayer.isAutoSellEnabled( debugInfo );
 				
-				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled, debugInfo );
+//				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled, debugInfo );
 			
-				if ( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) {
+				if ( isPlayerAutosellEnabled ) {
+//					if ( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) {
 				
 					SellAllUtil sellAllUtil = SellAllUtil.get();
 				
