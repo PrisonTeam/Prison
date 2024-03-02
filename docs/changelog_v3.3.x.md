@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-03-01
 
 
+* **Mine bombs: Ability to prevent a bomb's blocks from count towards the player's block totals.**
+
+
 * **Sellall and autosell: Refinements were made to the handling of the sellall settings to better stabilize the use of the commands.**  Setting status for the players were moved to the player objects and is now used in all of the related calculations so there is better stability and consistency.
 
 

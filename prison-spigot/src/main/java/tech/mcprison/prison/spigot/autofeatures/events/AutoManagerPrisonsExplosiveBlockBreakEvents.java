@@ -334,6 +334,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
     		// removed, then it's removed within this funciton.
     		removeEventTriggerBlocksFromExplosions( pmEvent );
     		
+    		
+    		
+    		pmEvent.setApplyToPlayersBlockCount( 
+    				e.getMineBomb().isApplyToPlayersBlockCount() );
   
 			
 			if ( !validateEvent( pmEvent ) ) {

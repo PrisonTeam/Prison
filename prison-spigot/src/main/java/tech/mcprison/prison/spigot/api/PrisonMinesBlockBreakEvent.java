@@ -140,6 +140,9 @@ public class PrisonMinesBlockBreakEvent
 	private List<Block> unprocessedRawBlocks;
 	
 	
+	private boolean applyToPlayersBlockCount;
+	
+	
 	private StringBuilder debugInfo;
 	private boolean forceDebugLogging;
 
@@ -194,6 +197,8 @@ public class PrisonMinesBlockBreakEvent
 		
 		this.forceDebugLogging = false;
 		
+		this.applyToPlayersBlockCount = true;
+		
 	}
 	
 	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
@@ -223,6 +228,8 @@ public class PrisonMinesBlockBreakEvent
 		this.bukkitDrops = new ArrayList<>();
 		
 		this.debugInfo = debugInfo;
+		
+		this.applyToPlayersBlockCount = true;
 		
 	}
 
@@ -505,6 +512,13 @@ public class PrisonMinesBlockBreakEvent
 	}
 	public void setForceIfAirBlock( boolean forceIfAirBlock ) {
 		this.forceIfAirBlock = forceIfAirBlock;
+	}
+
+	public boolean isApplyToPlayersBlockCount() {
+		return applyToPlayersBlockCount;
+	}
+	public void setApplyToPlayersBlockCount(boolean applyToPlayersBlockCount) {
+		this.applyToPlayersBlockCount = applyToPlayersBlockCount;
 	}
 
 	@Override

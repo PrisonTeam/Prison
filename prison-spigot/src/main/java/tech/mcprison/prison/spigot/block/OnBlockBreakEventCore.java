@@ -1167,9 +1167,13 @@ public abstract class OnBlockBreakEventCore
 			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
 				results = true;
 				
-				// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
-						mine.getName(), targetBlock.getPrisonBlock(), 1 );
+				
+				if ( pmEvent.isApplyToPlayersBlockCount() ) {
+					
+					// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
+					PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
+							mine.getName(), targetBlock.getPrisonBlock(), 1 );
+				}
 				
 			}
 		}
