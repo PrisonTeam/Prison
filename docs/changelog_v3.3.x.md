@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16b 2024-03-01
+# 3.3.0-alpha.16b 2024-03-05
+
+
+* **File output technique: Changes to how the "replace" existing files works.**
+If the file does not exist, then it opens it to create it, otherwise it truncates it.
 
 
 * **Mine bombs: Ability to prevent a bomb's blocks from count towards the player's block totals.**

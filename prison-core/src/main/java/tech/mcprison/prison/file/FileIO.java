@@ -136,9 +136,12 @@ public abstract class FileIO
 					// Write as an UTF-8 stream:
 					Files.write( tempFile.toPath(), lines, StandardCharsets.UTF_8 );
 					
+					boolean exists = file.exists();
 					
 					StandardOpenOption sooW = StandardOpenOption.WRITE;
-					StandardOpenOption sooTe = StandardOpenOption.TRUNCATE_EXISTING;
+					StandardOpenOption sooTe = exists ?
+									StandardOpenOption.TRUNCATE_EXISTING : 
+									StandardOpenOption.CREATE;
 					
 					Files.write( file.toPath(), lines, StandardCharsets.UTF_8, sooW, sooTe );
 					
