@@ -15,6 +15,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
@@ -202,6 +203,8 @@ public class MinesBlockCommands
 
 		if ( includeTotals )
 		{
+			totals.setChance( totalChance );
+			
 			addBlockStats( m, totals, maxBlockNameLength, iFmt, dFmt, builder );
 		}
 
@@ -230,7 +233,9 @@ public class MinesBlockCommands
 
 		if ( totals )
 		{
-			String text = String.format( "&d%" + maxBlockNameLength + "s   Totals: ", " " );
+			String percent = dFmt.format( block.getChance() ) + "%";
+			int length = maxBlockNameLength - ( percent.length() == 7 ? -1 : 0);
+			String text = String.format( "&d%-" + length + "s   Totals: ", percent );
 			row.addTextComponent( text );
 		}
 		else
@@ -849,5 +854,23 @@ public class MinesBlockCommands
     }
 	
 
+    public void listBlockLayerStatsCommand( CommandSender sender, String mineName ) {
+    	
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine m = pMines.getMine(mineName);
+        
+        if ( m != null ) {
+        	
+        	Output.get().logInfo( "Mine %s Block Layer Stats:", m.getName() );
+        	
+        	List<String> layers = m.getTargetBlockStatsPerLevel();
+        	for ( String layer : layers ) {
+				Output.get().logInfo( "  " + layer );
+			}
+        	
+        }
+    }
 	
 }

@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-03-05
 
 
+* **Block lists: Added the total chance percentage to be displayed with the blocks.**
+
+
 * **File output technique: Changes to how the "replace" existing files works.**
 If the file does not exist, then it opens it to create it, otherwise it truncates it.
 
