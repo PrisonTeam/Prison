@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-03-05
 
 
+* **Bug fix: the check for the time the reset has been going on was incorrect and was fixed.**
+Also all the code for submitting the reset task was moved in to the mutext.  Now, if the reset got hung up, this will properly terminate it and resubmit it.
+
+
 * **File format: Eliminate the check for file types since there is only one.**
 Currently there isn't a setting to specify what it should be.
 

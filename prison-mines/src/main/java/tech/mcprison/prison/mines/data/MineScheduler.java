@@ -816,7 +816,7 @@ public abstract class MineScheduler
 		
 		if ( !getMineStateMutex().isMinable() && 
 				getMineResetStartTimestamp() != -1 && 
-				getMineResetStartTimestamp() - System.currentTimeMillis() > 4 * 60000 ) {
+				System.currentTimeMillis() - getMineResetStartTimestamp() > 4 * 60000 ) {
 			
 			// Mine reset was trying to run for more than 4 minutes... so it's locked out and failed?
 			
@@ -872,29 +872,31 @@ public abstract class MineScheduler
 //				}
 //				
 //			}
+			
+			
+			
+			// cancel existing job:
+			if ( getTaskId() != null ) {
+				PrisonTaskSubmitter.cancelTask( getTaskId() );
+			}
+			
+			// Clear jobStack and set currentJob to run the RESET with zero delay:
+			getJobStack().clear();
+			
+			MineJobAction action = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
+			
+			MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
+			mineJob.setResetType( resetType );
+			mineJob.setResetActions( resetActions );
+			
+			setCurrentJob( mineJob );
+			
+			// Force reset even if skip is enabled:
+			
+			// Submit to run:
+			submitTask();
 		}
 		
-		
-		// cancel existing job:
-		if ( getTaskId() != null ) {
-			PrisonTaskSubmitter.cancelTask( getTaskId() );
-		}
-		
-		// Clear jobStack and set currentJob to run the RESET with zero delay:
-		getJobStack().clear();
-		
-		MineJobAction action = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
-		
-		MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
-		mineJob.setResetType( resetType );
-		mineJob.setResetActions( resetActions );
-		
-		setCurrentJob( mineJob );
-    	
-		// Force reset even if skip is enabled:
-		
-		// Submit to run:
-		submitTask();
 	}
 
 	public List<MineJob> getJobWorkflow()
