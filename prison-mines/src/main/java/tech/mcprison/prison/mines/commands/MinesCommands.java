@@ -226,6 +226,17 @@ public class MinesCommands
     }
     
     @Override
+    @Command(identifier = "mines block layerStats", permissions = "mines.block", onlyPlayers = false, 
+			description = "A Mine's list layer stats")
+	public void listBlockLayerStatsCommand( CommandSender sender,
+			@Arg(name = "mineName", description = "The name of the mine to generate block layer stats for.")
+					String mineName ) {
+    	
+    	super.listBlockLayerStatsCommand( sender, mineName );
+    }
+    
+    
+    @Override
     @Command(identifier = "mines block list", permissions = "mines.block", 
     				description = "Lists all of the blocks assigned to a mine.")
     public void listBlockCommand(CommandSender sender,
@@ -235,7 +246,6 @@ public class MinesCommands
     }
     
     @Override
-    
     @Command(identifier = "mines block constraint", permissions = "mines.block", 
 							description = "Optionally enable constraints on a mine's block generation. "
 							+ "Please note that 'excludeTop' and 'excludeBottom' uses the layer "

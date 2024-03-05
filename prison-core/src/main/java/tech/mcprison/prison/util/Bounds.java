@@ -37,6 +37,10 @@ public class Bounds {
     
     private final int totalBlockCount;
 
+    private final int blockCountPerLayer;
+    
+    private final int totalLayers;
+
     
 	public enum Edges {
 		top,
@@ -135,10 +139,14 @@ public class Bounds {
         
         this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
 
+        
+        this.totalLayers = (getyBlockMax() - getyBlockMin() + 1);
+        
+        this.blockCountPerLayer = (getxBlockMax() - getxBlockMin() + 1) *
+    							  (getzBlockMax() - getzBlockMin() + 1);
+        
         this.totalBlockCount = 
-        			(getyBlockMax() - getyBlockMin() + 1) *
-        			(getxBlockMax() - getxBlockMin() + 1) *
-        			(getzBlockMax() - getzBlockMin() + 1);
+        			totalLayers * blockCountPerLayer;
     }
 
     
@@ -279,10 +287,14 @@ public class Bounds {
         
         this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
 
+        
+        this.totalLayers = (getyBlockMax() - getyBlockMin() + 1);
+        
+        this.blockCountPerLayer = (getxBlockMax() - getxBlockMin() + 1) *
+    							  (getzBlockMax() - getzBlockMin() + 1);
+        
         this.totalBlockCount = 
-        			(getyBlockMax() - getyBlockMin() + 1) *
-        			(getxBlockMax() - getxBlockMin() + 1) *
-        			(getzBlockMax() - getzBlockMin() + 1);
+        			totalLayers * blockCountPerLayer;
     }
 
     
@@ -548,6 +560,14 @@ public class Bounds {
 	public double getzMax()
 	{
 		return zMax;
+	}
+
+	public int getBlockCountPerLayer() {
+		return blockCountPerLayer;
+	}
+
+	public int getTotalLayers() {
+		return totalLayers;
 	}
 
 	public int getTotalBlockCount()

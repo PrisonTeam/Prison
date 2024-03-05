@@ -3,9 +3,12 @@ package tech.mcprison.prison.mines.data;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
@@ -890,6 +893,105 @@ public abstract class MineReset
 //    	
 //    	
 //    }
+    
+    
+    
+    public List<String> getTargetBlockStatsPerLevel() {
+    	List<String> layers = new ArrayList<>();
+    	
+    	int blocksPerLayer = getBounds().getBlockCountPerLayer();
+    	//int totalLayers = getBounds().getTotalLayers();
+    	
+    	// BlockName = BlockLetter
+    	TreeMap<String,String> translator = new TreeMap<>();
+    	TreeMap<String,Integer> map = new TreeMap<>();
+    	
+    	// Build translations:
+    	char blk = 'A';
+    	double chance = 0;
+    	boolean hasAir = false;
+    	
+    	// First add all the blocks with an empty String as the value:
+    	for (PrisonBlock b : getPrisonBlocks() ) {
+			chance += b.getChance();
+			translator.put( b.getBlockName(), "" );
+			if ( b.isAir() ) {
+				hasAir = true;
+			}
+		}
+    	if ( !hasAir && chance < 100.0d ) {
+    		translator.put( PrisonBlock.AIR.getBlockName(), "" );
+    	}
+    	// Now that they are in order, assign the alphabetical names:
+    	Set<String> tkeys = translator.keySet();
+    	for (String tKey : tkeys) {
+    		translator.put( tKey, Character.toString( blk++ ) );
+		}
+
+    	
+    	for ( int i = 0; i < getMineTargetPrisonBlocks().size(); i++ ) {
+    		MineTargetPrisonBlock tBlock = getMineTargetPrisonBlocks().get(i);
+    		int level = (int) ((i / (double) blocksPerLayer) + 1);
+    		
+    		String keyPrime = tBlock.getPrisonBlock() == null ? 
+    					PrisonBlock.AIR.getBlockName() : 
+    					tBlock.getPrisonBlock().getBlockName();
+    		
+    		String key = translator.get(keyPrime);
+
+    		if ( !map.containsKey(key) ) {
+    			map.put( key, 1 );
+    		}
+    		else {
+    			map.put( key, 1 + map.get(key) );
+    		}
+    		
+    		// if last block of the layer:
+    		if ( (int) (((i + 1) / (double) blocksPerLayer) + 1) > level ) {
+    			StringBuilder sb = new StringBuilder();
+    			
+    			sb.append( "Layer " ).append( level ).append( " : " );
+    			
+    			TreeSet<String> keys = new TreeSet<>( map.keySet() );
+    			for ( String k : keys ) {
+//    				for ( Entry<String, String> eSet : translator.entrySet()) {
+//    					if ( eSet.getValue().equalsIgnoreCase(k) ) {
+//    						
+//    						String blockName = eSet.getKey();
+//    						sb.append( blockName ).append( ":" ).append( map.get(k) ).append( " " );
+//
+//    						break;
+//    					}
+//    				}
+    				sb.append( k ).append( ":" ).append( map.get(k) ).append( " " );
+				}
+    			
+    			layers.add( sb.toString() );
+    			
+    			map.clear();
+    		}
+    	}
+    	
+    	
+    	{
+    		// print the legend:
+    		StringBuilder sb = new StringBuilder();
+    		
+    		sb.append( "Legend: " );
+    		
+    		for ( Entry<String, String> eSet : translator.entrySet()) {
+    			String blockName = eSet.getKey();
+    			sb.append( eSet.getValue() ).append( ":" ).append( blockName ).append( " " );
+    		}
+    		
+    		layers.add( sb.toString() );
+    		
+    	}
+    	
+    	
+    	return layers;
+    }
+    
     
     public void asynchronouslyResetSetup() {
     	

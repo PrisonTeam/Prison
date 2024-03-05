@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16b 2024-03-05
 
 
+* **Mines block layerStats: Added a new command that shows which blocks are in each layer in the mine.**
+There are a lot of future enhancements that can be added to this command, such as checking the actual blocks to see if they are still there, or if there was a problem with the spawning of the blocks.
+
+
 * **Block lists: Added the total chance percentage to be displayed with the blocks.**
 
 
