@@ -204,12 +204,12 @@ public class SpigotPlatform
         String confStorage = plugin.getConfig().getString("storage", "file");
         Storage storage = new FileStorage(plugin.getDataDirectory());
         
-        if (!confStorage.equalsIgnoreCase("file")) {
-            Output.get().logError("Unknown file storage type in configuration \"" + confStorage
-                + "\". Using file storage.");
-            Output.get().logWarn(
-                "Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
-        }
+//        if (!confStorage.equalsIgnoreCase("file")) {
+//            Output.get().logError("Unknown file storage type in configuration \"" + confStorage
+//                + "\". Using file storage.");
+//            Output.get().logWarn(
+//                "Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
+//        }
         
         this.storage = storage;
         return storage;
