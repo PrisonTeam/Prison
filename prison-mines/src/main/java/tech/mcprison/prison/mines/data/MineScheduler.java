@@ -496,7 +496,8 @@ public abstract class MineScheduler
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.
 			int taskId = PrisonTaskSubmitter.runTaskLater(this, ticksToWait);
 			setTaskId( taskId );
-		} else {
+		} 
+		else {
 			Output.get().logError("Mine " + getName() +
 					" failed to resubmit itself so it will not auto reset. Manually reset " +
 					"this mine to re-enable the auto reset.");
@@ -752,11 +753,14 @@ public abstract class MineScheduler
 		
 		if ( !isVirtual() && getMineStateMutex().isMinable() ) {
 			
+			int totalBlocks = getBounds().getTotalBlockCount();
+			int remaining = getRemainingBlockCount();
+			double threshold = getResetThresholdPercent() == 0 ? 0 :
+							totalBlocks * getResetThresholdPercent() / 100.0d;
+			
 			if (
-					getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
-					getResetThresholdPercent() > 0 && 
-					getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
-							getResetThresholdPercent() / 100.0d)
+					remaining <= 0 && !isZeroBlockResetDisabled() || 
+					remaining <= threshold
 					) {
 				
 				// submit a manual reset since the mine is empty:
@@ -816,9 +820,9 @@ public abstract class MineScheduler
 		
 		if ( !getMineStateMutex().isMinable() && 
 				getMineResetStartTimestamp() != -1 && 
-				System.currentTimeMillis() - getMineResetStartTimestamp() > 4 * 60000 ) {
+				System.currentTimeMillis() - getMineResetStartTimestamp() > 3 * 60000 ) {
 			
-			// Mine reset was trying to run for more than 4 minutes... so it's locked out and failed?
+			// Mine reset was trying to run for more than 3 minutes... so it's locked out and failed?
 			
 			// reset mutex and allow the rest to be forced:
 			getMineStateMutex().setMineStateResetFinishedForced();

@@ -18,7 +18,11 @@ These change logs represent the work that has been going on within prison.
 
 
 
-**3.3.0-alpha.16c 2024-03-05** 
+**3.3.0-alpha.16c 2024-03-07** 
+
+
+* **Mine reset: added a force to the reset so it will ignore an existing mine reset and allow a new one to begin.***
+When a mine is being reset, there is no way to actually cancel it.  So this allows a large mine to undergo multiple concurrent resets.  Use at your own risk.
 
 
 

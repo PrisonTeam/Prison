@@ -1384,7 +1384,7 @@ public class MinesCommands
         		"or '*all*' to reset all the mines, " +
         		"or '*cancel*' to cancel the resetting of all mines.") String mineName,
         @Wildcard(join=true)
-    	@Arg(name = "options", description = "Optional settings [noCommands details] " +
+    	@Arg(name = "options", description = "Optional settings [noCommands details force] " +
     			"'noCommands' prevents the running of mine commands. " +
     			"'details' shows progress on reset *all*.", def = "") String options
     			) {
@@ -1395,16 +1395,21 @@ public class MinesCommands
         MineResetScheduleType resetType = MineResetScheduleType.FORCED;
         List<MineResetActions> resetActions = new ArrayList<>();
         
+        boolean force = false;
         
         if ( options.contains( "nocommands" )) {
         	options = options.replace( "nocommands", "" ).trim();
         	resetActions.add( MineResetActions.NO_COMMANDS );
         }
         
-        // The value of chained is an internal value and should not be shown to users:
         if ( options.contains( "details" ) ) {
         	options = options.replace( "details", "" ).trim();
         	resetActions.add( MineResetActions.DETAILS );
+        }
+        
+        if ( options.contains( "force" ) ) {
+        	options = options.replace( "force", "" ).trim();
+        	force = true;
         }
         
         // The value of chained is an internal value and should not be shown to users:
@@ -1454,19 +1459,31 @@ public class MinesCommands
         	return;
         }
         
-        if ( !m.getMineStateMutex().isMinable() ) {
+        if ( !m.getMineStateMutex().isMinable() && force ) {
+        	
+        	sender.sendMessage(
+        			String.format( 
+	        			"&cMine is currently being reset. &7An unlock is being forced to allow "
+	        			+ "a new reset." )
+	        			);
+        	
+        	// Force the reset by setting the mineResetStartTimestamp to 10 mins ago:
+        	m.setMineResetStartTimestamp( System.currentTimeMillis() - 10 * 60000 );
+        }
+        
+        else if ( !m.getMineStateMutex().isMinable() ) {
         	long resetDuration = m.getMineResetStartTimestamp() == -1 ? 0 : 
-        				m.getMineResetStartTimestamp() - System.currentTimeMillis();
+        		System.currentTimeMillis() - m.getMineResetStartTimestamp();
         	
         	DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
         	
         	sender.sendMessage(
         			String.format( 
-	        			"&cMine is currently being reset. &7Will try to force an unlock to allow "
-	        			+ "a new reset. May have to wait 4 minutes before the Mutex is releasable. "
-	        			+ "The mine was reset %s seconds ago.",
-	        			dFmt.format( resetDuration / 1000.0d ) )
-	        			);
+        					"&cMine is currently being reset. &7Will try to force an unlock to allow "
+        							+ "a new reset. May have to wait 3 minutes before the Mutex is releasable. "
+        							+ "The mine was reset %s seconds ago.",
+        							dFmt.format( resetDuration / 1000.0d ) )
+        			);
         }
 
         try {
@@ -2208,12 +2225,12 @@ public class MinesCommands
         		
         		Mine m = pMines.getMine(mineName);
 
-        		changeMinePercentThreshhold(sender, percent, pMines, m);
+        		changeMinePercentThreshold(sender, percent, pMines, m);
         	}
         	else {
         		for ( Mine m : pMines.getMines() ) {
 					
-        			changeMinePercentThreshhold(sender, percent, pMines, m);
+        			changeMinePercentThreshold(sender, percent, pMines, m);
 				}
         	}
             
@@ -2225,7 +2242,7 @@ public class MinesCommands
         } 
     }
 
-	private void changeMinePercentThreshhold(CommandSender sender, String percent, PrisonMines pMines, Mine m) {
+	private void changeMinePercentThreshold(CommandSender sender, String percent, PrisonMines pMines, Mine m) {
 		double thresholdPercent = 0.0d;
 		
 		try {
