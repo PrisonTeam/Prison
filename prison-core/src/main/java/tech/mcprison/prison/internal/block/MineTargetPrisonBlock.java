@@ -24,6 +24,10 @@ public class MineTargetPrisonBlock
 	private boolean ignoreAllBlockEvents = false;
 	
 	
+	private transient boolean checkAir;
+	private transient boolean checkSame;
+	
+	
 	public MineTargetPrisonBlock( 
 				PrisonBlockStatusData prisonBlock, 
 				World world, 
@@ -189,6 +193,20 @@ public class MineTargetPrisonBlock
 	}
 	public void setIgnoreAllBlockEvents( boolean ignoreAllBlockEvents ) {
 		this.ignoreAllBlockEvents = ignoreAllBlockEvents;
+	}
+
+	public boolean isCheckAir() {
+		return checkAir;
+	}
+	public void setCheckAir(boolean checkAir) {
+		this.checkAir = checkAir;
+	}
+
+	public boolean isCheckSame() {
+		return checkSame;
+	}
+	public void setCheckSame(boolean checkSame) {
+		this.checkSame = checkSame;
 	}
 
 	@Override 

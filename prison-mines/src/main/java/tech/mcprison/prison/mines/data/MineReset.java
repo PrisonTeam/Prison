@@ -899,42 +899,79 @@ public abstract class MineReset
     public List<String> getTargetBlockStatsPerLevel() {
     	List<String> layers = new ArrayList<>();
     	
-    	int blocksPerLayer = getBounds().getBlockCountPerLayer();
+    	
+    	// Scan all blocks to see if they are the same or now air
+    	//  Use isCheckAir() and isCheckSamme();
+    	scanAllBlocksForUpdates();
+    	
+    	
+//    	int blocksPerLayer = getBounds().getBlockCountPerLayer();
     	//int totalLayers = getBounds().getTotalLayers();
     	
     	// BlockName = BlockLetter
     	TreeMap<String,String> translator = new TreeMap<>();
     	TreeMap<String,Integer> map = new TreeMap<>();
+    	TreeMap<String,Integer> mapMine = new TreeMap<>();
+    	
+    	// Always add the air block:
+    	translator.put( PrisonBlock.AIR.getBlockName(), "" );
+    	
+    	
+    	String colors = "12345789abcde";
     	
     	// Build translations:
     	char blk = 'A';
-    	double chance = 0;
-    	boolean hasAir = false;
+//    	double chance = 0;
+//    	boolean hasAir = false;
     	
     	// First add all the blocks with an empty String as the value:
     	for (PrisonBlock b : getPrisonBlocks() ) {
-			chance += b.getChance();
+//			chance += b.getChance();
 			translator.put( b.getBlockName(), "" );
-			if ( b.isAir() ) {
-				hasAir = true;
-			}
+//			if ( b.isAir() ) {
+//				hasAir = true;
+//			}
 		}
-    	if ( !hasAir && chance < 100.0d ) {
-    		translator.put( PrisonBlock.AIR.getBlockName(), "" );
-    	}
+//    	if ( !hasAir && chance < 100.0d ) {
+//    		translator.put( PrisonBlock.AIR.getBlockName(), "" );
+//    	}
+
     	// Now that they are in order, assign the alphabetical names:
     	Set<String> tkeys = translator.keySet();
     	for (String tKey : tkeys) {
-    		translator.put( tKey, Character.toString( blk++ ) );
+    		translator.put( tKey, Character.toString( blk ) );
+    		
+    		if ( blk == 'Z' ) {
+    			blk = 'a';
+    		}
+    		else if ( blk == 'z' ) {
+    			blk = '1';
+    		}
+    		else {
+    			blk++;
+    		}
 		}
 
+    	String airName = PrisonBlock.AIR.getBlockName();
+    	String keyAir = translator.get(airName);
+    	
+    	map.put( keyAir, 0 );
+    	mapMine.put( keyAir, 0 );
+    	
+    	int layer = 0;
+    	int blockCount = 0;
     	
     	for ( int i = 0; i < getMineTargetPrisonBlocks().size(); i++ ) {
-    		MineTargetPrisonBlock tBlock = getMineTargetPrisonBlocks().get(i);
-    		int level = (int) ((i / (double) blocksPerLayer) + 1);
     		
-    		String keyPrime = tBlock.getPrisonBlock() == null ? 
-    					PrisonBlock.AIR.getBlockName() : 
+    		MineTargetPrisonBlock tBlock = getMineTargetPrisonBlocks().get(i);
+    		int y = getMineTargetPrisonBlocks().get(i).getLocation().getBlockY();
+    		blockCount++;
+
+//    		int level = (int) ((i / (double) blocksPerLayer) + 1);
+    		
+    		
+    		String keyPrime = tBlock == null || tBlock.getPrisonBlock() == null ? 
+    				airName : 
     					tBlock.getPrisonBlock().getBlockName();
     		
     		String key = translator.get(keyPrime);
@@ -945,12 +982,31 @@ public abstract class MineReset
     		else {
     			map.put( key, 1 + map.get(key) );
     		}
+
+    		if ( !mapMine.containsKey(key) ) {
+    			mapMine.put( key, 0 );
+    		}
+//    		if ( !mapMine.containsKey(keyAir) ) {
+//    			mapMine.put( keyAir, 0 );
+//    		}
+
+    		if ( tBlock.isCheckSame() ) {
+    			mapMine.put( key, 1 + mapMine.get(key) );
+    		}
+    		else if ( tBlock.isCheckAir() ) {
+    			mapMine.put( keyAir, 1 + mapMine.get(keyAir) );
+    			
+    		}
     		
-    		// if last block of the layer:
-    		if ( (int) (((i + 1) / (double) blocksPerLayer) + 1) > level ) {
+    		
+    		if ( (i + 1) >= getMineTargetPrisonBlocks().size() ||
+    				getMineTargetPrisonBlocks().get(i + 1).getLocation().getBlockY() != y ) {
+    			
     			StringBuilder sb = new StringBuilder();
     			
-    			sb.append( "Layer " ).append( level ).append( " : " );
+    			sb.append( "Layer " ).append( layer++ ) 
+    				.append( " (" ).append( blockCount ).append(")")
+    				.append( " : " );
     			
     			TreeSet<String> keys = new TreeSet<>( map.keySet() );
     			for ( String k : keys ) {
@@ -963,13 +1019,61 @@ public abstract class MineReset
 //    						break;
 //    					}
 //    				}
-    				sb.append( k ).append( ":" ).append( map.get(k) ).append( " " );
-				}
+    				
+    				int c = k.charAt(0) % colors.length();
+    				
+    				String color = "&" + String.valueOf(colors.charAt(c));
+    				
+    				int count = map.get(k);
+    				int countMine = mapMine.get(k);
+    				
+    				sb
+    					.append( color ).append( k ).append( Output.get().getColorCodeDebug() )
+    					.append( ":" ).append( count );
+    				
+    				if ( count != countMine ) {
+    					sb
+	    					.append( ":" ).append( countMine );
+    				}
+    				
+    				sb.append( " " );
+    			}
     			
     			layers.add( sb.toString() );
+
+    			blockCount = 0;
     			
     			map.clear();
+    			mapMine.clear();
+    			
+    			map.put( keyAir, 0 );
+    	    	mapMine.put( keyAir, 0 );
     		}
+    		
+//    		// if last block of the layer:
+//    		if ( (int) (((i + 1) / (double) blocksPerLayer) + 1) > level ) {
+//    			StringBuilder sb = new StringBuilder();
+//    			
+//    			sb.append( "Layer " ).append( layer++ ).append( " : " );
+//    			
+//    			TreeSet<String> keys = new TreeSet<>( map.keySet() );
+//    			for ( String k : keys ) {
+////    				for ( Entry<String, String> eSet : translator.entrySet()) {
+////    					if ( eSet.getValue().equalsIgnoreCase(k) ) {
+////    						
+////    						String blockName = eSet.getKey();
+////    						sb.append( blockName ).append( ":" ).append( map.get(k) ).append( " " );
+////
+////    						break;
+////    					}
+////    				}
+//    				sb.append( k ).append( ":" ).append( map.get(k) ).append( " " );
+//				}
+//    			
+//    			layers.add( sb.toString() );
+//    			
+//    			map.clear();
+//    		}
     	}
     	
     	
@@ -981,7 +1085,15 @@ public abstract class MineReset
     		
     		for ( Entry<String, String> eSet : translator.entrySet()) {
     			String blockName = eSet.getKey();
-    			sb.append( eSet.getValue() ).append( ":" ).append( blockName ).append( " " );
+    			
+				String value = eSet.getValue();
+				
+    			int c = value.charAt(0) % colors.length();
+				String color = "&" + String.valueOf(colors.charAt(c));
+				
+    			sb
+    				.append( color ).append( eSet.getValue() ).append( Output.get().getColorCodeDebug() )
+    				.append( ":" ).append( blockName ).append( " " );
     		}
     		
     		layers.add( sb.toString() );
@@ -1553,6 +1665,79 @@ public abstract class MineReset
 			}
 		}
 		
+	}
+	
+	
+	private void scanAllBlocksForUpdates() {
+		
+		World world = getBounds().getCenter().getWorld();
+		if ( world != null ) {
+
+			long start = System.currentTimeMillis();
+			
+			int i = 0;
+			for ( MineTargetPrisonBlock targetBlock : getMineTargetPrisonBlocks() ) {
+				
+				if ( targetBlock != null ) {
+					
+					i++;
+					
+;					targetBlock.setCheckAir( false );
+					targetBlock.setCheckSame( false );
+					
+					try {
+//						Location targetBlock = new Location(world, x, y, z);
+						
+						boolean containsCustomBlocks = 
+								getPrisonBlockTypes().contains( PrisonBlockType.CustomItems ) ||
+								getPrisonBlockTypes().contains( PrisonBlockType.ItemsAdder );
+
+						Block tBlock = targetBlock.getLocation().getBlockAt( containsCustomBlocks );
+						PrisonBlock pBlock = tBlock == null ? null : tBlock.getPrisonBlock();
+						
+						PrisonBlockStatusData tpBlock = targetBlock.getPrisonBlock();
+						
+						if ( tBlock == null || pBlock == null || tpBlock == null ) {
+							targetBlock.setCheckAir( true );
+						}
+						else {
+							
+							
+							String targetBlockName = tpBlock.getBlockName();
+							
+							
+							if ( pBlock.getBlockName().equalsIgnoreCase( targetBlockName) ) {
+								targetBlock.setCheckSame( true );
+							}
+							else if ( pBlock.isAir() ) {
+								targetBlock.setCheckAir( true );
+							}
+							else if ( pBlock.getBlockName().equalsIgnoreCase( targetBlockName) ) {
+								targetBlock.setCheckSame( true );
+							}
+							else {
+								targetBlock.setCheckSame( false );
+								
+							}
+							
+						}
+						
+				
+						
+					}
+					catch ( Exception e ) {
+					
+						Output.get().logInfo( "MineReset.scanAllBlocksForUpdates: error:"
+								+ "  count=%d  %s", (i - 1), e.getMessage());
+						
+					}
+				}
+			
+
+				long stop = System.currentTimeMillis();
+				long elapsed = stop - start;
+			}
+		}
 	}
 	
 	/**

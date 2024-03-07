@@ -21,6 +21,9 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16c 2024-03-07** 
 
 
+* **Mines block layer: Added colors for same IDs so it's easier to read.**  Added a check that sees what block actually exists.  If counts of what should have spawned match whats in the mine for that layer, then it shows only one number.  It shows two numbers if a block's intended spawn does not match what's in the mine.
+
+
 * **Mine reset: added a force to the reset so it will ignore an existing mine reset and allow a new one to begin.***
 When a mine is being reset, there is no way to actually cancel it.  So this allows a large mine to undergo multiple concurrent resets.  Use at your own risk.
 
