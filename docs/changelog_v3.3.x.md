@@ -18,7 +18,12 @@ These change logs represent the work that has been going on within prison.
 
 
 
-**3.3.0-alpha.16c 2024-03-07** 
+**3.3.0-alpha.16c 2024-03-08** 
+
+
+* **mines block layerStats: rewrote to improve and get rid of the collection manipulations.**
+Found potential problem with air being inserted in to mines.
+Renamed a lot of uses of Location objects to include the name "location" in their variable names instead of "block".
 
 
 * **Mines block layer: Added colors for same IDs so it's easier to read.**  Added a check that sees what block actually exists.  If counts of what should have spawned match whats in the mine for that layer, then it shows only one number.  It shows two numbers if a block's intended spawn does not match what's in the mine.

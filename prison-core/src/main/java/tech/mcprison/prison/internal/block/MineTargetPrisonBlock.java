@@ -46,6 +46,19 @@ public class MineTargetPrisonBlock
 		this.isCorner = isCorner;
 	}
 
+	public MineTargetPrisonBlock( 
+			PrisonBlockStatusData prisonBlock, 
+			Location targetLocation ) {
+		this( prisonBlock, targetLocation.getWorld(),
+				targetLocation.getBlockX(), 
+				targetLocation.getBlockY(), 
+				targetLocation.getBlockZ(),
+				targetLocation.isEdge(),
+				targetLocation.isCorner()
+				);
+
+	}
+	
 	@Override
 	public String toString() {
 		return "MineTargetPrisonBlock: key= " + getBlockKey().toString() + 

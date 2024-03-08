@@ -45,6 +45,12 @@ public abstract class PrisonBlockStatusData {
 	private transient boolean includeInLayerCalculations;
 	
 	
+	private transient String altAlias;
+	private transient String altColorCode;
+	private transient int altCountVirtual;
+	private transient int altCountPhysical;
+	
+	
 	public PrisonBlockStatusData( 
 			PrisonBlockType blockType, String blockName, String displayName,
 			double chance, long blockCountTotal ) {
@@ -617,6 +623,70 @@ public abstract class PrisonBlockStatusData {
 		}
 		
 		return position;
+	}
+
+	public void setAltValues( int i ) {
+		
+		String codes = "abcdefghijklmnopqrstuvwxyz";
+		String colors = "12345789abcde";
+	
+		int codePos = i % codes.length();
+		int codeFactor = i / codes.length();
+		
+		String code = codePos == codes.length() ?
+				codes.substring( codePos ) :
+				codes.substring( codePos, codePos + 1 );
+		
+		String alias = code + 
+						(codeFactor == 0 ?
+								"" :
+								codeFactor);
+		setAltAlias( alias );
+		
+		int colorPos = i % colors.length();
+		String color = colorPos == colors.length() ?
+				colors.substring( colorPos ) :
+				colors.substring( colorPos, colorPos + 1 );
+		setAltColorCode( "&" + color );
+		
+		setAltCountVirtual( 0 );
+		setAltCountPhysical( 0 );
+		
+	}
+	
+	public void resetAltValues() {
+		
+		setAltCountVirtual( 0 );
+		setAltCountPhysical( 0 );
+		
+	}
+	
+	public String getAltAlias() {
+		return altAlias;
+	}
+	public void setAltAlias(String altAlias) {
+		this.altAlias = altAlias;
+	}
+
+	public String getAltColorCode() {
+		return altColorCode;
+	}
+	public void setAltColorCode(String altColorCode) {
+		this.altColorCode = altColorCode;
+	}
+
+	public int getAltCountVirtual() {
+		return altCountVirtual;
+	}
+	public void setAltCountVirtual(int altCountVirtual) {
+		this.altCountVirtual = altCountVirtual;
+	}
+
+	public int getAltCountPhysical() {
+		return altCountPhysical;
+	}
+	public void setAltCountPhysical(int altCountPhysical) {
+		this.altCountPhysical = altCountPhysical;
 	}
 
 }

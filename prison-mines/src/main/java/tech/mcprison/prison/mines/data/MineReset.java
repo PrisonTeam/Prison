@@ -3,10 +3,8 @@ package tech.mcprison.prison.mines.data;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -586,7 +584,8 @@ public abstract class MineReset
 			
 			
 			// This is used to select the correct block list for the given mine level:
-			MineLevelBlockListData mineLevelBlockList = new MineLevelBlockListData( currentLevel, (Mine) this, random );
+			MineLevelBlockListData mineLevelBlockList = 
+							new MineLevelBlockListData( currentLevel, (Mine) this, random );
 			
 			
 			for (int x = xMin; x <= xMax; x++) {
@@ -604,9 +603,9 @@ public abstract class MineReset
 					
 					boolean isCorner = xEdge && yEdge && zEdge;
 					
-					Location targetBlock = new Location(world, x, y, z);
-					targetBlock.setEdge( isEdge );
-					targetBlock.setCorner( isCorner );
+					Location targetLocation = new Location(world, x, y, z);
+					targetLocation.setEdge( isEdge );
+					targetLocation.setCorner( isCorner );
 					
 //					MineTargetBlock mtb = null;
 					
@@ -624,7 +623,8 @@ public abstract class MineReset
 					// Increment the mine's block count. This block is one of the control blocks:
 					incrementResetBlockCount( prisonBlock );
 					
-					addMineTargetPrisonBlock( prisonBlock, targetBlock );
+					// TODO AIR block fix - allow AIR to be part of the regular block list?
+					addMineTargetPrisonBlock( prisonBlock, targetLocation );
 //						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
 					
 					if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
@@ -649,7 +649,7 @@ public abstract class MineReset
 		if ( Output.get().isDebug() && Output.get().isSelectiveTarget( DebugTarget.blockConstraints ) ) {
 			
 	    	DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
-	    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+	    	//DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 			
 			for ( PrisonBlockStatusData b : getPrisonBlocks() ) {
 				
@@ -909,54 +909,77 @@ public abstract class MineReset
     	//int totalLayers = getBounds().getTotalLayers();
     	
     	// BlockName = BlockLetter
-    	TreeMap<String,String> translator = new TreeMap<>();
-    	TreeMap<String,Integer> map = new TreeMap<>();
-    	TreeMap<String,Integer> mapMine = new TreeMap<>();
+//    	TreeMap<String,String> translator = new TreeMap<>();
+//    	TreeMap<String,Integer> map = new TreeMap<>();
+//    	TreeMap<String,Integer> mapMine = new TreeMap<>();
+    	
+    	// Add AIR to make sure it is there:
+    	PrisonBlock air = PrisonBlock.AIR.clone();
+    	boolean hasAir = getPrisonBlock( air.getBlockName() ) != null;
+    	
+    	if ( !hasAir ) {
+    		getPrisonBlocks().add( air );
+    		getBlockStats( air );
+    	}
+    	
+    	int j = 0;
+    	TreeSet<String> keys = new TreeSet<>( getBlockStats().keySet() );
+    	for (String key : keys) {
+			PrisonBlockStatusData blk = getBlockStats().get( key );
+			
+			blk.setAltValues( j++ );
+		}
+    	
+    	
+    	
+//    	String codesStr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#&*";
+//    	List<String> codes = Arrays.asList( codesStr.split("|"));
+//    	String colors = "12345789abcde";
+    	
     	
     	// Always add the air block:
-    	translator.put( PrisonBlock.AIR.getBlockName(), "" );
+//    	translator.put( PrisonBlock.AIR.getBlockName(), "" );
     	
     	
-    	String colors = "12345789abcde";
     	
-    	// Build translations:
-    	char blk = 'A';
-//    	double chance = 0;
-//    	boolean hasAir = false;
-    	
-    	// First add all the blocks with an empty String as the value:
-    	for (PrisonBlock b : getPrisonBlocks() ) {
-//			chance += b.getChance();
-			translator.put( b.getBlockName(), "" );
-//			if ( b.isAir() ) {
-//				hasAir = true;
-//			}
-		}
-//    	if ( !hasAir && chance < 100.0d ) {
-//    		translator.put( PrisonBlock.AIR.getBlockName(), "" );
-//    	}
+//    	// Build translations:
+//    	char blk = 'A';
+////    	double chance = 0;
+////    	boolean hasAir = false;
+//    	
+//    	// First add all the blocks with an empty String as the value:
+//    	for (PrisonBlock b : getPrisonBlocks() ) {
+////			chance += b.getChance();
+//			translator.put( b.getBlockName(), "" );
+////			if ( b.isAir() ) {
+////				hasAir = true;
+////			}
+//		}
+////    	if ( !hasAir && chance < 100.0d ) {
+////    		translator.put( PrisonBlock.AIR.getBlockName(), "" );
+////    	}
+//
+//    	// Now that they are in order, assign the alphabetical names:
+//    	Set<String> tkeys = translator.keySet();
+//    	for (String tKey : tkeys) {
+//    		translator.put( tKey, Character.toString( blk ) );
+//    		
+//    		if ( blk == 'Z' ) {
+//    			blk = 'a';
+//    		}
+//    		else if ( blk == 'z' ) {
+//    			blk = '1';
+//    		}
+//    		else {
+//    			blk++;
+//    		}
+//		}
 
-    	// Now that they are in order, assign the alphabetical names:
-    	Set<String> tkeys = translator.keySet();
-    	for (String tKey : tkeys) {
-    		translator.put( tKey, Character.toString( blk ) );
-    		
-    		if ( blk == 'Z' ) {
-    			blk = 'a';
-    		}
-    		else if ( blk == 'z' ) {
-    			blk = '1';
-    		}
-    		else {
-    			blk++;
-    		}
-		}
-
-    	String airName = PrisonBlock.AIR.getBlockName();
-    	String keyAir = translator.get(airName);
-    	
-    	map.put( keyAir, 0 );
-    	mapMine.put( keyAir, 0 );
+//    	String airName = PrisonBlock.AIR.getBlockName();
+//    	String keyAir = translator.get(airName);
+//    	
+//    	map.put( keyAir, 0 );
+//    	mapMine.put( keyAir, 0 );
     	
     	int layer = 0;
     	int blockCount = 0;
@@ -966,37 +989,72 @@ public abstract class MineReset
     		MineTargetPrisonBlock tBlock = getMineTargetPrisonBlocks().get(i);
     		int y = getMineTargetPrisonBlocks().get(i).getLocation().getBlockY();
     		blockCount++;
+    		
+    		
+    		{
+    			PrisonBlockStatusData statsBlock = null;
+    			
+    			// the getPrisonblock() should not return a null value:
+    			PrisonBlockStatusData sBlock = tBlock.getPrisonBlock();
+    			
+    			if ( sBlock == null ) {
+    				sBlock = PrisonBlock.AIR.clone();
+    			}
+    			
+    			String blockName = sBlock.getBlockName();
+    			statsBlock = getBlockStats().get( blockName );
+    			
+    			if ( statsBlock == null ) {
+    				statsBlock = getBlockStats().get( air );
+    			}
+    			
+    			
+    			statsBlock.setAltCountVirtual( statsBlock.getAltCountVirtual() + 1);
+    			if ( tBlock.isCheckSame() ) {
+    				statsBlock.setAltCountPhysical( statsBlock.getAltCountPhysical() + 1);
+    			}
+    			else if ( tBlock.isCheckAir() ) {
+    				
+    				PrisonBlockStatusData airStats = getBlockStats( air );
+    				airStats.setAltCountPhysical( airStats.getAltCountPhysical() + 1);
+    				
+    			}
+    			
+    		}
+    		
 
 //    		int level = (int) ((i / (double) blocksPerLayer) + 1);
     		
-    		
-    		String keyPrime = tBlock == null || tBlock.getPrisonBlock() == null ? 
-    				airName : 
-    					tBlock.getPrisonBlock().getBlockName();
-    		
-    		String key = translator.get(keyPrime);
-
-    		if ( !map.containsKey(key) ) {
-    			map.put( key, 1 );
-    		}
-    		else {
-    			map.put( key, 1 + map.get(key) );
-    		}
-
-    		if ( !mapMine.containsKey(key) ) {
-    			mapMine.put( key, 0 );
-    		}
-//    		if ( !mapMine.containsKey(keyAir) ) {
-//    			mapMine.put( keyAir, 0 );
+//    		getBlockStats(keyAir);
+//    		tBlock.getPrisonBlock();
+//    		
+//    		String keyPrime = tBlock == null || tBlock.getPrisonBlock() == null ? 
+//    				airName : 
+//    					tBlock.getPrisonBlock().getBlockName();
+//    		
+//    		String key = translator.get(keyPrime);
+//
+//    		if ( !map.containsKey(key) ) {
+//    			map.put( key, 1 );
 //    		}
-
-    		if ( tBlock.isCheckSame() ) {
-    			mapMine.put( key, 1 + mapMine.get(key) );
-    		}
-    		else if ( tBlock.isCheckAir() ) {
-    			mapMine.put( keyAir, 1 + mapMine.get(keyAir) );
-    			
-    		}
+//    		else {
+//    			map.put( key, 1 + map.get(key) );
+//    		}
+//
+//    		if ( !mapMine.containsKey(key) ) {
+//    			mapMine.put( key, 0 );
+//    		}
+////    		if ( !mapMine.containsKey(keyAir) ) {
+////    			mapMine.put( keyAir, 0 );
+////    		}
+//
+//    		if ( tBlock.isCheckSame() ) {
+//    			mapMine.put( key, 1 + mapMine.get(key) );
+//    		}
+//    		else if ( tBlock.isCheckAir() ) {
+//    			mapMine.put( keyAir, 1 + mapMine.get(keyAir) );
+//    			
+//    		}
     		
     		
     		if ( (i + 1) >= getMineTargetPrisonBlocks().size() ||
@@ -1008,8 +1066,26 @@ public abstract class MineReset
     				.append( " (" ).append( blockCount ).append(")")
     				.append( " : " );
     			
-    			TreeSet<String> keys = new TreeSet<>( map.keySet() );
+//    			TreeSet<String> keys = new TreeSet<>( map.keySet() );
     			for ( String k : keys ) {
+    				
+    				PrisonBlockStatusData statsBlock = getBlockStats( k );
+    				
+    				sb.append( statsBlock.getAltColorCode() )
+    				  .append( statsBlock.getAltAlias() )
+    				  .append( Output.get().getColorCodeInfo() )
+    				  .append( ":" )
+    				  .append( statsBlock.getAltCountVirtual() );
+    				
+    				if ( statsBlock.getAltCountVirtual() != statsBlock.getAltCountPhysical() ) {
+    					sb.append( ":" )
+    					  .append( statsBlock.getAltCountPhysical() );
+    				}
+    				
+    				sb.append( " " );
+    				
+    				statsBlock.resetAltValues();
+    				
 //    				for ( Entry<String, String> eSet : translator.entrySet()) {
 //    					if ( eSet.getValue().equalsIgnoreCase(k) ) {
 //    						
@@ -1020,34 +1096,35 @@ public abstract class MineReset
 //    					}
 //    				}
     				
-    				int c = k.charAt(0) % colors.length();
-    				
-    				String color = "&" + String.valueOf(colors.charAt(c));
-    				
-    				int count = map.get(k);
-    				int countMine = mapMine.get(k);
-    				
-    				sb
-    					.append( color ).append( k ).append( Output.get().getColorCodeDebug() )
-    					.append( ":" ).append( count );
-    				
-    				if ( count != countMine ) {
-    					sb
-	    					.append( ":" ).append( countMine );
-    				}
-    				
-    				sb.append( " " );
+//    				int c = k.charAt(0) % colors.length();
+//    				
+//    				String color = "&" + String.valueOf(colors.charAt(c));
+//    				
+//    				int count = map.get(k);
+//    				int countMine = mapMine.get(k);
+//    				
+//    				sb
+//    					.append( color ).append( k ).append( Output.get().getColorCodeDebug() )
+//    					.append( ":" ).append( count );
+//    				
+//    				if ( count != countMine ) {
+//    					sb
+//	    					.append( ":" ).append( countMine );
+//    				}
+//    				
+//    				sb.append( " " );
     			}
     			
     			layers.add( sb.toString() );
 
     			blockCount = 0;
     			
-    			map.clear();
-    			mapMine.clear();
     			
-    			map.put( keyAir, 0 );
-    	    	mapMine.put( keyAir, 0 );
+//    			map.clear();
+//    			mapMine.clear();
+//    			
+//    			map.put( keyAir, 0 );
+//    	    	mapMine.put( keyAir, 0 );
     		}
     		
 //    		// if last block of the layer:
@@ -1083,23 +1160,42 @@ public abstract class MineReset
     		
     		sb.append( "Legend: " );
     		
-    		for ( Entry<String, String> eSet : translator.entrySet()) {
-    			String blockName = eSet.getKey();
-    			
-				String value = eSet.getValue();
+    		for ( String k : keys ) {
 				
-    			int c = value.charAt(0) % colors.length();
-				String color = "&" + String.valueOf(colors.charAt(c));
+    			PrisonBlockStatusData statsBlock = getBlockStats( k );
+
+   				sb.append( statsBlock.getAltColorCode() )
+				  .append( statsBlock.getAltAlias() )
+				  .append( Output.get().getColorCodeInfo() )
+				  .append( "=" )
+				  .append( statsBlock.getBlockName() )
+   				  .append( "  " );
+
 				
-    			sb
-    				.append( color ).append( eSet.getValue() ).append( Output.get().getColorCodeDebug() )
-    				.append( ":" ).append( blockName ).append( " " );
     		}
+    		
+//    		for ( Entry<String, String> eSet : translator.entrySet()) {
+//    			String blockName = eSet.getKey();
+//    			
+//				String value = eSet.getValue();
+//				
+//    			int c = value.charAt(0) % colors.length();
+//				String color = "&" + String.valueOf(colors.charAt(c));
+//				
+//    			sb
+//    				.append( color ).append( eSet.getValue() ).append( Output.get().getColorCodeDebug() )
+//    				.append( ":" ).append( blockName ).append( " " );
+//    		}
     		
     		layers.add( sb.toString() );
     		
     	}
     	
+    	if ( !hasAir ) {
+    		removePrisonBlock( air );
+    		getBlockStats().remove( air.getBlockName() );
+    	}
+
     	
     	return layers;
     }
@@ -1532,11 +1628,11 @@ public abstract class MineReset
 						
 						boolean isCorner = xEdge && yEdge && zEdge;
 						
-						Location targetBlock = new Location(world, x, y, z);
-						targetBlock.setEdge( isEdge );
-						targetBlock.setCorner( isCorner );
+						Location targetLocation = new Location(world, x, y, z);
+						targetLocation.setEdge( isEdge );
+						targetLocation.setCorner( isCorner );
 						
-						locations.add( targetBlock );
+						locations.add( targetLocation );
 						
 						
 
@@ -1609,7 +1705,7 @@ public abstract class MineReset
 	}
 	
 	
-	public void refreshAirCountSyncTaskSetLocation( Location targetBlock, 
+	public void refreshAirCountSyncTaskSetLocation( Location targetLocation, 
 					OnStartupRefreshBlockBreakCountSyncTask stats ) {
 		
 		try {
@@ -1619,20 +1715,23 @@ public abstract class MineReset
 					getPrisonBlockTypes().contains( PrisonBlockType.CustomItems ) ||
 					getPrisonBlockTypes().contains( PrisonBlockType.ItemsAdder );
 
-			Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
+			Block tBlock = targetLocation.getBlockAt( containsCustomBlocks );
 			
 			
 			
 			PrisonBlock pBlock = tBlock.getPrisonBlock();
 			
-			if ( pBlock != null ) {
-				
-				// Increment the mine's block count. This block is one of the control blocks:
-				addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), targetBlock );
-				
+			if ( pBlock == null ) {
+				// TODO AIR block fix - allow AIR to be part of the regular block list?
+				pBlock = PrisonBlock.AIR.clone();
 			}
 			
-			if ( pBlock == null || pBlock.isAir() ) {
+				
+			// Increment the mine's block count. This block is one of the control blocks:
+			addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), targetLocation );
+			
+			
+			if ( pBlock.isAir() ) {
 				stats.incrementAirCount();
 			}
 		}
@@ -1646,7 +1745,7 @@ public abstract class MineReset
 			// If there are no entities, it will be fine, but they could cause issues with async 
 			// access of unloaded chunks.
 			String coords = String.format( "%d.%d.%d ", 
-						targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ() );
+					targetLocation.getBlockX(), targetLocation.getBlockY(), targetLocation.getBlockZ() );
 			
 			if ( stats.getErrorCount() == 0 ) {
 				String message = String.format( 
@@ -1733,9 +1832,23 @@ public abstract class MineReset
 					}
 				}
 			
+			}
+			
+			if ( Output.get().isDebug() ) {
 
 				long stop = System.currentTimeMillis();
 				long elapsed = stop - start;
+				
+				double ms = elapsed / 1_000_000_000d;
+				String msStr = Prison.getDecimalFormatStaticDouble().format(ms);
+				
+				Output.get().logInfo( 
+						String.format( 
+								"MineReset.scanAllBlocksForUpdates runtime%s=", 
+								msStr
+							)
+						);
+				
 			}
 		}
 	}
@@ -2227,11 +2340,9 @@ public abstract class MineReset
 	
 	
 	
-	private void addMineTargetPrisonBlock( PrisonBlockStatusData block, Location targetBlock ) {
+	private void addMineTargetPrisonBlock( PrisonBlockStatusData block, Location targetLocation ) {
 		
-		MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), 
-				targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ(), 
-				targetBlock.isEdge(), targetBlock.isCorner() );
+		MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, targetLocation );
 		
 		synchronized ( getMineStateMutex() ) {
 			

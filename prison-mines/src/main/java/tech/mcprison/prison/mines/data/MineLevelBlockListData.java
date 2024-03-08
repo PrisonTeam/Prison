@@ -38,6 +38,9 @@ public class MineLevelBlockListData
 	
 	private void initialize() {
 		
+		totalChance = 0d;
+		selectedChance = 0d;
+		airChance = 0d;
 		
 		
 		// PrisonBlocks contains the percent chance of spawning:
@@ -174,12 +177,14 @@ public class MineLevelBlockListData
 				selected = block;
 				
 				break;
-			} else {
+			} 
+			else {
 				chance -= block.getChance();
 			}
 		}
 		
-		// If block reaches it's max amount, remove it from the block list.
+		// If block reaches it's max amount, remove it from the block list so it will not 
+		// be selected again. If max is reached, then this block is the max number allowed.
 		// Note that the block has not been incremented yet, so add one to the placement count
 		if ( selected != null && 
 				selected.getConstraintMax() > 0 &&
@@ -187,9 +192,13 @@ public class MineLevelBlockListData
 			
 			selected.setIncludeInLayerCalculations( false );
 			
-//			selectedBlocks.remove(selected);
+			selectedBlocks.remove(selected);
 			
-//			selectedChance -= selected.getChance();
+			selectedChance -= selected.getChance();
+		}
+		
+		if ( chance == 0d && selected == null ) {
+			selected = PrisonBlock.AIR.clone();
 		}
 		
 		return selected;
