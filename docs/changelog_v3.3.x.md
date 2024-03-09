@@ -18,7 +18,12 @@ These change logs represent the work that has been going on within prison.
 
 
 
-**3.3.0-alpha.16c 2024-03-08** 
+**3.3.0-alpha.16c 2024-03-09** 
+
+
+* **Mine resets: Reworked how prison is selecting random blocks per layer, to properly include constraints.**
+The addition of various new features in the past made a mess of the logic, so it's been cleaned up greatly so it now makes sense and should work properly now.
+There is a slight risk, that as blocks are removed from a layer due to reaching it's max constraint value, that future random selections were missing blocks selections and was then inserting AIR. This fixed code now will insert a filler block which has been selected with no constraints, and the largest chance value.
 
 
 * **mines block layerStats: rewrote to improve and get rid of the collection manipulations.**

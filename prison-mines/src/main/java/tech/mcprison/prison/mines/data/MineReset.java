@@ -564,7 +564,6 @@ public abstract class MineReset
 		World world = worldOptional.get();
 		
 		int airCount = 0;
-		int currentLevel = 0;
 		
 		
 		int yMin = getBounds().getyBlockMin();
@@ -575,6 +574,10 @@ public abstract class MineReset
 		
 		int zMin = getBounds().getzBlockMin();
 		int zMax = getBounds().getzBlockMax();
+
+		
+		int currentLevel = 0;
+		int maxLevels = yMax - yMin + 1;
 		
 		
 		// The reset takes place first with the top-most layer since most mines may have
@@ -585,7 +588,7 @@ public abstract class MineReset
 			
 			// This is used to select the correct block list for the given mine level:
 			MineLevelBlockListData mineLevelBlockList = 
-							new MineLevelBlockListData( currentLevel, (Mine) this, random );
+							new MineLevelBlockListData( currentLevel, maxLevels, (Mine) this, random );
 			
 			
 			for (int x = xMin; x <= xMax; x++) {
