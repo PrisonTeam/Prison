@@ -791,7 +791,7 @@ public abstract class MineData
     		block.setRangeBlockCountHigh( -1 );
     		block.setRangeBlockCountLowLimit( -1 );
     		block.setRangeBlockCountHighLimit( -1 );
-    		block.setIncludeInLayerCalculations( true );
+//    		block.setIncludeInLayerCalculations( true );
 		}
     	
     	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
@@ -802,7 +802,7 @@ public abstract class MineData
     		block.setRangeBlockCountHigh( -1 );
     		block.setRangeBlockCountLowLimit( -1 );
     		block.setRangeBlockCountHighLimit( -1 );
-    		block.setIncludeInLayerCalculations( true );
+//    		block.setIncludeInLayerCalculations( true );
     	}
     	
 //    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {

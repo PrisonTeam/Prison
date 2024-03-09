@@ -42,7 +42,7 @@ public abstract class PrisonBlockStatusData {
 	
 	private boolean gravity = false;
 	
-	private transient boolean includeInLayerCalculations;
+//	private transient boolean includeInLayerCalculations;
 	
 	
 	private transient String altAlias;
@@ -90,7 +90,7 @@ public abstract class PrisonBlockStatusData {
 		
 		this.gravity = checkGravityAffects( blockName );
 		
-		this.includeInLayerCalculations = true;
+//		this.includeInLayerCalculations = true;
 	}
 
 	
@@ -556,12 +556,12 @@ public abstract class PrisonBlockStatusData {
 
 
 	
-	public boolean isIncludeInLayerCalculations() {
-		return includeInLayerCalculations;
-	}
-	public void setIncludeInLayerCalculations(boolean includeInLayerCalculations) {
-		this.includeInLayerCalculations = includeInLayerCalculations;
-	}
+//	public boolean isIncludeInLayerCalculations() {
+//		return includeInLayerCalculations;
+//	}
+//	public void setIncludeInLayerCalculations(boolean includeInLayerCalculations) {
+//		this.includeInLayerCalculations = includeInLayerCalculations;
+//	}
 
 
 	/**
