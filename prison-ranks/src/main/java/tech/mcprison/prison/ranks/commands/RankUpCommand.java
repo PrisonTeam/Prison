@@ -768,34 +768,43 @@ public class RankUpCommand
         UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
+		if ( ladder == null ) {
+			return;
+		}
 
 		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 		
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, ladder );
         
-        if ( playerRank != null ) {
+        if ( rankPlayer != null && playerRank != null ) {
         	
         	Rank pRank = playerRank.getRank();
+        	if ( pRank == null ) {
+        		sender.sendMessage( "Promote: There was an error trying to access the "
+        				+ "current rank of the player. Try viewing the player's "
+        				+ "details: '/ranks player help'.");
+        		return;
+        	}
         	
         	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+        	String currency = pRank.getCurrency();
         	
-        	if ( ladder != null && rankPlayer != null ) {
-        		
-        		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
-        		
-        		RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
-        				player.getName(), sender.getName(), pForceCharge, cmdTasks );
-
-        		// submit cmdTasks...
-    			submitCmdTasks( player, cmdTasks );
-        		
-        		processResults( sender, player.getName(), results, null, ladder, currency, null );
-        	}
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        	
+        	RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
+        			player.getName(), sender.getName(), pForceCharge, cmdTasks );
+        	
+        	// submit cmdTasks...
+        	submitCmdTasks( player, cmdTasks );
+        	
+        	processResults( sender, player.getName(), results, null, ladder, currency, null );
+        	
         }
         else {
         	// Message: Player is not on the ladder
+        	sender.sendMessage( "Promote: Player is not on the specified ladder. "
+        			+ "Try using '/ranks set rank' to add them.");
         }
     }
 
@@ -842,28 +851,34 @@ public class RankUpCommand
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, ladder );
         
-        if ( playerRank != null ) {
+        if ( rankPlayer != null && playerRank != null ) {
         	
         	Rank pRank = playerRank.getRank();
+        	if ( pRank == null ) {
+        		sender.sendMessage( "Demote: There was an error trying to access the "
+        				+ "current rank of the player. Try viewing the player's "
+        				+ "details: '/ranks player help'.");
+        		return;
+        	}
         	
         	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+        	String currency = pRank.getCurrency();
         	
-        	if ( ladder != null && rankPlayer != null ) {
-        		
-        		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
-        		
-        		RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
-        				player.getName(), sender.getName(), pForceCharge, cmdTasks );
-        		
-        		// submit cmdTasks
-    			submitCmdTasks( player, cmdTasks );
-        		
-        		processResults( sender, player.getName(), results, null, ladder, currency, null );
-        	}
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        	
+        	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
+        			player.getName(), sender.getName(), pForceCharge, cmdTasks );
+        	
+        	// submit cmdTasks
+        	submitCmdTasks( player, cmdTasks );
+        	
+        	processResults( sender, player.getName(), results, null, ladder, currency, null );
+        	
         }
         else {
         	// Message: Player is not on the ladder
+        	sender.sendMessage( "Demote: Player is not on the specified ladder. "
+        			+ "Try using '/ranks set rank' to add them.");
         }
     }
 

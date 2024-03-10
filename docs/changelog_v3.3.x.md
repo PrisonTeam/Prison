@@ -21,6 +21,10 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16c 2024-03-10** 
 
 
+* **Promote & Demote: Improved upon reporting issues with the command.**
+There were few situations where the command would exit without reporting why, which was leading to difficulties with using the command effectively. 
+
+
 * **New feature: TopN customization now possible.  The messages and placeholders that you can use are located in the core multi-language files.**
 See the bottom of the files for instructions on usage.
 TopN data is set to delay load so it does not lengthen the startup process.  As such, it now reports that the data is being loaded so it is now clear why there are no entries in the list initially.
