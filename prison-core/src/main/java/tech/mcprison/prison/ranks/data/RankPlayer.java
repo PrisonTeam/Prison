@@ -50,6 +50,7 @@ import tech.mcprison.prison.util.Text;
  * @author Faizaan A. Datoo
  */
 public class RankPlayer 
+		extends RankPlayerMessages
 			implements Player {
 
 	public static final long DELAY_THREE_SECONDS = 20 * 3; // 3 seconds in ticks
@@ -1690,16 +1691,19 @@ public class RankPlayer
 //	}
 	
 	public static String printRankScoreLine1Header() {
-		String header = String.format(
-				"Rank  %-16s %-9s  %-6s %-9s %-9s %-9s",
-					"Player",
-					"Prestiges",
-					"Rank",
-					"Balance",
-					"Rank-Score",
-					"Penalty"
-						
-				);
+		
+		String header = coreTopNLine1HeaderMsg();
+		
+//		String header = String.format(
+//				"Rank  %-16s %-9s  %-6s %-9s %-9s %-9s",
+//					"Player",
+//					"Prestiges",
+//					"Rank",
+//					"Balance",
+//					"Rank-Score",
+//					"Penalty"
+//						
+//				);
 		return header;
 	}
 	
@@ -1707,28 +1711,55 @@ public class RankPlayer
 		
 		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
-		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank prestigeRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();
 		
-		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String prestigeRankName = prestigeRank == null ? "" : prestigeRank.getRank().getName();
+		String defaultRankName = defRank == null ? "" : defRank.getRank().getName();
+		
+		String prestRankTag = prestigeRank == null ? "---" : prestigeRank.getRank().getTag();
 		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
 		
 		String prestRankTagNc = Text.stripColor(prestRankTag);
 		String defRankTagNc = Text.stripColor(defRankTag);
 		
-		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+		String balanceFmtStr = dFmt.format( getRankScoreBalance()  );
+		String balanceKmbtStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+		String balanceMetricStr = PlaceholdersUtil.formattedMetricSISize( getRankScoreBalance(), dFmt, " " );
+		
+		String rankPositionStr = Integer.toString(rankPostion);
+		String rankScoreStr = rankPostion > 0 ? Integer.toString(rankPostion) : "";
 		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
-		String message = String.format(
-				" %-3s  %-18s %-7s %-7s %9s %9s %9s",
-					(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
-					getName(),
-					prestRankTagNc,
-					defRankTagNc,
-					balanceStr,
-					dFmt.format( getRankScore() ),
-					sPenaltyStr
+		String playerName = getName();
+		
+		String message = coreTopNLine1DetailMsg( 
+				
+				playerName,
+				rankPositionStr,
+				rankScoreStr,
+				sPenaltyStr,
+				prestigeRankName, 
+				defaultRankName, 
+				prestRankTag,
+				defRankTag,
+				prestRankTagNc,
+				defRankTagNc,
+				balanceFmtStr,
+				balanceKmbtStr,
+				balanceMetricStr
+				
 				);
+//		String message = String.format(
+//				" %-3s  %-18s %-7s %-7s %9s %9s %9s",
+//					rankScoreStr,
+//					getName(),
+//					prestRankTagNc,
+//					defRankTagNc,
+//					balanceKmbtStr,
+//					dFmt.format( getRankScore() ),
+//					sPenaltyStr
+//				);
 		
 		message = message
 					.replace(prestRankTagNc, prestRankTag + "&r")
@@ -1738,46 +1769,82 @@ public class RankPlayer
 	}
 	
 	public static String printRankScoreLine2Header() {
-		String header = String.format(
-				"Rank %s %s %-15s %9s",
-				"Ranks",
-				"Rank-Score",
-				"Player",
-				"Balance"
-				
-				);
+		
+		String header = coreTopNLine2HeaderMsg();
+//		String header = String.format(
+//				"Rank %s %s %-15s %9s",
+//				"Ranks",
+//				"Rank-Score",
+//				"Player",
+//				"Balance"
+//				
+//				);
 		return header;
 	}
 	
 	public String printRankScoreLine2( int rankPostion ) {
-		
+
 		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
-		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank prestigeRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();
 		
-		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String prestigeRankName = prestigeRank == null ? "" : prestigeRank.getRank().getName();
+		String defaultRankName = defRank == null ? "" : defRank.getRank().getName();
+		
+		String prestRankTag = prestigeRank == null ? "---" : prestigeRank.getRank().getTag();
 		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
 		
 		String prestRankTagNc = Text.stripColor(prestRankTag);
 		String defRankTagNc = Text.stripColor(defRankTag);
 		
-		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
-//		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+		String balanceFmtStr = dFmt.format( getRankScoreBalance()  );
+		String balanceKmbtStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+		String balanceMetricStr = PlaceholdersUtil.formattedMetricSISize( getRankScoreBalance(), dFmt, " " );
 		
-		String ranks = prestRankTagNc + defRankTagNc;
-		String message = String.format(
-				" %-3s %-9s %6s %-17s %9s",
-				(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
-				ranks,
-				dFmt.format( getRankScore() ),
-				getName(),
-				balanceStr
-				);
+		String rankPositionStr = Integer.toString(rankPostion);
+		String rankScoreStr = rankPostion > 0 ? Integer.toString(rankPostion) : "";
+		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
-		message = message
-				.replace(prestRankTagNc, prestRankTag + "&r")
-				.replace(defRankTagNc, defRankTag + "&r");
+		String playerName = getName();
+		
+//		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+//		
+//		PlayerRank prestRank = getPlayerRankPrestiges();
+//		PlayerRank defRank = getPlayerRankDefault();
+//		
+//		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+//		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
+//		
+//		String prestRankTagNc = Text.stripColor(prestRankTag);
+//		String defRankTagNc = Text.stripColor(defRankTag);
+//		
+//		String balanceKmbtStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+////		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+//		
+//		String ranks = prestRankTagNc + defRankTagNc;
+		
+		String message = coreTopNLine2DetailMsg( 
+				playerName,
+				rankPositionStr,
+				rankScoreStr, sPenaltyStr,
+				prestigeRankName, defaultRankName, 
+				prestRankTag, defRankTag, 
+				prestRankTagNc, defRankTagNc, 
+				balanceFmtStr,  balanceKmbtStr, balanceMetricStr );
+		
+//		String message = String.format(
+//				" %-3s %-9s %6s %-17s %9s",
+//				(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
+//				ranks,
+//				dFmt.format( getRankScore() ),
+//				getName(),
+//				balanceKmbtStr
+//				);
+//		
+//		message = message
+//				.replace(prestRankTagNc, prestRankTag + "&r")
+//				.replace(defRankTagNc, defRankTag + "&r");
 		
 		return message;
 	}

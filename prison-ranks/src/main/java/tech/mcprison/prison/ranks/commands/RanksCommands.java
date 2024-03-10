@@ -2268,6 +2268,7 @@ public class RanksCommands
 //    	boolean sort = contains( "sort", pageNumber, pageSizeNumber, options );
     	
     	int topNSize = TopNPlayers.getInstance().getTopNSize();
+    	boolean loading = TopNPlayers.getInstance().isLoading();
     	int archivedSize = TopNPlayers.getInstance().getArchivedSize();
     	
     	
@@ -2339,6 +2340,11 @@ public class RanksCommands
     			RankPlayer.printRankScoreLine2Header() : 
     				RankPlayer.printRankScoreLine1Header();
     	sender.sendMessage( header );
+    	
+    	if ( loading ) {
+    		sender.sendMessage( "&3(Loading TopN List - Please Wait)" );
+    	}
+    	
     	
     	for ( int i = posStart; i < posEnd; i++ ) {
     		
