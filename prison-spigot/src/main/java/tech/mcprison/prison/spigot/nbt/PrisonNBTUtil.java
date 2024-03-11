@@ -2,11 +2,14 @@ package tech.mcprison.prison.spigot.nbt;
 
 import java.util.function.Function;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import tech.mcprison.prison.output.Output;
 
 /**
@@ -47,6 +50,18 @@ public class PrisonNBTUtil {
 		
 		results = NBT.get(bukkitStack, gsFnc );
 //		results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
+		
+		return results;
+	}
+	
+	public static String getNBTString( Block bukkitBlock, String key ) {
+		String results = null;
+		
+		Function<ReadableNBT, String> gsFnc = nbt -> nbt.getString(key);
+		
+		BlockState blockState = bukkitBlock.getState();
+		
+		results = NBT.get(blockState, gsFnc );
 		
 		return results;
 	}
@@ -108,9 +123,18 @@ public class PrisonNBTUtil {
 		}
 	}
 	
+	
 	public static String nbtDebugString( ItemStack bukkitStack ) {
 		
 		ReadWriteNBT nbtItem = NBT.itemStackToNBT(bukkitStack);
+		return nbtItem.toString();
+	}
+	
+	public static String nbtDebugString() {
+		
+		ReadWriteNBT nbtItem = NBT.createNBTObject();
+		
+//		ReadWriteNBT nbtItem = NBT.itemStackToNBT(bukkitStack);
 		return nbtItem.toString();
 	}
 	

@@ -21,6 +21,9 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16c 2024-03-11** 
 
 
+* **Prison's NBT: Add support for using NBTs with bukkit's Block.**
+
+
 * **Add support for getting the "hand" from the BlockPlaceEvent.**
 
 
