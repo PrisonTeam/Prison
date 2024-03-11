@@ -21,6 +21,9 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16c 2024-03-11** 
 
 
+* **PlaceholderAPI: Upgrade from v2.11.2 to v2.11.5**
+
+
 * **XSeries: Upgrade from v9.8.0 to v9.9.0**
 
 
