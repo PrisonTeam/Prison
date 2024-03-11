@@ -572,4 +572,22 @@ public class TestPlatform implements Platform {
 	public Map<String, Object> loadYaml(File file) {
 		return new TreeMap<String, Object>();
 	}
+
+	@Override
+	public String dumpEventListenersBlockPlaceEvents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String dumpEventListenersPlayerDropItemEvents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String dumpEventListenersPlayerPickupItemEvents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
