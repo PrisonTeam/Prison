@@ -21,6 +21,9 @@ These change logs represent the work that has been going on within prison.
 **3.3.0-alpha.16c 2024-03-11** 
 
 
+* **Add support for getting the "hand" from the BlockPlaceEvent.**
+
+
 * **Prison support listeners: added support for listening to and providing dumps for PlayerDropItemEvent, PlayerPickupItemEvent, and BlockPlaceEvent.**
 
 

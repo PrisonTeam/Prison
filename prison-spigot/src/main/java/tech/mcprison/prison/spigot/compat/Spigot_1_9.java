@@ -22,6 +22,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -46,6 +47,15 @@ public class Spigot_1_9
         } else {
             return EquipmentSlot.valueOf(e.getHand().name());
         }
+    }
+
+    @Override 
+    public EquipmentSlot getHand(BlockPlaceEvent e) {
+    	if (e.getHand() == null) {
+    		return null;
+    	} else {
+    		return EquipmentSlot.valueOf(e.getHand().name());
+    	}
     }
 
     @Override 

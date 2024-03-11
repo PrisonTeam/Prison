@@ -21,6 +21,7 @@ package tech.mcprison.prison.spigot.compat;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -39,6 +40,8 @@ public interface Compatibility
 	
 	
     public EquipmentSlot getHand(PlayerInteractEvent e);
+    
+    public EquipmentSlot getHand(BlockPlaceEvent e);
 
     public ItemStack getItemInMainHand(PlayerInteractEvent e);
 
