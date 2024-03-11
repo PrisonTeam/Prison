@@ -338,6 +338,12 @@ public class PrisonStatsUtil {
     		sb.append( Prison.get().getPlatform().dumpEventListenersBlockBreakEvents() );
     	}
     	
+    	if ( "blockPlace".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+    		
+    		sb.append( "||Listeners blockPlace||" );
+    		sb.append( Prison.get().getPlatform().dumpEventListenersBlockPlaceEvents() );
+    	}
+    	
     	if ( "chat".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
     		
     		sb.append( "||Listeners chat||" );
@@ -356,6 +362,19 @@ public class PrisonStatsUtil {
     		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents() );
     	}
 
+    	if ( "playerDropItem".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+    		
+    		sb.append( "||Listeners playerDropItem||" );
+    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerDropItemEvents() );
+    	}
+    	
+    	if ( "playerPickupItem".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+    		
+    		sb.append( "||Listeners playerPickupItem||" );
+    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerPickupItemEvents() );
+    	}
+    	
+    	
 		return sb;
 	}
 

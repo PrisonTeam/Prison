@@ -386,6 +386,18 @@ public interface Platform {
 	public String dumpEventListenersPlayerInteractEvents();
 
 	
+	
+
+	public String dumpEventListenersBlockPlaceEvents();
+
+
+	public String dumpEventListenersPlayerDropItemEvents();
+
+
+	public String dumpEventListenersPlayerPickupItemEvents();
+	
+	
+	
 	public void testPlayerUtil( UUID uuid );
 	
 

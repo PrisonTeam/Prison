@@ -48,9 +48,12 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 
@@ -2759,17 +2762,19 @@ public class SpigotPlatform
 		blockEvents.dumpEventListeners( sb );
 		
 		
+		// NOTE: the use of '..==..' prevents these packages from being shortened. See end of this function.
+		
 		sb.append( "\n" );
 		sb.append( "&2NOTE: Prison Block Event Listeners:\n" );
 		
 		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
-									"tech.mcprison.prison.spigot.SpigotListener\n" );
+									"tmps.SpigotListener\n" );
 		sb.append( "&2. . Auto Features: " +
-									"tmpsae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
+									"tmps.ae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
 		sb.append( "&2. . Prison's multi-block explosions (bombs): " +
 				"tmpsae.AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
 		sb.append( "&2. . Prison Abbrv: '&3tmps.&2' = '&3tech..==..mcprison.prison.spigot.&2' & " +
-				"'&3tmpsae.&2' = '&3tmps..==..autofeatures.events.&2'\n" );
+				"'&3tmps.ae.&2' = '&3tmps..==..autofeatures.events.&2'\n" );
 
 		
 //		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
@@ -2824,7 +2829,7 @@ public class SpigotPlatform
 		// 'tmpsae.' = 'tmps.autofeatures.events.'
 		String results = sb.toString()
 				.replace( "tech.mcprison.prison.spigot.", "tmps." )
-				.replace( "tmps.autofeatures.events.",  "tmpsae." )
+				.replace( "tmps.autofeatures.events.",  "tmps.ae." )
 				.replace( "..==..", "." );
 		
 		return results;
@@ -2863,6 +2868,52 @@ public class SpigotPlatform
 								new SpigotHandlerList( PlayerInteractEvent.getHandlerList()) );
 		if ( eventDisplay != null ) {
 			sb.append( eventDisplay.toStringBuilder() );
+		}
+		
+		return sb.toString();
+	}
+	
+	@Override
+	public String dumpEventListenersBlockPlaceEvents() {
+		StringBuilder sb = new StringBuilder();
+		
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+				"BlockPlaceEvent", 
+				new SpigotHandlerList( BlockPlaceEvent.getHandlerList()) );
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
+		}
+		
+		return sb.toString();
+	}
+	
+	@Override
+	public String dumpEventListenersPlayerDropItemEvents() {
+		StringBuilder sb = new StringBuilder();
+		
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+				"PlayerDropItemEvent", 
+				new SpigotHandlerList( PlayerDropItemEvent.getHandlerList()) );
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
+		}
+		
+		return sb.toString();
+	}
+	
+	@Override
+	public String dumpEventListenersPlayerPickupItemEvents() {
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+					"PlayerPickupItemEvent", 
+					new SpigotHandlerList( PlayerPickupItemEvent.getHandlerList()) );
+			if ( eventDisplay != null ) {
+				sb.append( eventDisplay.toStringBuilder() );
+			}
+		} catch (Exception e) {
+			sb.append( "The PlayerPickupItemEvent is not valid on this version of spigot." );
 		}
 		
 		return sb.toString();

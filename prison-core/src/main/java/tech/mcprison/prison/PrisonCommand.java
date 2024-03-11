@@ -2019,7 +2019,8 @@ public class PrisonCommand
 			description = "Provides a detailed list of all registered event listeners for" +
 					"the various event types.  BlockBreak listeners will include all " +
 					"listeners that are being monitored within auto features. " +
-				"[all, blockBreak, chat, playerInteract]"
+				"[all, blockBreak, blockPlace, chat, playerDropItem, "
+							+ "playerPickupItem, playerInteract]"
 					) String listener
     		) {
 		
