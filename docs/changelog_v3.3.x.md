@@ -20,6 +20,8 @@ These change logs represent the work that has been going on within prison.
 
 **3.3.0-alpha.16c 2024-03-11** 
 
+* **Mine bombs: add support for BlockPlacementEvent so if someone is using a Block they can use it as the mine bomb's item.**
+
 
 * **Prison's NBT: Add support for using NBTs with bukkit's Block.**
 

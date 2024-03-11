@@ -4,11 +4,14 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -51,6 +54,44 @@ public class PrisonBombListener
 		
 		this.blockBreakMines = new OnBlockBreakMines();
 	}
+	
+	@EventHandler( priority = EventPriority.LOW )
+	public void onInteract( BlockPlaceEvent event ) {
+		
+    	String bombName = PrisonNBTUtil.getNBTString( event.getBlockPlaced(), 
+    			MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+    	
+    	if ( bombName == null || bombName.trim().length() == 0 ) {
+//    	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
+    		return;
+    	}
+
+    	if ( Output.get().isDebug() ) {
+    		Output.get().logInfo( "PrisonBombListener.onInteract (block) "
+    				+ "bombName: &7%s&r &3::  nbt: &r%s", 
+    				bombName, 
+    				PrisonNBTUtil.nbtDebugString( )
+//    				PrisonNBTUtil.nbtDebugString( event.getBlockPlaced() )
+//    				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
+    				);
+    		
+
+    		Player player = event.getPlayer();
+           	
+        	Block targetBlock = event.getBlockAgainst();
+        	
+        	EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+        	
+        	boolean canceled = processBombTriggerEvent(event, player, bombName, 
+        			targetBlock, hand );
+
+        	if ( canceled ) {
+        		event.setCancelled( canceled );
+        	}
+
+    	}
+       
+	}
 
     @EventHandler( priority = EventPriority.LOW )
     public void onInteract( PlayerInteractEvent event ) {
@@ -84,7 +125,8 @@ public class PrisonBombListener
 //        	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
         	
         	if ( Output.get().isDebug() ) {
-        		Output.get().logInfo( "PrisonBombListener.onInteract bombName: &7%s&r &3::  nbt: &r%s", 
+        		Output.get().logInfo( "PrisonBombListener.onInteract (item) "
+        				+ "bombName: &7%s&r &3::  nbt: &r%s", 
         				bombName, 
         				PrisonNBTUtil.nbtDebugString( event.getItem() )
 //        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
@@ -93,6 +135,27 @@ public class PrisonBombListener
         	
         	Player player = event.getPlayer();
         	
+        	Block targetBlock = event.getClickedBlock();
+        	
+        	EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+        	
+        	boolean canceled = processBombTriggerEvent(event, player, bombName, 
+        			targetBlock, hand );
+        	
+        	if ( canceled ) {
+        		event.setCancelled( canceled );
+        	}
+        	
+        }
+    }
+
+	private boolean processBombTriggerEvent( Event event, Player player, 
+					String bombName, Block targetBlock,
+					EquipmentSlot hand ) {
+		
+		boolean canceled = false;
+		
+		
 //        	// Temp test stuff... remove when NBTs are working:
 //        	{
 //        		
@@ -110,95 +173,97 @@ public class PrisonBombListener
 //        		SpigotItemStack sItemStack = new SpigotItemStack( event.getItem() );
 //        		Output.get().logInfo( sItemStack.getNBT().toString() );
 //        	}
-        	
-        	MineBombData bomb = getPrisonUtilsMineBombs().getBombItem( bombName );
-        	
-        	
-        	if ( bomb == null ) {
-            	if ( Output.get().isDebug() ) {
-        			Output.get().logInfo( "MineBombs: The bomb named '%s' cannot be mapped to a mine bomb.",
-        					bombName );
-        		}
-        		return;
-        	}
-        	
-        	SpigotBlock sBlock = null;
-        	
-        	SpigotPlayer sPlayer = new SpigotPlayer( player );
-        	
-        	// If clicking AIR, then event.getClickedBlock() will be null...
-        	// so if null, then use the player's location for placing the bomb.
-        	if ( event.getClickedBlock() == null ) {
-        		Location loc = sPlayer.getLocation();
-        		
-        		// Get the block 3 away from the player, in the direction (vector) in which
-        		// the player is looking.
-        		sBlock = (SpigotBlock) loc.add( loc.getDirection().multiply( 3 ) ) .getBlockAt();
-        	}
-        	else {
-        		sBlock = SpigotBlock.getSpigotBlock( event.getClickedBlock() );
-        	}
-        	
-        	
-        	Mine mine = blockBreakMines.findMine(player, sBlock, null, null);
-        	if ( mine == null ) {
-        		// player is not in a mine, so do not allow them to trigger a mine bomb:
-        		
-        		if ( Output.get().isDebug() ) {
-        			Output.get().logInfo( "MineBombs: Cannot mine bombs use outside of mines." );
-        		}
-        		
-        		event.setCancelled( true );
-        		return;
-        	}
-        	else if ( !mine.hasMiningAccess( sPlayer ) ) {
-        		// Player does not have access to the mine, so don't allow them to trigger a mine bomb:
-        		
-        		if ( Output.get().isDebug() ) {
-        			Output.get().logInfo( "MineBombs: Player %s&r does not have access to Mine %s&r.",
-        					sPlayer.getName(), mine.getName());
-        		}
-        		
-        		event.setCancelled( true );
-        		return;
-        	}
-        	
-        	HashSet<String> allowedMines = new HashSet<>( bomb.getAllowedMines() );
-        	HashSet<String> preventedMines = new HashSet<>( bomb.getPreventedMines() );
-        	List<String> globalPreventedMines = (List<String>) Prison.get().getPlatform()
-        			.getConfigStringArray("prison-mines.mine-bombs.prevent-usage-in-mines");
-        	preventedMines.addAll( globalPreventedMines );
-        	
-        	// Skip prevent-in-mines check if mine is within the allowedMines list:
-        	if ( !allowedMines.contains( mine.getName().toLowerCase() ) ) {
-        		
-        		if ( preventedMines.contains( mine.getName().toLowerCase() ) ) {
-        			
-        			// Mine bombs are not allowed to be used in this mine so cancel:
-        			event.setCancelled( true );
-        			return;
-        		}
-        	}
+		
+		MineBombData bomb = getPrisonUtilsMineBombs().getBombItem( bombName );
+		
+		
+		if ( bomb == null ) {
+			if ( Output.get().isDebug() ) {
+				Output.get().logInfo( "MineBombs: The bomb named '%s' cannot be mapped to a mine bomb.",
+						bombName );
+			}
+			return canceled;
+		}
+		
+		SpigotBlock sBlock = null;
+		
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		// If clicking AIR, then event.getClickedBlock() will be null...
+		// so if null, then use the player's location for placing the bomb.
+		if ( targetBlock == null ) {
+			Location loc = sPlayer.getLocation();
+			
+			// Get the block 3 away from the player, in the direction (vector) in which
+			// the player is looking.
+			sBlock = (SpigotBlock) loc.add( loc.getDirection().multiply( 3 ) ) .getBlockAt();
+		}
+		else {
+			sBlock = SpigotBlock.getSpigotBlock( targetBlock );
+		}
+		
+		
+		Mine mine = blockBreakMines.findMine(player, sBlock, null, null);
+		if ( mine == null ) {
+			// player is not in a mine, so do not allow them to trigger a mine bomb:
+			
+			if ( Output.get().isDebug() ) {
+				Output.get().logInfo( "MineBombs: Cannot mine bombs use outside of mines." );
+			}
+			
+			canceled = true;
+//			event.setCancelled( true );
+			return canceled;
+		}
+		else if ( !mine.hasMiningAccess( sPlayer ) ) {
+			// Player does not have access to the mine, so don't allow them to trigger a mine bomb:
+			
+			if ( Output.get().isDebug() ) {
+				Output.get().logInfo( "MineBombs: Player %s&r does not have access to Mine %s&r.",
+						sPlayer.getName(), mine.getName());
+			}
+			
+			canceled = true;
+//			event.setCancelled( true );
+			return canceled;
+		}
+		
+		HashSet<String> allowedMines = new HashSet<>( bomb.getAllowedMines() );
+		HashSet<String> preventedMines = new HashSet<>( bomb.getPreventedMines() );
+		List<String> globalPreventedMines = (List<String>) Prison.get().getPlatform()
+				.getConfigStringArray("prison-mines.mine-bombs.prevent-usage-in-mines");
+		preventedMines.addAll( globalPreventedMines );
+		
+		// Skip prevent-in-mines check if mine is within the allowedMines list:
+		if ( !allowedMines.contains( mine.getName().toLowerCase() ) ) {
+			
+			if ( preventedMines.contains( mine.getName().toLowerCase() ) ) {
+				
+				// Mine bombs are not allowed to be used in this mine so cancel:
+				canceled = true;
+//				event.setCancelled( true );
+				return canceled;
+			}
+		}
 
-        	
-        	// getHand() is not available with bukkit 1.8.8 so use the compatibility functions:
-        	EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+		
+		// getHand() is not available with bukkit 1.8.8 so use the compatibility functions:
+//		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
 //        	EquipmentSlot hand = event.getHand();
-        	
+		
 //        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
-        	if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock, hand ) ) {
-        		
-        		// The item was a bomb and it was activated.
-        		// Cancel the event so the item will not be placed or processed farther.
-        		
+		if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock, hand ) ) {
+			
+			// The item was a bomb and it was activated.
+			// Cancel the event so the item will not be placed or processed farther.
+			
 //        		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 Bomb detected - May not have been set. " );
-        		event.setCancelled( true );
-        	}
-        	
-        	
-        	
-        }
-    }
+			canceled = true;
+//			event.setCancelled( true );
+		}
+		
+		return canceled;
+	}
     
 
 //    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
