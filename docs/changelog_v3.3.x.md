@@ -20,6 +20,10 @@ These change logs represent the work that has been going on within prison.
 
 **3.3.0-alpha.16c 2024-03-11** 
 
+
+* **XSeries: Upgrade from v9.8.0 to v9.9.0**
+
+
 * **Mine bombs: add support for BlockPlacementEvent so if someone is using a Block they can use it as the mine bomb's item.**
 
 

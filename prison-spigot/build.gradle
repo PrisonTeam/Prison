@@ -149,7 +149,8 @@ dependencies {
     
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:9.8.0'
+	implementation 'com.github.cryptomorin:XSeries:9.9.0'
+//	implementation 'com.github.cryptomorin:XSeries:9.8.0'
 	//implementation 'com.github.cryptomorin:XSeries:9.4.0'
 	//implementation 'com.github.cryptomorin:XSeries:9.2.0'
     
