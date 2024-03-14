@@ -47,7 +47,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     /**
      * Check if SellAll's enabled.
      * */
-    public static boolean isEnabled(){
+    public static boolean isEnabled() {
     	
     	return SpigotPrison.getInstance().isSellAllEnabled();
     }
@@ -58,9 +58,6 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     public static PrisonSpigotSellAllCommands get() {
         if (instance == null && isEnabled()) {
             instance = new PrisonSpigotSellAllCommands();
-        }
-        if (instance == null){
-            return null;
         }
         return instance;
     }
@@ -92,7 +89,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		onlyPlayers = false)
     private void sellAllCommands(CommandSender sender) {
 
-        if (!isEnabled()) return;
+        if ( !isEnabled() ) {
+        	return;
+        }
 
         if (sender.hasPermission("prison.admin")) {
         	sender.dispatchCommand("sellall help");
@@ -115,7 +114,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
            		description = "True to enable or false to disable.", 
            		def = "false") String enable){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ){
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -153,7 +152,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             @Arg(name = "delay", 
             description = "Set delay value in seconds. Defaults to a value of 15 seconds.", def = "15") String delay){
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -182,7 +181,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
          			+ "[true false perUserToggleable]", 
          		def = "true") String enable){
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ){
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -229,7 +228,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         description = "'True' to enable or 'false' to disable. [true false]", 
         def = "") String enable){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if (!isEnabled() ){
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -266,7 +265,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
                     description = "Notification behavior for the sellall transaction. Defaults to normal. " +
                     "'silent' suppresses all notifications. [silent]") String notification ){
 
-        if (!isEnabled()) return;
+        if ( !isEnabled() ) {
+        	return;
+        }
 
         Player p = getSpigotPlayer(sender);
         
@@ -341,7 +342,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		onlyPlayers = true)
     public void sellAllSellHandCommand(CommandSender sender){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ){
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -383,7 +384,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
     public void sellAllSell(Player p){
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ){
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -425,7 +426,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     				"Only console or prison commands can include this parameter") String playerName
              ){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -500,7 +501,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		onlyPlayers = true)
     public void sellAllValueOfHandCommand(CommandSender sender){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ){
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -547,7 +548,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             onlyPlayers = true)
     public void sellAllSellWithDelayCommand(CommandSender sender){
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -594,7 +595,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		altPermissions = "prison.sellall.toggle", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
         	return;
         }
         StringBuilder debugInfo = new StringBuilder();
@@ -719,7 +720,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
                    		description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
                    @Arg(name = "Value", description = "The value of the item.") Double value){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ){
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -793,7 +794,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllDeleteCommand(CommandSender sender, 
     		@Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -824,7 +825,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
                 @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
                 @Arg(name = "Value", description = "The value of the item.") Double value){
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -877,7 +878,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     				def = "false") 
     			String isLoreAllowed ){
     	
-    	if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+    	if ( !isEnabled() ) {
     		return;
     	}
     	SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -936,7 +937,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     					+ "columns in the output by using 'cols=16', where the default is 10 columns.  ")
     		String options ) {
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1144,7 +1145,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
            @Arg(name = "rank", description = "The rank name for the multiplier.") String rank,
            @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier) {
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if (!isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1168,7 +1169,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllDeleteMultiplierCommand(CommandSender sender,
          @Arg(name = "Rank", description = "The rank name of the multiplier.") String rank){
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1206,7 +1207,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		
     		) {
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1278,7 +1279,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		
     		) {
     	
-    	if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+    	if ( !isEnabled() ) {
     		return;
     	}
     	SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1346,7 +1347,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllToolsTriggerToggle(CommandSender sender,
     		@Arg(name = "Boolean", description = "Enable or disable", def = "true") String enable){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if (!isEnabled() ) {
         	return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1389,7 +1390,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllTriggerAdd(CommandSender sender,
                                    @Arg(name = "Item", description = "Item name") String itemID){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if (!isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1428,7 +1429,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllTriggerDelete(CommandSender sender,
                                       @Arg(name = "Item", description = "Item name") String itemID){
 
-        if (!isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
@@ -1466,7 +1467,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllSetDefaultCommand(CommandSender sender){
 
-        if (!isEnabled()) return;
+        if ( !isEnabled() ) {
+        	return;
+        }
 
         // Setup all the prices in sellall:
         SpigotPlatform platform = (SpigotPlatform) Prison.get().getPlatform();
@@ -1484,7 +1487,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllListItems( CommandSender sender ) {
 
-        if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+        if ( !isEnabled() ) {
             return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
