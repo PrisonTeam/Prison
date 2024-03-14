@@ -45,6 +45,7 @@ public class PrisonBlock
 	
 	private Double salePrice = null;
 	private Double purchasePrice = null;
+	private boolean loreAllowed = false;
 	
 	
 	static {
@@ -524,6 +525,13 @@ public class PrisonBlock
 		ItemStack results = Prison.get().getPlatform().getItemStack( this, blockQuantity );
 		
 		return results;
+	}
+	
+	public boolean isLoreAllowed() {
+		return loreAllowed;
+	}
+	public void setLoreAllowed(boolean loreAllowed) {
+		this.loreAllowed = loreAllowed;
 	}
 	
 }

@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16c 2024-03-05
+# 3.3.0-alpha.16c 2024-03-14
+
+
+* **Initial setup of sellall lore filtering**
 
 
 

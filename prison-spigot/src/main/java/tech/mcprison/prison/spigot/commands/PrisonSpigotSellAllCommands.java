@@ -865,6 +865,66 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
     
+    @Command(identifier = "sellall items allowLore", 
+    		description = "Edits an existing SellAll shop item to either allow the sellable items "
+    				+ "to have lore or not.  If an item is not allowed to have lore, but the itemm "
+    				+ "that is intended to be sold has lore, then the item will not be sellable..", 
+    		permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllAllowLoreCommand(CommandSender sender,
+    		@Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
+    		@Arg(name = "allowLore", description = "Allow lore to be used. "
+    				+ "Default: 'false'. [true, allow, false] Invalid values are treated as 'false'.", 
+    				def = "false") 
+    			String isLoreAllowed ){
+    	
+    	if ( !isEnabled() || !SpigotPrison.getInstance().isSellAllEnabled() ){
+    		return;
+    	}
+    	SellAllUtil sellAllUtil = SellAllUtil.get();
+    	
+    	if (itemID == null){
+    		Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_missing_name));
+    		return;
+    	}
+    	itemID = itemID.toUpperCase();
+    	
+    	
+    	if (sellAllUtil.sellAllConfig.getConfigurationSection("Items." + itemID) == null){
+    		Output.get().sendWarn(sender, itemID + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_not_found));
+    		return;
+    	}
+    	
+    	boolean allowLore = false;
+    	
+    	if ( isLoreAllowed != null && 
+    			("true".equalsIgnoreCase(isLoreAllowed) || "allow".equalsIgnoreCase(isLoreAllowed)) ) {
+    		allowLore = true;
+    	}
+    		
+    		
+//    	sender.sendMessage("not yet enabled");
+//    	return;
+    	
+    	try {
+    		XMaterial blockAdd;
+    		try {
+    			blockAdd = XMaterial.valueOf(itemID);
+    		} catch (IllegalArgumentException ex){
+    			Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
+    			return;
+    		}
+    		
+    		if (sellAllUtil.editAllowLore(blockAdd, allowLore )) {
+    			
+    			Output.get().sendInfo(sender, "&3ITEM [" + itemID + ", allowLore= " + allowLore + "] " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_edit_success));
+    		}
+    		
+    	} catch (IllegalArgumentException ex){
+    		Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
+    	}
+    }
+    
+    
     @Command(identifier = "sellall multiplier list", 
     		description = "Lists all of the SellAll Rank multipliers", 
     		permissions = "prison.admin", onlyPlayers = false)

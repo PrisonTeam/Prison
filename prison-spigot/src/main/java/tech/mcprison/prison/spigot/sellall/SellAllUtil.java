@@ -907,9 +907,23 @@ public class SellAllUtil
     		PrisonBlock pBlockSellAll = sellAllItems.get( pBlockInv.getBlockNameSearch() );
     		
     		if ( pBlockSellAll != null ) {
-    			double amount = iStack.getAmount() * pBlockSellAll.getSalePrice() * multiplier;
-    			soldItem = new SellAllData( pBlockSellAll, iStack.getAmount(), amount );
     			
+    			if ( !pBlockSellAll.isLoreAllowed() && iStack.getLore().size() > 0 ) {
+    				String msg = String.format(
+    						"Sellall: Cannot sell item '%s' (qty %s) because it has lore which is not allowed. ",
+    						iStack.getDisplayName(), 
+    						Integer.toString( iStack.getAmount() )
+    						);
+    				if ( Output.get().isDebug() ) {
+    					Output.get().logInfo( msg );
+    				}
+    				
+    			}
+    			else {
+    				
+    				double amount = iStack.getAmount() * pBlockSellAll.getSalePrice() * multiplier;
+    				soldItem = new SellAllData( pBlockSellAll, iStack.getAmount(), amount );
+    			}
     		}
     	}
     	
@@ -1248,19 +1262,20 @@ public class SellAllUtil
         for (String key : sellAllConfig.getConfigurationSection("Items").getKeys(false)) {
 
         	String itemName = key.trim().toUpperCase();
+        	String itemPrefix = "Items." + itemName;
         	
-            String itemID = sellAllConfig.getString("Items." + itemName + ".ITEM_ID");
+            String itemID = sellAllConfig.getString( itemPrefix + ".ITEM_ID");
 
             PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock(itemID);
 
             if ( pBlock != null ) {
             	
-            	String itemDisplayName = sellAllConfig.getString("Items." + itemName + ".ITEM_DISPLAY_NAME");
+            	String itemDisplayName = sellAllConfig.getString( itemPrefix + ".ITEM_DISPLAY_NAME");
             	if ( itemDisplayName != null ) {
             		pBlock.setDisplayName( itemDisplayName );
             	}
             	
-            	String saleValueString = sellAllConfig.getString("Items." + itemName + ".ITEM_VALUE");
+            	String saleValueString = sellAllConfig.getString( itemPrefix + ".ITEM_VALUE");
             	if ( saleValueString != null ) {
             		
             		try {
@@ -1270,7 +1285,7 @@ public class SellAllUtil
             		}
             	}
 
-            	String purchaseValueString = sellAllConfig.getString("Items." + itemName + ".PURCHASE_PRICE");
+            	String purchaseValueString = sellAllConfig.getString( itemPrefix + ".PURCHASE_PRICE");
             	if ( purchaseValueString != null ) {
             		
             		try {
@@ -1279,6 +1294,19 @@ public class SellAllUtil
             		} catch (NumberFormatException ignored) {
             		}
             	}
+            	
+            	String isLoreAllowedString = sellAllConfig.getString( itemPrefix + ".IS_LORE_ALLOWED");
+            	boolean isLoreAllowed = false;
+            	if ( isLoreAllowedString != null ) {
+            		
+            		try {
+            			isLoreAllowed = Boolean.parseBoolean(isLoreAllowedString);
+            		} 
+            		catch (NumberFormatException ignored) {
+            		}
+            	}
+            	pBlock.setLoreAllowed( isLoreAllowed );
+            	
             	
             	sellAllItems.put( pBlock.getBlockNameSearch(), pBlock );
             }
@@ -1387,6 +1415,10 @@ public class SellAllUtil
     		return false;
     	}
     	
+    	
+    	// pBlock is null, but it's being used below. So clone the key:
+    	pBlock = pBlockKey.clone();
+    	
         try {
         	
         	String itemName = pBlockKey.getBlockName().toUpperCase();
@@ -1395,6 +1427,7 @@ public class SellAllUtil
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + itemName + ".ITEM_ID", xMaterial.name());
             conf.set("Items." + itemName + ".ITEM_VALUE", value);
+            conf.set("Items." + itemName + ".IS_LORE_ALLOWED", pBlock.isLoreAllowed() );
             
             if ( displayName != null ) {
             	conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", displayName );
@@ -1732,6 +1765,7 @@ public class SellAllUtil
             String itemName = key.toUpperCase();
             conf.set("Items." + itemName + ".ITEM_ID", key );
             conf.set("Items." + itemName + ".ITEM_VALUE", value);
+            conf.set("Items." + itemName + ".IS_LORE_ALLOWED", pBlock.isLoreAllowed() );
             
             if ( displayName != null ) {
             	conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", value);
@@ -1762,6 +1796,51 @@ public class SellAllUtil
 //        sellAllBlocks.put(xMaterial, value);
         
         return true;
+    }
+    
+    
+    public boolean editAllowLore(XMaterial xMaterial, boolean value) {
+    	
+    	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
+    	String key = pBlockKey.getBlockNameSearch();
+    	
+    	PrisonBlock pBlock = sellAllItems.get( key );
+    	
+    	// Do not allow an edit price if the material does not exist, or if the value has not changed:
+    	if ( pBlock == null ){
+    		
+    		Output.get().logDebug( "sellall edit: item does not exist in shop so it cannot be edited (%s)", pBlockKey.getBlockName());
+    		return false;
+    	}
+    	if ( pBlock.isLoreAllowed() == value ){
+    		Output.get().logDebug( "sellall edit: No change in 'allow lore' (%s %s)", 
+    				pBlockKey.getBlockName(), Boolean.toString( pBlock.isLoreAllowed() ) );
+    		return false;
+    	}
+    	
+    	pBlock.setLoreAllowed( value );
+    	
+    	try {
+    		File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+    		FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+    		
+    		String itemName = key.toUpperCase();
+//    		conf.set("Items." + itemName + ".ITEM_ID", key );
+    		conf.set("Items." + itemName + ".IS_LORE_ALLOWED", pBlock.isLoreAllowed() );
+    		
+    		conf.save(sellAllFile);
+    		
+    		// Update only if successful
+    		updateConfig();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    	
+    	// pBlock is still in the sellAllItems collection so no need to readd it
+//        sellAllBlocks.put(xMaterial, value);
+    	
+    	return true;
     }
 
 //    /**
