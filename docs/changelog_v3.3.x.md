@@ -16,6 +16,11 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.16c 2024-03-15
 
+* **SpigotPlayer: Fixed a potential issue if trying to use getRankPlayer() if the ranks module is not enabled.**
+Added a check to ensure it's active.
+We have not seen any reports of issues related to this.
+
+
 
 * **Prison Player: Added a new sendMessage function using Lists of Strings. ** 
 Added a new function getPlatformPlayer() which gets a bukkit player object if the player is online.  This will consolidate a lot of other duplicate code.
