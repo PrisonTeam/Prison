@@ -265,6 +265,15 @@ public class SpigotItemStack
 //    	}
     }
     
+    
+    
+    public String getNBTItemStackInfo() {
+    	
+    	String results = PrisonNBTUtil.nbtDebugString(getBukkitStack()) ;
+    	
+    	return results;
+    }
+    
 //    public int getNBTInt( String key ) {
 //    	int results = -1;
 //    	
@@ -348,6 +357,18 @@ public class SpigotItemStack
 			bukkitStack.setAmount( amount );
 		}
 	}
+	
+	/**
+	 * <p>This function will add the given amount to the item stack's total amount.
+	 * </p>
+	 * 
+	 * @param i amount to add to this itemStack
+	 */
+	public void addToAmount( int i ) {
+		int amt = getAmount() + i;
+		setAmount( amt );
+	}
+	
 	
 	private ItemMeta getMeta() {
 		ItemMeta meta;
@@ -468,6 +489,19 @@ public class SpigotItemStack
 				
 		return sItemStack;
 	}
+	
+	public Map<Enchantment, Integer> getEnchantments() {
+		Map<Enchantment, Integer> results = null;
+		
+		ItemMeta meta = getMeta();
+		if ( meta != null && 
+				meta.getEnchants() != null &&
+				meta.getEnchants().size() > 0 ) {
+			
+			results = meta.getEnchants();
+		}
+        return results;
+    }
 
 	/**
 	 * <p>This function will return information on the item in the item stack, which is for 

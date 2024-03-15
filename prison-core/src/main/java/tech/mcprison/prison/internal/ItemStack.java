@@ -20,9 +20,7 @@ package tech.mcprison.prison.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,14 +39,14 @@ public class ItemStack {
     private int amount;
     private PrisonBlock material;
     private List<String> lore;
-    private Map<Integer, Integer> enchantments;
+//    private Map<Integer, Integer> enchantments;
 
     
     protected ItemStack() {
     	super();
     	
     	this.lore = new ArrayList<>();
-    	this.enchantments = new HashMap<>();
+//    	this.enchantments = new HashMap<>();
     }
     
     public ItemStack(String displayName, int amount, PrisonBlock material, String... lore) {
@@ -56,7 +54,7 @@ public class ItemStack {
         this.amount = amount;
         this.material = material;
         this.lore = new ArrayList<>(Arrays.asList(lore));
-        this.enchantments = new HashMap<>();
+//        this.enchantments = new HashMap<>();
     }
 
     public ItemStack(int amount, PrisonBlock material, String... lore) {
@@ -114,21 +112,21 @@ public class ItemStack {
 		this.lore = lore;
 	}
 
-	public Map<Integer, Integer> getEnchantments() {
-        return enchantments;
-    }
-
-    public void addEnchantment(int enchantment, int level) {
-        enchantments.put(enchantment, level);
-    }
-
-    public boolean hasEnchantments() {
-        return !enchantments.isEmpty();
-    }
-
-    public boolean hasEnchantment(int enchantment) {
-        return enchantments.containsKey(enchantment);
-    }
+//	public Map<Object, Integer> getEnchantments() {
+//        return enchantments;
+//    }
+//
+//    public void addEnchantment(Object enchantment, int level) {
+//        enchantments.put(enchantment, level);
+//    }
+//
+//    public boolean hasEnchantments() {
+//        return !enchantments.isEmpty();
+//    }
+//
+//    public boolean hasEnchantment(int enchantment) {
+//        return enchantments.containsKey(enchantment);
+//    }
 
     @Override public boolean equals(Object o) {
         if (this == o) {
@@ -157,6 +155,8 @@ public class ItemStack {
 
     @Override public String toString() {
         return "ItemStack{" + "displayName='" + displayName + '\'' + ", amount=" + amount
-            + ", material=" + material + ", lore=" + lore + ", enchantments=" + enchantments + '}';
+            + ", material=" + material + ", lore=" + lore +
+            "}";
+            //", enchantments=" + enchantments + '}';
     }
 }
