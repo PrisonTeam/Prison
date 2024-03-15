@@ -78,12 +78,12 @@ public interface Player
     /**
      * Adds an {@link ItemStack} to the player's inventory.
      */
-    void give(ItemStack itemStack);
+    public void give(ItemStack itemStack);
 
     /**
      * Returns the player's current {@link Location}.
      */
-    Location getLocation();
+    public Location getLocation();
 
     
     /**
@@ -105,31 +105,31 @@ public interface Player
      *
      * @param location The new {@link Location}.
      */
-    void teleport(Location location);
+    public void teleport(Location location);
 
     /**
      * @return Returns true if the player is online, false otherwise.
      */
-    boolean isOnline();
+    public boolean isOnline();
 
     /**
      * Sets the player's visible scoreboard.
      *
      * @param scoreboard The {@link Scoreboard} to show the player.
      */
-    void setScoreboard(Scoreboard scoreboard);
+    public void setScoreboard(Scoreboard scoreboard);
 
     /**
      * Returns the player's current {@link Gamemode}
      */
-    Gamemode getGamemode();
+    public Gamemode getGamemode();
 
     /**
      * Changes the player's {@link Gamemode} to the specified value
      *
      * @param gamemode the new gamemode
      */
-    void setGamemode(Gamemode gamemode);
+    public void setGamemode(Gamemode gamemode);
 
     /**
      * Returns this player's locale.
@@ -137,10 +137,11 @@ public interface Player
      * @return An {@link Optional} containing the locale of this player, or empty if it couldn't be
      * retrieved.
      */
-    Optional<String> getLocale();
+    public Optional<String> getLocale();
 
 
-    @Override default boolean doesSupportColors() {
+    @Override 
+    public default boolean doesSupportColors() {
         return true;
     }
 
@@ -149,7 +150,7 @@ public interface Player
      * inventory. May not be necessary on all platforms but should be used where ever the player inventory
      * is modified
      */
-    void updateInventory();
+    public void updateInventory();
     
     
 //    /**
@@ -176,5 +177,7 @@ public interface Player
 	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity );
 	
 	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity);
+
+//	public RankPlayer getRankPlayer();
 	
 }

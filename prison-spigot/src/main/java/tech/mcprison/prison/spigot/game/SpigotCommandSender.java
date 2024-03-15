@@ -33,6 +33,8 @@ import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.Text;
@@ -263,6 +265,17 @@ public class SpigotCommandSender
 		}
 		
 		return player;
+	}
+	
+	@Override
+	public RankPlayer getRankPlayer() {
+		RankPlayer rankPlayer = null;
+		
+		if ( PrisonRanks.getInstance().isEnabled() ) {
+			
+			rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( (Player) this );
+		}
+		return rankPlayer;
 	}
 
 }

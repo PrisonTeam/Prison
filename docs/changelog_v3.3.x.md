@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16c 2024-03-15
 
 
+* **Players: Shift the function of getting a player object to the Player classes, such as CommandSender.**
+This is to simplify the code and to put the functionality in one location.
+
+
+
 * **Sellall: New command:  '/sellall items inspect'**
 This new command will inspect what the player is holding, and dump the details so the admin can see exactly how an item/block is created, including lore and enchantments.
 Eventually this information can be used to enhance the ability to sell and buy non-standard items by allowing the admins to filter on lore, enchantments, and/or NBTs.

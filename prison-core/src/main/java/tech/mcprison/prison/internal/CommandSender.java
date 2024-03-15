@@ -20,6 +20,8 @@ package tech.mcprison.prison.internal;
 
 import java.util.List;
 
+import tech.mcprison.prison.ranks.data.RankPlayer;
+
 /**
  * Represents any entity that may send commands and receive output.
  *
@@ -114,6 +116,9 @@ public interface CommandSender
 	 * @return Player
 	 */
 	public Player getPlatformPlayer();
+
+	
+	public RankPlayer getRankPlayer();
 
 
 }

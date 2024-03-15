@@ -307,7 +307,7 @@ public class MinesCommands
         }
         mineName = mineName.trim();
 
-    	Player player = getPlayer( sender );
+    	Player player = sender.getPlatformPlayer();
     	
     	if ( !virtual && (player == null || !player.isOnline())) {
     		sendMessage( sender, "&3You must be a player in the game to run this command.  " +
@@ -601,7 +601,7 @@ public class MinesCommands
         @Arg(name = "options", def = "set",
         		description = "Options: Option to set or remove a spawn. [set *remove*]") String options ) {
 
-    	Player player = getPlayer( sender );
+    	Player player = sender.getPlatformPlayer();
     	
     	if (player == null || !player.isOnline()) {
     		sender.sendMessage( "&3You must be a player in the game to run this command." );
@@ -1037,7 +1037,7 @@ public class MinesCommands
         	
         	if ( !m.isVirtual() ) {
         		String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
-        		Player player = sender == null ? null : getPlayer( sender );
+        		Player player = sender == null ? null : sender.getPlatformPlayer();
         		chatDisplay.addText("&3World: &7%-10s  &3Center: &7%s   &3%s &7%s",
         				worldName,
         				m.getBounds().getCenter().toBlockCoordinates(), 
@@ -1512,7 +1512,7 @@ public class MinesCommands
             @Arg(name = "page", def = "1", 
             	description = "Page of search results (optional) [1-n, ALL]") String page 
     		) {
-    	Player player = getPlayer( sender );
+    	Player player = sender.getPlatformPlayer();
     	
     	MineSortOrder sortOrder = MineSortOrder.fromString( sort );
     	
@@ -1953,7 +1953,7 @@ public class MinesCommands
         	Output.get().sendInfo( sender, message );
         	
         	// Server Log message:
-        	Player player = getPlayer( sender );
+        	Player player = sender.getPlatformPlayer();
         	Output.get().logInfo( "%s :: Changed by: %s", message,
         								(player == null ? "console" : player.getDisplayName()) );
         } 
@@ -2032,7 +2032,7 @@ public class MinesCommands
     	        				mine.getTag(), resetTime );
     	        		
     	        		// Server Log message:
-    	        		Player player = getPlayer( sender );
+    	        		Player player = sender.getPlatformPlayer();
     	        		Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
     	        				(player == null ? "console" : player.getDisplayName()), mine.getTag(), resetTime  );
     				}
@@ -2078,7 +2078,7 @@ public class MinesCommands
         		Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", m.getTag(), resetTime );
         		
         		// Server Log message:
-        		Player player = getPlayer( sender );
+        		Player player = sender.getPlatformPlayer();
         		Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
         				(player == null ? "console" : player.getDisplayName()), m.getTag(), resetTime  );
         	}
@@ -2187,7 +2187,7 @@ public class MinesCommands
 		}
 		
 		// Server Log message:
-		Player player = getPlayer( sender );
+		Player player = sender.getPlatformPlayer();
 		Output.get().logInfo( "&7Mine &b%s Zero Block Reset Delay: &b%s &7set it to &b%s &7sec",
 				(player == null ? "console" : player.getDisplayName()), 
 				m, dFmt.format( resetTime )  );
@@ -2286,7 +2286,7 @@ public class MinesCommands
 		Output.get().sendInfo( sender, message );
 		
 		// Server Log message:
-		Player player = getPlayer( sender );
+		Player player = sender.getPlatformPlayer();
 		Output.get().logInfo( "%s :: Changed by: %s", message,
 									(player == null ? "console" : player.getDisplayName()) );
 	}
@@ -2714,7 +2714,7 @@ public class MinesCommands
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
-        Player player = getPlayer( sender );
+        Player player = sender.getPlatformPlayer();
         
 //        if ( !m.isEnabled() ) {
 //        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
@@ -3413,7 +3413,7 @@ public class MinesCommands
     	}
     	
     	
-    	Player player = getPlayer( sender );
+    	Player player = sender.getPlatformPlayer();
     	
     	Player playerAlt = getOnlinePlayer( playerName );
     	
@@ -3517,7 +3517,7 @@ public class MinesCommands
     public void mineTpTop(CommandSender sender ) {
     	
 
-    	Player player = getPlayer( sender );
+    	Player player = sender.getPlatformPlayer();
     	//oboolean isOp = sender.isOp();
     	
     	
@@ -3610,7 +3610,7 @@ public class MinesCommands
     				description = "Identifies what mines you are in, or are the closest to." )
     public void mineWhereAmI(CommandSender sender) {
     	
-    	Player player = getPlayer( sender );
+    	Player player = sender.getPlatformPlayer();
     	
     	if (player == null || !player.isOnline()) {
     		sender.sendMessage( "&3You must be a player in the game to run this command." );
@@ -3723,7 +3723,7 @@ public class MinesCommands
     		onlyPlayers = false )
     public void wandCommand(CommandSender sender) {
     	
-    	Player player = getPlayer( sender );
+    	Player player = sender.getPlatformPlayer();
     	
     	if (player == null || !player.isOnline()) {
     		sender.sendMessage( "&3You must be a player in the game to run this command." );

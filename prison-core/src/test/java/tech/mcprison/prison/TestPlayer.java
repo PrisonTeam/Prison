@@ -32,6 +32,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
@@ -260,13 +261,16 @@ public class TestPlayer
 
 	@Override
 	public void sendMessage(List<String> messages) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Player getPlatformPlayer() {
-		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RankPlayer getRankPlayer() {
 		return null;
 	}
 	

@@ -1035,6 +1035,11 @@ public class RankPlayer
 	
 	
 	@Override
+	public RankPlayer getRankPlayer() {
+		return this;
+	}
+	
+	@Override
 	public void recalculatePermissions() {
 		Player player = getPlatformPlayer();
 		if ( player != null ) {

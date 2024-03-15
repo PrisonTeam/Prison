@@ -204,7 +204,9 @@ public class SpigotPlatform
     }
 
     public Storage initStorage() {
-        String confStorage = plugin.getConfig().getString("storage", "file");
+    	
+        @SuppressWarnings("unused")
+		String confStorage = plugin.getConfig().getString("storage", "file");
         Storage storage = new FileStorage(plugin.getDataDirectory());
         
 //        if (!confStorage.equalsIgnoreCase("file")) {
@@ -1469,9 +1471,9 @@ public class SpigotPlatform
 				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() 
 				) {
 			
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		Player player = pm.getPlayer( sender );
-    		RankPlayer rankPlayer = pm.getPlayer( player );
+//    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//    		Player player = sender.getPlatformPlayer();
+    		RankPlayer rankPlayer = sender.getRankPlayer();
 
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     		

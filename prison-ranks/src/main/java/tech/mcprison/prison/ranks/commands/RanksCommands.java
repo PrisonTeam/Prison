@@ -768,7 +768,7 @@ public class RanksCommands
 //        }
         
         RankPlayer rPlayer = 
-        		PrisonRanks.getInstance().getPlayerManager().getPlayer( getPlayer(sender) );
+        		PrisonRanks.getInstance().getPlayerManager().getPlayer( sender.getPlatformPlayer() );
         
         ChatDisplay display = null;
         

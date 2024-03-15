@@ -668,6 +668,7 @@ public class SpigotPlayer
 		}
 	}
 	
+	@Override
 	public RankPlayer getRankPlayer() {
 		if ( rankPlayer == null && 
 				PrisonRanks.getInstance().isEnabled() ) {
