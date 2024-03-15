@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16c 2024-03-15
 
 
+* **Mine Bombs: wrapped up the changes to enable the placement of a mine bomb when using the BlockPlaceEvent which is used when using a block for the bomb's item.**
+
+
 * **Prison ItemStack: remove enchantments from the core ItemStack since prison cannot properly represent it in versions lower than 1.13.x**, plus it was wrong for all spigot versions greater than 1.12.x.
 Added the proper enchantment functions to the SpigotItemStack object.
 

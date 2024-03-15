@@ -14,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -58,39 +59,31 @@ public class PrisonBombListener
 	@EventHandler( priority = EventPriority.LOW )
 	public void onInteract( BlockPlaceEvent event ) {
 		
-    	String bombName = PrisonNBTUtil.getNBTString( event.getBlockPlaced(), 
-    			MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
-    	
-    	if ( bombName == null || bombName.trim().length() == 0 ) {
-//    	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
-    		return;
-    	}
-
-    	if ( Output.get().isDebug() ) {
-    		Output.get().logInfo( "PrisonBombListener.onInteract (block) "
-    				+ "bombName: &7%s&r &3::  nbt: &r%s", 
-    				bombName, 
-    				PrisonNBTUtil.nbtDebugString( )
-//    				PrisonNBTUtil.nbtDebugString( event.getBlockPlaced() )
-//    				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
-    				);
-    		
-
-    		Player player = event.getPlayer();
-           	
-        	Block targetBlock = event.getBlockAgainst();
+		ItemStack iStack = event.getItemInHand();
+		
+		if ( iStack.getType() != Material.AIR ) {
+			
         	
-        	EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+        	String bombName = checkMineBombItemStack( iStack );
         	
-        	boolean canceled = processBombTriggerEvent(event, player, bombName, 
-        			targetBlock, hand );
-
-        	if ( canceled ) {
-        		event.setCancelled( canceled );
+        	if ( bombName != null ) {
+        		
+        		Player player = event.getPlayer();
+        		
+        		Block targetBlock = event.getBlockAgainst();
+        		
+        		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+        		
+        		boolean canceled = processBombTriggerEvent(event, player, bombName, 
+        				targetBlock, hand );
+        		
+        		if ( canceled ) {
+        			event.setCancelled( canceled );
+        		}
         	}
-
-    	}
-       
+			
+		}
+		
 	}
 
     @EventHandler( priority = EventPriority.LOW )
@@ -109,45 +102,57 @@ public class PrisonBombListener
         	// If the player is holding a mine bomb, then get the bomb and decrease the
         	// ItemStack in the player's hand by 1:
         	
+        	ItemStack iStack = event.getItem();
         	
-        	// Check to see if this is an mine bomb by checking the NBT key-value pair,
-        	// which will also identify which mine bomb it is too.
-        	// NOTE: Because we're just checking, do not auto update the itemstack.
-//        	NBTItem nbtItem = new NBTItem( event.getItem() );
+        	String bombName = checkMineBombItemStack( iStack );
         	
-        	String bombName = PrisonNBTUtil.getNBTString( event.getItem(), MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
-        	
-        	if ( bombName == null || bombName.trim().length() == 0 ) {
-//        	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
-        		return;
-        	}
-        	
-//        	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
-        	
-        	if ( Output.get().isDebug() ) {
-        		Output.get().logInfo( "PrisonBombListener.onInteract (item) "
-        				+ "bombName: &7%s&r &3::  nbt: &r%s", 
-        				bombName, 
-        				PrisonNBTUtil.nbtDebugString( event.getItem() )
-//        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
-        				);
-        	}
-        	
-        	Player player = event.getPlayer();
-        	
-        	Block targetBlock = event.getClickedBlock();
-        	
-        	EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
-        	
-        	boolean canceled = processBombTriggerEvent(event, player, bombName, 
-        			targetBlock, hand );
-        	
-        	if ( canceled ) {
-        		event.setCancelled( canceled );
+        	if ( bombName != null ) {
+        		
+        		Player player = event.getPlayer();
+        		
+        		Block targetBlock = event.getClickedBlock();
+        		
+        		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+        		
+        		boolean canceled = processBombTriggerEvent(event, player, bombName, 
+        				targetBlock, hand );
+        		
+        		if ( canceled ) {
+        			event.setCancelled( canceled );
+        		}
+
+        		
         	}
         	
         }
     }
+
+	private String checkMineBombItemStack( ItemStack iStack ) {
+		// Check to see if this is an mine bomb by checking the NBT key-value pair,
+		// which will also identify which mine bomb it is too.
+		// NOTE: Because we're just checking, do not auto update the itemstack.
+//        	NBTItem nbtItem = new NBTItem( event.getItem() );
+		
+		String bombName = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+		
+		if ( bombName != null && bombName.trim().length() == 0 ) {
+			bombName = null;
+		}
+		else if ( bombName != null ){
+			
+			if ( Output.get().isDebug() ) {
+				Output.get().logInfo( "PrisonBombListener.onInteract (item) "
+						+ "bombName: &7%s&r &3::  nbt: &r%s", 
+						bombName, 
+						PrisonNBTUtil.nbtDebugString( iStack )
+//        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
+						);
+			}
+		}
+		
+
+		return bombName;
+	}
 
 	private boolean processBombTriggerEvent( Event event, Player player, 
 					String bombName, Block targetBlock,
