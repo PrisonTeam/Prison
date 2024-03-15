@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16c 2024-03-15
 
 
+* **Prison Player: Added a new sendMessage function using Lists of Strings. ** 
+Added a new function getPlatformPlayer() which gets a bukkit player object if the player is online.  This will consolidate a lot of other duplicate code.
+
+
 * **Mine Bombs: wrapped up the changes to enable the placement of a mine bomb when using the BlockPlaceEvent which is used when using a block for the bomb's item.**
 
 

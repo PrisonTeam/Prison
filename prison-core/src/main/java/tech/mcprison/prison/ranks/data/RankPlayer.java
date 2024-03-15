@@ -908,6 +908,11 @@ public class RankPlayer
 	}
 	
 	@Override
+	public void sendMessage( List<String> messages ) {
+		Output.get().logError( "RankPlayer.sendMessage: Cannot send messages to offline players." );
+	}
+	
+	@Override
 	public void sendRaw( String json ) {
 		Output.get().logError( "RankPlayer.sendRaw: Cannot send messages to offline players." );
 	}
@@ -969,7 +974,7 @@ public class RankPlayer
 
 	@Override
 	public boolean isOp() {
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		return (player != null ? player.isOp() : false );
 	}
 	
@@ -982,14 +987,14 @@ public class RankPlayer
 	 */
     @Override 
     public boolean isPlayer() {
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	return (player != null ? player.isPlayer() : false );
     }
 	
 
 	@Override
 	public void updateInventory() {
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		if ( player != null ) {
 			
 			player.updateInventory();
@@ -1000,7 +1005,7 @@ public class RankPlayer
 	public Inventory getInventory() {
 		Inventory results = null;
 		
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		if ( player != null ) {
 			
 			results = player.getInventory();
@@ -1014,15 +1019,9 @@ public class RankPlayer
 //		
 //	}
 	
-	/**
-	 * <p>Player is not cached in this class, so if using it in a function 
-	 * make a local variable to save it instead of calling this function multiple
-	 * times since it is a high impact lookup.
-	 * </p>
-	 * 
-	 * @return
-	 */
-	private Player getPlayer() {
+
+	@Override
+	public Player getPlatformPlayer() {
 		Player player = null;
 		
 		Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( uid );
@@ -1030,12 +1029,14 @@ public class RankPlayer
 		if ( oPlayer.isPresent() ) {
 			player = oPlayer.get();
 		}
+		
 		return player;
 	}
 	
+	
 	@Override
 	public void recalculatePermissions() {
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		if ( player != null ) {
 			player.recalculatePermissions();
 		}
@@ -1043,13 +1044,13 @@ public class RankPlayer
 	
     @Override
     public List<String> getPermissions() {
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	return (player == null ? new ArrayList<>() : player.getPermissions() );
     }
     
     @Override
     public List<String> getPermissions( String prefix ) {
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	return (player == null ? new ArrayList<>() : player.getPermissions( prefix ) );
     }
     
@@ -1072,7 +1073,7 @@ public class RankPlayer
     public double getSellAllMultiplier() {
     	double results = 1.0;
     	
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	if ( player != null ) {
     		results = player.getSellAllMultiplier();
     	}

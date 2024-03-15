@@ -40,7 +40,8 @@ import tech.mcprison.prison.util.Text;
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotCommandSender implements CommandSender {
+public class SpigotCommandSender 
+		implements CommandSender {
 
     private org.bukkit.command.CommandSender bukkitSender;
 
@@ -105,6 +106,18 @@ public class SpigotCommandSender implements CommandSender {
         		sendMessage(msg);
         	}
         }
+    }
+    
+    @Override 
+    public void sendMessage(List<String> messages) {
+    	for (String message : messages) {
+    		
+    		String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
+    		for ( String msg : msgs ) {
+    			
+    			sendMessage(msg);
+    		}
+    	}
     }
 
     @Override 
@@ -238,5 +251,18 @@ public class SpigotCommandSender implements CommandSender {
     public org.bukkit.command.CommandSender getWrapper() {
         return bukkitSender;
     }
+
+	@Override
+	public Player getPlatformPlayer() {
+		Player player = null;
+		
+		Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+		
+		if ( oPlayer.isPresent() ) {
+			player = oPlayer.get();
+		}
+		
+		return player;
+	}
 
 }

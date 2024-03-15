@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
@@ -386,6 +387,25 @@ public class SpigotOfflinePlayer
 	public void incrementMinecraftStatsDropCount( tech.mcprison.prison.internal.Player player, 
 			String blockName, int quantity) {
 		
+	}
+
+	@Override
+	public void sendMessage(List<String> messages) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public tech.mcprison.prison.internal.Player getPlatformPlayer() {
+		tech.mcprison.prison.internal.Player player = null;
+		
+		Optional<tech.mcprison.prison.internal.Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+		
+		if ( oPlayer.isPresent() ) {
+			player = oPlayer.get();
+		}
+		
+		return player;
 	}
 
 }

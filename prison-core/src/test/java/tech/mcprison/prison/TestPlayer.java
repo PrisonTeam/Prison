@@ -256,5 +256,18 @@ public class TestPlayer
 	public List<String> getSellAllMultiplierListings() {
 		return new ArrayList<>();
 	}
+
+
+	@Override
+	public void sendMessage(List<String> messages) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Player getPlatformPlayer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
