@@ -1,11 +1,14 @@
 package tech.mcprison.prison.spigot.commands;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,6 +33,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.game.SpigotPlayerUtil;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
@@ -925,6 +929,148 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     	}
     }
     
+    
+    
+    @Command(identifier = "sellall items inspect", 
+    		description = "Inspects what the player is holding and provides a dump of all related "
+    				+ "information.", 
+    		permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllItemInspectCommand(CommandSender sender) {
+    	
+    	if ( !isEnabled() ) {
+    		return;
+    	}
+    	SellAllUtil sellAllUtil = SellAllUtil.get();
+
+    	
+    	SpigotPlayer sPlayer = (SpigotPlayer) sender.getPlatformPlayer();
+    	
+    	if ( sPlayer == null ) {
+    		String msg = String.format( 
+    				"Only online players can see what they're holding."
+    				);
+    		sender.sendMessage(msg);
+    	}
+    	else {
+    		
+    		SpigotPlayerUtil sUtil = new SpigotPlayerUtil( sPlayer );
+    		
+    		SpigotItemStack iStack = sUtil.getItemInHand();
+    		
+    		if ( iStack == null || iStack.isAir() ) {
+    			
+    			String msg = String.format( 
+    					"Nothing to report. You're not holding anything other than air."
+    					);
+    			sender.sendMessage(msg);
+    		}
+    		else {
+    			
+    	        
+    	        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Items inspect: " );
+
+    			List<String> msg = new ArrayList<>();
+    			
+    			String name = iStack.getName();
+    			String nameFull = iStack.getDisplayName() == null ? "" : iStack.getDisplayName();
+    			
+    			PrisonBlock pBlock = iStack.getMaterial();
+
+    			int amount = iStack.getAmount();
+    			
+    			List<String> lore = iStack.getLore();
+    			Map<Enchantment, Integer> enchants = iStack.getEnchantments();
+    			
+    			String nbtInfo = iStack.getNBTItemStackInfo();
+
+    			
+    			chatDisplay.addText( "Item: %-14s (%s)", name, nameFull  );
+    			chatDisplay.addText( "Qty: %5s  PrisonItem: %s", 
+    						Integer.toString(amount), pBlock.getBlockNameFormal()  );
+    			
+    			if ( lore.size() == 0 ) {
+    				
+    				chatDisplay.addText( "No Lore."   );
+    			}
+    			else {
+    				chatDisplay.addText( "Lore:"   );
+    				
+    				for (String l : lore) {
+    					chatDisplay.addText( "  %s", l  );
+    				}
+    			}
+    			
+    			if ( enchants == null || enchants.size() == 0 ) {
+    				
+    				chatDisplay.addText( "No Enchantments."   );
+    			}
+    			else {
+    				chatDisplay.addText( "Enchantments:"   );
+    				
+    				Set<Enchantment> keys = enchants.keySet();
+    				for (Enchantment ench : keys ) {
+						
+    					Integer value = enchants.get( ench );
+						
+    					String namespace = "";
+    					String targetName = "";
+    					
+    					try {
+
+    						// NOTE: This is for spigot 1.13.x and higher:
+    						if ( ench.getClass().getMethod( "getKey" ) != null ) {
+    							namespace = ench.getKey() == null ? 
+    									"---" : 
+    										ench.getKey().toString();
+    						}
+    						else if ( ench.getClass().getMethod( "getName" ) != null ) {
+    							// Versions of spigot prior to 1.13.x:
+    							namespace = ench.getName();
+    							
+    						}
+    						
+    						
+    						if ( ench.getClass().getMethod( "getItemTarget" ) != null && 
+    								ench.getItemTarget() != null ) {
+    							targetName = ench.getItemTarget().name();
+    						}
+
+    					} catch (Exception e) {
+						}
+    					
+    					if ( namespace == null || namespace.trim().length() == 0 ) {
+    						namespace = ench.toString();
+    					}
+
+    					chatDisplay.addText( "    %-10s  %s  %s (%s - %s)", 
+    							//ench.toString(), 
+    							namespace,
+    							targetName,
+    							
+    							value.toString(),
+    							Integer.toString( ench.getStartLevel()),
+    							Integer.toString( ench.getMaxLevel())
+    							);
+					}
+    				
+    				
+    			}
+    			
+    			if ( nbtInfo == null || nbtInfo.trim().length() == 0 ) {
+    				
+    				chatDisplay.addText( "  No NBT." );
+    			}
+    			else {
+    				
+    				chatDisplay.addText( "    %s", nbtInfo  );
+    			}
+//    			chatDisplay.addText( " ",   );
+    			
+    			chatDisplay.send( sender );;
+    		}
+    		
+    	}
+    }
     
     @Command(identifier = "sellall multiplier list", 
     		description = "Lists all of the SellAll Rank multipliers", 

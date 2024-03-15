@@ -16,6 +16,13 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.16c 2024-03-15
 
+
+* **Sellall: New command:  '/sellall items inspect'**
+This new command will inspect what the player is holding, and dump the details so the admin can see exactly how an item/block is created, including lore and enchantments.
+Eventually this information can be used to enhance the ability to sell and buy non-standard items by allowing the admins to filter on lore, enchantments, and/or NBTs.
+
+
+
 * **SpigotPlayer: Fixed a potential issue if trying to use getRankPlayer() if the ranks module is not enabled.**
 Added a check to ensure it's active.
 We have not seen any reports of issues related to this.
