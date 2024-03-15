@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16c 2024-03-15
 
 
+* **Prison API: Added a few new functions to work with ItemStacks.**
+
+
+
 * **Players: Shift the function of getting a player object to the Player classes, such as CommandSender.**
 This is to simplify the code and to put the functionality in one location.
 
