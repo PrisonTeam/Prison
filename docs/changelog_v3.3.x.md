@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16c 2024-03-15
 
 
+
+* **Economy: For economies that prison supports that has a method to check if the player has an account, prison now tries to check if there is an account for the player before trying to use the economy.**
+This could potentially prevent issues or run time failures.
+
+
 * **Prison API: Added a few new functions to work with ItemStacks.**
 
 

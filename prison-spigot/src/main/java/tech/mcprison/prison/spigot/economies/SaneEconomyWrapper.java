@@ -27,7 +27,15 @@ public class SaneEconomyWrapper
     	double result = 0;
         
     	try {
-    		result = economyManager.getBalance(toEconomablePlayer(player));
+    		EconomablePlayer p = toEconomablePlayer(player);
+    		
+    		if ( !economyManager.accountExists( p ) ) {
+        		player.sendMessage( "Economy Error: You don't have an account.");
+        	}
+        	else {
+        		
+        		result = economyManager.getBalance( p );
+        	}
     	}
 	    catch ( Exception e ) {
 	    	Output.get().logError( "Failed to get SaneEconomy balance. " +
@@ -39,7 +47,16 @@ public class SaneEconomyWrapper
 
     public void setBalance(Player player, double amount) {
     	try {
-    		economyManager.setBalance(toEconomablePlayer(player), amount);
+    		EconomablePlayer p = toEconomablePlayer(player);
+    		
+    		if ( !economyManager.accountExists( p ) ) {
+        		player.sendMessage( "Economy Error: You don't have an account.");
+        	}
+        	else {
+        		
+        		economyManager.setBalance(toEconomablePlayer(player), amount);
+        	}
+    		
     	}
 	    catch ( Exception e ) {
 	    	Output.get().logError( "Failed to set SaneEconomy balance. " +
