@@ -1535,7 +1535,21 @@ public class PrisonCommand
     		
     		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     		
-    		String helpURL = pasteChat.post( text.toString() );
+    		String helpURL = "(Failure in running the commmand.)";
+    				
+			try {
+				helpURL = pasteChat.post( text.toString() );
+			} 
+			catch (Exception e) {
+				Output.get().logRaw( 
+						
+					String.format(
+						"Failed to paste support info to the support server: %s  "
+						+ "raw message: [%s]", 
+						e.getMessage(),
+						text.toString()
+							) );
+			}
     		
     		getSupportURLs().put( "Submit version:", helpURL );
     		
