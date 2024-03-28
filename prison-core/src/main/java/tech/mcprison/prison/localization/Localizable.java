@@ -370,7 +370,17 @@ public class Localizable {
     	String message = localizeFor(sender);
     	if ( message != null && !message.isEmpty() ) {
     		
-    		Output.get().sendMessage(sender, message, level);
+    		try {
+				Output.get().sendMessage(sender, message, level);
+			} 
+    		catch (Exception e) {
+				Output.get().logRaw( 
+						"Tried to send a formatted mmessage to a player but it ended in "
+						+ "failure. Was the original message edited and an extra parameter added? "
+						+ "raw message: [" +
+							message	
+						+ "]");
+			}
     	}
     }
 

@@ -383,6 +383,17 @@ public class Output
         }
     }
     
+    /**
+     * <p>This will log a message to the console without any conversion of color codes or
+     * anything else.  Expect issues with color formatting.
+     * </p>
+     * 
+     * @param message
+     */
+    public void logRaw( String message ) {
+    	Prison.get().getPlatform().logPlain(message);
+    }
+    
     public void logDebug(String message, Object... args) {
     	logDebug( message, null, args );
     }

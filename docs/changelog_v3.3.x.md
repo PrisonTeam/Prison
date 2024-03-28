@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16c 2024-03-15
+# 3.3.0-alpha.16c 2024-03-29
+
+
+
+* **Localization: If admin adds extra parameters, or other parsing failures, happens on a message, the error will now be trapped and logged to the console without formatting.**
 
 
 
