@@ -42,6 +42,9 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.data.PlayerRank;
+import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 
 /**
  * Represents an object which has the potential to be localized in one of
@@ -347,9 +350,14 @@ public class Localizable {
      * @since 1.0
      */
     public String localizeFor(CommandSender sender) {
-        return sender instanceof Player ?
-            localizeIn(getParent().getLocale((Player) sender)) :
-            localize();
+    	String results = 
+    			sender instanceof Player ?
+		            localizeIn(getParent().getLocale((Player) sender)) :
+		            localize();
+    	
+    	results = applySecondaryPlaceholders( sender, results );
+    	
+    	return results;
     }
 
     /**
@@ -396,11 +404,19 @@ public class Localizable {
      *
      * @param sender The {@link CommandSender} to send this {@link Localizable} to
      */
-    public void sendTo(CommandSender sender) {
+    public void sendTo(CommandSender sender ) {
+    	CommandSender playerStats = null;
+    	sendTo( sender, playerStats );
+    }
+    public void sendTo(CommandSender sender, CommandSender playerStats ) {
     	
     	String message = localize();
     	if ( message != null && !message.isEmpty() ) {
 
+    		message = applySecondaryPlaceholders( 
+    				(playerStats != null ? playerStats : sender ),
+    				message );
+    		
     		sendTo(sender, LogLevel.PLAIN);
     	}
     }
@@ -412,12 +428,16 @@ public class Localizable {
      * @since 1.0
      */
     public void broadcast() {
+    	CommandSender playerStats = null;
+    	broadcast( playerStats );
+    }
+    public void broadcast( CommandSender playerStats ) {
     	
     	String message = localize();
     	if ( message != null && !message.isEmpty() ) {
     		
     		for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
-    			sendTo(player);
+    			sendTo(player, playerStats);
     		}
     		Output.get().logInfo( message );
     	}
@@ -459,4 +479,103 @@ public class Localizable {
 //        PLAIN, INFO, WARN, ERROR
 //    }
 
+
+    /**
+     * <p>This function will provide support for secondary placeholders for all player related placeholders.
+     * These secondary placeholders are in addition to the preexisting positional placeholders
+     * that are hard coded for the specific parameters. 
+     * </p>
+     * 
+     * <p>These secondary placeholders can be inserted anywhere in the message.
+     * </p>
+     * 
+     * <ul>
+     * 	<li>{player}</li>
+     * 	<li>{rank_default}</li>
+     * 	<li>{rank_tag_default}</li>
+     * 	<li>{rank_next_default}</li>
+     * 	<li>{rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges}</li>
+     * 	<li>{rank_tag_prestiges}</li>
+     * 	<li>{rank_next_prestiges}</li>
+     * 	<li>{rank_next_tag_prestiges}</li>
+     * 
+     *  <li>{player} {rank_default} {rank_tag_default} {rank_next_default} {rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges} {rank_tag_prestiges} {rank_next_prestiges} {rank_next_tag_prestiges}</li>
+     * </ul>
+     * 
+     * @param rankPlayer
+     * @param results
+     * @return
+     */
+	public String applySecondaryPlaceholders( CommandSender sender, String results ) {
+
+		if ( results != null && !results.isEmpty() && 
+				sender != null && sender instanceof Player ) {
+			RankPlayer rankPlayer = sender.getRankPlayer();
+			
+			if ( rankPlayer != null ) {
+				
+				
+				results = applySecondaryPlaceholdersCheck( "{player}", rankPlayer.getName(), results );
+				
+				if ( rankPlayer.getPlayerRankDefault() != null ) {
+					PlayerRank rankP = rankPlayer.getPlayerRankDefault();
+					Rank rank = rankP == null ? null : rankP.getRank();
+					Rank rankNext = rank == null ? null : rank.getRankNext();
+					
+					results = applySecondaryPlaceholdersCheck( "{rank_default}", 
+							rank == null ? "" : rank.getName(), results );
+					results = applySecondaryPlaceholdersCheck( "{rank_tag_default}", 
+							rank == null ? "" : rank.getTag(), results );
+					
+					results = applySecondaryPlaceholdersCheck( "{rank_next_default}", 
+							rankNext == null ? "" : rankNext.getName(), results );
+					results = applySecondaryPlaceholdersCheck( "{rank_next_tag_default}", 
+							rankNext == null ? "" : rankNext.getTag(), results );
+				}
+				
+				if ( rankPlayer.getPlayerRankPrestiges() != null ) {
+					
+					PlayerRank rankP = rankPlayer.getPlayerRankPrestiges();
+					Rank rank = rankP == null ? null : rankP.getRank();
+					Rank rankNext = rank == null ? null : rank.getRankNext();
+					
+					results = applySecondaryPlaceholdersCheck( "{rank_prestiges}", 
+							rank == null ? "" : rank.getName(), results );
+					results = applySecondaryPlaceholdersCheck( "{rank_tag_prestiges}", 
+							rank == null ? "" : rank.getTag(), results );
+					
+					results = applySecondaryPlaceholdersCheck( "{rank_next_prestiges}", 
+							rankNext == null ? "" : rankNext.getName(), results );
+					results = applySecondaryPlaceholdersCheck( "{rank_next_tag_prestiges}", 
+							rankNext == null ? "" : rankNext.getTag(), results );
+				}
+				
+			}
+		}
+		
+		
+		return results;
+	}
+
+	/**
+	 * <p>Ths function will perform individual replacements of the given placeholders, but
+	 * if the placeholder does not exist, then it will not change anything with the results
+	 * and it will be just passed through.
+	 * </p>
+	 * 
+	 * @param placeholder
+	 * @param value
+	 * @param results
+	 * @return
+	 */
+	private String applySecondaryPlaceholdersCheck( String placeholder, String value, String results) {
+
+		if ( results.contains( placeholder ) && value != null ) {
+			results = results.replace( placeholder, value );
+		}
+		
+		return results;
+	}
 }
