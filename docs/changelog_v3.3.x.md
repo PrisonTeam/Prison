@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16c 2024-04-07
 
 
+* **Player Manager: Secondary Placeholders:  Setup the secondary placeholder support on the PlayerManager, but it has not been enabled yet** since secondary placeholders on placeholders do not make a lot of sense because each placeholder is only one value and they cannot contain alternative text.  At least not yet.
+
+
 * **Localizable: Secondary placeholders:  Rewrote the whole support of secondary placeholders related to players.***
 Expanded the support by making them generic so other data sources can also have their own custom set of placeholders too.  Such as mines.
 This now supports a new interface that will provide the generic support.
