@@ -14,7 +14,17 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16c 2024-03-29
+# 3.3.0-alpha.16c 2024-04-07
+
+
+* **Localizable: Secondary placeholders:  Rewrote the whole support of secondary placeholders related to players.***
+Expanded the support by making them generic so other data sources can also have their own custom set of placeholders too.  Such as mines.
+This now supports a new interface that will provide the generic support.
+Player's commands have been modified to pass a RankPlayer object, which supports the new interface.  Non-player commands have not been converted since players will never see those messages (such as admin commands).
+
+
+* **Added a comment in the ranks message files indicating that there is now some support for player based placeholders to farther customize messages.**
+This also fixes an issue with the broadcast messages to use the intended player instead of the target player who is being sent the message.
 
 
 

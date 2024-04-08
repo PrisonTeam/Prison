@@ -25,11 +25,12 @@ public class RankUpCommandMessages
 	}
 
 	
-	protected void rankupMaxNoPermissionMsg( CommandSender sender, String permission ) {
+	protected void rankupMaxNoPermissionMsg( CommandSender sender, String permission, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__no_permission" )
 				.withReplacements( permission.toLowerCase() )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
 	protected String rankupCannotRunFromConsoleMsg() {
@@ -85,50 +86,65 @@ public class RankUpCommandMessages
 		.sendTo( sender );
 	}
 	
-	protected void rankupNotAtLastRankMsg( CommandSender sender ) {
+	protected void rankupNotAtLastRankMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__not_at_last_rank" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void rankupAtLastRankMsg( CommandSender sender ) {
+	protected void rankupAtLastRankMsg( CommandSender sender, 
+			RankPlayer rPlayer  ) {
 		PrisonRanks.getInstance().getRanksMessages()
 		.getLocalizable( "ranks_rankup__at_last_rank" )
-		.sendTo( sender );
+		.sendTo( sender, rPlayer );
 	}
 	
-	protected void rankupNotAbleToPrestigeMsg( CommandSender sender ) {
+	protected void rankupNotAbleToPrestigeMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__not_able_to_prestige" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void rankupNotAbleToResetRankMsg( CommandSender sender ) {
+	protected void rankupNotAbleToResetRankMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__not_able_to_reset_rank" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
 	
 	
-	protected void prestigePlayerBalanceSetToZeroMsg( CommandSender sender ) {
+	protected void prestigePlayerBalanceSetToZeroMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__balance_set_to_zero" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void prestigePlayerSucessfulMsg( CommandSender sender, String tag ) {
+	protected void prestigePlayerSucessfulMsg( CommandSender sender, String tag, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__prestige_successful" )
 				.withReplacements( tag )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void prestigePlayerFailureMsg( CommandSender sender, String tag ) {
+	protected void prestigePlayerSucessfulBroadcastMsg( CommandSender sender, String tag, 
+			RankPlayer rPlayer ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankup__prestige_successful_broadcast" )
+		.withReplacements( tag )
+		.sendTo( sender, rPlayer );
+	}
+	
+	protected void prestigePlayerFailureMsg( CommandSender sender, String tag, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__prestige_failure" )
 				.withReplacements( tag )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 
 	protected String prestigeConfirmationGUIMsg( CommandSender sender, 
@@ -146,34 +162,46 @@ public class RankUpCommandMessages
 		if ( tag == null ) {
 			tag = targetRank.getRank().getName();
 		}
-		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_1" )
-				.withReplacements( tag )
-					.localize().replace(" ", "_") ).append( " " );
+		sb.append( 
+				rPlayer.convertStringPlaceholders( 
+					rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_1" )
+					.withReplacements( tag )
+						.localize().replace(" ", "_") )).append( " " );
 		
-		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_2" )
-				.withReplacements( 
-						dFmt.format( targetRank.getRankCost()) )
-				.localize().replace(" ", "_") ).append( " " );
+		sb.append( 
+				rPlayer.convertStringPlaceholders( 
+						rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_2" )
+					.withReplacements( 
+							dFmt.format( targetRank.getRankCost()) )
+					.localize().replace(" ", "_") )).append( " " );
 		
-		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
-				.withReplacements( 
-						dFmt.format( balance),
-						currency == null || currency.trim().length() == 0 ? 
-								"" : " " + currency )
-				.localize().replace(" ", "_") ).append( " " );
+		sb.append( 
+				rPlayer.convertStringPlaceholders( 
+						rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
+					.withReplacements( 
+							dFmt.format( balance),
+							currency == null || currency.trim().length() == 0 ? 
+									"" : " " + currency )
+					.localize().replace(" ", "_") )).append( " " );
 
 		if ( isResetDefaultLadder ) {
-			sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_4" )
-					.localize().replace(" ", "_") ).append( " " );
+			sb.append( 
+					rPlayer.convertStringPlaceholders( 
+							rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_4" )
+							.localize().replace(" ", "_") )).append( " " );
 		}
 
 		if ( isConfirmationEnabled ) {
-			sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_5" )
-					.localize().replace(" ", "_") ).append( " " );
+			sb.append( 
+					rPlayer.convertStringPlaceholders( 
+							rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_5" )
+							.localize().replace(" ", "_") )).append( " " );
 		}
 
-		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_7" )
-				.localize().replace(" ", "_") );
+		sb.append( 
+				rPlayer.convertStringPlaceholders( 
+						rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_7" )
+						.localize().replace(" ", "_") ));
 		
 		return sb.toString();
 	}
@@ -196,38 +224,38 @@ public class RankUpCommandMessages
 		}
 		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_1" )
 			.withReplacements( tag )
-			.sendTo( sender );
+			.sendTo( sender, rPlayer );
 		
 		
 		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_2" )
 			.withReplacements( 
 				dFmt.format( targetRank.getRankCost()) )
-			.sendTo( sender );
+			.sendTo( sender, rPlayer );
 		
 		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
 		.withReplacements( 
 				dFmt.format( balance),
 				currency == null || currency.trim().length() == 0 ? 
 						"" : " " + currency )
-			.sendTo( sender );
+			.sendTo( sender, rPlayer );
 
 		if ( isResetDefaultLadder ) {
 			rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_4" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 		}
 
 		if ( isResetMoney ) {
 			rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_4" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 		}
 		
 		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_5" )
-			.sendTo( sender );
+			.sendTo( sender, rPlayer );
 		
 		String playerName = !isPlayer ? rPlayer.getName() + " " : "";
 		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_6" )
 			.withReplacements( playerName )
-			.sendTo( sender );
+			.sendTo( sender, rPlayer );
 
 		
 //		ranks_rankup__confirm_prestige_line_1=&3Confirm Prestige: %s
@@ -240,7 +268,8 @@ public class RankUpCommandMessages
 	}
 	
 	protected void ranksRankupPlayerBalanceMsg( CommandSender sender, 
-			double balance, String currency ) {
+			double balance, String currency, 
+			RankPlayer rPlayer ) {
 		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 
 		LocaleManager rMsg = PrisonRanks.getInstance().getRanksMessages();
@@ -250,7 +279,7 @@ public class RankUpCommandMessages
 				dFmt.format( balance),
 				currency == null || currency.trim().length() == 0 ? 
 						"" : " " + currency )
-			.sendTo( sender );
+			.sendTo( sender, rPlayer );
 	}
 	
 	protected void ranksPromotePlayerMustBeOnlineMsg( CommandSender sender ) {
@@ -259,31 +288,34 @@ public class RankUpCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void ranksPromotePlayerInvalidChargeValueMsg( CommandSender sender ) {
+	protected void ranksPromotePlayerInvalidChargeValueMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__invalid_charge_value" )
 				.withReplacements(
 						PromoteForceCharge.no_charge.name(), 
 						PromoteForceCharge.charge_player.name()
 						)
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksDemotePlayerInvalidRefundValueMsg( CommandSender sender ) {
+	protected void ranksDemotePlayerInvalidRefundValueMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__invalid_refund_value" )
 				.withReplacements(
 						PromoteForceCharge.no_charge.name(), 
 						PromoteForceCharge.refund_player.name()
 						)
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksConfirmLadderMsg( CommandSender sender, String ladderName ) {
+	protected void ranksConfirmLadderMsg( CommandSender sender, String ladderName, 
+			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_failure_invalid_ladder" )
 				.withReplacements( ladderName )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
 	
@@ -297,7 +329,10 @@ public class RankUpCommandMessages
 	
 	protected void ranksRankupSuccessMsg( CommandSender sender, String playerName, 
 			RankupResults results, 
-			StringBuilder sbRanks ) {
+			StringBuilder sbRanks
+			 ) {
+		
+		RankPlayer rPlayer = results.getRankPlayer();
 		
 //		PlayerRank tpRank = results.getPlayerRankTarget();
 		Rank tRank = results.getTargetRank();
@@ -333,7 +368,9 @@ public class RankUpCommandMessages
     					
     					sender.getName(), localManager.localize()
     				);           	
-    	Output.get().logInfo( localManagerLog.localize() );
+    	Output.get().logInfo( 
+    			rPlayer.convertStringPlaceholders( 
+    					localManagerLog.localize() ));
 
     	
     	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
@@ -348,14 +385,15 @@ public class RankUpCommandMessages
     				(tRank == null ? "" : tRank.getTag() ), 
     				(results.getMessage() != null ? results.getMessage() : "")
     			)
-        		.broadcast();
+        		.broadcast( rPlayer );
     	}
     	else {
-    		localManager.sendTo( sender );
+    		localManager.sendTo( sender, rPlayer );
     	}
 	}
 
-	protected void ranksRankupMaxSuccessMsg( CommandSender sender, StringBuilder ranks ) {
+	protected void ranksRankupMaxSuccessMsg( CommandSender sender, StringBuilder ranks, 
+			RankPlayer rPlayer ) {
 		
     	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankup__log_rank_change" )
@@ -370,12 +408,12 @@ public class RankUpCommandMessages
     	
     	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
     		
-    		localManagerLog.broadcast();
+    		localManagerLog.broadcast( rPlayer );
     		
     	}
     	else {
     		
-    		localManagerLog.sendTo( sender );
+    		localManagerLog.sendTo( sender, rPlayer );
     	}
 	}
 	
@@ -384,11 +422,12 @@ public class RankUpCommandMessages
 		
 		PlayerRank tpRank = results.getPlayerRankTarget();
 		
-		ranksRankupCannotAffordMsg( sender, tpRank );
+		ranksRankupCannotAffordMsg( sender, tpRank, results.getRankPlayer() );
 	}
 	
 	protected void ranksRankupCannotAffordMsg( CommandSender sender, 
-			PlayerRank tpRank ) {
+			PlayerRank tpRank, 
+			RankPlayer rPlayer ) {
 			
 		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     	
@@ -402,7 +441,7 @@ public class RankUpCommandMessages
     				tRank == null || tRank.getCurrency() == null ? "" : 
     					" " +tRank.getCurrency()
 				)
-	    		.sendTo( sender );
+	    		.sendTo( sender, rPlayer );
 	}
 
 	protected void ranksRankupLowestRankMsg( CommandSender sender, String playerName,
@@ -416,7 +455,7 @@ public class RankUpCommandMessages
 				.withReplacements(
 						(playerName == null ? messagYouAre : playerName)
 					)
-				.sendTo( sender );
+				.sendTo( sender, results.getRankPlayer() );
 	}
 	
 	protected void ranksRankupHighestRankMsg( CommandSender sender, String playerName,
@@ -430,107 +469,120 @@ public class RankUpCommandMessages
 				.withReplacements(
 						(playerName == null ? messagYouAre : playerName)
 					)
-				.sendTo( sender );
+				.sendTo( sender, results.getRankPlayer() );
 	}
 	
-	protected void ranksRankupFailureMsg( CommandSender sender ) {
+	protected void ranksRankupFailureMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_failure" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksRankupFailureCouldNotLoadPlayerMsg( CommandSender sender ) {
+	protected void ranksRankupFailureCouldNotLoadPlayerMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 		    	.getLocalizable( "ranks_rankup__rankup_failed_to_load_player" )
-		    	.sendTo( sender );
+		    	.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksRankupFailureCouldNotLoadLadderMsg( CommandSender sender ) {
+	protected void ranksRankupFailureCouldNotLoadLadderMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_failed_to_load_ladder" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksRankupFailureUnableToAssignRankMsg( CommandSender sender ) {
+	protected void ranksRankupFailureUnableToAssignRankMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_failed_to_assign_rank" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksRankupFailureUnableToAssignRankWithRefundMsg( CommandSender sender ) {
+	protected void ranksRankupFailureUnableToAssignRankWithRefundMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 		.getLocalizable( "ranks_rankup__rankup_failed_to_assign_rank_with_refund" )
-		.sendTo( sender );
+		.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksRankupFailureCouldNotSavePlayerFileMsg( CommandSender sender ) {
+	protected void ranksRankupFailureCouldNotSavePlayerFileMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_failed_to_save_player_file" )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksRankupFailureNoRanksMsg( CommandSender sender ) {
+	protected void ranksRankupFailureNoRanksMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_no_ranks" )
-				.sendTo( sender ); 
+				.sendTo( sender, rPlayer ); 
 	}
 	
-	protected void ranksRankupFailureRankDoesNotExistMsg( CommandSender sender, String rank ) {
+	protected void ranksRankupFailureRankDoesNotExistMsg( CommandSender sender, String rank, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_rank_does_not_exist" )
 				.withReplacements( rank )
-				.sendTo( sender ); 
+				.sendTo( sender, rPlayer ); 
 	}
 	
 	protected void ranksRankupFailureRankIsNotInLadderMsg( CommandSender sender, 
-			String rank, String ladder ) {
+			String rank, String ladder, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_rank_is_not_in_ladder" )
 				.withReplacements( rank, ladder )
-				.sendTo( sender ); 
+				.sendTo( sender, rPlayer ); 
 	}
 	
 	protected void ranksRankupFailureCurrencyIsNotSupportedMsg( CommandSender sender, 
-			String currency ) {
+			String currency, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_currency_is_not_supported" )
 				.withReplacements( currency )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
 	protected void ranksRankupFailureLadderRemovedMsg( CommandSender sender, 
-			String ladder ) {
+			String ladder, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_ladder_removed" )
 				.withReplacements( ladder )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
 	protected void ranksRankupFailureRemovingLadderMsg( CommandSender sender, 
-			String ladder ) {
+			String ladder, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__rankup_failure_removing_ladder" )
 				.withReplacements( ladder )
-				.sendTo( sender );
+				.sendTo( sender, rPlayer );
 	}
 	
-	protected void ranksRankupFailureInProgressMsg( CommandSender sender ) {
+	protected void ranksRankupFailureInProgressMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
 			.getLocalizable( "ranks_rankup__rankup_in_progress_failure" )
-			.sendTo( sender );
+			.sendTo( sender, rPlayer );
 	}
 	
 	

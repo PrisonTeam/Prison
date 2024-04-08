@@ -1228,9 +1228,9 @@ public class RanksCommands
 		return display;
 	}
 
-	private String padRankName( Rank rank, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm ) {
-		return padRankName( rank.getName(), rank.getTag(), maxRankNameSize, maxRankTagNoColorSize, hasPerm );
-	}
+//	private String padRankName( Rank rank, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm ) {
+//		return padRankName( rank.getName(), rank.getTag(), maxRankNameSize, maxRankTagNoColorSize, hasPerm );
+//	}
     protected String padRankName( String rankName, String rankTag, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm )
 	{
     	StringBuilder sb = new StringBuilder();

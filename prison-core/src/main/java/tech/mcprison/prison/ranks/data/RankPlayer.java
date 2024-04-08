@@ -39,6 +39,7 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholderStringCoverter;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
@@ -51,7 +52,7 @@ import tech.mcprison.prison.util.Text;
  */
 public class RankPlayer 
 		extends RankPlayerMessages
-			implements Player {
+			implements Player, PlaceholderStringCoverter {
 
 	public static final long DELAY_THREE_SECONDS = 20 * 3; // 3 seconds in ticks
 	
@@ -1905,6 +1906,112 @@ public class RankPlayer
 		Player player = Prison.get().getPlatform().getPlayer(getUUID()).orElse(null);
 		
 		return player == null ? new ArrayList<>() : player.getSellAllMultiplierListings();
+	}
+
+
+	@Override
+	public String getStringPlaceholders() {
+		String results = 
+				"{player} {rank_default} {rank_tag_default} {rank_next_default} {rank_next_tag_default} " +
+				"{rank_prestiges} {rank_tag_prestiges} {rank_next_prestiges} {rank_next_tag_prestiges}";
+		
+		return results;
+	}
+	
+    /**
+     * <p>This function will provide support for secondary placeholders for all player related placeholders.
+     * These secondary placeholders are in addition to the preexisting positional placeholders
+     * that are hard coded for the specific parameters. 
+     * </p>
+     * 
+     * <p>These secondary placeholders can be inserted anywhere in the message.
+     * </p>
+     * 
+     * <ul>
+     * 	<li>{player}</li>
+     * 	<li>{rank_default}</li>
+     * 	<li>{rank_tag_default}</li>
+     * 	<li>{rank_next_default}</li>
+     * 	<li>{rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges}</li>
+     * 	<li>{rank_tag_prestiges}</li>
+     * 	<li>{rank_next_prestiges}</li>
+     * 	<li>{rank_next_tag_prestiges}</li>
+     * 
+     *  <li>{player} {rank_default} {rank_tag_default} {rank_next_default} {rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges} {rank_tag_prestiges} {rank_next_prestiges} {rank_next_tag_prestiges}</li>
+     * </ul>
+     * 
+     * @param rankPlayer
+     * @param results
+     * @return
+     */
+	@Override
+	public String convertStringPlaceholders(String results) {
+
+		RankPlayer rankPlayer = this;
+		
+		if ( rankPlayer != null ) {
+			
+			results = applySecondaryPlaceholdersCheck( "{player}", rankPlayer.getName(), results );
+			
+			if ( rankPlayer.getPlayerRankDefault() != null ) {
+				PlayerRank rankP = rankPlayer.getPlayerRankDefault();
+				Rank rank = rankP == null ? null : rankP.getRank();
+				Rank rankNext = rank == null ? null : rank.getRankNext();
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_default}", 
+						rank == null ? "" : rank.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_tag_default}", 
+						rank == null ? "" : rank.getTag(), results );
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_next_default}", 
+						rankNext == null ? "" : rankNext.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_next_tag_default}", 
+						rankNext == null ? "" : rankNext.getTag(), results );
+			}
+			
+			if ( rankPlayer.getPlayerRankPrestiges() != null ) {
+				
+				PlayerRank rankP = rankPlayer.getPlayerRankPrestiges();
+				Rank rank = rankP == null ? null : rankP.getRank();
+				Rank rankNext = rank == null ? null : rank.getRankNext();
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_prestiges}", 
+						rank == null ? "" : rank.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_tag_prestiges}", 
+						rank == null ? "" : rank.getTag(), results );
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_next_prestiges}", 
+						rankNext == null ? "" : rankNext.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_next_tag_prestiges}", 
+						rankNext == null ? "" : rankNext.getTag(), results );
+			}
+			
+		}
+		
+		return results;
+	}
+	
+
+	/**
+	 * <p>Ths function will perform individual replacements of the given placeholders, but
+	 * if the placeholder does not exist, then it will not change anything with the results
+	 * and it will be just passed through.
+	 * </p>
+	 * 
+	 * @param placeholder
+	 * @param value
+	 * @param results
+	 * @return
+	 */
+	private String applySecondaryPlaceholdersCheck( String placeholder, String value, String results) {
+
+		if ( results.contains( placeholder ) && value != null ) {
+			results = results.replace( placeholder, value );
+		}
+		
+		return results;
 	}
 
 //	public long getRankScoreCooldown() {

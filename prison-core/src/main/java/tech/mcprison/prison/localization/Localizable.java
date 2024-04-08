@@ -42,6 +42,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholderStringCoverter;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -405,17 +406,20 @@ public class Localizable {
      * @param sender The {@link CommandSender} to send this {@link Localizable} to
      */
     public void sendTo(CommandSender sender ) {
-    	CommandSender playerStats = null;
-    	sendTo( sender, playerStats );
+    	PlaceholderStringCoverter placeholderConverter = null;
+    	sendTo( sender, placeholderConverter );
     }
-    public void sendTo(CommandSender sender, CommandSender playerStats ) {
+    public void sendTo(CommandSender sender, PlaceholderStringCoverter placeholderConverter ) {
     	
     	String message = localize();
     	if ( message != null && !message.isEmpty() ) {
 
-    		message = applySecondaryPlaceholders( 
-    				(playerStats != null ? playerStats : sender ),
-    				message );
+    		if ( placeholderConverter != null ) {
+    			message = placeholderConverter.convertStringPlaceholders(message);
+    		}
+//    		message = applySecondaryPlaceholders( 
+//    				(playerStats != null ? playerStats : sender ),
+//    				message );
     		
     		sendTo(sender, LogLevel.PLAIN);
     	}
@@ -428,16 +432,16 @@ public class Localizable {
      * @since 1.0
      */
     public void broadcast() {
-    	CommandSender playerStats = null;
-    	broadcast( playerStats );
+    	PlaceholderStringCoverter placeholderConverter = null;
+    	broadcast( placeholderConverter );
     }
-    public void broadcast( CommandSender playerStats ) {
+    public void broadcast( PlaceholderStringCoverter placeholderConverter ) {
     	
     	String message = localize();
     	if ( message != null && !message.isEmpty() ) {
     		
     		for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
-    			sendTo(player, playerStats);
+    			sendTo(player, placeholderConverter);
     		}
     		Output.get().logInfo( message );
     	}
