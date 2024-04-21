@@ -729,7 +729,7 @@ public class PlayerManager
     			        	
     			        	if ( attributeNFormat != null ) {
     			        		
-    			        		sb.append( attributeNFormat.format( cost ) );
+    			        		sb.append( attributeNFormat.format( percent ) );
     			        	}
     			        	else {
     			        		

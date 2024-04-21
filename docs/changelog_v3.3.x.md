@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16c 2024-04-07
+# 3.3.0-alpha.16c 2024-04-20
+
+
+* **Placeholder bug: The placeholder 'prison_rankup_cost_percent' uses the calculated value of a percentage, but when used with the placeholder attribute, it was found to use the price instead.**  As such, the actual value returned for the placeholder was incorrect.
 
 
 * **Player Manager: Secondary Placeholders:  Setup the secondary placeholder support on the PlayerManager, but it has not been enabled yet** since secondary placeholders on placeholders do not make a lot of sense because each placeholder is only one value and they cannot contain alternative text.  At least not yet.
