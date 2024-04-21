@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.16c 2024-04-20
+# 3.3.0-alpha.17 2024-04-20
+
+
+
+**v3.3.0-alpha.17** 2024-03-20
+
 
 
 * **Mines messages: Secondary placeholders.  Added support for mines' messages to be able to support secondary placeholders within the language files. NOTE: Not usable at this time.**

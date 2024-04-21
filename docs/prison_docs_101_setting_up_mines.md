@@ -6,7 +6,7 @@
 
 This document provides some highlights to how to setup mines.  It is a work in progress so check back for more information.
 
-*Documented updated: 2023-11-26*
+*Documented updated: 2024-03-11*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -20,6 +20,12 @@ As a side note, if you installed prison, and it appears like it may not be worki
 
 Prison has a list of suggested plugins that works well with Prison, and a few that do not work at all with Prison.  Please see the following document for a list of suggested plugins.  If you have a favorite plugin that works well with Prison and it's not in that list, then please reach out to us in our discord server and make a suggestion for it to be added. 
 [Setting up Prison - The Basics](prison_docs_012_setting_up_prison_basics.md)
+
+
+**New Command:**
+
+`/mines block layerStats help`
+This new command will provide a layer by layer inspection of what blocks were assigned to a mine, versus what is actually in the mine currently.  This is useful when confirming block constraints are working correctly, or if another block was not spawning as expected, such that there is too much AIR.
 
 
 
