@@ -17,6 +17,14 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.16c 2024-04-20
 
 
+* **Mines messages: Secondary placeholders.  Added support for mines' messages to be able to support secondary placeholders within the language files. NOTE: Not usable at this time.**
+But... this is basically useless.  Within the mines language files, the vast majority of all messages are related to admin messages and are not viewable by the players.
+Therefore the admin-only messages will not support the secondary placeholders since the players will never see them.
+At this time, there are no messages that supports the use of these secondary placeholders, although the feature has been enabled for mines.
+If a need is required, then please reach out and request such features should be enabled.  At this time, effort and work will not be performed blindly upon items that will never be used, so if you see a need for this, I'd be happy to add them since you would have a need.
+
+
+
 * **Placeholder bug: The placeholder 'prison_rankup_cost_percent' uses the calculated value of a percentage, but when used with the placeholder attribute, it was found to use the price instead.**  As such, the actual value returned for the placeholder was incorrect.
 
 

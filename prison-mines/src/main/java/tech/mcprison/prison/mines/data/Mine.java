@@ -34,6 +34,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholderStringCoverter;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
@@ -47,7 +48,7 @@ import tech.mcprison.prison.util.ObsoleteBlockType;
 @SuppressWarnings( "deprecation" )
 public class Mine 
 	extends MineScheduler 
-	implements PrisonSortable, Comparable<Mine> {
+	implements PrisonSortable, Comparable<Mine>, PlaceholderStringCoverter {
 	
 	
 	public enum MineType {
@@ -867,5 +868,160 @@ public class Mine
 	public int compareTo( Mine o ) {
 		return getName().toLowerCase().compareTo( o.getName().toLowerCase() );
 	}
+	
+	
+
+	@Override
+	public String getStringPlaceholders() {
+		return "{mine} {mine_tag} {mine_world} {mine_type} {mine_group} " +
+				"{mine_rank} {mine_air_count} {mine_player_count} " +
+				"{mine_block_break_count} {mine_block_remaining_count} {mine_block_remaining_percent} " +
+				"{mine_blocks_mined_total} {mine_reset_time_sec} {mine_reset_time_remaining_sec} " +
+				"{mine_block_[block]_name} {mine_block_[block]_type} {mine_block_[block]_placed} " +
+				"{mine_block_[block]_remaining} {mine_block_[block]_total} {mine_block_[block]_chance}";
+	}
+
+	
+    /**
+     * <p>This function will provide support for secondary placeholders for all mine related placeholders.
+     * These secondary placeholders are in addition to the preexisting positional placeholders
+     * that are hard coded for the specific parameters. 
+     * </p>
+     * 
+     * <p>These secondary placeholders can be inserted anywhere in the message.
+     * </p>
+     * 
+     * <ul>
+     * 	<li>{mine}</li>
+     * 	<li>{mine_tag}</li>
+     * 	<li>{mine_world}</li>
+     * 	<li>{mine_type}</li>
+     * 	<li>{mine_group}</li>
+     * 
+     * 	<li>{mine_rank}</li>
+     * 	<li>{mine_air_count}</li>
+     * 	<li>{mine_player_count}</li>
+     * 
+     * 	<li>{mine_block_break_count}</li>
+     *  <li>{mine_block_remaining_count}</li>
+     *  <li>{mine_block_remaining_percent}</li>
+     *  <li>{mine_blocks_mined_total}</li>
+     *  <li>{mine_reset_time_sec}</li>
+     *  <li>{mine_reset_time_remaining_sec}</li>
+     *  
+     *  <li>{mine_block_<block>_name}</li>
+     *  <li>{mine_block_<block>_type}</li>
+     *  <li>{mine_block_<block>_placed}</li>
+     *  <li>{mine_block_<block>_remaining}</li>
+     *  <li>{mine_block_<block>_total}</li>
+     *  <li>{mine_block_<block>_chance}</li>
+
+     * 
+     *  <li>{mine} {mine_tag} {mine_world} {mine_type} {mine_group}
+	 *		{mine_rank} {mine_air_count} {mine_player_count} 
+	 *		{mine_block_break_count} {mine_block_remaining_count} {mine_block_remaining_percent}
+	 *		{mine_blocks_mined_total} {mine_reset_time_sec} {mine_reset_time_remaining_sec}
+	 *		{mine_block_[block]_name} {mine_block_[block]_type} {mine_block_[block]_placed}
+	 *		{mine_block_[block]_remaining} {mine_block_[block]_total} {mine_block_[block]_chance}
+	 *  </li>
+     * 
+     * </ul>
+     * 
+     * @param rankPlayer
+     * @param results
+     * @return
+     */
+	@Override
+	public String convertStringPlaceholders(String results) {
+
+		Mine mine = this;
+		
+		if ( mine != null ) {
+			
+			results = applySecondaryPlaceholdersCheck( "{mine}", mine.getName(), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_tag}", mine.getTag(), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_world}", mine.getWorldName(), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_type}", mine.getMineType().name(), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_group}", mine.getMineGroup().getName(), results );
+
+			results = applySecondaryPlaceholdersCheck( "{mine_rank}", mine.getRankString(), results );
+			
+			results = applySecondaryPlaceholdersCheck( "{mine_air_count}", 
+					Integer.toString( mine.getAirCount()), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_player_count}", 
+					Integer.toString( mine.getPlayerCount()), results );
+			
+			results = applySecondaryPlaceholdersCheck( "{mine_block_break_count}", 
+					Integer.toString( mine.getBlockBreakCount()), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_block_remaining_count}", 
+					Integer.toString( mine.getRemainingBlockCount()), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_block_remaining_percent}", 
+					Double.toString( (mine.getPercentRemainingBlockCount() * 100.0d )), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_blocks_mined_total}", 
+					Long.toString( mine.getTotalBlocksMined()), results );
+			
+			results = applySecondaryPlaceholdersCheck( "{mine_reset_time_sec}", 
+					Integer.toString( mine.getResetTime()), results );
+			results = applySecondaryPlaceholdersCheck( "{mine_reset_time_remaining_sec}", 
+					Double.toString( mine.getRemainingTimeSec()), results );
+			
+			
+			Set<String> keys = mine.getBlockStats().keySet();
+			for (String key : keys) {
+				PrisonBlockStatusData blockStat = mine.getBlockStats().get( key );
+				
+				String bName = blockStat.getBlockName().toLowerCase();
+				String type = blockStat.getBlockType().name();
+				
+				long placed = blockStat.getBlockPlacedCount();
+				long remaining = blockStat.getBlockPlacedCount() - blockStat.getBlockCountUnsaved();
+				long total = blockStat.getBlockCountTotal();
+				
+				Double chance = blockStat.getChance() * 100.0d;
+				
+				results = applySecondaryPlaceholdersCheck( "{mine_block_" + bName + "_name}", 
+						bName, results );
+				results = applySecondaryPlaceholdersCheck( "{mine_block_" + bName + "_type}", 
+						type, results );
+
+				results = applySecondaryPlaceholdersCheck( "{mine_block_" + bName + "_placed}", 
+						Long.toString( placed ), results );
+				results = applySecondaryPlaceholdersCheck( "{mine_block_" + bName + "_remaining}", 
+						Long.toString( remaining ), results );
+				results = applySecondaryPlaceholdersCheck( "{mine_block_" + bName + "_total}", 
+						Long.toString( total ), results );
+				results = applySecondaryPlaceholdersCheck( "{mine_block_" + bName + "_chance}", 
+						Double.toString( chance ), results );
+				
+			}
+			
+
+			
+		}
+		
+		return results;
+	}
+	
+
+	/**
+	 * <p>Ths function will perform individual replacements of the given placeholders, but
+	 * if the placeholder does not exist, then it will not change anything with the results
+	 * and it will be just passed through.
+	 * </p>
+	 * 
+	 * @param placeholder
+	 * @param value
+	 * @param results
+	 * @return
+	 */
+	private String applySecondaryPlaceholdersCheck( String placeholder, String value, String results) {
+
+		if ( results.contains( placeholder ) && value != null ) {
+			results = results.replace( placeholder, value );
+		}
+		
+		return results;
+	}
+
 
 }
