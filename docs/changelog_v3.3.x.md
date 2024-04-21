@@ -4,7 +4,7 @@
 
 ## Change logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
- - [v3.2.0 through v3.3.0-alpha.16](prison_changelogs.md)
+ - [v3.2.0 through v3.3.0-alpha.17](prison_changelogs.md)
  
 * [Known Issues - Open](knownissues_v3.2.x.md)
 * [Known Issues - Resolved](knownissues_v3.2.x_resolved.md)
@@ -18,7 +18,15 @@ These change logs represent the work that has been going on within prison.
 
 
 
-**v3.3.0-alpha.17** 2024-03-20
+
+
+
+
+
+
+# 3.3.0-alpha.17 2024-04-20
+
+**v3.3.0-alpha.17** 2024-04-20
 
 
 
@@ -275,7 +283,7 @@ As a side effect, these two unit test run much faster since it's not trying to s
 
 * **Prison Block change: Add support for display name, which is optional.**
 Setup sellall so it can use the display name now, so renamed items will not be mistaken for vanilla minecraft items.
-More work needs to be done to hoo up displayName to other features, such as sellall and add prison block to mines.
+More work needs to be done to hook up displayName to other features, such as sellall and add prison block to mines.
 
 
 * **Bug fix: Fixed the command `/mines set accessPermission` where it was apply the given perm to all mines.**
