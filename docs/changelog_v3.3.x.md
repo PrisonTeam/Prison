@@ -14,13 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17 2024-04-20
+# 3.3.0-alpha.17 2024-04-2
 
 
 
 
 
-
+* **Economy: EdPrison's economy. Added support for use of EdPrison's economy and custom currencies.**
+This will allow prison to use EdPrison's economy does not also use another established economy that is accessible through vault, or multi-currency.
 
 
 
