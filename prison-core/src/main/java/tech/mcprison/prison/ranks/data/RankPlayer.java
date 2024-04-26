@@ -765,8 +765,13 @@ public class RankPlayer
 	 * @return
 	 */
 	public int getRankPositonDefault() {
+		int pos = -1;
 
-		int pos = getPlayerRankDefault().getRank().getPosition();
+		if ( getPlayerRankDefault().getRank() != null ) {
+			
+			pos = getPlayerRankDefault().getRank().getPosition();
+		}
+		
 		return pos;
 	}
 	
@@ -780,11 +785,14 @@ public class RankPlayer
 	 * @return
 	 */
 	public int getRankPositonPrestiges() {
+		int pos = -1;
+		
 		PlayerRank rankPres = getPlayerRankPrestiges();
 		
-		int pos = rankPres == null ? 
-					-1 :
-					rankPres.getRank().getPosition();
+		if ( rankPres != null ) {
+			
+			pos = rankPres.getRank().getPosition();
+		}
 		
 		return pos;
 	}

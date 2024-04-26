@@ -19,6 +19,9 @@ These change logs represent the work that has been going on within prison.
 
 
 
+* **RankPlayer and topn ranking: This may not have an impact overall, but for both the default and prestiges ladders, they are defaulting to a value of -1 when performing a comparison between players.**
+
+
 * **Update privatebin-java-api to a newer release that now does a better job with a failure to use the correct protocol.**
 It identifies what TLS version is being used, and if TLSv1.3 is missing, then it will indicate that the java version needs to be updated.
 As a fallback, if the privatebin cannot be used, it is now using the older paste.helpch.at service.  But if it does, the resulting documents are not purged and not encrypted.
