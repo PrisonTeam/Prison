@@ -256,11 +256,11 @@ public class GuiConfig extends SpigotConfigComponents{
         		changeCount++;
         	}
         }
-        else if ( conf.get( "Options.Ranks.MaterialType.NoMineAccess" ) == null ) {
+        else if ( conf.get( "Options.Ranks.MaterialType.NoRankAccess" ) == null ) {
         	
-        	String noMineAccess = XMaterial.REDSTONE_BLOCK.name();
+        	String NoRankAccess = XMaterial.REDSTONE_BLOCK.name();
         	
-        	conf.set("Options.Ranks.MaterialType.NoMineAccess", noMineAccess );
+        	conf.set("Options.Ranks.MaterialType.NoRankAccess", NoRankAccess );
         	changeCount++;
         }
         
@@ -355,7 +355,7 @@ public class GuiConfig extends SpigotConfigComponents{
         dataConfig("Options.Ranks.Permission_GUI_Enabled", false);
         dataConfig("Options.Ranks.Permission_GUI","prison.gui.ranks");
         dataConfig("Options.Ranks.Item_gotten_rank","TRIPWIRE_HOOK");
-        dataConfig("Options.Ranks.Item_not_gotten_rank","REDSTONE_BLOCK");
+//        dataConfig("Options.Ranks.Item_not_gotten_rank","REDSTONE_BLOCK");
         dataConfig("Options.Ranks.Enchantment_effect_current_rank", true);
         dataConfig("Options.Ranks.Ladder","default");
         dataConfig("Options.Ranks.Number_of_Rank_Player_GUI",  false);

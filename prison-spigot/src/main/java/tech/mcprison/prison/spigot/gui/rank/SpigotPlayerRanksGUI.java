@@ -163,8 +163,9 @@ public class SpigotPlayerRanksGUI
 
         
         // Not sure how you want to represent this:
-        XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
-        XMaterial materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+        XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.MaterialType"));
+        XMaterial materialHasNot = XMaterial.valueOf(
+        						guiConfig.getString("Options.Ranks.MaterialType.NoRankAccess"));
 
         
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
