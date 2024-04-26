@@ -14,10 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17 2024-04-2
+# 3.3.0-alpha.17 2024-04-26
 
 
 
+
+* **Update privatebin-java-api to a newer release that now does a better job with a failure to use the correct protocol.**
+It identifies what TLS version is being used, and if TLSv1.3 is missing, then it will indicate that the java version needs to be updated.
+As a fallback, if the privatebin cannot be used, it is now using the older paste.helpch.at service.  But if it does, the resulting documents are not purged and not encrypted.
 
 
 * **Economy: EdPrison's economy. Added support for use of EdPrison's economy and custom currencies.**
