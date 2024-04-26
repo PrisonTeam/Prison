@@ -39,7 +39,7 @@ dependencies {
 	//implementation 'org.json:json:20230227'
 	
 	implementation fileTree(dir: 'lib', 
-    			include: ['privatebin-java-api-1.0.2.jar',
+    			include: ['PrivateBin-java-1.1-SNAPSHOT.jar',
     						'json-20230227.jar'])
 	
 }
