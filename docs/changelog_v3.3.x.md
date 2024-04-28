@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17 2024-04-28
 
 
+* **GUI: ranks and mines: setup and enable a new default access block type that can be used if that rank or mine  has not been specifically specified.**
+
+
 * **GUI: tool bar's prior page and next page: Suppress the page buttons if there is only one page worth of gui content. **
 
 

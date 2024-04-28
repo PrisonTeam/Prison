@@ -227,7 +227,13 @@ public class GuiConfig extends SpigotConfigComponents{
         	conf.set("Options.Mines.MaterialType.NoMineAccess", noMineAccess );
         	changeCount++;
         }
-        
+        if ( conf.get( "Options.Mines.MaterialType.HasMineAccess" ) == null ) {
+        	
+        	String hasMineAccess = XMaterial.COAL_ORE.name();
+        	
+        	conf.set("Options.Mines.MaterialType.HasMineAccess", hasMineAccess );
+        	changeCount++;
+        }       
         
         
         if ( conf.get( "Options.Ranks.MaterialType" ) == null ) {
@@ -258,9 +264,16 @@ public class GuiConfig extends SpigotConfigComponents{
         }
         else if ( conf.get( "Options.Ranks.MaterialType.NoRankAccess" ) == null ) {
         	
-        	String NoRankAccess = XMaterial.REDSTONE_BLOCK.name();
+        	String noRankAccess = XMaterial.REDSTONE_BLOCK.name();
         	
-        	conf.set("Options.Ranks.MaterialType.NoRankAccess", NoRankAccess );
+        	conf.set("Options.Ranks.MaterialType.NoRankAccess", noRankAccess );
+        	changeCount++;
+        }
+        if ( conf.get( "Options.Ranks.MaterialType.HasRankAccess" ) == null ) {
+        	
+        	String hasRankAccess = XMaterial.TRIPWIRE_HOOK.name();
+        	
+        	conf.set("Options.Ranks.MaterialType.HasRankAccess", hasRankAccess );
         	changeCount++;
         }
         

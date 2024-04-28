@@ -190,7 +190,22 @@ public class SpigotPlayerMinesGUI
             	
             	
             	// Default to COAL_ORE since the player has access to the mine:
-            	xMat = XMaterial.COAL_ORE;
+            	{
+            		xMat = XMaterial.COAL_ORE;
+
+            		String defaultMineAccessXmat = guiConfig.getString(
+            									"Options.Mines.MaterialType.HasMineAccess","COAL_ORE");
+            		try {
+						XMaterial xMatTemp = SpigotUtil.getXMaterial( defaultMineAccessXmat );
+						if ( xMatTemp != null ) {
+							xMat = xMatTemp;
+						}
+					} 
+            		catch (Exception e) {
+					}
+            	}
+            	// xMat = XMaterial.COAL_ORE;
+
             	
             	// The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
             	// based upon the XMaterial enumeration name, or supported past names.
