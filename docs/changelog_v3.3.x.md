@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17 2024-04-26
+# 3.3.0-alpha.17 2024-04-27
+
+
+* **Economies: fixed the display of too many economy related messages, including eliminating logging of messages for offline players.**
+The vault economy check for offline players, will now only show one informational message if a player is not setup in the economy.
 
 
 * **GUI Player ranks: The setting for Options.Ranks.MaterialType.NoRankAccess was not hooked up properly so it was not really working.**
