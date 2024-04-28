@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17 2024-04-28
 
 
+* **Update the plugin.yml and removed the permissions configs since they were generating errors (lack of a schema) and the perms and handled through the prison command handler.**
+
+
+
 * **CustomItems: Fixed an issue when CustomItems is a plugin on the server, but the plugin fails to load.**
 Therefore the problem was fixed to allow a failed CustomItems loading to bypass being setup and loaded for prison.
 `CustomItems.isEnabled()` must exist and return a value of true before the integration is enabled.
