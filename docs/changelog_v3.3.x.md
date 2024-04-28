@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17 2024-04-28
 
 
+* **Placeholders: bug fix: When using a search from the console which included a player name, it was generating an invalid cast to a SpigotPlayer object when it wasn't related to that class due to the player being offline.**
+
+
 * **GUI: ranks and mines: setup and enable a new default access block type that can be used if that rank or mine  has not been specifically specified.**
 
 
