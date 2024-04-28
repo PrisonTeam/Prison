@@ -161,12 +161,13 @@ public class SpigotPlayerRanksGUI
         
         String guiItemNameDefaultSetting = guiConfig.getString( "Options.Ranks.GuiItemNameDefault" );
 
-        
+
+
         // Not sure how you want to represent this:
         String materialHasStr = guiConfig.getString("Options.Ranks.MaterialType.HasRankAccess", "TRIPWIRE_HOOK");
-        XMaterial materialHas = XMaterial.valueOf( materialHasStr );
-        XMaterial materialHasNot = XMaterial.valueOf(
-        						guiConfig.getString("Options.Ranks.MaterialType.NoRankAccess"));
+        XMaterial materialHas = XMaterial.matchXMaterial( materialHasStr ).orElse(null);
+        XMaterial materialHasNot = XMaterial.matchXMaterial(
+        						guiConfig.getString("Options.Ranks.MaterialType.NoRankAccess")).orElse(null);
 
         
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
@@ -220,7 +221,7 @@ public class SpigotPlayerRanksGUI
         	String materialTypeStr = guiConfig.getString("Options.Ranks.MaterialType." + rank.getName());
         	XMaterial materialType =
         			materialTypeStr == null ? null :
-        				XMaterial.valueOf( materialTypeStr.toUpperCase() );
+        				XMaterial.matchXMaterial( materialTypeStr ).orElse(null);
         	
         	materialType = 
         			!playerHasThisRank ? materialHasNot : 

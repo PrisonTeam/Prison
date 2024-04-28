@@ -114,7 +114,7 @@ public class SpigotPlayerMinesGUI
         else {
         	// Validate that it is valid, otherwise use redstone_block:
         	try {
-				XMaterial.valueOf( noMineAccessBlockType );
+				XMaterial.matchXMaterial( noMineAccessBlockType ).orElse(null);
 			} 
         	catch (Exception e) {
 				noMineAccessBlockType = XMaterial.REDSTONE_BLOCK.name();
@@ -139,7 +139,7 @@ public class SpigotPlayerMinesGUI
         	mineLore.addAll( mineLore2 );
 
 
-            XMaterial xMat = XMaterial.valueOf( noMineAccessBlockType );
+            XMaterial xMat = XMaterial.matchXMaterial( noMineAccessBlockType ).orElse(null);
 //            XMaterial xMat = XMaterial.REDSTONE_BLOCK;
             
             // Bug: Cannot safely use Material due to variants prior to bukkit v1.13:

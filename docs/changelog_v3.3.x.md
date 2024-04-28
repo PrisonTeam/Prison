@@ -16,6 +16,11 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.17 2024-04-28
 
+* **XSeries XMaterials: Update to XSeries v9.10.0 from v9.9.0.**
+Had issues with case sensitivity when using `valueOf()`, which was changed to `matchXMaterial().orElse(null)` which resolves a few issues.
+XMaterials v9.10.0 sets up support for spigot 1.20.5. There may be more changes as spigot stabilizes.
+The issue with using `valueOf("green_wool")` would not find any matches since the enum case must match the string value exactly.  So `valueOf("GREEN_WOOL")` would have worked.  This was fixed to help eliminate possible issues with configuring the server.
+
 
 * **Auto features: normal drop processing: Added a new feature to check inventory for being full, and if it is, then display the messages.**
 
