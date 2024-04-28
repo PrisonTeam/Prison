@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17 2024-04-28
 
 
+* **Auto features: Inventory full chat notification: bug fix.  This fixes using the wrong player object.**
+It now use prison's player object so the color codes are properly translated.
+
+
 * **Placeholders: bug fix: When using a search from the console which included a player name, it was generating an invalid cast to a SpigotPlayer object when it wasn't related to that class due to the player being offline.**
 
 

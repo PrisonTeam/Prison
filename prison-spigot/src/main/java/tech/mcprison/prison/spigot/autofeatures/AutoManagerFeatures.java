@@ -1711,7 +1711,7 @@ public abstract class AutoManagerFeatures
 		}
 		else {
 			
-			player.sendMessage( message );
+			(new SpigotPlayer( player )).sendMessage( message );
 		}
 
 		// holographic display for showing full inventory does not work well.
