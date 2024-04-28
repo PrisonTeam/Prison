@@ -16,6 +16,12 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.17 2024-04-28
 
+
+* **CustomItems: Fixed an issue when CustomItems is a plugin on the server, but the plugin fails to load.**
+Therefore the problem was fixed to allow a failed CustomItems loading to bypass being setup and loaded for prison.
+`CustomItems.isEnabled()` must exist and return a value of true before the integration is enabled.
+
+
 * **XSeries XMaterials: Update to XSeries v9.10.0 from v9.9.0.**
 Had issues with case sensitivity when using `valueOf()`, which was changed to `matchXMaterial().orElse(null)` which resolves a few issues.
 XMaterials v9.10.0 sets up support for spigot 1.20.5. There may be more changes as spigot stabilizes.
