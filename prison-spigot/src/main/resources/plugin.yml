@@ -1,13 +1,60 @@
-name: Prison
+---
 main: tech.mcprison.prison.spigot.SpigotPrison
-version: "${version}"
+name: Prison
+version: ${version}
 description: Prison is an all-in-one plugin for the Minecraft prison game mode.
 website: https://prison.jar-mc.com
-softdepend: [Essentials, Vault, ProtocolLib, LuckPerms, WorldEdit, WorldGuard, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, PermissionsEx, GroupManagerX, GemsEconomy, TokenEnchant, CMI, CMILib, CMIEInjector, CMIPaperLib, Economy_CMI, mcMMO, PlotSquared, Multiverse, FastAsyncWorldEdit, ExaltedEconomy]
-
 # Older versions than 1.13 will ignore this, but this will allow 1.13 and up to use newer block types?
 api-version: 1.13
-
+author: RoyalBlueRanger
+authors:
+  - RoyalBlueRanger
+  - AnonymousGCA (GABRYCA)
+  - Madog24
+  - SirFaizdat (creator)
+  - Perksey
+  - Norbik1004
+  - ValdemarF
+  - Camouflage100
+  - GladiatorMC
+prefix: Prison
+softdepend:
+  - Essentials
+  - EssentialsX
+  - Vault
+  - ProtocolLib
+  - LuckPerms
+  - WorldEdit
+  - WorldGuard
+  - Multiverse-Core
+  - Multiworld
+  - MVdWPlaceholderAPI
+  - PlaceholderAPI
+  - Multiverse
+  - FastAsyncWorldEdit
+  - PermissionsEx
+  - GroupManagerX
+  - GemsEconomy
+  - TokenEnchant
+  - CMI
+  - CMILib
+  - CMIEInjector
+  - CMIPaperLib
+  - Economy_CMI
+  - mcMMO
+  - PlotSquared
+  - AnimatedScoreboard
+  - ViaRewind
+  - Citizens
+  - OldCombatMMechanics
+  - ShopGUIPlus
+  - EliteMobs
+  - CombatLogX
+  - ExaltedEconomy
+  - CoinsEngineEconomy
+  - SaneEconomy
+  - EdPrison
+  
   # ======================================================
   # New commands compatible only with spigot
   # ======================================================

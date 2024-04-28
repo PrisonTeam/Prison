@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17 2024-04-27
 
 
+* **Update to plugin.yml since some soft dependencies were missing.**
+
+
 * **Economies: fixed the display of too many economy related messages, including eliminating logging of messages for offline players.**
 The vault economy check for offline players, will now only show one informational message if a player is not setup in the economy.
 
