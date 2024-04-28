@@ -355,7 +355,10 @@ public class SpigotGUIMenuTools
     		if ( PrisonNBTUtil.getNBTBoolean(currentItem, GUI_MENU_TOOLS_NBT_ENABLED) ) {
     			String command = PrisonNBTUtil.getNBTString(currentItem, GUI_MENU_TOOLS_NBT_COMMAND);
     			
-    			if ( command != null ) {
+				if ( command != null && command.equalsIgnoreCase( "close" ) ) {
+					p.closeInventory();
+				}
+				else if ( command != null && command.trim().length() > 0 ) {
     				isPageAction = true;
     				Bukkit.dispatchCommand(p, 
     						Prison.get().getCommandHandler().findRegisteredCommand( command ));
