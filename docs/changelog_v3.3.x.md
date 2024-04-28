@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17 2024-04-28
 
 
+* **GUI: tool bar's prior page and next page: Suppress the page buttons if there is only one page worth of gui content. **
+
+
 * **GUI: Player ranks: Fixed a bug where clicking on a rank in the player's gui was trying to run an empty command, which was generating an invalid command error.**
 Ignores the command running if the command is either null or blank.
 

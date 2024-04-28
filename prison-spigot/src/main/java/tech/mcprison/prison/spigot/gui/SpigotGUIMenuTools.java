@@ -524,8 +524,15 @@ public class SpigotGUIMenuTools
 		
 		int pageNumber = pageData.getPagePrior() < 1 ?
 				1 : pageData.getPagePrior();
+		
+		int lastPageNumber = pageData.getPageLast() < 1 ? 
+				1 : pageData.getPageLast();
+		
+		if ( lastPageNumber == 1 ) {
+			return createButtonMenuBackground( pageData, position );
+		}
 
-		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
+		String message = "Page " + pageNumber + " of " + lastPageNumber;
 	
 //		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
 		ButtonLore buttonLore = null;
@@ -569,7 +576,14 @@ public class SpigotGUIMenuTools
 		int pageNumber = pageData.getPageNext() < 1 ?
 				pageData.getPageLast() : pageData.getPageNext();
 		
-		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
+		int lastPageNumber = pageData.getPageLast() < 1 ? 
+				1 : pageData.getPageLast();
+		
+		if ( lastPageNumber == 1 ) {
+			return createButtonMenuBackground( pageData, position );
+		}
+		
+		String message = "Page " + pageNumber + " of " + lastPageNumber;
 	
 //		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
 		ButtonLore buttonLore = null;
