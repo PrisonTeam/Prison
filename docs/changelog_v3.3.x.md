@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17 2024-04-28
 
 
+* **Auto features: normal drop processing: Added a new feature to check inventory for being full, and if it is, then display the messages.**
+
+
+
 * **Auto features: Inventory full chat notification: bug fix.  This fixes using the wrong player object.**
 It now use prison's player object so the color codes are properly translated.
 

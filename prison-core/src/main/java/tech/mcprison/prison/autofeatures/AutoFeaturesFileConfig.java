@@ -300,6 +300,8 @@ public class AutoFeaturesFileConfig {
     			handleNormalDropsEvents(normalDrop, true),
     			normalDropSmelt(normalDrop, true),
     			normalDropBlock(normalDrop, true),
+    			normalDropCheckForFullInventory(normalDrop, false),
+    			
     			
 
     		durability(options),
@@ -1189,6 +1191,9 @@ public class AutoFeaturesFileConfig {
 				
 				bStatsDetailBoolean( AutoFeatures.normalDropSmelt, tm );
 				bStatsDetailBoolean( AutoFeatures.normalDropBlock, tm );
+				
+				bStatsDetailBoolean( AutoFeatures.normalDropCheckForFullInventory, tm );
+				
 			}
 
 			
