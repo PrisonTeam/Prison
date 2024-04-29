@@ -110,7 +110,13 @@ public class VaultEconomyWrapper
     @SuppressWarnings( "deprecation" )
 	public double getBalance(Player player) {
     	double results = 0;
+ 
+    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    		player.sendMessage( "Economy Error: You don't have an account.");
+    	}
+    	else 
         if (economy != null) {
+        	
         	if ( isPreV1_4() ) {
         		results = economy.getBalance(player.getName());
         	}
@@ -152,6 +158,11 @@ public class VaultEconomyWrapper
     @SuppressWarnings( "deprecation" )
 	public boolean setBalance(Player player, double amount) {
     	boolean results = false;
+
+    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    		player.sendMessage( "Economy Error: You don't have an account.");
+    	}
+    	else 
         if (economy != null) {
         	
            	if ( isPreV1_4() ) {
@@ -190,6 +201,10 @@ public class VaultEconomyWrapper
     	
     	if ( amount < 0 ) {
     		results = removeBalance( player, amount );
+    	}
+    	
+    	else if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    		player.sendMessage( "Economy Error: You don't have an account.");
     	}
     	else if (economy != null) {
         	if ( isPreV1_4() ) {
@@ -239,6 +254,10 @@ public class VaultEconomyWrapper
     		amount *= -1;
     	}
     	
+    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    		player.sendMessage( "Economy Error: You don't have an account.");
+    	}
+    	else 
     	if (economy != null) {
     		if ( isPreV1_4() ) {
     			economy.withdrawPlayer( player.getName(), amount );
@@ -284,6 +303,11 @@ public class VaultEconomyWrapper
     @SuppressWarnings( "deprecation" )
 	public boolean canAfford(Player player, double amount) {
     	boolean results = false;
+    	
+    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    		player.sendMessage( "Economy Error: You don't have an account.");
+    	}
+    	else 
     	if (economy != null) {
        		if ( isPreV1_4() ) {
        			results = economy.has(player.getName(), amount);

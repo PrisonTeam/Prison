@@ -69,9 +69,9 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			int start = position;
 			for (int i = start; i < locations.size(); i++ ) {
 				
-				Location targetBlock = locations.get( i );
+				Location targetLocation = locations.get( i );
 				
-				mine.refreshAirCountSyncTaskSetLocation( targetBlock, this );
+				mine.refreshAirCountSyncTaskSetLocation( targetLocation, this );
 				position++;
 		
 				if ( (i - start) % 500 == 0 ) {

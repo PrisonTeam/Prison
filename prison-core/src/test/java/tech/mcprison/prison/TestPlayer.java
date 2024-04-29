@@ -32,6 +32,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
@@ -250,6 +251,27 @@ public class TestPlayer
 	@Override
 	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity) {
 		
+	}
+
+	@Override
+	public List<String> getSellAllMultiplierListings() {
+		return new ArrayList<>();
+	}
+
+
+	@Override
+	public void sendMessage(List<String> messages) {
+		
+	}
+
+	@Override
+	public Player getPlatformPlayer() {
+		return null;
+	}
+
+	@Override
+	public RankPlayer getRankPlayer() {
+		return null;
 	}
 	
 }

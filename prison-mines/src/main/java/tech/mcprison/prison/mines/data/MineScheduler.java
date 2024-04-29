@@ -49,12 +49,16 @@ public abstract class MineScheduler
 //	private MineJob currentJob;
 	private Integer taskId = null;
 	
+	private transient long mineResetStartTimestamp;
+	
+	
 	public MineScheduler() {
 		super();
 		
 		this.jobWorkflow = new ArrayList<>();
 		this.jobStack = new Stack<>();
 
+		this.mineResetStartTimestamp = -1;
 	}
 
     /**
@@ -394,8 +398,10 @@ public abstract class MineScheduler
 		    		resetTask.submitTaskAsync();
 		    		
 //					resetAsynchonously();
-				} else {
+				} 
+				else {
 					incrementSkipResetBypassCount();
+					broadcastSkipResetMessageToAllPlayersWithRadius();
 				}
 				
 				break;
@@ -490,7 +496,8 @@ public abstract class MineScheduler
 			// Submit currentJob using delay in the job. Must be a one time run, no repeats.
 			int taskId = PrisonTaskSubmitter.runTaskLater(this, ticksToWait);
 			setTaskId( taskId );
-		} else {
+		} 
+		else {
 			Output.get().logError("Mine " + getName() +
 					" failed to resubmit itself so it will not auto reset. Manually reset " +
 					"this mine to re-enable the auto reset.");
@@ -746,11 +753,14 @@ public abstract class MineScheduler
 		
 		if ( !isVirtual() && getMineStateMutex().isMinable() ) {
 			
+			int totalBlocks = getBounds().getTotalBlockCount();
+			int remaining = getRemainingBlockCount();
+			double threshold = getResetThresholdPercent() == 0 ? 0 :
+							totalBlocks * getResetThresholdPercent() / 100.0d;
+			
 			if (
-					getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
-					getResetThresholdPercent() > 0 && 
-					getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
-							getResetThresholdPercent() / 100.0d)
+					remaining <= 0 && !isZeroBlockResetDisabled() || 
+					remaining <= threshold
 					) {
 				
 				// submit a manual reset since the mine is empty:
@@ -803,10 +813,25 @@ public abstract class MineScheduler
 	private void manualReset( MineResetScheduleType resetType, double delayActionSec, 
 			List<MineResetActions> resetActions ) {
 		
-		if ( isVirtual() || !getMineStateMutex().isMinable() ) {
-			// Nope... nothing to reset...  or it's locked out already with a reset
+		if ( isVirtual() ) {
+			// Nope... nothing to reset...
 			return;
 		}
+		
+		if ( !getMineStateMutex().isMinable() && 
+				getMineResetStartTimestamp() != -1 && 
+				System.currentTimeMillis() - getMineResetStartTimestamp() > 3 * 60000 ) {
+			
+			// Mine reset was trying to run for more than 3 minutes... so it's locked out and failed?
+			
+			// reset mutex and allow the rest to be forced:
+			getMineStateMutex().setMineStateResetFinishedForced();
+			
+			setMineResetStartTimestamp( -1 );
+			
+		}
+		
+		
 		
 		synchronized ( getMineStateMutex() ) {
 
@@ -823,6 +848,8 @@ public abstract class MineScheduler
 
 			
 			getMineStateMutex().setMineStateResetStart();
+			
+			setMineResetStartTimestamp( System.currentTimeMillis() );
 
 			
 //			// Lock the mine's mutex if it's still minable.  Otherwise skip it since the
@@ -849,29 +876,31 @@ public abstract class MineScheduler
 //				}
 //				
 //			}
+			
+			
+			
+			// cancel existing job:
+			if ( getTaskId() != null ) {
+				PrisonTaskSubmitter.cancelTask( getTaskId() );
+			}
+			
+			// Clear jobStack and set currentJob to run the RESET with zero delay:
+			getJobStack().clear();
+			
+			MineJobAction action = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
+			
+			MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
+			mineJob.setResetType( resetType );
+			mineJob.setResetActions( resetActions );
+			
+			setCurrentJob( mineJob );
+			
+			// Force reset even if skip is enabled:
+			
+			// Submit to run:
+			submitTask();
 		}
 		
-		
-		// cancel existing job:
-		if ( getTaskId() != null ) {
-			PrisonTaskSubmitter.cancelTask( getTaskId() );
-		}
-		
-		// Clear jobStack and set currentJob to run the RESET with zero delay:
-		getJobStack().clear();
-		
-		MineJobAction action = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
-		
-		MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
-		mineJob.setResetType( resetType );
-		mineJob.setResetActions( resetActions );
-		
-		setCurrentJob( mineJob );
-    	
-		// Force reset even if skip is enabled:
-		
-		// Submit to run:
-		submitTask();
 	}
 
 	public List<MineJob> getJobWorkflow()
@@ -901,4 +930,11 @@ public abstract class MineScheduler
 		this.taskId = taskId;
 	}
 
+	public long getMineResetStartTimestamp() {
+		return mineResetStartTimestamp;
+	}
+	public void setMineResetStartTimestamp(long mineResetStartTimestamp) {
+		this.mineResetStartTimestamp = mineResetStartTimestamp;
+	}
+	
 }

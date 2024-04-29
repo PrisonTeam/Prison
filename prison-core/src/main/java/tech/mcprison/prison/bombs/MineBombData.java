@@ -204,6 +204,12 @@ public class MineBombData {
 	
 	
 	/**
+	 * 
+	 */
+	private boolean applyToPlayersBlockCount = true;
+	
+	
+	/**
 	 * <p>Internal just to indicated if a mine bomb is activated or not.
 	 * This has not purpose if used in a save file.
 	 * </p>
@@ -274,6 +280,9 @@ public class MineBombData {
 		this.autosell = false;
 		this.customModelData = 0;
 		
+		
+		this.applyToPlayersBlockCount = true;
+		
 	}
 	
 	
@@ -326,6 +335,7 @@ public class MineBombData {
 			cloned.getPreventedMines().add( mine );
 		}
 		
+		cloned.setApplyToPlayersBlockCount( isApplyToPlayersBlockCount() );
 		
 		for ( MineBombEffectsData soundEffect : getSoundEffects() ) 
 		{
@@ -539,6 +549,13 @@ public class MineBombData {
 	}
 	public void setActivated( boolean activated ) {
 		this.activated = activated;
+	}
+
+	public boolean isApplyToPlayersBlockCount() {
+		return applyToPlayersBlockCount;
+	}
+	public void setApplyToPlayersBlockCount(boolean applyToPlayersBlockCount) {
+		this.applyToPlayersBlockCount = applyToPlayersBlockCount;
 	}
 
 	public TreeSet<MineBombEffectsData> getSoundEffects() {

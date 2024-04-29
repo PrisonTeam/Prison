@@ -668,8 +668,11 @@ public class SpigotPlayer
 		}
 	}
 	
+	@Override
 	public RankPlayer getRankPlayer() {
-		if ( rankPlayer == null ) {
+		if ( rankPlayer == null && 
+				PrisonRanks.getInstance().isEnabled() ) {
+			
 			rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( this );
 		}
 		return rankPlayer;
@@ -854,53 +857,98 @@ public class SpigotPlayer
 	 * autosell capabilities ('/sellall autoSellToggle`).
 	 * </p>
 	 * 
+	 * <p>Please note that for sellall, autosell happens upon a 
+	 * full inventory event, and only when sellall detects it, which
+	 * it may not alway detect it as soon as it happens.
+	 * </p>y
+	 * 
+	 * <p>Autosell in auto features behaves differently, it sells all 
+	 * blocks that are mined, before they even enter the player's 
+	 * inventory.  This is also a performance boost since the player's
+	 * inventory does not have to be accessed or manipulated.  
+	 * As such, auto feature's autsell only is applied within the 
+	 * block handling of auto feature's code, it should never be applied
+	 * outside of auto features, and as such, should not be included in 
+	 * the processing of this function.
+	 * </p>
+	 * 
 	 * @return
 	 */
-	public boolean isAutoSellEnabled() {
-		return isAutoSellEnabled( null );
-	}
+//	public boolean isAutoSellEnabled() {
+//		return isAutoSellEnabled( null );
+//	}
+	
 	public boolean isAutoSellEnabled( StringBuilder debugInfo ) {
 		boolean results = false;
 		
-		if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
+		if ( SpigotPrison.getInstance().isSellAllEnabled() &&
+				SellAllUtil.get().isAutoSellEnabled ) {
 			
-			boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
-			
-			boolean isPlayerAutoSellTurnedOff = isAutoSellPerUserToggleable &&
-					!SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
-							getWrapper() );
-			
-			if ( debugInfo != null && isPlayerAutoSellTurnedOff ) {
-				debugInfo.append( Output.get().getColorCodeWarning() );
-				debugInfo.append( "(Player toggled off autosell) " );
-				debugInfo.append( Output.get().getColorCodeDebug() );
+			if ( SellAllUtil.get().isAutoSellPerUserToggleable ) {
+				debugInfo.append( "(sellallEnabled:userToggleable)" );
+				
+//			boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
+				
+				boolean isPlayerAutoSellTurnedOn = 
+						SellAllUtil.get().isSellallPlayerUserToggleEnabled( getWrapper() );
+				
+				if ( debugInfo != null ) {
+					debugInfo.append( "(autosellPlayerToggled: " )
+							 .append( Output.get().getColorCodeWarning() )
+							 .append( isPlayerAutoSellTurnedOn ? "enabled" : "disabled" )
+							 .append( Output.get().getColorCodeDebug() )
+							 .append( ")");
+				}
+				
+				// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
+				// This is to be used with other auto sell setting, but never on it's own:
+				results = isPlayerAutoSellTurnedOn;
+				
+				
+				// if autosell is enabled, then need to check to see if perms permit
+				// it to remain enabled... if not, then set results to false:
+				if ( results ) {
+					results = checkAutoSellTogglePerms( debugInfo );
+				}
+				
+			}
+			else {
+				debugInfo.append( "(autosell" )
+	  					 .append( Output.get().getColorCodeWarning() )
+						 .append( "Enabled" )
+						 .append( Output.get().getColorCodeDebug() )
+						 .append( ")" );
+				results = true;
 			}
 			
-			// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
-			// This is to be used with other auto sell setting, but never on it's own:
-			results = !isAutoSellPerUserToggleable ||
-							isPlayerAutoSellTurnedOff;
+		}
+		else {
+			debugInfo.append( "(autosell" )
+						.append( Output.get().getColorCodeWarning() )
+						.append( "Disabled" )
+						.append( Output.get().getColorCodeDebug() )
+						.append( ")" );
 		}
 		
 		return results;
 	}
 	
 	
-	/**
-	 * <p>This will check to see if the player has the perms enabled
-	 * for autosell.  
-	 * </p>
-	 * 
-	 * <p>If the function 'isAutoSellEnabled()' has already
-	 * been called, you can also pass that in as a parameter so it does
-	 * not have to be recalculated.
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public boolean isAutoSellByPermEnabled() {
-		return isAutoSellByPermEnabled( isAutoSellEnabled() );
-	}
+//	/**
+//	 * <p>This will check to see if the player has the perms enabled
+//	 * for autosell.  
+//	 * </p
+//	 * 
+//	 * <p>If the function 'isAutoSellEnabled()' has already
+//	 * been called, you can also pass that in as a parameter so it does
+//	 * not have to be recalculated.
+//	 * </p>
+//	 * 
+//	 * @return
+//	 */
+//	public boolean isAutoSellByPermEnabled( StringBuilder debugInfo ) {
+//		return isAutoSellByPermEnabled( isAutoSellEnabled( debugInfo ), debugInfo );
+//	}
 
 	/**
 	 * <p>This will check to see if the player has the perms enabled
@@ -915,28 +963,105 @@ public class SpigotPlayer
 	 * @param isPlayerAutosellEnabled
 	 * @return
 	 */
-	public boolean isAutoSellByPermEnabled( boolean isPlayerAutosellEnabled ) {
+	private boolean isAutoSellByPermEnabledAutoFeatures( StringBuilder debugInfo ) {
 		
-		boolean autoSellByPerm = false;
+		boolean autoSellByPerm = true;
 		
 		AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
 		
-		boolean isSellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
-		
-		if ( isSellallEnabled && isPlayerAutosellEnabled && !isOp() ) {
+		if ( afw.isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) ) {
 			
 			String perm = afw.getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled );
-			
-			autoSellByPerm = 
+
+			if ( !"disable".equalsIgnoreCase( perm ) &&
+					!"false".equalsIgnoreCase( perm ) ) {
+				
+				debugInfo.append( "(autosellAutoFeaturesByPerm: " )
+				.append( Output.get().getColorCodeWarning() )
+				;
+				
+				if ( isOp() ) {
+					debugInfo.append( "Op-Disabled" );
+					autoSellByPerm = false;
+				}
+				else {
 					
-					afw.isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
-					!"disable".equalsIgnoreCase( perm ) &&
-					!"false".equalsIgnoreCase( perm ) &&
-					hasPermission( perm );
+					autoSellByPerm = hasPermission( perm );
+					
+					debugInfo.append( autoSellByPerm ? "hasPerm" : "noPerm" );
+				}
+				
+				debugInfo.append( Output.get().getColorCodeDebug() )
+						.append( ")" );
+			}
 		}
-		
 
 		return autoSellByPerm;
+	}
+	
+	public boolean checkAutoSellPermsAutoFeatures() {
+		boolean results = false;
+		
+		AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
+		if ( afw.isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) ) {
+			
+			String perm = afw.getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled );
+
+			if ( !"disable".equalsIgnoreCase( perm ) &&
+					!"false".equalsIgnoreCase( perm ) ) {
+				if ( isOp() ) {
+					results = false;
+				}
+				else {
+					
+					results = hasPermission( perm );
+					
+				}
+			}
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * <p>This is using the sellall perms check to see if the player has 
+	 * the perms to use the player toggle.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean checkAutoSellTogglePerms( StringBuilder debugInfo ) {
+		boolean results = true;
+		
+		if ( SellAllUtil.get().isAutoSellPerUserToggleablePermEnabled ) {
+			
+			debugInfo.append( "(autosellToggleByPerm: " )
+				.append( Output.get().getColorCodeWarning() )
+				;
+			
+			String perm = SellAllUtil.get().permissionAutoSellPerUserToggleable;
+			
+			if ( !"disable".equalsIgnoreCase( perm ) &&
+					!"false".equalsIgnoreCase( perm ) ) {
+				if ( isOp() ) {
+					
+					debugInfo.append( "Op-Disabled" );
+					
+					results = false;
+				}
+				else {
+					
+					results = hasPermission( perm );
+					
+					debugInfo.append( results ? "hasPerm" : "noPerm" );
+				}
+			}
+			
+			debugInfo.append( Output.get().getColorCodeDebug() )
+					 .append( ")" );
+		}
+		
+		return results;
 	}
 
 }

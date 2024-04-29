@@ -81,8 +81,9 @@ public class Output
     	
     	targetBlockMismatch,
     	
-    	rankup
+    	rankup,
 //    	support
+    	blockConstraints
     	;
     	
     	public static DebugTarget fromString( String target ) {
@@ -141,7 +142,13 @@ public class Output
 
     public static Output get() {
         if (instance == null) {
-            new Output();
+        	synchronized ( Output.class ) {
+        		if (instance == null) {
+        			
+        			new Output();
+        			
+        		}
+			}
         }
         return instance;
     }
@@ -374,6 +381,17 @@ public class Output
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
         }
+    }
+    
+    /**
+     * <p>This will log a message to the console without any conversion of color codes or
+     * anything else.  Expect issues with color formatting.
+     * </p>
+     * 
+     * @param message
+     */
+    public void logRaw( String message ) {
+    	Prison.get().getPlatform().logPlain(message);
     }
     
     public void logDebug(String message, Object... args) {

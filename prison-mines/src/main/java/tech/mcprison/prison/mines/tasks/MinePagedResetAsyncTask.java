@@ -194,8 +194,15 @@ public class MinePagedResetAsyncTask
 			}
 
 			// Isolate the sub-list from the main targetBlocks list:
+			List<MineTargetPrisonBlock> subList = new ArrayList<>();
+			
+			for ( int i = position; i < endIndex; i++ ) {
+				subList.add( targetBlocks.get( i ) );
+			}
+//										targetBlocks.subList( position, endIndex ) );
+			
 			List<MineTargetPrisonBlock> tBlocks = new ArrayList<>();
-			for (MineTargetPrisonBlock mtpb : targetBlocks.subList( position, endIndex )) {
+			for (MineTargetPrisonBlock mtpb : subList ) {
 				tBlocks.add(mtpb);
 			}		
 			

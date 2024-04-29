@@ -768,7 +768,7 @@ public class RanksCommands
 //        }
         
         RankPlayer rPlayer = 
-        		PrisonRanks.getInstance().getPlayerManager().getPlayer( getPlayer(sender) );
+        		PrisonRanks.getInstance().getPlayerManager().getPlayer( sender.getPlatformPlayer() );
         
         ChatDisplay display = null;
         
@@ -1228,9 +1228,9 @@ public class RanksCommands
 		return display;
 	}
 
-	private String padRankName( Rank rank, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm ) {
-		return padRankName( rank.getName(), rank.getTag(), maxRankNameSize, maxRankTagNoColorSize, hasPerm );
-	}
+//	private String padRankName( Rank rank, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm ) {
+//		return padRankName( rank.getName(), rank.getTag(), maxRankNameSize, maxRankTagNoColorSize, hasPerm );
+//	}
     protected String padRankName( String rankName, String rankTag, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm )
 	{
     	StringBuilder sb = new StringBuilder();
@@ -1763,6 +1763,11 @@ public class RanksCommands
 			msgs.add( messageSellallMultiplier );
 //			sendToPlayerAndConsole( sender, messageSellallMultiplier );
 
+			List<String> sellallDetails = player.getSellAllMultiplierListings();
+			for (String sellallDetail : sellallDetails) {
+				msgs.add( "    " + sellallDetail );
+			}
+			
 			
 			
 			msgs.add( "" );
@@ -2263,6 +2268,7 @@ public class RanksCommands
 //    	boolean sort = contains( "sort", pageNumber, pageSizeNumber, options );
     	
     	int topNSize = TopNPlayers.getInstance().getTopNSize();
+    	boolean loading = TopNPlayers.getInstance().isLoading();
     	int archivedSize = TopNPlayers.getInstance().getArchivedSize();
     	
     	
@@ -2334,6 +2340,11 @@ public class RanksCommands
     			RankPlayer.printRankScoreLine2Header() : 
     				RankPlayer.printRankScoreLine1Header();
     	sender.sendMessage( header );
+    	
+    	if ( loading ) {
+    		sender.sendMessage( "&3(Loading TopN List - Please Wait)" );
+    	}
+    	
     	
     	for ( int i = posStart; i < posEnd; i++ ) {
     		

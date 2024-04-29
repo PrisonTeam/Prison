@@ -6,6 +6,7 @@
 
 This document provides information how to setup and use Mine Commands.
 
+*Documented updated: 2024-03-11*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -19,6 +20,14 @@ This document will show a simple example, but your imagination can take it to th
 
 My personal goals to use this new feature was to dynamically build a large forest.  Then upon reset, it would erase all the trees and leaves, including any that grew outside of the mine, then randomly plant new trees.  The results would be a new random forest that would be generated each time.  Unfortunately, I have most of the details worked out on how it will work, but not 100% done yet, so I do not have this example to share at this time. :( 
   - Blue
+
+
+
+**New Command:**
+
+`/mines block layerStats help`
+This new command will provide a layer by layer inspection of what blocks were assigned to a mine, versus what is actually in the mine currently.  This is useful when confirming block constraints are working correctly, or if another block was not spawning as expected, such that there is too much AIR.
+
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

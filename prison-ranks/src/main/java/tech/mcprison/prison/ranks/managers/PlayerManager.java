@@ -196,26 +196,26 @@ public class PlayerManager
      * @throws IOException If one of the players could not be saved.
      * @see #savePlayer(RankPlayer, String)
      */
-    public void savePlayers() throws IOException {
-        for (RankPlayer player : players) {
-        	
-        	// Catch exceptions if a failed save so other players can be saved:
-            try {
-				savePlayer(player);
-			}
-			catch ( Exception e )  {
-				
-				String errorMessage = cannotSavePlayerFile( player.filename() );
-	    		
-    			if ( !getPlayerErrors().contains( errorMessage ) ) {
-    				getPlayerErrors().add( errorMessage );
-    				Output.get().logError( errorMessage );
-    			}
-    			
-//				Output.get().logError(errorMessage, e);
-			}
-        }
-    }
+//    public void savePlayers() throws IOException {
+//        for (RankPlayer player : players) {
+//        	
+//        	// Catch exceptions if a failed save so other players can be saved:
+//            try {
+//				savePlayer(player);
+//			}
+//			catch ( Exception e )  {
+//				
+//				String errorMessage = cannotSavePlayerFile( player.filename() );
+//	    		
+//    			if ( !getPlayerErrors().contains( errorMessage ) ) {
+//    				getPlayerErrors().add( errorMessage );
+//    				Output.get().logError( errorMessage );
+//    			}
+//    			
+////				Output.get().logError(errorMessage, e);
+//			}
+//        }
+//    }
     
     /**
      * <p>If the player does not have a default rank, then assign it to them and
@@ -330,8 +330,8 @@ public class PlayerManager
 //    		dirty = results != null;
     	}
     	
-    	// Save if dirty (change or new):
-    	if ( results != null ) {
+    	// Save if dirty (changed or new):
+    	if ( results != null && results.isDirty() ) {
     		savePlayer( results );
     		
     	}
@@ -729,7 +729,7 @@ public class PlayerManager
     			        	
     			        	if ( attributeNFormat != null ) {
     			        		
-    			        		sb.append( attributeNFormat.format( cost ) );
+    			        		sb.append( attributeNFormat.format( percent ) );
     			        	}
     			        	else {
     			        		
@@ -1961,6 +1961,11 @@ public class PlayerManager
 						break;
 				}
 				
+				
+//				results = applySecondaryPlaceholders( rankPlayer, results );
+				
+				
+				
 				if ( attributeText != null && results != null ) {
 					
 					results = attributeText.format( results );
@@ -1974,6 +1979,93 @@ public class PlayerManager
     }
 
 
+    /**
+     * <p>This function will provide support for secondary placeholders for all player related placeholders.
+     * These secondary placeholders are in addition to the preexisting positional placeholders
+     * that are hard coded for the specific parameters. 
+     * </p>
+     * 
+     * <p>These secondary placeholders can be inserted anywhere in the message.
+     * </p>
+     * 
+     * <ul>
+     * 	<li>{player}</li>
+     * 	<li>{rank_default}</li>
+     * 	<li>{rank_tag_default}</li>
+     * 	<li>{rank_next_default}</li>
+     * 	<li>{rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges}</li>
+     * 	<li>{rank_tag_prestiges}</li>
+     * 	<li>{rank_next_prestiges}</li>
+     * 	<li>{rank_next_tag_prestiges}</li>
+     * 
+     *  <li>{player} {rank_default} {rank_tag_default} {rank_next_default} {rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges} {rank_tag_prestiges} {rank_next_prestiges} {rank_next_tag_prestiges}</li>
+     * </ul>
+     * 
+     * @param rankPlayer
+     * @param results
+     * @return
+     */
+	private String applySecondaryPlaceholders(RankPlayer rankPlayer, String results) {
+
+		results = applySecondaryPlaceholdersCheck( "{player}", rankPlayer.getName(), results );
+		
+		if ( rankPlayer.getPlayerRankDefault() != null ) {
+			PlayerRank rankP = rankPlayer.getPlayerRankDefault();
+			Rank rank = rankP == null ? null : rankP.getRank();
+			Rank rankNext = rank == null ? null : rank.getRankNext();
+			
+			results = applySecondaryPlaceholdersCheck( "{rank_default}", 
+					rank == null ? "" : rank.getName(), results );
+			results = applySecondaryPlaceholdersCheck( "{rank_tag_default}", 
+					rank == null ? "" : rank.getTag(), results );
+			
+			results = applySecondaryPlaceholdersCheck( "{rank_next_default}", 
+					rankNext == null ? "" : rankNext.getName(), results );
+			results = applySecondaryPlaceholdersCheck( "{rank_next_tag_default}", 
+					rankNext == null ? "" : rankNext.getTag(), results );
+		}
+		
+		if ( rankPlayer.getPlayerRankPrestiges() != null ) {
+			
+			PlayerRank rankP = rankPlayer.getPlayerRankPrestiges();
+			Rank rank = rankP == null ? null : rankP.getRank();
+			Rank rankNext = rank == null ? null : rank.getRankNext();
+			
+			results = applySecondaryPlaceholdersCheck( "{rank_prestiges}", 
+					rank == null ? "" : rank.getName(), results );
+			results = applySecondaryPlaceholdersCheck( "{rank_tag_prestiges}", 
+					rank == null ? "" : rank.getTag(), results );
+			
+			results = applySecondaryPlaceholdersCheck( "{rank_next_prestiges}", 
+					rankNext == null ? "" : rankNext.getName(), results );
+			results = applySecondaryPlaceholdersCheck( "{rank_next_tag_prestiges}", 
+					rankNext == null ? "" : rankNext.getTag(), results );
+		}
+		
+		return results;
+	}
+
+	/**
+	 * <p>Ths function will perform individual replacements of the given placeholders, but
+	 * if the placeholder does not exist, then it will not change anything with the results
+	 * and it will be just passed through.
+	 * </p>
+	 * 
+	 * @param placeholder
+	 * @param value
+	 * @param results
+	 * @return
+	 */
+	private String applySecondaryPlaceholdersCheck( String placeholder, String value, String results) {
+
+		if ( results.contains( placeholder ) && value != null ) {
+			results = results.replace( placeholder, value );
+		}
+		
+		return results;
+	}
 
 	@Override
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {

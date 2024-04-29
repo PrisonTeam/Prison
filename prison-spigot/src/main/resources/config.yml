@@ -274,10 +274,18 @@ number-format-location: en_US
 
 
 # The storage engine that Prison should use to store data.
-# The only valid storageType is json. 
-storageType: "json"
+# The only valid storageType is file. 
+storageType: "file"
 
 
+# The following is experimental and should only be used if advised by a 
+# Prison support team member.
+# 
+storage:
+  file:
+    disable-advanced-saves:
+      enabled: false
+      debug-keep-temp-files: false
 
 
 # Prison mines reset gap is the number of milliseconds that are used to 
@@ -309,8 +317,8 @@ storageType: "json"
 prison-mines:
   reset-gap-ms: 5000
   reset-paging:
-    max-page-elapsed-time-ms: 75
-    page-submit-delay-ticks: 1
+    max-page-elapsed-time-ms: 40
+    page-submit-delay-ticks: 0
     page-timeout-check-block-count: 250
   reset-async-paging:
     async-page-size: 4000
@@ -328,6 +336,7 @@ prison-mines:
     - GoldMine
     - SampleMineName
   world-guard:
+    WARNING: WorldGuard support is not yet available. Coming soon.
     region-mine:
       enable: true
       name-prefix: prison_mine_
@@ -470,20 +479,28 @@ prisonCommandHandler:
   exclude-worlds:
   - miniGameWorld
   - playerPlotWorld
+  command-roots:
+    prison: prison
+    mines: mines
+    ranks: ranks
+    gui: gui
+    sellall: sellall
   disable-player-placeholders-in-excluded-worlds: false
   exclude-non-ops:
     exclude-related-aliases: true
     commands:
-      mines:
-        tp:
-          includeCmdPerms: true
-          includeCmdAltPerms: true
-          perms:
-          - prison.exclude.test
+      prison:
+        support:
+          colorTest:
+            includeCmdPerms: false
+            includeCmdAltPerms: false
+            perms:
+            - prison.exclude.test
   aliases:
-    mines:
-      tp: 
-      - mines teleport
+    prison:
+      support: 
+        colorTest:
+        - pColorTest
 
 
 

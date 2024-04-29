@@ -204,9 +204,15 @@ public class GuiConfig extends SpigotConfigComponents{
         		
         		map.put("NoMineAccess", XMaterial.REDSTONE_BLOCK.name() );
         				
-        		for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
-        			if ( mine.getPrisonBlocks().size() > 0 ) {
-        				map.put( mine.getName(), mine.getPrisonBlocks().get(0).getBlockName() );
+        		
+        		if ( PrisonMines.getInstance().getMineManager() != null && 
+        				PrisonMines.getInstance().getMineManager().getMines() != null && 
+        				PrisonMines.getInstance().getMineManager().getMines().size() > 0 ) {
+        			
+        			for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
+        				if ( mine.getPrisonBlocks().size() > 0 ) {
+        					map.put( mine.getName(), mine.getPrisonBlocks().get(0).getBlockName() );
+        				}
         			}
         		}
         		
@@ -232,12 +238,17 @@ public class GuiConfig extends SpigotConfigComponents{
         		
         		map.put("NoRankAccess", XMaterial.REDSTONE_BLOCK.name() );
 
-        		// Example to preset all ranks: Only do the first 10:
-        		int count = 0;
-        		for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
-        			map.put( rank.getName(), XMaterial.TRIPWIRE_HOOK.name() );
-        			if ( ++count >= 10 ) {
-        				break;
+        		if ( PrisonRanks.getInstance().getRankManager() != null && 
+        				PrisonRanks.getInstance().getRankManager().getRanks() != null &&
+        				PrisonRanks.getInstance().getRankManager().getRanks().size() > 0 ) {
+        			
+        			// Example to preset all ranks: Only do the first 10:
+        			int count = 0;
+        			for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
+        				map.put( rank.getName(), XMaterial.TRIPWIRE_HOOK.name() );
+        				if ( ++count >= 10 ) {
+        					break;
+        				}
         			}
         		}
         		
@@ -265,8 +276,11 @@ public class GuiConfig extends SpigotConfigComponents{
         
         if ( conf.get( "Options.Mines.GuiItemNames" ) == null ) {
         	
-        	if ( PrisonMines.getInstance() != null ) {
-
+        	if ( PrisonMines.getInstance() != null &&
+        			PrisonMines.getInstance().getMineManager() != null && 
+        				PrisonMines.getInstance().getMineManager().getMines() != null && 
+        				PrisonMines.getInstance().getMineManager().getMines().size() > 0 ) {
+        		
         		LinkedHashMap<String,String> map = new LinkedHashMap<>();
         		
         		// Example to preset all mines: Only do the first 10:
@@ -293,7 +307,10 @@ public class GuiConfig extends SpigotConfigComponents{
         }
         if ( conf.get( "Options.Ranks.GuiItemNames" ) == null ) {
         	
-        	if ( PrisonRanks.getInstance() != null ) {
+        	if ( PrisonRanks.getInstance() != null &&
+        			PrisonRanks.getInstance().getRankManager() != null && 
+    					PrisonRanks.getInstance().getRankManager().getRanks() != null &&
+    						PrisonRanks.getInstance().getRankManager().getRanks().size() > 0 ) {
         		
         		LinkedHashMap<String,String> map = new LinkedHashMap<>();
         		

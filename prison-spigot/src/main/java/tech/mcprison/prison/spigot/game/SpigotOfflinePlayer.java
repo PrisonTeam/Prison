@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
@@ -20,6 +21,8 @@ import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
@@ -320,6 +323,23 @@ public class SpigotOfflinePlayer
     	return results;
     }
     
+    
+    public List<String> getSellAllMultiplierListings() {
+    	List<String> results = new ArrayList<>();
+    	
+    	if ( isPlayer() ) {
+    		
+    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+    		
+    		if ( sellall != null && getWrapper() != null ) {
+    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
+    		}
+    	}
+
+    	
+    	return results;
+    }
+    
 	@Override
 	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
 	}
@@ -367,6 +387,25 @@ public class SpigotOfflinePlayer
 	public void incrementMinecraftStatsDropCount( tech.mcprison.prison.internal.Player player, 
 			String blockName, int quantity) {
 		
+	}
+
+	@Override
+	public void sendMessage(List<String> messages) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public tech.mcprison.prison.internal.Player getPlatformPlayer() {
+		tech.mcprison.prison.internal.Player player = null;
+		
+		Optional<tech.mcprison.prison.internal.Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+		
+		if ( oPlayer.isPresent() ) {
+			player = oPlayer.get();
+		}
+		
+		return player;
 	}
 
 }

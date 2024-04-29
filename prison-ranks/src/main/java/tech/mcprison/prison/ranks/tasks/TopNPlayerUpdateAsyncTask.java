@@ -40,13 +40,20 @@ public class TopNPlayerUpdateAsyncTask
 //		}
 		
 		if ( forceReload ) {
+			topNPlayers.setLoading( true );
+			
 			topNPlayers.forceReloadAllPlayers();
 		
+			topNPlayers.setLoading( false );
 			forceReload = false;
 		}
 		else {
 			
+			topNPlayers.setLoading( true );
+			
 			topNPlayers.refreshAndSort();
+			
+			topNPlayers.setLoading( false );
 		}
 	}
 

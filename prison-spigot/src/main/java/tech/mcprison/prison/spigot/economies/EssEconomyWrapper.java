@@ -39,7 +39,13 @@ class EssEconomyWrapper {
 
     double getBalance(Player player) {
         try {
-            return Economy.getMoneyExact(player.getName()).doubleValue();
+        	if ( Economy.playerExists( player.getName() ) ) {
+        		return Economy.getMoneyExact(player.getName()).doubleValue();
+        	}
+        	
+        	player.sendMessage( "You don't exist in the economy plugin." );
+        	return 0;
+        	
         } catch (UserDoesNotExistException e) {
             player.sendMessage("You don't exist in the economy plugin.");
             return 0.0;
@@ -48,7 +54,14 @@ class EssEconomyWrapper {
 
     void setBalance(Player player, double amount) {
         try {
-            Economy.setMoney(player.getName(), new BigDecimal(amount));
+           	if ( Economy.playerExists( player.getName() ) ) {
+           		Economy.setMoney(player.getName(), new BigDecimal(amount));
+        	}
+           	else {
+           		
+           		player.sendMessage( "You don't exist in the economy plugin." );
+           	}
+
         } catch (UserDoesNotExistException | NoLoanPermittedException e) {
             player.sendMessage("You don't exist in the economy plugin.");
         }

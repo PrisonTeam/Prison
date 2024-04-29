@@ -13,6 +13,14 @@ Resolved issues have been relocated to:
 * [Known Issues - Resolved](knownissues_v3.2.x_resolved.md)
 
 
+# TODO Items for v3.3.0-alpha.16
+
+
+DONE: Added support for BlockPlaceEvent to allow this - editid - Mine bombs cannot be placed in a mine that is protected by world guard, which is 
+  reporting that the player does not have access.  Had to allow players to place blocks in 
+  mines, which is not appropriate.
+
+
 # TODO Items for v3.3.0-alpha.15
 
 

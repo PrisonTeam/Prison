@@ -51,14 +51,80 @@ import tech.mcprison.prison.util.Location;
  * <p>If you need something special, then please ask on our discord server and we 
  * can probably provide it for you.
  * </p>
+ * @param <PrisonItemStack>
  *
  */
-public class PrisonSpigotAPI {
+public class PrisonSpigotAPI<PrisonItemStack> {
 	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
 	private SellAllUtil sellAll;
 	
+	
+	private void junk() {
+		
+//		SpigotPrison.getInstance().isSellAllEnabled();
+//		
+//		SpigotPlayer sPlayer = new SpigotPlayer( Player player );
+//		
+//		sPlayer.getSellAllMulitiplier()
+//		sPlayer.getSellAllMultiplierListings()
+//		sPlayer.checkAutoSellPermsAutoFeatures()
+//		sPlayer.checkAutoSellTogglePerms( sbDebug )
+//		sPlayer.isAutoSellEnabled( sbDebug )
+//		
+		
+	//	PrisonSpigotAPI.sellPlayerItems(Player player );
+	}
+
+//	private void handleAffectedBlocks(Player p, IWrappedRegion region, List<Block> blocksAffected) {
+//        double totalDeposit = 0.0;
+//        int fortuneLevel = EnchantUtils.getItemFortuneLevel(p.getItemInHand());
+//        boolean autoSellPlayerEnabled = this.plugin.isAutoSellModuleEnabled() && plugin.getCore().getAutoSell().getManager().hasAutoSellEnabled(p);
+//
+//        TreeMap<String,Double> itemValues = new TreeMap<>();
+//        PrisonSpigotAPI pApi = new PrisonSpigotAPI();
+//        
+//        getItemStackValueTransactions(p, null);
+//        
+//        for (Block block : blocksAffected) {
+//
+//        	int amplifier = fortuneLevel;
+//            if (FortuneEnchant.isBlockBlacklisted(block)) {
+//                amplifier = 1;
+//            }
+//            
+//            String blockNamme = block.getType().name();
+//            double value = 0dg;
+//            
+//            if ( itemValues.containsKey(blockNamme) ) {
+//            	value = itemValues.get(blockNamme);
+//            }
+//            else {
+//            	ItemStack iStk = new ItemStack( block.getType() );
+//            	if ( iStk != null ) {
+//            		
+//            		value = getItemStackValue(p, iStk);
+//            		if ( value > 0 ) {{
+//            			itemValues.put(blockNamme, value);
+//            		}
+//            	}
+//            }
+//
+//            if (autoSellPlayerEnabled && value > 0) {
+//                totalDeposit += value * amplifier;
+//            } else {
+//                ItemStack itemToGive = CompMaterial.fromBlock(block).toItem(amplifier);
+//                p.getInventory().addItem(itemToGive);
+//            }
+//
+//            if (this.removeBlocks ) {
+//                this.plugin.getCore().getNmsProvider().setBlockInNativeDataPalette(block.getWorld(), block.getX(), block.getY(), block.getZ(), 0, (byte) 0, true);
+//            }
+//
+//        }
+//        this.giveEconomyRewardsToPlayer(p, totalDeposit);
+//    }
 
 	/**
 	 * <p>This returns all mines that are within prison.
@@ -479,6 +545,94 @@ public class PrisonSpigotAPI {
 		}
 
 		return sellAll;
+	}
+	
+	
+	/**
+	 * <p>This will convert a List<org.bukkit.block.Block> to Prison's
+	 * List<SpigotItemStack> so it can be used with the various SellAll 
+	 * functions.
+	 * </p>
+	 * 
+	 * @param blocks
+	 * @return
+	 */
+	public List<SpigotItemStack> getPrisonItemmStacks( List<Block> blocks ) {
+		List<SpigotItemStack> results = new ArrayList<>();
+		TreeMap<String, SpigotItemStack> map = new TreeMap<>();
+		
+		if ( blocks != null ) {
+			for ( Block b : blocks ) {
+				if ( b != null ) {
+					SpigotBlock sBlock = SpigotBlock.getSpigotBlock( b );
+					
+					if ( sBlock != null ) {
+						
+						String bName = sBlock.getBlockName();
+						
+						if ( !map.containsKey( bName ) ) {
+							String[] lore = null;
+							SpigotItemStack sis = new SpigotItemStack( 1, sBlock, lore );
+							
+							map.put(bName, sis );
+						}
+						else {
+							map.get(bName).addToAmount( 1 );
+						}
+					}
+					
+				}
+			}
+		
+		}
+		
+		if ( map.size() > 0 ) {
+			for ( SpigotItemStack sItemStack : map.values() ) {
+				results.add( sItemStack );
+			}
+		}
+		
+		return results;
+	}
+	
+	public List<ItemStack> getItemStacks( List<Block> blocks ) {
+		List<ItemStack> results = new ArrayList<>();
+		TreeMap<String, ItemStack> map = new TreeMap<>();
+		
+		if ( blocks != null ) {
+			for ( Block b : blocks ) {
+				if ( b != null ) {
+					
+					String bName = b.getType().name();
+							
+					if ( bName != null ) {
+						
+						if ( !map.containsKey( bName ) ) {
+							
+							ItemStack iStk = new ItemStack( b.getType() );
+							map.put(bName, iStk );
+						}
+						else {
+							ItemStack iStk = map.get(bName);
+
+							iStk.setAmount( iStk.getAmount() );
+							
+							map.put(bName, iStk);
+						}
+					}
+					
+				}
+			}
+			
+		}
+		
+		if ( map.size() > 0 ) {
+			for ( ItemStack sItemStack : map.values() ) {
+				results.add( sItemStack );
+			}
+		}
+		
+		return results;
 	}
 
 	/**

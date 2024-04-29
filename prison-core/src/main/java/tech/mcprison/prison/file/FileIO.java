@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -85,30 +86,88 @@ public abstract class FileIO
 //			String tempFileName = file.getName() + "." + getTimestampFormat() + ".tmp";
 //			File tempFile = new File(file.getParentFile(), tempFileName);
 			
-			try
-			{
-				// Write as a .tmp file:
+			boolean disableAdvancedSaves = 
+					Prison.get().getPlatform().getConfigBooleanFalse( 
+							"storage.file.disable-advanced-saves.enabled" );
+			
+			if ( !disableAdvancedSaves ) {
 				
-				// Add json data to lines, splitting on \n:
-				List<String> lines = Arrays.asList( data.split( "\n" ));
-				
-				// Write as an UTF-8 stream:
-				Files.write( tempFile.toPath(), lines, StandardCharsets.UTF_8 );
-				
-//				Files.write( tempFile.toPath(), data.getBytes() );
-				
-				// If original target exists, then delete it:
-				if ( file.exists() )
+				try
 				{
-					file.delete();
+					// Write as a .tmp file:
+					
+					// Add json data to lines, splitting on \n:
+					List<String> lines = Arrays.asList( data.split( "\n" ));
+					
+					// Write as an UTF-8 stream:
+					Files.write( tempFile.toPath(), lines, StandardCharsets.UTF_8 );
+					
+//				Files.write( tempFile.toPath(), data.getBytes() );
+					
+					// If original target exists, then delete it:
+					if ( file.exists() )
+					{
+						file.delete();
+					}
+					
+					tempFile.renameTo( file );
 				}
+				catch ( IOException e )
+				{
+					logException( "Failed to create file", file, e );
+				}
+			}
+			else {
 				
-				tempFile.renameTo( file );
+				boolean keepTempFiles = 
+						Prison.get().getPlatform().getConfigBooleanFalse( 
+								"storage.file.disable-advanced-saves.debug-keep-temp-files" );
+				
+				try
+				{
+					// Write as a .tmp file:
+					
+					// Add json data to lines, splitting on \n:
+					List<String> lines = Arrays.asList( data.split( "\n" ));
+					
+					
+					// Write to both temp file and the actual file:
+					
+					// Write as an UTF-8 stream:
+					Files.write( tempFile.toPath(), lines, StandardCharsets.UTF_8 );
+					
+					boolean exists = file.exists();
+					
+					StandardOpenOption sooW = StandardOpenOption.WRITE;
+					StandardOpenOption sooTe = exists ?
+									StandardOpenOption.TRUNCATE_EXISTING : 
+									StandardOpenOption.CREATE;
+					
+					Files.write( file.toPath(), lines, StandardCharsets.UTF_8, sooW, sooTe );
+					
+					
+//				Files.write( tempFile.toPath(), data.getBytes() );
+					
+					// If original target exists, then delete it:
+//					if ( file.exists() )
+//					{
+//						file.delete();
+//					}
+//					
+//					tempFile.renameTo( file );
+					
+					
+					if ( !keepTempFiles ) {
+						tempFile.delete();
+					}
+					
+				}
+				catch ( IOException e )
+				{
+					logException( "Failed to create file", file, e );
+				}
 			}
-			catch ( IOException e )
-			{
-				logException( "Failed to create file", file, e );
-			}
+			
 			
 		}
 	}

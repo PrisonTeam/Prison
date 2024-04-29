@@ -23,13 +23,13 @@ The following is a highlight of changes for the alpha.16 release since the alpha
 * Auto Features: Many updates and enhancements.
 
 
-* Sellall: Many updates and enhancements from API to GUI and autofeatures integration.
+* Sellall: Many updates and enhancements from API to GUI and auto features integration.
   - Streamlined to work with prison's custom blocks instead of just XMaterial items. 
   - New functionality to improve managing what's been sold, or just getting their value. Extended a lot of this new functionality to the prison APIs.
   - Added many new default items
   - Changed all of the commands under sellall to better organize like commands in to sub-commands
   - Rank multipliers now works for all ranks, not just prestiges.  New commands to reset all multipliers for ladders (which is great if you have a few thousand prestige ranks).
-  - If blocks could not be sold through auto features autosell, it will generate debug mmessages so it's easier to track why blocks are not being sold.
+  - If blocks could not be sold through auto features autosell, it will generate debug messages so it's easier to track why blocks are not being sold.
   - Able to disable the "nothing to sell" message so it stops spamming the player.
   - For different server configs, where there are issues that prevent autosell from being used, such as other plugins placing blocks in the player's inventory, you can now force a sellall after the block break event is finished being processed.
   - Sellall Multipliers - Many new features and commands.  Explore with `/sellall multiplier` and use the keyword `help` on each command for more details.  The multiplier list can use different column widths to better support thousands of prestige ranks.
@@ -64,7 +64,7 @@ The following is a highlight of changes for the alpha.16 release since the alpha
  
  
 * Mines - 
-  - Mine tracer now has an option to 'clear' the whole mine, mark jjust the 'corners', or the standard full tracer.
+  - Mine tracer now has an option to 'clear' the whole mine, mark just the 'corners', or the standard full tracer.
   - Found and fixed a sync task that was a possible cause of jitters. This helps when the server is under a heavy load.
   - Added a `/mtop` command.  `/mines top` which teleports a player to the top of the mine they are in.
   

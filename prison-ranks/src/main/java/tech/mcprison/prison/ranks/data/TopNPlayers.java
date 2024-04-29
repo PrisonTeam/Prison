@@ -64,6 +64,9 @@ public class TopNPlayers
 	private long statsSaveDataNanoSec = 0L;
 	private long statsLoadDataNanoSec = 0L;
 	
+	private boolean loading = true;
+	
+	
 	private TopNPlayers() {
 		super();
 		
@@ -797,6 +800,13 @@ public class TopNPlayers
 	}
 	public void setStatsLoadDataNanoSec(long statsLoadDataNanoSec) {
 		this.statsLoadDataNanoSec = statsLoadDataNanoSec;
+	}
+
+	public boolean isLoading() {
+		return loading;
+	}
+	public void setLoading(boolean loading) {
+		this.loading = loading;
 	}
 	
 }

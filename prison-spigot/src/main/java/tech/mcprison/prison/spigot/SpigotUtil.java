@@ -736,8 +736,11 @@ public class SpigotUtil {
 	 * @return
 	 */
 	public static PrisonBlock getPrisonBlock( String blockName ) {
+		return getPrisonBlock( blockName, null );
+	}
+	public static PrisonBlock getPrisonBlock( String blockName, String displayName ) {
 		
-		PrisonBlock results = new PrisonBlock( blockName );
+		PrisonBlock results = new PrisonBlock( blockName, displayName );
 		results.setValid( false );
 		
 //		BlockType bTypeObsolete = null;
@@ -766,16 +769,19 @@ public class SpigotUtil {
 	}
 	
 	public static PrisonBlock getPrisonBlock( XMaterial xMat ) {
+		return getPrisonBlock( xMat, null );
+	}
+	public static PrisonBlock getPrisonBlock( XMaterial xMat, String displayName ) {
 		
 		PrisonBlock results = null;
 		
 		if ( xMat != null ) {
-			results = new PrisonBlock( xMat.name() );
+			results = new PrisonBlock( xMat.name(), displayName );
 			
 		}
 		
 		if ( results == null ) {
-			results = getPrisonBlock( xMat.name() );
+			results = getPrisonBlock( xMat.name(), displayName );
 		}
 		
 		return results;

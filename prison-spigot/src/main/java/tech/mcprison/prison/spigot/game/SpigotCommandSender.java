@@ -29,9 +29,12 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.commands.CommandHandler;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.Text;
@@ -39,7 +42,8 @@ import tech.mcprison.prison.util.Text;
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotCommandSender implements CommandSender {
+public class SpigotCommandSender 
+		implements CommandSender {
 
     private org.bukkit.command.CommandSender bukkitSender;
 
@@ -68,12 +72,19 @@ public class SpigotCommandSender implements CommandSender {
      * it then uses the mapped command.
      * </p>
      */
-    @Override public void dispatchCommand(String command) {
-    	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( command );
+    @Override 
+    public void dispatchCommand(String command) {
+    	
+    	command = CommandHandler.remapRootCmdIdentifiers( command );
+    	
+    	String registeredCmd = Prison.get().getCommandHandler()
+    					.findRegisteredCommand( command );
+    	
         Bukkit.getServer().dispatchCommand(bukkitSender, registeredCmd);
     }
 
-    @Override public boolean doesSupportColors() {
+    @Override 
+    public boolean doesSupportColors() {
         return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
     }
 
@@ -97,6 +108,18 @@ public class SpigotCommandSender implements CommandSender {
         		sendMessage(msg);
         	}
         }
+    }
+    
+    @Override 
+    public void sendMessage(List<String> messages) {
+    	for (String message : messages) {
+    		
+    		String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
+    		for ( String msg : msgs ) {
+    			
+    			sendMessage(msg);
+    		}
+    	}
     }
 
     @Override 
@@ -176,6 +199,23 @@ public class SpigotCommandSender implements CommandSender {
 //    	return results;
     }
     
+    @Override
+    public List<String> getSellAllMultiplierListings() {
+    	List<String> results = new ArrayList<>();
+    	
+    	if ( isPlayer() ) {
+    		
+    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+    		
+    		if ( sellall != null && getWrapper() != null ) {
+    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
+    		}
+    	}
+
+    	
+    	return results;
+    }
+    
     public List<String> getPermissionsIntegrations( boolean detailed ) {
     	List<String> results = new ArrayList<>();
     	
@@ -213,5 +253,29 @@ public class SpigotCommandSender implements CommandSender {
     public org.bukkit.command.CommandSender getWrapper() {
         return bukkitSender;
     }
+
+	@Override
+	public Player getPlatformPlayer() {
+		Player player = null;
+		
+		Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+		
+		if ( oPlayer.isPresent() ) {
+			player = oPlayer.get();
+		}
+		
+		return player;
+	}
+	
+	@Override
+	public RankPlayer getRankPlayer() {
+		RankPlayer rankPlayer = null;
+		
+		if ( PrisonRanks.getInstance().isEnabled() ) {
+			
+			rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( (Player) this );
+		}
+		return rankPlayer;
+	}
 
 }

@@ -1,6 +1,8 @@
 package tech.mcprison.prison.internal.block;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -11,6 +13,9 @@ public abstract class PrisonBlockStatusData {
 	// blockName is more of an internal reference:
 	private PrisonBlockType blockType;
 	private String blockName;
+	
+	// displayName is an optional custom name
+	private String displayName;
 	
 	private double chance;
 	
@@ -37,12 +42,31 @@ public abstract class PrisonBlockStatusData {
 	
 	private boolean gravity = false;
 	
+//	private transient boolean includeInLayerCalculations;
 	
-	public PrisonBlockStatusData( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
+	
+	private transient String altAlias;
+	private transient String altColorCode;
+	private transient int altCountVirtual;
+	private transient int altCountPhysical;
+	
+	
+	public PrisonBlockStatusData( 
+			PrisonBlockType blockType, String blockName, String displayName,
+			double chance, long blockCountTotal ) {
+		this( blockType, blockName, chance, blockCountTotal );
+		
+		this.displayName = displayName;
+	}
+	
+	public PrisonBlockStatusData( 
+			PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
 		super();
 		
 		this.blockType = blockType;
 		this.blockName = blockName;
+		
+		this.displayName = null;
 		
 		this.chance = chance;
 		
@@ -65,10 +89,18 @@ public abstract class PrisonBlockStatusData {
 		this.rangeBlockCountHighLimit = -1;
 		
 		this.gravity = checkGravityAffects( blockName );
+		
+//		this.includeInLayerCalculations = true;
 	}
 
 	
 
+	/**
+	 * <p>Checks to see if both the blockType and the blockName are equal, 
+	 * and if there is a displayName set, then both need to have their
+	 * displayName is also set to the same value.
+	 * </p>
+	 */
 	@Override
 	public boolean equals( Object obj )
 	{
@@ -77,7 +109,15 @@ public abstract class PrisonBlockStatusData {
 		if ( obj instanceof PrisonBlockStatusData ) {
 			PrisonBlockStatusData pbsBlock = (PrisonBlockStatusData) obj;
 			
-			results = getBlockName().equalsIgnoreCase( pbsBlock.getBlockName() );
+			results = getBlockType() == getBlockType() &&
+					getBlockName().equalsIgnoreCase( pbsBlock.getBlockName() );
+			
+			if ( results ) {
+				
+				results = getDisplayName() == null && pbsBlock.getDisplayName() == null ||
+						getDisplayName() != null && pbsBlock.getDisplayName() != null &&
+						getDisplayName().equalsIgnoreCase( pbsBlock.getDisplayName() );
+			}
 		}
 		
 		return results;
@@ -402,6 +442,13 @@ public abstract class PrisonBlockStatusData {
 		this.blockName = blockName;
 	}
 
+	public String getDisplayName() {
+		return displayName;
+	}
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	public PrisonBlockType getBlockType() {
 		return blockType;
 	}
@@ -505,6 +552,141 @@ public abstract class PrisonBlockStatusData {
 	}
 	public void setGravity( boolean gravity ) {
 		this.gravity = gravity;
+	}
+
+
+	
+//	public boolean isIncludeInLayerCalculations() {
+//		return includeInLayerCalculations;
+//	}
+//	public void setIncludeInLayerCalculations(boolean includeInLayerCalculations) {
+//		this.includeInLayerCalculations = includeInLayerCalculations;
+//	}
+
+
+	/**
+	 * <p>This is only used when calculating which blocks should be placed
+	 * in each layer, one layer at a time. This would be used if a block is
+	 * usable for a layer, but it has exceeded it's max constraint, so a 
+	 * value of 'false' would then prevent this block from being used, but
+	 * will allow the stats to continue to collect the max usable range
+	 * in which this block could be placed.
+	 * </p>
+	 * 
+	 * @param targetBlocks
+	 * @return
+	 */
+	public int getRandomBlockPositionInRangeUnmatched(
+			List<MineTargetPrisonBlock> targetBlocks) {
+		return getRandomBlockPositionInRange( targetBlocks, false );
+	}
+
+	public int getRandomBlockPositionInRangeMatched(
+			List<MineTargetPrisonBlock> targetBlocks) {
+		return getRandomBlockPositionInRange( targetBlocks, true );
+	}
+	
+	/**
+	 * <p>This function will select a block position from the
+	 * targetBlocks list that is either of the same block type, or
+	 * that is not equal to the same block type.  This is to 
+	 * find valid blocks to either replace, or to add to the 
+	 * list without randomly trying to select a block to try.
+	 * </p>
+	 * 
+	 * @param targetBlocks
+	 * @param matched
+	 * @return
+	 */
+	private int getRandomBlockPositionInRange(
+						List<MineTargetPrisonBlock> targetBlocks,
+						boolean matched) {
+		int position = -1;
+		
+		int rangeLow = getRangeBlockCountLowLimit();
+		int rangeHigh = getRangeBlockCountHighLimit();
+
+		List<Integer> choices = new ArrayList<>();
+		
+		for ( int i = rangeLow; i < rangeHigh && i < targetBlocks.size(); i++ ) {
+			String bName = targetBlocks.get( i ).getPrisonBlock().getBlockName();
+			
+			if ( matched == getBlockName().equals( bName ) ) {
+				choices.add( i );
+			}
+		}
+		
+		if ( choices.size() > 0 ) {
+			int p = (int) (Math.random() * choices.size());
+			
+			position = choices.get( p );
+		}
+		
+		return position;
+	}
+
+	public void setAltValues( int i ) {
+		
+		String codes = "abcdefghijklmnopqrstuvwxyz";
+		String colors = "12345789abcde";
+	
+		int codePos = i % codes.length();
+		int codeFactor = i / codes.length();
+		
+		String code = codePos == codes.length() ?
+				codes.substring( codePos ) :
+				codes.substring( codePos, codePos + 1 );
+		
+		String alias = code + 
+						(codeFactor == 0 ?
+								"" :
+								codeFactor);
+		setAltAlias( alias );
+		
+		int colorPos = i % colors.length();
+		String color = colorPos == colors.length() ?
+				colors.substring( colorPos ) :
+				colors.substring( colorPos, colorPos + 1 );
+		setAltColorCode( "&" + color );
+		
+		setAltCountVirtual( 0 );
+		setAltCountPhysical( 0 );
+		
+	}
+	
+	public void resetAltValues() {
+		
+		setAltCountVirtual( 0 );
+		setAltCountPhysical( 0 );
+		
+	}
+	
+	public String getAltAlias() {
+		return altAlias;
+	}
+	public void setAltAlias(String altAlias) {
+		this.altAlias = altAlias;
+	}
+
+	public String getAltColorCode() {
+		return altColorCode;
+	}
+	public void setAltColorCode(String altColorCode) {
+		this.altColorCode = altColorCode;
+	}
+
+	public int getAltCountVirtual() {
+		return altCountVirtual;
+	}
+	public void setAltCountVirtual(int altCountVirtual) {
+		this.altCountVirtual = altCountVirtual;
+	}
+
+	public int getAltCountPhysical() {
+		return altCountPhysical;
+	}
+	public void setAltCountPhysical(int altCountPhysical) {
+		this.altCountPhysical = altCountPhysical;
 	}
 
 }

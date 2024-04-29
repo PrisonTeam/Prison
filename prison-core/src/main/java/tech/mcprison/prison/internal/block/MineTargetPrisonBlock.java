@@ -24,6 +24,10 @@ public class MineTargetPrisonBlock
 	private boolean ignoreAllBlockEvents = false;
 	
 	
+	private transient boolean checkAir;
+	private transient boolean checkSame;
+	
+	
 	public MineTargetPrisonBlock( 
 				PrisonBlockStatusData prisonBlock, 
 				World world, 
@@ -42,6 +46,19 @@ public class MineTargetPrisonBlock
 		this.isCorner = isCorner;
 	}
 
+	public MineTargetPrisonBlock( 
+			PrisonBlockStatusData prisonBlock, 
+			Location targetLocation ) {
+		this( prisonBlock, targetLocation.getWorld(),
+				targetLocation.getBlockX(), 
+				targetLocation.getBlockY(), 
+				targetLocation.getBlockZ(),
+				targetLocation.isEdge(),
+				targetLocation.isCorner()
+				);
+
+	}
+	
 	@Override
 	public String toString() {
 		return "MineTargetPrisonBlock: key= " + getBlockKey().toString() + 
@@ -189,6 +206,20 @@ public class MineTargetPrisonBlock
 	}
 	public void setIgnoreAllBlockEvents( boolean ignoreAllBlockEvents ) {
 		this.ignoreAllBlockEvents = ignoreAllBlockEvents;
+	}
+
+	public boolean isCheckAir() {
+		return checkAir;
+	}
+	public void setCheckAir(boolean checkAir) {
+		this.checkAir = checkAir;
+	}
+
+	public boolean isCheckSame() {
+		return checkSame;
+	}
+	public void setCheckSame(boolean checkSame) {
+		this.checkSame = checkSame;
 	}
 
 	@Override 

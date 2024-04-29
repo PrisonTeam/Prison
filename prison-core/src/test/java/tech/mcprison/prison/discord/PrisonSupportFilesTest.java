@@ -44,6 +44,14 @@ public class PrisonSupportFilesTest
 		
 		assertEquals(r5, convertColorCodes(t5) );
 		
+		
+//		String t6 = "&3This is &-a &1test & a&r &c&+fun &1sample";
+//		String r6 = "<span class=\"cc3\">This is a "
+//				+ "<span class=\"cc1\">test & a</span></span>"
+//				+ " fun <span class=\"cc1\">sample</span>\n";
+//		
+//		assertEquals(r6, convertColorCodes(t6) );
+		
 	}
 
 }

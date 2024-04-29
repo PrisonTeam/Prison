@@ -45,6 +45,7 @@ public class PrisonBlock
 	
 	private Double salePrice = null;
 	private Double purchasePrice = null;
+	private boolean loreAllowed = false;
 	
 	
 	static {
@@ -76,6 +77,11 @@ public class PrisonBlock
 	 */
 	public PrisonBlock( String blockName ) {
 		this( PrisonBlockType.minecraft, blockName, 0, 0);
+	}
+	public PrisonBlock( String blockName, String displayName  ) {
+		this( PrisonBlockType.minecraft, blockName, 0, 0);
+		
+		setDisplayName( displayName );
 	}
 	public PrisonBlock( PrisonBlockType blockType, String blockName ) {
 		this( blockType, blockName, 0, 0);
@@ -169,8 +175,16 @@ public class PrisonBlock
 	 * @return
 	 */
 	public String getBlockNameSearch() {
-		return getBlockType() != PrisonBlockType.minecraft ? 
-					getBlockType().name() + ":" + getBlockName() : getBlockName();
+		
+		String blockType = getBlockType() != PrisonBlockType.minecraft ? 
+				getBlockType().name() + ":" : "";
+		
+		String blockName = getBlockName().toLowerCase();
+		
+		String displayName = getDisplayName() != null ?
+					":" + getDisplayName().toLowerCase() : "";
+		
+		return blockType + blockName + displayName;
 	}
 
 	
@@ -359,7 +373,17 @@ public class PrisonBlock
 			results = 1;
 		}
 		else {
-			results = getBlockName().compareToIgnoreCase( block.getBlockName() );
+			
+			results = getBlockType() == block.getBlockType() ? 0 : 1;
+			
+			if ( results == 0 ) {
+				
+				results = getBlockName().compareToIgnoreCase( block.getBlockName() );
+				
+				if ( results == 0 && getDisplayName() != null && block.getDisplayName() != null ) {
+					results = getDisplayName().compareToIgnoreCase( block.getDisplayName() );
+				}
+			}
 		}
 			
 		return results;
@@ -501,6 +525,13 @@ public class PrisonBlock
 		ItemStack results = Prison.get().getPlatform().getItemStack( this, blockQuantity );
 		
 		return results;
+	}
+	
+	public boolean isLoreAllowed() {
+		return loreAllowed;
+	}
+	public void setLoreAllowed(boolean loreAllowed) {
+		this.loreAllowed = loreAllowed;
 	}
 	
 }

@@ -1126,7 +1126,7 @@ public class PrisonCommand
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target, or set a count down timer. " +
     					"[on, off, targets, (count-down-timer), selective, jarScan, " +
-    					"testPlayerUtil, testLocale, rankup, player=<playerName> ] " +
+    					"testPlayerUtil, testLocale, rankup, blockConstraints, player=<playerName> ] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or 'all' targets if no target is specified. " +
     				"If any targets are enabled, then debug in general will be enabled. Selective will only " +
@@ -1535,7 +1535,21 @@ public class PrisonCommand
     		
     		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     		
-    		String helpURL = pasteChat.post( text.toString() );
+    		String helpURL = "(Failure in running the commmand.)";
+    				
+			try {
+				helpURL = pasteChat.post( text.toString() );
+			} 
+			catch (Exception e) {
+				Output.get().logRaw( 
+						
+					String.format(
+						"Failed to paste support info to the support server: %s  "
+						+ "raw message: [%s]", 
+						e.getMessage(),
+						text.toString()
+							) );
+			}
     		
     		getSupportURLs().put( "Submit version:", helpURL );
     		
@@ -2019,7 +2033,8 @@ public class PrisonCommand
 			description = "Provides a detailed list of all registered event listeners for" +
 					"the various event types.  BlockBreak listeners will include all " +
 					"listeners that are being monitored within auto features. " +
-				"[all, blockBreak, chat, playerInteract]"
+				"[all, blockBreak, blockPlace, chat, playerDropItem, "
+							+ "playerPickupItem, playerInteract]"
 					) String listener
     		) {
 		

@@ -101,7 +101,7 @@ public class SpigotPlayerMinesGUI
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerMinesGUI"));
 
         
-        String guiItemNameDefault = guiConfig.getString( "Options.Mines.GuiItemNameDefault" );
+        String guiItemNameDefaultSetting = guiConfig.getString( "Options.Mines.GuiItemNameDefault" );
 
         
         // Load the generic mine LORE that would be displayed first:
@@ -144,7 +144,13 @@ public class SpigotPlayerMinesGUI
             
             // Bug: Cannot safely use Material due to variants prior to bukkit v1.13:
 //            Material material;
-
+            
+            String guiItemNameDefault = 
+            		(guiItemNameDefaultSetting == null || guiItemNameDefaultSetting.trim().length() == 0) ?
+            				m.getName() :
+            				guiItemNameDefaultSetting
+            						.replace( "{mineName}", m.getName() )
+            						.replace( "{mineTag}", m.getTag() );
 
             // Get Mine Name. First use 'guiItemName' if not null, then try to use 'guiItemNameDefault'
             // if not null, and then use the mine's tag, or if that's null, then use the name:

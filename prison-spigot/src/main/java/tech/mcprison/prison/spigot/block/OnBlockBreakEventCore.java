@@ -33,7 +33,6 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.util.Text;
 
@@ -420,6 +419,13 @@ public abstract class OnBlockBreakEventCore
 			pmEvent.setTargetBlock( targetBlock );
 			
 			// NOTE: I have no idea why 25 blocks and less should be bypassed for validation:
+			//       Perhaps its because small mines, with 25 or less blocks, just need to be
+			//       processed as quickly as possible?  Which could allow breakage even if it 
+			//       does not match?
+			//       Later on, bypassMatchedBlocks is used for monitor events when the 
+			//       target block is AIR which may mean the block was already removed, so
+			//       ignore the block in the event, and just process it if it was not 
+			//       already mined?
 			boolean bypassMatchedBlocks = pmEvent.getMine().getBounds().getTotalBlockCount() <= 25;
 			if ( bypassMatchedBlocks ) {
 				pmEvent.setDebugColorCodeWarning();
@@ -917,15 +923,22 @@ public abstract class OnBlockBreakEventCore
 				
 				if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
 					
-					SellAllUtil sellAllUtil = SellAllUtil.get();
+//					SellAllUtil sellAllUtil = SellAllUtil.get();
 					
 					// This will return true (allow autosell) unless players can toggle autosell and they turned it off:
 					// This is to be used with other auto sell setting, but never on it's own:
 					boolean isPlayerAutosellEnabled = 
-							(!sellAllUtil.isAutoSellPerUserToggleable ||
-									sellAllUtil.isSellallPlayerUserToggleEnabled( 
-											pmEvent.getPlayer() ));
+							pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
 					
+//							(!sellAllUtil.isAutoSellPerUserToggleable ||
+//									sellAllUtil.isSellallPlayerUserToggleEnabled( 
+//											pmEvent.getPlayer() ));
+					
+					
+//					boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer()
+//									.isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
+		    		
+					 	
 					
 					
 					// AutoSell on full inventory when using BLOCKEVENTS:
@@ -1154,9 +1167,13 @@ public abstract class OnBlockBreakEventCore
 			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
 				results = true;
 				
-				// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
-						mine.getName(), targetBlock.getPrisonBlock(), 1 );
+				
+				if ( pmEvent.isApplyToPlayersBlockCount() ) {
+					
+					// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
+					PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
+							mine.getName(), targetBlock.getPrisonBlock(), 1 );
+				}
 				
 			}
 		}

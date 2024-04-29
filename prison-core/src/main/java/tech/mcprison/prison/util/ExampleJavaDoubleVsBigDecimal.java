@@ -27,6 +27,24 @@ public class ExampleJavaDoubleVsBigDecimal {
 		for (String line : out) {
 			System.out.println( line );
 		}
+		
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		
+		double a = 1.0;
+		double b = 0.014;
+		double c = a - b;
+		double d = c * 100d;
+		double e = d / 100d;
+		double f = ((a * 100d) - (b * 100d)) / 100.0d;
+		
+		System.out.println( 
+				String.format( "a = %f   b = %f   c = %f   d = %f   e = %f   f = %f" ,
+				a, b, c, d, e, f ) );
+		
+		System.out.println( c );
+		System.out.println( f );
 	}
 
 	

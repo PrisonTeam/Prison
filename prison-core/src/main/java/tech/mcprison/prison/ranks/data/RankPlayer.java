@@ -39,6 +39,7 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholderStringCoverter;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
@@ -50,7 +51,8 @@ import tech.mcprison.prison.util.Text;
  * @author Faizaan A. Datoo
  */
 public class RankPlayer 
-			implements Player {
+		extends RankPlayerMessages
+			implements Player, PlaceholderStringCoverter {
 
 	public static final long DELAY_THREE_SECONDS = 20 * 3; // 3 seconds in ticks
 	
@@ -907,6 +909,11 @@ public class RankPlayer
 	}
 	
 	@Override
+	public void sendMessage( List<String> messages ) {
+		Output.get().logError( "RankPlayer.sendMessage: Cannot send messages to offline players." );
+	}
+	
+	@Override
 	public void sendRaw( String json ) {
 		Output.get().logError( "RankPlayer.sendRaw: Cannot send messages to offline players." );
 	}
@@ -968,7 +975,7 @@ public class RankPlayer
 
 	@Override
 	public boolean isOp() {
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		return (player != null ? player.isOp() : false );
 	}
 	
@@ -981,14 +988,14 @@ public class RankPlayer
 	 */
     @Override 
     public boolean isPlayer() {
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	return (player != null ? player.isPlayer() : false );
     }
 	
 
 	@Override
 	public void updateInventory() {
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		if ( player != null ) {
 			
 			player.updateInventory();
@@ -999,7 +1006,7 @@ public class RankPlayer
 	public Inventory getInventory() {
 		Inventory results = null;
 		
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		if ( player != null ) {
 			
 			results = player.getInventory();
@@ -1013,15 +1020,9 @@ public class RankPlayer
 //		
 //	}
 	
-	/**
-	 * <p>Player is not cached in this class, so if using it in a function 
-	 * make a local variable to save it instead of calling this function multiple
-	 * times since it is a high impact lookup.
-	 * </p>
-	 * 
-	 * @return
-	 */
-	private Player getPlayer() {
+
+	@Override
+	public Player getPlatformPlayer() {
 		Player player = null;
 		
 		Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( uid );
@@ -1029,12 +1030,19 @@ public class RankPlayer
 		if ( oPlayer.isPresent() ) {
 			player = oPlayer.get();
 		}
+		
 		return player;
+	}
+	
+	
+	@Override
+	public RankPlayer getRankPlayer() {
+		return this;
 	}
 	
 	@Override
 	public void recalculatePermissions() {
-		Player player = getPlayer();
+		Player player = getPlatformPlayer();
 		if ( player != null ) {
 			player.recalculatePermissions();
 		}
@@ -1042,13 +1050,13 @@ public class RankPlayer
 	
     @Override
     public List<String> getPermissions() {
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	return (player == null ? new ArrayList<>() : player.getPermissions() );
     }
     
     @Override
     public List<String> getPermissions( String prefix ) {
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	return (player == null ? new ArrayList<>() : player.getPermissions( prefix ) );
     }
     
@@ -1071,7 +1079,7 @@ public class RankPlayer
     public double getSellAllMultiplier() {
     	double results = 1.0;
     	
-    	Player player = getPlayer();
+    	Player player = getPlatformPlayer();
     	if ( player != null ) {
     		results = player.getSellAllMultiplier();
     	}
@@ -1690,16 +1698,19 @@ public class RankPlayer
 //	}
 	
 	public static String printRankScoreLine1Header() {
-		String header = String.format(
-				"Rank  %-16s %-9s  %-6s %-9s %-9s %-9s",
-					"Player",
-					"Prestiges",
-					"Rank",
-					"Balance",
-					"Rank-Score",
-					"Penalty"
-						
-				);
+		
+		String header = coreTopNLine1HeaderMsg();
+		
+//		String header = String.format(
+//				"Rank  %-16s %-9s  %-6s %-9s %-9s %-9s",
+//					"Player",
+//					"Prestiges",
+//					"Rank",
+//					"Balance",
+//					"Rank-Score",
+//					"Penalty"
+//						
+//				);
 		return header;
 	}
 	
@@ -1707,28 +1718,55 @@ public class RankPlayer
 		
 		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
-		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank prestigeRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();
 		
-		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String prestigeRankName = prestigeRank == null ? "" : prestigeRank.getRank().getName();
+		String defaultRankName = defRank == null ? "" : defRank.getRank().getName();
+		
+		String prestRankTag = prestigeRank == null ? "---" : prestigeRank.getRank().getTag();
 		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
 		
 		String prestRankTagNc = Text.stripColor(prestRankTag);
 		String defRankTagNc = Text.stripColor(defRankTag);
 		
-		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+		String balanceFmtStr = dFmt.format( getRankScoreBalance()  );
+		String balanceKmbtStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+		String balanceMetricStr = PlaceholdersUtil.formattedMetricSISize( getRankScoreBalance(), dFmt, " " );
+		
+		String rankPositionStr = Integer.toString(rankPostion);
+		String rankScoreStr = rankPostion > 0 ? Integer.toString(rankPostion) : "";
 		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
-		String message = String.format(
-				" %-3s  %-18s %-7s %-7s %9s %9s %9s",
-					(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
-					getName(),
-					prestRankTagNc,
-					defRankTagNc,
-					balanceStr,
-					dFmt.format( getRankScore() ),
-					sPenaltyStr
+		String playerName = getName();
+		
+		String message = coreTopNLine1DetailMsg( 
+				
+				playerName,
+				rankPositionStr,
+				rankScoreStr,
+				sPenaltyStr,
+				prestigeRankName, 
+				defaultRankName, 
+				prestRankTag,
+				defRankTag,
+				prestRankTagNc,
+				defRankTagNc,
+				balanceFmtStr,
+				balanceKmbtStr,
+				balanceMetricStr
+				
 				);
+//		String message = String.format(
+//				" %-3s  %-18s %-7s %-7s %9s %9s %9s",
+//					rankScoreStr,
+//					getName(),
+//					prestRankTagNc,
+//					defRankTagNc,
+//					balanceKmbtStr,
+//					dFmt.format( getRankScore() ),
+//					sPenaltyStr
+//				);
 		
 		message = message
 					.replace(prestRankTagNc, prestRankTag + "&r")
@@ -1738,46 +1776,82 @@ public class RankPlayer
 	}
 	
 	public static String printRankScoreLine2Header() {
-		String header = String.format(
-				"Rank %s %s %-15s %9s",
-				"Ranks",
-				"Rank-Score",
-				"Player",
-				"Balance"
-				
-				);
+		
+		String header = coreTopNLine2HeaderMsg();
+//		String header = String.format(
+//				"Rank %s %s %-15s %9s",
+//				"Ranks",
+//				"Rank-Score",
+//				"Player",
+//				"Balance"
+//				
+//				);
 		return header;
 	}
 	
 	public String printRankScoreLine2( int rankPostion ) {
-		
+
 		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
-		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank prestigeRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();
 		
-		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String prestigeRankName = prestigeRank == null ? "" : prestigeRank.getRank().getName();
+		String defaultRankName = defRank == null ? "" : defRank.getRank().getName();
+		
+		String prestRankTag = prestigeRank == null ? "---" : prestigeRank.getRank().getTag();
 		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
 		
 		String prestRankTagNc = Text.stripColor(prestRankTag);
 		String defRankTagNc = Text.stripColor(defRankTag);
 		
-		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
-//		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+		String balanceFmtStr = dFmt.format( getRankScoreBalance()  );
+		String balanceKmbtStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+		String balanceMetricStr = PlaceholdersUtil.formattedMetricSISize( getRankScoreBalance(), dFmt, " " );
 		
-		String ranks = prestRankTagNc + defRankTagNc;
-		String message = String.format(
-				" %-3s %-9s %6s %-17s %9s",
-				(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
-				ranks,
-				dFmt.format( getRankScore() ),
-				getName(),
-				balanceStr
-				);
+		String rankPositionStr = Integer.toString(rankPostion);
+		String rankScoreStr = rankPostion > 0 ? Integer.toString(rankPostion) : "";
+		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
-		message = message
-				.replace(prestRankTagNc, prestRankTag + "&r")
-				.replace(defRankTagNc, defRankTag + "&r");
+		String playerName = getName();
+		
+//		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+//		
+//		PlayerRank prestRank = getPlayerRankPrestiges();
+//		PlayerRank defRank = getPlayerRankDefault();
+//		
+//		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+//		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
+//		
+//		String prestRankTagNc = Text.stripColor(prestRankTag);
+//		String defRankTagNc = Text.stripColor(defRankTag);
+//		
+//		String balanceKmbtStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
+////		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+//		
+//		String ranks = prestRankTagNc + defRankTagNc;
+		
+		String message = coreTopNLine2DetailMsg( 
+				playerName,
+				rankPositionStr,
+				rankScoreStr, sPenaltyStr,
+				prestigeRankName, defaultRankName, 
+				prestRankTag, defRankTag, 
+				prestRankTagNc, defRankTagNc, 
+				balanceFmtStr,  balanceKmbtStr, balanceMetricStr );
+		
+//		String message = String.format(
+//				" %-3s %-9s %6s %-17s %9s",
+//				(rankPostion > 0 ? Integer.toString(rankPostion) : ""),
+//				ranks,
+//				dFmt.format( getRankScore() ),
+//				getName(),
+//				balanceKmbtStr
+//				);
+//		
+//		message = message
+//				.replace(prestRankTagNc, prestRankTag + "&r")
+//				.replace(defRankTagNc, defRankTag + "&r");
 		
 		return message;
 	}
@@ -1824,6 +1898,120 @@ public class RankPlayer
 	}
 	public void setRankScorePenalty( double rankScorePenalty ) {
 		this.rankScorePenalty = rankScorePenalty;
+	}
+
+	@Override
+	public List<String> getSellAllMultiplierListings() {
+		
+		Player player = Prison.get().getPlatform().getPlayer(getUUID()).orElse(null);
+		
+		return player == null ? new ArrayList<>() : player.getSellAllMultiplierListings();
+	}
+
+
+	@Override
+	public String getStringPlaceholders() {
+		String results = 
+				"{player} {rank_default} {rank_tag_default} {rank_next_default} {rank_next_tag_default} " +
+				"{rank_prestiges} {rank_tag_prestiges} {rank_next_prestiges} {rank_next_tag_prestiges}";
+		
+		return results;
+	}
+	
+    /**
+     * <p>This function will provide support for secondary placeholders for all player related placeholders.
+     * These secondary placeholders are in addition to the preexisting positional placeholders
+     * that are hard coded for the specific parameters. 
+     * </p>
+     * 
+     * <p>These secondary placeholders can be inserted anywhere in the message.
+     * </p>
+     * 
+     * <ul>
+     * 	<li>{player}</li>
+     * 	<li>{rank_default}</li>
+     * 	<li>{rank_tag_default}</li>
+     * 	<li>{rank_next_default}</li>
+     * 	<li>{rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges}</li>
+     * 	<li>{rank_tag_prestiges}</li>
+     * 	<li>{rank_next_prestiges}</li>
+     * 	<li>{rank_next_tag_prestiges}</li>
+     * 
+     *  <li>{player} {rank_default} {rank_tag_default} {rank_next_default} {rank_next_tag_default}</li>
+     * 	<li>{rank_prestiges} {rank_tag_prestiges} {rank_next_prestiges} {rank_next_tag_prestiges}</li>
+     * </ul>
+     * 
+     * @param rankPlayer
+     * @param results
+     * @return
+     */
+	@Override
+	public String convertStringPlaceholders(String results) {
+
+		RankPlayer rankPlayer = this;
+		
+		if ( rankPlayer != null ) {
+			
+			results = applySecondaryPlaceholdersCheck( "{player}", rankPlayer.getName(), results );
+			
+			if ( rankPlayer.getPlayerRankDefault() != null ) {
+				PlayerRank rankP = rankPlayer.getPlayerRankDefault();
+				Rank rank = rankP == null ? null : rankP.getRank();
+				Rank rankNext = rank == null ? null : rank.getRankNext();
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_default}", 
+						rank == null ? "" : rank.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_tag_default}", 
+						rank == null ? "" : rank.getTag(), results );
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_next_default}", 
+						rankNext == null ? "" : rankNext.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_next_tag_default}", 
+						rankNext == null ? "" : rankNext.getTag(), results );
+			}
+			
+			if ( rankPlayer.getPlayerRankPrestiges() != null ) {
+				
+				PlayerRank rankP = rankPlayer.getPlayerRankPrestiges();
+				Rank rank = rankP == null ? null : rankP.getRank();
+				Rank rankNext = rank == null ? null : rank.getRankNext();
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_prestiges}", 
+						rank == null ? "" : rank.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_tag_prestiges}", 
+						rank == null ? "" : rank.getTag(), results );
+				
+				results = applySecondaryPlaceholdersCheck( "{rank_next_prestiges}", 
+						rankNext == null ? "" : rankNext.getName(), results );
+				results = applySecondaryPlaceholdersCheck( "{rank_next_tag_prestiges}", 
+						rankNext == null ? "" : rankNext.getTag(), results );
+			}
+			
+		}
+		
+		return results;
+	}
+	
+
+	/**
+	 * <p>Ths function will perform individual replacements of the given placeholders, but
+	 * if the placeholder does not exist, then it will not change anything with the results
+	 * and it will be just passed through.
+	 * </p>
+	 * 
+	 * @param placeholder
+	 * @param value
+	 * @param results
+	 * @return
+	 */
+	private String applySecondaryPlaceholdersCheck( String placeholder, String value, String results) {
+
+		if ( results.contains( placeholder ) && value != null ) {
+			results = results.replace( placeholder, value );
+		}
+		
+		return results;
 	}
 
 //	public long getRankScoreCooldown() {

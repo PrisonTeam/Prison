@@ -303,7 +303,12 @@ public class MineManager
      */
     private boolean add(Mine mine, boolean save, int offsetTimingMs ) {
     	boolean results = false;
-        if (!getMines().contains(mine)){
+    	
+    	// not add if it already exists, or if the mine is null or does not have a valid name:
+        if ( mine != null &&  mine.getName() != null && 
+        		mine.getName().trim().length() > 0 && 
+        		!getMines().contains(mine)) {
+        	
         	if ( save ) {
         		saveMine( mine );
         	}

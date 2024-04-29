@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
+import tech.mcprison.prison.mines.data.Mine.MineUnitTestUsage;
 
 public class MineManagerTest
 		extends
@@ -17,14 +18,19 @@ public class MineManagerTest
 	private List<Mine> getTestMines() {
 		List<Mine> mines = new ArrayList<>();
 		
-		Mine a = new Mine();
-		a.setName( "A" );
-		Mine b = new Mine();
-		b.setName( "b" );
-		Mine c = new Mine();
-		c.setName( "C" );
-		Mine d = new Mine();
-		d.setName( "D" );
+		Mine a = new Mine( MineUnitTestUsage.TRUE, "A" );
+		Mine b = new Mine( MineUnitTestUsage.TRUE, "b" );
+		Mine c = new Mine( MineUnitTestUsage.TRUE, "C" );
+		Mine d = new Mine( MineUnitTestUsage.TRUE, "D" );
+		
+//		Mine a = new Mine();
+//		a.setName( "A" );
+//		Mine b = new Mine();
+//		b.setName( "b" );
+//		Mine c = new Mine();
+//		c.setName( "C" );
+//		Mine d = new Mine();
+//		d.setName( "D" );
 
 		mines.add( d );
 		mines.add( b );

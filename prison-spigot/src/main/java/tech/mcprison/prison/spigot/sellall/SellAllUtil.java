@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -29,6 +30,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -401,33 +403,36 @@ public class SellAllUtil
     public double getPlayerMultiplier(Player p){
 
         if (!isSellAllMultiplierEnabled){
-            return 1;
+            return 1d;
         }
 
 //        long tPoint1 = System.nanoTime();
         
-//        // Get Ranks module.
-//        ModuleManager modMan = Prison.get().getModuleManager();
-//        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
         SpigotPlayer sPlayer = new SpigotPlayer(p);
-        double multiplier = defaultMultiplier;
 
+        double multiplier = 0d;
+        
         if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
         	
         	RankPlayer rPlayer = sPlayer.getRankPlayer();
-//        rPlayer.getSellAllMultiplier(); // NOTE: This actually calls this function
-        	PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
-        	Rank rank = pRank == null ? null : pRank.getRank();
         	
-        	if ( pRank != null ) {
-        		String rankName = rank.getName();
+        	Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
+        	for (RankLadder ladderKey : keys) {
+        		PlayerRank pRank = rPlayer.getLadderRanks().get(ladderKey);
+        		String rankName = pRank.getRank().getName();
+        		
         		String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
         		if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
-        			multiplier = sellAllPrestigeMultipliers.get( rankName );
+        			multiplier += sellAllPrestigeMultipliers.get( rankName );
         		}
-        	}
-        	
+			}
         }
+        
+        if ( multiplier == 0 ) {
+        	multiplier = defaultMultiplier;
+        }
+        
+        
         
 
 //        long tPoint2 = System.nanoTime();
@@ -463,10 +468,13 @@ public class SellAllUtil
         List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
         double multiplierExtraByPerms = 0;
         for (String multByPerm : perms) {
+        	
             double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
-            if (!isSellAllPermissionMultiplierOnlyHigherEnabled) {
+            
+            if ( !isSellAllPermissionMultiplierOnlyHigherEnabled ) {
                 multiplierExtraByPerms += multByPermDouble;
-            } else if (multByPermDouble > multiplierExtraByPerms) {
+            } 
+            else if (multByPermDouble > multiplierExtraByPerms) {
                 multiplierExtraByPerms = multByPermDouble;
             }
         }
@@ -483,6 +491,89 @@ public class SellAllUtil
         return multiplier;
     }
 
+    
+    public List<String> getPlayerMultiplierList( Player p ) {
+    	List<String> results = new ArrayList<>();
+    	
+
+        if (!isSellAllMultiplierEnabled) {
+            results.add( "1.0 - Sellall multipler is disabled. Default value." );
+            
+            return results;
+        }
+
+        DecimalFormat dFmt = Prison.getDecimalFormatStaticDouble();
+
+        SpigotPlayer sPlayer = new SpigotPlayer(p);
+
+        if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+        	
+        	RankPlayer rPlayer = sPlayer.getRankPlayer();
+        	
+        	Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
+        	for (RankLadder ladderKey : keys) {
+        		PlayerRank pRank = rPlayer.getLadderRanks().get(ladderKey);
+        		String rankName = pRank.getRank().getName();
+        		
+        		String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+        		if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
+        			double mult = sellAllPrestigeMultipliers.get( rankName );
+        			String msg = String.format( 
+        					"%s - %s rank Sellall multiplier",
+        					dFmt.format(mult), rankName
+        					);
+        			results.add( msg );
+        		}
+			}
+        }
+        
+        if ( results.size() == 0 ) {
+        	String msg = String.format( 
+        			"%s - default Sellall multiplier - no rank mulitiplers",
+        			dFmt.format(defaultMultiplier)
+        			);
+        	results.add(msg);
+        }
+        
+
+        // Get Multiplier from multipliers permission's if there's any.
+        List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
+        double multiplierExtraByPerms = 0;
+        int count = 0;
+        String greatestPerm = "";
+        for (String multByPerm : perms) {
+        	
+            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
+            
+            if ( !isSellAllPermissionMultiplierOnlyHigherEnabled ) {
+                multiplierExtraByPerms += multByPermDouble;
+                
+                String msg = String.format( 
+                		"%s - Sellall permission multiplier - %s",
+                		dFmt.format(multByPermDouble), multByPerm
+                		);
+                results.add(msg);
+            } 
+            else if (multByPermDouble > multiplierExtraByPerms) {
+                multiplierExtraByPerms = multByPermDouble;
+                count++;
+                greatestPerm = multByPerm;
+            }
+        }
+        
+        if ( isSellAllPermissionMultiplierOnlyHigherEnabled ) {
+        	
+        	String msg = String.format( 
+        			"%s - Sellall permission multiplier - greatest out of %d - %s",
+        			dFmt.format(multiplierExtraByPerms), count, greatestPerm
+        			);
+        	results.add(msg);
+        }
+    	
+    	return results;
+    }
+    
+    
 //    /**
 //     * Get SellAll Money to give, it requires Player because of SellAll perBlockPermission as an option.
 //     * NOTE: This WON'T remove blocks from the HashMap when sold, and won't edit Inventories of Players,
@@ -737,7 +828,8 @@ public class SellAllUtil
     }
     
     
-    private List<SellAllData> sellInventoryItems( tech.mcprison.prison.internal.inventory.Inventory inventory, double multiplier ) {
+    private List<SellAllData> sellInventoryItems( tech.mcprison.prison.internal.inventory.Inventory inventory, 
+    					double multiplier ) {
     	List<SellAllData> soldItems = new ArrayList<>();
 
     	if ( inventory != null ) {
@@ -808,13 +900,30 @@ public class SellAllUtil
     	
     	if ( iStack != null ) {
     		
+    		// This converts a bukkit ItemStackk to a PrisonBlock, and it also sets up the
+    		// displayName if that is set on the itemStack.
     		PrisonBlock pBlockInv = iStack.getMaterial();
-    		PrisonBlock pBlockSellAll = sellAllItems.get( pBlockInv.getBlockName().toLowerCase() );
+    		
+    		PrisonBlock pBlockSellAll = sellAllItems.get( pBlockInv.getBlockNameSearch() );
     		
     		if ( pBlockSellAll != null ) {
-    			double amount = iStack.getAmount() * pBlockSellAll.getSalePrice() * multiplier;
-    			soldItem = new SellAllData( pBlockSellAll, iStack.getAmount(), amount );
     			
+    			if ( !pBlockSellAll.isLoreAllowed() && iStack.getLore().size() > 0 ) {
+    				String msg = String.format(
+    						"Sellall: Cannot sell item '%s' (qty %s) because it has lore which is not allowed. ",
+    						iStack.getDisplayName(), 
+    						Integer.toString( iStack.getAmount() )
+    						);
+    				if ( Output.get().isDebug() ) {
+    					Output.get().logInfo( msg );
+    				}
+    				
+    			}
+    			else {
+    				
+    				double amount = iStack.getAmount() * pBlockSellAll.getSalePrice() * multiplier;
+    				soldItem = new SellAllData( pBlockSellAll, iStack.getAmount(), amount );
+    			}
     		}
     	}
     	
@@ -981,49 +1090,49 @@ public class SellAllUtil
 //        return xMaterialIntegerHashMap;
 //    }
 
-    /**
-     * If autosell is enabled, and if user toggleable is enabled, then
-     * it will check to see if the player has the perm or 
-     * 
-     * Get AutoSell Player toggle if available.
-     * If he enabled it, AutoSell will work, otherwise it won't.
-     * If he never used the toggle command, this will return true, just like if he enabled it in the first place.
-     *
-     * @param p - Player.
-     *
-     * @return boolean.
-     * */
-    public boolean isPlayerAutoSellEnabled(Player p){
-    	boolean results = false;
-    	
-    	// If autosell isn't enabled, then return false
-    	if ( isAutoSellEnabled ) {
-    		
-    		results =  isSellallPlayerUserToggleEnabled( p );
-//    		if ( !isAutoSellPerUserToggleablePermEnabled ||
-//    			 isAutoSellPerUserToggleablePermEnabled && 
-//    				p.hasPermission(permissionAutoSellPerUserToggleable)){
-//    			
-//    			String settingName = "Users." + p.getUniqueId() + ".isEnabled";
-//    			
-//    			results = sellAllConfig.getString(settingName) == null ||
-//    					getBooleanValue( settingName );
-//    		}
-    	}
-    		
-    	
-//        if (isAutoSellPerUserToggleablePermEnabled && 
-//        		!p.hasPermission(permissionAutoSellPerUserToggleable)){
-//            return false;
-//        }
+//    /**
+//     * If autosell is enabled, and if user toggleable is enabled, then
+//     * it will check to see if the player has the perm or 
+//     * 
+//     * Get AutoSell Player toggle if available.
+//     * If he enabled it, AutoSell will work, otherwise it won't.
+//     * If he never used the toggle command, this will return true, just like if he enabled it in the first place.
+//     *
+//     * @param p - Player.
+//     *
+//     * @return boolean.
+//     * */
+//    public boolean isPlayerAutoSellEnabled(Player p){
+//    	boolean results = false;
+//    	
+//    	// If autosell isn't enabled, then return false
+//    	if ( isAutoSellEnabled ) {
+//    		
+//    		results =  isSellallPlayerUserToggleEnabled( p );
+////    		if ( !isAutoSellPerUserToggleablePermEnabled ||
+////    			 isAutoSellPerUserToggleablePermEnabled && 
+////    				p.hasPermission(permissionAutoSellPerUserToggleable)){
+////    			
+////    			String settingName = "Users." + p.getUniqueId() + ".isEnabled";
+////    			
+////    			results = sellAllConfig.getString(settingName) == null ||
+////    					getBooleanValue( settingName );
+////    		}
+//    	}
+//    		
+//    	
+////        if (isAutoSellPerUserToggleablePermEnabled && 
+////        		!p.hasPermission(permissionAutoSellPerUserToggleable)){
+////            return false;
+////        }
+////
+////        if (sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled") == null){
+////            return true;
+////        }
 //
-//        if (sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled") == null){
-//            return true;
-//        }
-
-//        return getBooleanValue("Users." + p.getUniqueId() + ".isEnabled");
-	    return results;
-    }
+////        return getBooleanValue("Users." + p.getUniqueId() + ".isEnabled");
+//	    return results;
+//    }
     
     /**
      * <p>This function only checks to see if the user can toggle autosell
@@ -1040,17 +1149,21 @@ public class SellAllUtil
     public boolean isSellallPlayerUserToggleEnabled( Player p ) {
     	boolean results = false;
     	
-    	if ( isAutoSellPerUserToggleable ) {
+    	// If autosell isn't enabled, then return false
+    	if ( isAutoSellEnabled ) {
     		
-    		if ( !isAutoSellPerUserToggleablePermEnabled ||
-       			 isAutoSellPerUserToggleablePermEnabled && 
-       				p.hasPermission(permissionAutoSellPerUserToggleable)){
-       			
-       			String settingName = "Users." + p.getUniqueId() + ".isEnabled";
-       			
-       			results = sellAllConfig.getString( settingName ) == null ||
-       					getBooleanValue( settingName );
-       		}
+    		if ( isAutoSellPerUserToggleable ) {
+    			
+    			if ( !isAutoSellPerUserToggleablePermEnabled ||
+    					isAutoSellPerUserToggleablePermEnabled && 
+    					p.hasPermission(permissionAutoSellPerUserToggleable)){
+    				
+    				String settingName = "Users." + p.getUniqueId() + ".isEnabled";
+    				
+    				results = sellAllConfig.getString( settingName ) == null ||
+    						getBooleanValue( settingName );
+    			}
+    		}
     	}
     	
     	return results;
@@ -1149,13 +1262,20 @@ public class SellAllUtil
         for (String key : sellAllConfig.getConfigurationSection("Items").getKeys(false)) {
 
         	String itemName = key.trim().toUpperCase();
+        	String itemPrefix = "Items." + itemName;
         	
-            String itemID = sellAllConfig.getString("Items." + itemName + ".ITEM_ID");
+            String itemID = sellAllConfig.getString( itemPrefix + ".ITEM_ID");
 
             PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock(itemID);
 
             if ( pBlock != null ) {
-            	String saleValueString = sellAllConfig.getString("Items." + itemName + ".ITEM_VALUE");
+            	
+            	String itemDisplayName = sellAllConfig.getString( itemPrefix + ".ITEM_DISPLAY_NAME");
+            	if ( itemDisplayName != null ) {
+            		pBlock.setDisplayName( itemDisplayName );
+            	}
+            	
+            	String saleValueString = sellAllConfig.getString( itemPrefix + ".ITEM_VALUE");
             	if ( saleValueString != null ) {
             		
             		try {
@@ -1165,7 +1285,7 @@ public class SellAllUtil
             		}
             	}
 
-            	String purchaseValueString = sellAllConfig.getString("Items." + itemName + ".PURCHASE_PRICE");
+            	String purchaseValueString = sellAllConfig.getString( itemPrefix + ".PURCHASE_PRICE");
             	if ( purchaseValueString != null ) {
             		
             		try {
@@ -1174,7 +1294,21 @@ public class SellAllUtil
             		} catch (NumberFormatException ignored) {
             		}
             	}
-            	sellAllItems.put( pBlock.getBlockName().toLowerCase(), pBlock );
+            	
+            	String isLoreAllowedString = sellAllConfig.getString( itemPrefix + ".IS_LORE_ALLOWED");
+            	boolean isLoreAllowed = false;
+            	if ( isLoreAllowedString != null ) {
+            		
+            		try {
+            			isLoreAllowed = Boolean.parseBoolean(isLoreAllowedString);
+            		} 
+            		catch (NumberFormatException ignored) {
+            		}
+            	}
+            	pBlock.setLoreAllowed( isLoreAllowed );
+            	
+            	
+            	sellAllItems.put( pBlock.getBlockNameSearch(), pBlock );
             }
             
 //            Optional<XMaterial> iMatOptional = XMaterial.matchXMaterial(itemID);
@@ -1259,14 +1393,19 @@ public class SellAllUtil
      *
      * @return boolean.
      * */
-    public boolean addSellAllBlock(XMaterial xMaterial, double value){
+    public boolean addSellAllBlock(XMaterial xMaterial, double value) {
+    	return addSellAllBlock( xMaterial, null, value );
+    }
+    
+    public boolean addSellAllBlock(XMaterial xMaterial, String displayName, double value) {
     	
     	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
     	if ( pBlockKey == null ) {
     		Output.get().logDebug( "sellall add: invalid block name (%s)", xMaterial.name());
     		return false;
     	}
-    	String key = pBlockKey.getBlockName().toLowerCase();
+    	String key = pBlockKey.getBlockNameSearch();
+//    	String key = pBlockKey.getBlockName().toLowerCase();
     	
     	PrisonBlock pBlock = sellAllItems.get( key );
 
@@ -1276,6 +1415,10 @@ public class SellAllUtil
     		return false;
     	}
     	
+    	
+    	// pBlock is null, but it's being used below. So clone the key:
+    	pBlock = pBlockKey.clone();
+    	
         try {
         	
         	String itemName = pBlockKey.getBlockName().toUpperCase();
@@ -1284,6 +1427,12 @@ public class SellAllUtil
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + itemName + ".ITEM_ID", xMaterial.name());
             conf.set("Items." + itemName + ".ITEM_VALUE", value);
+            conf.set("Items." + itemName + ".IS_LORE_ALLOWED", pBlock.isLoreAllowed() );
+            
+            if ( displayName != null ) {
+            	conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", displayName );
+            }
+            
             if (getBooleanValue("Options.Sell_Per_Block_Permission_Enabled")) {
             	String itemPerm = "Items." + itemName + ".ITEM_PERMISSION";
                 conf.set( itemPerm, sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
@@ -1292,7 +1441,7 @@ public class SellAllUtil
             updateConfig();
 
             pBlockKey.setSalePrice( value );
-            sellAllItems.put( pBlockKey.getBlockName().toLowerCase(), pBlockKey );
+            sellAllItems.put( pBlockKey.getBlockNameSearch(), pBlockKey );
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1584,10 +1733,13 @@ public class SellAllUtil
      *
      * @return boolean.
      * */
-    public boolean editPrice(XMaterial xMaterial, double value){
+    public boolean editPrice(XMaterial xMaterial, double value) {
+    	return editPrice( xMaterial, null, value );
+    }
+    public boolean editPrice(XMaterial xMaterial, String displayName, double value) {
 
     	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
-    	String key = pBlockKey.getBlockName().toLowerCase();
+    	String key = pBlockKey.getBlockNameSearch();
     	
     	PrisonBlock pBlock = sellAllItems.get( key );
     	
@@ -1613,6 +1765,15 @@ public class SellAllUtil
             String itemName = key.toUpperCase();
             conf.set("Items." + itemName + ".ITEM_ID", key );
             conf.set("Items." + itemName + ".ITEM_VALUE", value);
+            conf.set("Items." + itemName + ".IS_LORE_ALLOWED", pBlock.isLoreAllowed() );
+            
+            if ( displayName != null ) {
+            	conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", value);
+            }
+            else {
+            	//conf.set("Items." + itemName + ".ITEM_DISPLAY_NAME", null);
+            }
+            
             
             if ( pBlock.getPurchasePrice() != null ) {
             	
@@ -1635,6 +1796,51 @@ public class SellAllUtil
 //        sellAllBlocks.put(xMaterial, value);
         
         return true;
+    }
+    
+    
+    public boolean editAllowLore(XMaterial xMaterial, boolean value) {
+    	
+    	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
+    	String key = pBlockKey.getBlockNameSearch();
+    	
+    	PrisonBlock pBlock = sellAllItems.get( key );
+    	
+    	// Do not allow an edit price if the material does not exist, or if the value has not changed:
+    	if ( pBlock == null ){
+    		
+    		Output.get().logDebug( "sellall edit: item does not exist in shop so it cannot be edited (%s)", pBlockKey.getBlockName());
+    		return false;
+    	}
+    	if ( pBlock.isLoreAllowed() == value ){
+    		Output.get().logDebug( "sellall edit: No change in 'allow lore' (%s %s)", 
+    				pBlockKey.getBlockName(), Boolean.toString( pBlock.isLoreAllowed() ) );
+    		return false;
+    	}
+    	
+    	pBlock.setLoreAllowed( value );
+    	
+    	try {
+    		File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+    		FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+    		
+    		String itemName = key.toUpperCase();
+//    		conf.set("Items." + itemName + ".ITEM_ID", key );
+    		conf.set("Items." + itemName + ".IS_LORE_ALLOWED", pBlock.isLoreAllowed() );
+    		
+    		conf.save(sellAllFile);
+    		
+    		// Update only if successful
+    		updateConfig();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    	
+    	// pBlock is still in the sellAllItems collection so no need to readd it
+//        sellAllBlocks.put(xMaterial, value);
+    	
+    	return true;
     }
 
 //    /**
@@ -1683,7 +1889,7 @@ public class SellAllUtil
     public boolean removeSellAllBlock(XMaterial xMaterial){
 
     	PrisonBlock pBlockKey = Prison.get().getPlatform().getPrisonBlock( xMaterial.name() );
-    	String key = pBlockKey.getBlockName().toLowerCase();
+    	String key = pBlockKey.getBlockNameSearch();
     	
     	PrisonBlock pBlock = sellAllItems.get( key );
     

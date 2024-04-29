@@ -18,6 +18,10 @@
 
 package tech.mcprison.prison.internal;
 
+import java.util.List;
+
+import tech.mcprison.prison.ranks.data.RankPlayer;
+
 /**
  * Represents any entity that may send commands and receive output.
  *
@@ -37,18 +41,18 @@ public interface CommandSender
     /**
      * Returns the name of the command sender.
      */
-    String getName();
+    public String getName();
 
     /**
      * Force a commandSender to send a command
      */
-    void dispatchCommand(String command);
+    public void dispatchCommand(String command);
 
     /**
      * Returns true if the command sender can show colors to the viewer.
      * This is not always the case, especially when using command blocks and online consoles.
      */
-    boolean doesSupportColors();
+    public boolean doesSupportColors();
 
     /**
      * Sends a message to the command sender.
@@ -57,7 +61,7 @@ public interface CommandSender
      *
      * @param message The message to send. May include color codes, amp-prefixed.
      */
-    void sendMessage(String message);
+    public void sendMessage(String message);
 
     /**
      * Sends multiple messages to the command sender.
@@ -66,14 +70,23 @@ public interface CommandSender
      * @param messages The array containing each message.
      * @see #sendMessage(String)
      */
-    void sendMessage(String[] messages);
+    public void sendMessage(String[] messages);
 
+    /**
+     * Sends multiple messages to the command sender.
+     * Each message will be shown on its own line.
+     *
+     * @param messages The List<String> containing each message.
+     * @see #sendMessage(String)
+     */
+    public void sendMessage(List<String> messages);
+    
     /**
      * Send a raw JSON message to the sender.
      *
      * @param json The JSON message. Must be in proper format.
      */
-    void sendRaw(String json);
+    public void sendRaw(String json);
     
     
 //    public boolean isOp();
@@ -89,5 +102,23 @@ public interface CommandSender
 
     
     public boolean isPlayer();
+
+	public List<String> getSellAllMultiplierListings();
+	
+	
+	/**
+	 * <p>Returns an instance of a Platform player object, which is is 
+	 * different than just a RankPlayer since it was built with the wrapper of
+	 * SpigotPlayer (when running on spigot).  So this object is actually backed
+	 * by the the actual player object too.
+	 * </p>
+	 * 
+	 * @return Player
+	 */
+	public Player getPlatformPlayer();
+
+	
+	public RankPlayer getRankPlayer();
+
 
 }

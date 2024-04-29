@@ -19,6 +19,9 @@
 package tech.mcprison.prison.spigot;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,9 +48,12 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 
@@ -187,24 +193,30 @@ public class SpigotPlatform
     	
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
-        this.storage = initStorage();
+        
+        
+        this.storage = null;
+//        this.storage = initStorage();
         
         this.placeholders = new SpigotPlaceholders();
 
         ActionBarUtil.init(plugin);
     }
 
-    private Storage initStorage() {
-        String confStorage = plugin.getConfig().getString("storage", "file");
+    public Storage initStorage() {
+    	
+        @SuppressWarnings("unused")
+		String confStorage = plugin.getConfig().getString("storage", "file");
         Storage storage = new FileStorage(plugin.getDataDirectory());
         
-        if (!confStorage.equalsIgnoreCase("file")) {
-            Output.get().logError("Unknown file storage type in configuration \"" + confStorage
-                + "\". Using file storage.");
-            Output.get().logWarn(
-                "Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
-        }
+//        if (!confStorage.equalsIgnoreCase("file")) {
+//            Output.get().logError("Unknown file storage type in configuration \"" + confStorage
+//                + "\". Using file storage.");
+//            Output.get().logWarn(
+//                "Note: In this version of Prison 3, 'file' is the only supported type of storage. We're working to bring other storage types soon.");
+//        }
         
+        this.storage = storage;
         return storage;
     }
 
@@ -1459,9 +1471,9 @@ public class SpigotPlatform
 				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() 
 				) {
 			
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		Player player = pm.getPlayer( sender );
-    		RankPlayer rankPlayer = pm.getPlayer( player );
+//    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//    		Player player = sender.getPlatformPlayer();
+    		RankPlayer rankPlayer = sender.getRankPlayer();
 
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     		
@@ -1763,25 +1775,48 @@ public class SpigotPlatform
 		for ( String mineName : rankMineNames ) {
 			
 			Mine mine = mm.getMine( mineName );
+			
+			String msg = 
+					autoCreateMineLinerAssignment( mine, forceLinersBottom, forceLinersWalls );
 
+			if ( msg != null ) {
+				
+				Output.get().logInfo( msg );
+			}
+		}	
+	}
+	
+	@Override
+	public String autoCreateMineLinerAssignment( ModuleElement eMine, 
+			boolean forceLinersBottom, boolean forceLinersWalls ) {
+		String message = null;
+		
+		if ( eMine instanceof Mine ) {
+			
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+//		List<Mine> mines = mm.getMines();
+			
+			Mine mine = (Mine) eMine;
+			
 			String mineLinerData = mine.getLinerData().toSaveString();
 			boolean createLiner = mineLinerData.trim().isEmpty();
 			
 			if ( createLiner ) {
 				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), forceLinersWalls );
 				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), forceLinersBottom );
-
+				
 				mineLinerData = mine.getLinerData().toSaveString();
 				
 				mm.saveMine( mine );
 			}
-
-			String message = String.format( "Mine Liner status: %s %s : %s", 
+			
+			message = String.format( "Mine Liner status: %s %s : %s", 
 					mine.getName(),
 					(createLiner ? "(Created)" : "(AlreadyExists)"),
 					mineLinerData );
-			Output.get().logInfo( message );
-		}	
+		}
+		
+		return message;
 	}
 	
 	private LinerPatterns getRandomLinerType() {
@@ -2729,17 +2764,19 @@ public class SpigotPlatform
 		blockEvents.dumpEventListeners( sb );
 		
 		
+		// NOTE: the use of '..==..' prevents these packages from being shortened. See end of this function.
+		
 		sb.append( "\n" );
 		sb.append( "&2NOTE: Prison Block Event Listeners:\n" );
 		
 		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
-									"tech.mcprison.prison.spigot.SpigotListener\n" );
+									"tmps.SpigotListener\n" );
 		sb.append( "&2. . Auto Features: " +
-									"tmpsae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
+									"tmps.ae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
 		sb.append( "&2. . Prison's multi-block explosions (bombs): " +
 				"tmpsae.AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
 		sb.append( "&2. . Prison Abbrv: '&3tmps.&2' = '&3tech..==..mcprison.prison.spigot.&2' & " +
-				"'&3tmpsae.&2' = '&3tmps..==..autofeatures.events.&2'\n" );
+				"'&3tmps.ae.&2' = '&3tmps..==..autofeatures.events.&2'\n" );
 
 		
 //		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
@@ -2794,7 +2831,7 @@ public class SpigotPlatform
 		// 'tmpsae.' = 'tmps.autofeatures.events.'
 		String results = sb.toString()
 				.replace( "tech.mcprison.prison.spigot.", "tmps." )
-				.replace( "tmps.autofeatures.events.",  "tmpsae." )
+				.replace( "tmps.autofeatures.events.",  "tmps.ae." )
 				.replace( "..==..", "." );
 		
 		return results;
@@ -2833,6 +2870,52 @@ public class SpigotPlatform
 								new SpigotHandlerList( PlayerInteractEvent.getHandlerList()) );
 		if ( eventDisplay != null ) {
 			sb.append( eventDisplay.toStringBuilder() );
+		}
+		
+		return sb.toString();
+	}
+	
+	@Override
+	public String dumpEventListenersBlockPlaceEvents() {
+		StringBuilder sb = new StringBuilder();
+		
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+				"BlockPlaceEvent", 
+				new SpigotHandlerList( BlockPlaceEvent.getHandlerList()) );
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
+		}
+		
+		return sb.toString();
+	}
+	
+	@Override
+	public String dumpEventListenersPlayerDropItemEvents() {
+		StringBuilder sb = new StringBuilder();
+		
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+				"PlayerDropItemEvent", 
+				new SpigotHandlerList( PlayerDropItemEvent.getHandlerList()) );
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
+		}
+		
+		return sb.toString();
+	}
+	
+	@Override
+	public String dumpEventListenersPlayerPickupItemEvents() {
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+					"PlayerPickupItemEvent", 
+					new SpigotHandlerList( PlayerPickupItemEvent.getHandlerList()) );
+			if ( eventDisplay != null ) {
+				sb.append( eventDisplay.toStringBuilder() );
+			}
+		} catch (Exception e) {
+			sb.append( "The PlayerPickupItemEvent is not valid on this version of spigot." );
 		}
 		
 		return sb.toString();
@@ -2998,7 +3081,15 @@ public class SpigotPlatform
 	
 	@Override
 	public void saveResource( String fileName, boolean replace ) {
-		SpigotPrison.getInstance().saveResource( fileName, replace );
+		
+		try {
+			SpigotPrison.getInstance().saveResource( fileName, replace );
+		} catch (Exception e) {
+			Output.get().logInfo( 
+					"SpigotPlatformm.saveResource(): Error trying to save a resource '%s'  replace=%s : %s",
+					fileName, Boolean.toString(replace), e.getMessage()
+					);
+		}
 	}
 	
 	@Override
@@ -3347,5 +3438,79 @@ public class SpigotPlatform
 		}
 		
 		return results;
+	}
+	
+	/**
+	 * This loadYaml function will load only text based yaml files, but if the 
+	 * file contains a class serialization (prefixed with '==:') then it will
+	 * purge all references to such classes so the data is loaded as plain text.
+	 */
+	@Override
+	public Map<String,Object> loadYaml( File file ) {
+		Map<String, Object> values = null;
+		
+		try {
+			List<String> lines = Files.readAllLines( file.toPath() );
+
+			StringBuilder sb = new StringBuilder();
+			for (String line : lines ) {
+				// remove object mapping from yaml files:
+				if ( !line.startsWith("  ==: " ) ) {
+					sb.append( line ).append( "\n" );
+				}
+			}
+			
+			try (
+					StringReader sr = new StringReader( sb.toString() );
+					) 
+			{
+				YamlConfiguration yaml = SpigotPrison.getInstance().loadExternalConfig( sr );
+				
+				if ( yaml != null ) {
+					values = yaml.getValues( true );
+				}
+				
+			}
+			
+		} 
+		catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+//		try {
+//			Class worldClass  = Class.forName( "org.bukkit.World" ); 
+//			YamlConfiguration yaml = SpigotPrison.getInstance().loadExternalConfig( file );
+//			
+//			if ( yaml != null ) {
+//				values = yaml.getValues( true );
+//				
+//				
+//				if ( yaml.contains( "teleport_location" ) ) {
+//					
+//					org.bukkit.Location loc = 
+//							(org.bukkit.Location) yaml.getObject( 
+//									"teleport_location", org.bukkit.Location.class );
+//					
+//					org.bukkit.World world = loc.getWorld();
+//					
+//					if ( loc != null ) {
+//						values.put( "teleport_location.world", world.getName() );
+//						values.put( "teleport_location.x", Double.valueOf( loc.getX()) );
+//						values.put( "teleport_location.y", Double.valueOf( loc.getY()) );
+//						values.put( "teleport_location.z", Double.valueOf( loc.getZ()) );
+//						values.put( "teleport_location.pitch", Double.valueOf( loc.getPitch()) );
+//						values.put( "teleport_location.yaw", Double.valueOf( loc.getYaw()) );
+//						
+//					}
+//				}
+//			}
+//			
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+
+		return values;
 	}
 }

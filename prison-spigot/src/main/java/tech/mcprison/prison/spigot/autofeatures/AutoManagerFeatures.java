@@ -39,8 +39,6 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
@@ -516,9 +514,19 @@ public abstract class AutoManagerFeatures
 		
 		boolean isAutoFeaturesEnabled = isBoolean( AutoFeatures.isAutoFeaturesEnabled );
 		
-		boolean permPickup = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-		boolean permSmelt = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
-		boolean permBlock = isAutoFeaturesEnabled && player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
+		String permAutoPickup = getMessage( AutoFeatures.permissionAutoPickup );
+		String permAutoSmelt = getMessage( AutoFeatures.permissionAutoSmelt );
+		String permAutoBlock = getMessage( AutoFeatures.permissionAutoBlock );
+		
+		boolean permPickup = isAutoFeaturesEnabled && 
+								!"disable".equalsIgnoreCase( permAutoPickup ) && 
+								player.isPermissionSet( permAutoPickup );
+		boolean permSmelt = isAutoFeaturesEnabled && 
+								!"disable".equalsIgnoreCase( permAutoSmelt ) && 
+								player.isPermissionSet( permAutoSmelt );
+		boolean permBlock = isAutoFeaturesEnabled && 
+								!"disable".equalsIgnoreCase( permAutoBlock ) && 
+								player.isPermissionSet( permAutoBlock );
 		
 		
 		boolean configPickup = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoPickupEnabled );
@@ -909,6 +917,9 @@ public abstract class AutoManagerFeatures
 //							  SellAllUtil.get().isSellallPlayerUserToggleEnabled( 
 //												pmEvent.getSpigotPlayer().getWrapper() ));
 			
+			
+			// isAutoSellEnabled should include perms check too:
+			
 			boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
 			
 			
@@ -931,11 +942,12 @@ public abstract class AutoManagerFeatures
 //							!"false".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
 //							player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) );
 			
-			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+//			boolean autoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( isPlayerAutosellEnabled, pmEvent.getDebugInfo()  );
 			
 			
 			// Try to autosell if enabled in any of the following ways:
-			boolean autoSell = ( forceAutoSell || autoSellBySettings || autoSellByPerm );
+			boolean autoSell = ( forceAutoSell || autoSellBySettings );
+//			boolean autoSell = ( forceAutoSell || autoSellBySettings || autoSellByPerm );
 			
 			for ( SpigotItemStack itemStack : drops ) {
 				
@@ -991,7 +1003,8 @@ public abstract class AutoManagerFeatures
 					
 					
 					// AutoSell failure... some items may be unsellable due to not being setup in the sellall shop:
-					if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
+					if ( forceAutoSell || autoSellBySettings ) {
+//						if ( forceAutoSell || autoSellBySettings || autoSellByPerm ) {
 						
 						// Force debug printing for this entry even if debug mode is turned off:
 						pmEvent.setForceDebugLogging( true );
@@ -1460,9 +1473,10 @@ public abstract class AutoManagerFeatures
 				
 				boolean isPlayerAutosellEnabled = sPlayer.isAutoSellEnabled( debugInfo );
 				
-				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled );
+//				boolean isPlayerAutoSellByPerm = sPlayer.isAutoSellByPermEnabled( isPlayerAutosellEnabled, debugInfo );
 			
-				if ( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) {
+				if ( isPlayerAutosellEnabled ) {
+//					if ( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) {
 				
 					SellAllUtil sellAllUtil = SellAllUtil.get();
 				
@@ -2617,7 +2631,7 @@ public abstract class AutoManagerFeatures
 						xMat == XMaterial.MELON_SEEDS ||
 						xMat == XMaterial.NETHER_WART ||
 						xMat == XMaterial.POTATO ||
-						xMat == XMaterial.GRASS ||
+						xMat == XMaterial.SHORT_GRASS ||
 						xMat == XMaterial.WHEAT ) {
 
 					

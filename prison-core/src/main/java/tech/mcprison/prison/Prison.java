@@ -213,7 +213,13 @@ public class Prison
     		
     	if ( this.localeManager == null ) {
     		
-    		this.localeManager = new LocaleManager(this, "lang/core");
+    		synchronized ( this ) {
+    			if ( this.localeManager == null ) {
+				
+    				this.localeManager = new LocaleManager(this, "lang/core");
+    			}
+			}
+    		
     	}
         return localeManager;
     }
@@ -228,7 +234,13 @@ public class Prison
     public File getModuleDataFolder() {
     	
     	if ( moduleDataFolder == null ) {
-    		this.moduleDataFolder = Module.setupModuleDataFolder( "core" );
+    		if ( this.localeManager == null ) {
+    			if ( moduleDataFolder == null ) {
+    				
+    				this.moduleDataFolder = Module.setupModuleDataFolder( "core" );
+    				
+    			}
+    		}
     	}
         return moduleDataFolder;
     }
@@ -237,18 +249,37 @@ public class Prison
     	this.platform = platform;
     }
     
+    
+    
+    
     /**
      * Initializes prison-core. In the implementations, this should be called when the plugin is
      * enabled. After this is called, every getter in this class will return a value.
      * <p>
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
-    public boolean init(Platform platform, String minecraftVersion, File dataFolder ) {
+    public void init(Platform platform, String minecraftVersion ) {
+    	long startTime = System.currentTimeMillis();
+    	
+    	
+    	this.platform = platform;
+    	this.minecraftVersion = minecraftVersion;
+    	
+    }
+    
+    
+    /**
+     * Initializes prison-core. In the implementations, this should be called when the plugin is
+     * enabled. After this is called, every getter in this class will return a value.
+     * <p>
+     * Note that modules <b>should not call this method</b>. This is solely for the implementations.
+     */
+    public boolean init( File dataFolder ) {
         long startTime = System.currentTimeMillis();
 
         
-        this.platform = platform;
-        this.minecraftVersion = minecraftVersion;
+//        this.platform = platform;
+//        this.minecraftVersion = minecraftVersion;
         
         this.dataFolder = dataFolder;
         

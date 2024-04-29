@@ -16,7 +16,7 @@ public class MineBombsConfigData
 	 * data.
 	 * </p>
 	 */
-	public static final int MINE_BOMB_DATA_FORMAT_VERSION = 2;
+	public static final int MINE_BOMB_DATA_FORMAT_VERSION = 3;
 	
 	private int dataFormatVersion = 0;
 	

@@ -175,7 +175,8 @@ public class MineLinerBuilder {
 		
 	}
 	
-	public MineLinerBuilder( Mine mine, Edges edge, LinerPatterns pattern, boolean isForced ) {
+	public MineLinerBuilder( Mine mine, Edges edge, LinerPatterns pattern,
+					boolean isForced, boolean useTracer ) {
 		super();
 		
 		this.pattern3d = new ArrayList<>();
@@ -193,10 +194,18 @@ public class MineLinerBuilder {
 		this.isForced = isForced;
 		
 		if ( pattern != null ) {
-			mine.enableTracer( MineResetType.clear );
+			if ( useTracer ) {
+				
+				mine.enableTracer( MineResetType.clear );
+			}
 			
 			generatePattern( edge );
 		}
+	}
+	
+	public MineLinerBuilder( Mine mine, Edges edge, LinerPatterns pattern, boolean isForced ) {
+		this( mine, edge, pattern, isForced, true );
+
 	}
 	
 	private void generatePattern( Edges edge ) {

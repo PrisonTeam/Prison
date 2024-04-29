@@ -262,6 +262,13 @@ public class AutoFeaturesFileConfig {
 				permissionAutoSmelt(permissions, "prison.automanager.smelt"),
 				permissionAutoBlock(permissions, "prison.automanager.block"),
 			
+				permissionAuto__readme(permissions, "If permmissions are enabled, of which they are by default, " + 
+										"and 'isAutoFeaturesEnabled' is enabled, then all OPs will automatically " +
+										"enable auto pickup, auto smelt, and auto block because bukkit will always " +
+										"test 'true' for any permmission when OP'd. There is no way around this, " +
+										"other than just turning off these perms, which is not advisable because " +
+										"players should not be playing as OP'd. To disable these perms, then " +
+										"use a value of 'disable'."),
 				
 			lore(options),
 			

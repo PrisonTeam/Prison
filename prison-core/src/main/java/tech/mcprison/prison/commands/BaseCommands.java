@@ -23,10 +23,10 @@ public abstract class BaseCommands
 	}
 	
 
-	public Player getPlayer( CommandSender sender ) {
-		Optional<Player> player = Prison.get().getPlatform().getPlayer( sender.getName() );
-		return player.isPresent() ? player.get() : null;
-	}
+//	public Player getPlayer( CommandSender sender ) {
+//		Optional<Player> player = Prison.get().getPlatform().getPlayer( sender.getName() );
+//		return player.isPresent() ? player.get() : null;
+//	}
     
     /**
      * <p>Gets a player by name.  If the player is not online, then try to get them from 

@@ -146,6 +146,11 @@ public class SpigotPlayerPrestigesGUI
         PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), 
         				guiConfig.getString("Options.Titles.PlayerPrestigesGUI"));
 
+        
+        String guiItemNameDefaultSetting = guiConfig.getString( "Options.Ranks.GuiItemNameDefault" );
+
+
+        
         // dead code:
 //        if ( ladder == null ){
 //            Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.LadderPrestigesNotFound"));
@@ -189,6 +194,26 @@ public class SpigotPlayerPrestigesGUI
 
         for ( Rank rank : ranksDisplay )
 		{ 
+            
+            String guiItemNameDefault = 
+            		(guiItemNameDefaultSetting == null || guiItemNameDefaultSetting.trim().length() == 0) ?
+            				rank.getName() :
+            				guiItemNameDefaultSetting
+            						.replace( "{rankName}", rank.getName() );
+
+            
+            String guiItemName = guiConfig.getString( "Options.Ranks.GuiItemNames." + rank.getName() );
+
+
+            // Get Rank Name. First use 'guiItemName' if not null, then try to use 'guiItemNameDefault'
+            // if not null, and then use the rank's tag, or if that's null, then use the name:
+            String rankName =
+            		guiItemName != null ? guiItemName :
+            			guiItemNameDefault != null ? guiItemNameDefault :
+            				rank.getTag() != null ? rank.getTag() :
+            					rank.getName();
+            
+            
         	// hasAccess uses access by rank, and access by perm:
         	boolean playerHasThisRank = getRankPlayer() != null && getRankPlayer().hasAccessToRank( rank );
 
@@ -218,7 +243,10 @@ public class SpigotPlayerPrestigesGUI
 //                playerHasThisRank = false;
 //            }
 
-            Button itemrank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, 1, ranksLore, rank.getTag());
+            XMaterial hasRankMsg = playerHasThisRank ? materialHas : materialHasNot;
+            
+            Button itemrank = new Button( null, hasRankMsg, 1, ranksLore, rankName );
+            
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;

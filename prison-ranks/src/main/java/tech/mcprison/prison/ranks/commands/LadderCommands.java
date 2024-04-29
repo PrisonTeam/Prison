@@ -474,7 +474,8 @@ public class LadderCommands
 			@Arg( name = "ladderName" ) String ladderName,
 			@Arg( name = "applyRankCostMultiplier", def = "apply", 
 				description = "Applies or disables the ranks on this ladder "
-					+ "from applying the rank multiplier to the rank cost for players."
+					+ "from applying the rank multiplier to the rank cost for players. "
+					+ "Use a value of 'apply' or 'true'; anything else is treated as 'false'."
 					) 
 			String applyRankCostMultiplier )
 	{
@@ -487,7 +488,8 @@ public class LadderCommands
 		}
 		
 		boolean applyRCM = applyRankCostMultiplier != null && 
-				applyRankCostMultiplier.equalsIgnoreCase( "apply" );
+				(applyRankCostMultiplier.equalsIgnoreCase( "apply" ) || 
+						applyRankCostMultiplier.equalsIgnoreCase( "true" ) );
 		
 		boolean applyRCMOld = ladder.isApplyRankCostMultiplierToLadder();
 		
