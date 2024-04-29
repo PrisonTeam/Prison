@@ -138,6 +138,58 @@ public class PrisonCoreGuiMessages {
 				.getLocalizable( "core_gui__page_prior" )
 				.localize();
 	}
+
+	protected String guiPageToolsCloseMsg() {
+		
+		return Prison.get().getLocaleManager()
+				.getLocalizable( "core_gui__page_tools_close" )
+				.localize();
+	}
+	private String formmatPageToolsPlaceholders( String msg, int currentPage, int maxPage ) {
+		
+		int priorPage = currentPage == 1 ? 1 : currentPage - 1;
+		int nextPage = currentPage == maxPage ? maxPage : currentPage + 1;
+		
+		msg = msg.replace("{prior_page}", Integer.toString(priorPage) )
+				 .replace("{current_page}", Integer.toString(currentPage))
+				 .replace("{next_page}", Integer.toString(nextPage))
+				 .replace("{max_page}", Integer.toString(maxPage))
+				 ;
+				
+		return msg;
+	}
+	protected String guiPageToolsCloseMsg( int currentPage, int maxPage ) {
+		
+		String msg = Prison.get().getLocaleManager()
+				.getLocalizable( "core_gui__page_tools_close" )
+				.localize();
+		
+		return formmatPageToolsPlaceholders( msg, currentPage, maxPage );
+	}
+	protected String guiPageToolsPriorPageMsg( int currentPage, int maxPage ) {
+		
+		String msg = Prison.get().getLocaleManager()
+				.getLocalizable( "core_gui__page_tools_prior_page" )
+				.localize();
+		
+		return formmatPageToolsPlaceholders( msg, currentPage, maxPage );
+	}
+	protected String guiPageToolsCurrentPageMsg( int currentPage, int maxPage ) {
+		
+		String msg = Prison.get().getLocaleManager()
+				.getLocalizable( "core_gui__page_tools_current_page" )
+				.localize();
+		
+		return formmatPageToolsPlaceholders( msg, currentPage, maxPage );
+	}
+	protected String guiPageToolsNextPageMsg( int currentPage, int maxPage ) {
+		
+		String msg = Prison.get().getLocaleManager()
+				.getLocalizable( "core_gui__page_tools_next_page" )
+				.localize();
+		
+		return formmatPageToolsPlaceholders( msg, currentPage, maxPage );
+	}
 	
 	
 	protected String guiPriceMsg( Double price ) {

@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17 2024-04-28
+# 3.3.0-alpha.17 2024-04-29
+
+
+* **Initial setup of the GUI tools messages that are at the bottom of a page.**
+Setup the handling of the messages and added the messages to all of the language files.
+Support for prior, current, and next page. Also close.
 
 
 * **Update the plugin.yml and removed the permissions configs since they were generating errors (lack of a schema) and the perms and handled through the prison command handler.**
