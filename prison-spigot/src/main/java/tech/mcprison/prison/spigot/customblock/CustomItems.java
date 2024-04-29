@@ -40,6 +40,7 @@ public class CustomItems
 		if ( isRegistered()) {
 			try {
 				
+				// Check CustomItem's version:
 				if ( semVer.compareTo( getVersion(), "3.7.11" ) >= 0 ) {
 					
 					if ( CustomItemsAPI.isEnabled() ) {
@@ -51,20 +52,27 @@ public class CustomItems
 						{
 							Output.get().logInfo( "####  Custom Block: " + block.toString() );
 						}
-					}
 
-					String message = String.format(
-							"Enabling CustomItems v%s: Drops are ",
-							getVersion() );
-					
-					if ( semVer.compareTo( getVersion(), "4.1.15" ) >= 0 ) {
-						this.customItemsWrapper.setSupportsDrops( true );
-
-						Output.get().logInfo( "&7" + message + "enabled." );
+						String message = String.format(
+								"Enabling CustomItems v%s: Drops are ",
+								getVersion() );
+						
+						if ( semVer.compareTo( getVersion(), "4.1.15" ) >= 0 ) {
+							this.customItemsWrapper.setSupportsDrops( true );
+							
+							Output.get().logInfo( "&7" + message + "enabled." );
+						}
+						else {
+							Output.get().logInfo( "&c" + message + "not enabled. &3Upgrade to v4.1.15 or newer." );
+						}
 					}
 					else {
-						Output.get().logInfo( "&c" + message + "not enabled. &3Upgrade to v4.1.15 or newer." );
+						Output.get().logInfo( 
+								String.format( 
+										"CustomBlockIntegration: CustomItems: v%s is not enabled. Not loaded.",
+										getVersion() ));
 					}
+
 				}
 				else {
 					Output.get().logWarn( 

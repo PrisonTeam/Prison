@@ -14,13 +14,82 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17 2024-04-20
+# 3.3.0-alpha.17a 2024-04-29
 
 
 
+**v3.3.0-alpha.17a 2024-04-29**
+
+
+* **GUI settings: Update them to remove unused stuff.**
+
+
+* **GUI Tools messages: refined the messages and hooked them up.**
+
+
+* **Initial setup of the GUI tools messages that are at the bottom of a page.**
+Setup the handling of the messages and added the messages to all of the language files.
+Support for prior, current, and next page. Also close.
+
+
+* **Update the plugin.yml and removed the permissions configs since they were generating errors (lack of a schema) and the perms and handled through the prison command handler.**
 
 
 
+* **CustomItems: Fixed an issue when CustomItems is a plugin on the server, but the plugin fails to load.**
+Therefore the problem was fixed to allow a failed CustomItems loading to bypass being setup and loaded for prison.
+`CustomItems.isEnabled()` must exist and return a value of true before the integration is enabled.
+
+
+* **XSeries XMaterials: Update to XSeries v9.10.0 from v9.9.0.**
+Had issues with case sensitivity when using `valueOf()`, which was changed to `matchXMaterial().orElse(null)` which resolves a few issues.
+XMaterials v9.10.0 sets up support for spigot 1.20.5. There may be more changes as spigot stabilizes.
+The issue with using `valueOf("green_wool")` would not find any matches since the enum case must match the string value exactly.  So `valueOf("GREEN_WOOL")` would have worked.  This was fixed to help eliminate possible issues with configuring the server.
+
+
+* **Auto features: normal drop processing: Added a new feature to check inventory for being full, and if it is, then display the messages.**
+
+
+
+* **Auto features: Inventory full chat notification: bug fix.  This fixes using the wrong player object.**
+It now use prison's player object so the color codes are properly translated.
+
+
+* **Placeholders: bug fix: When using a search from the console which included a player name, it was generating an invalid cast to a SpigotPlayer object when it wasn't related to that class due to the player being offline.**
+
+
+* **GUI: ranks and mines: setup and enable a new default access block type that can be used if that rank or mine  has not been specifically specified.**
+
+
+* **GUI: tool bar's prior page and next page: Suppress the page buttons if there is only one page worth of gui content. **
+
+
+* **GUI: Player ranks: Fixed a bug where clicking on a rank in the player's gui was trying to run an empty command, which was generating an invalid command error.**
+Ignores the command running if the command is either null or blank.
+
+
+
+* **Update to plugin.yml since some soft dependencies were missing.**
+
+
+* **Economies: fixed the display of too many economy related messages, including eliminating logging of messages for offline players.**
+The vault economy check for offline players, will now only show one informational message if a player is not setup in the economy.
+
+
+* **GUI Player ranks: The setting for Options.Ranks.MaterialType.NoRankAccess was not hooked up properly so it was not really working.**
+The config creation was wrong.  Also fixed the code that was generating the gui.
+
+
+* **RankPlayer and topn ranking: This may not have an impact overall, but for both the default and prestiges ladders, they are defaulting to a value of -1 when performing a comparison between players.**
+
+
+* **Update privatebin-java-api to a newer release that now does a better job with a failure to use the correct protocol.**
+It identifies what TLS version is being used, and if TLSv1.3 is missing, then it will indicate that the java version needs to be updated.
+As a fallback, if the privatebin cannot be used, it is now using the older paste.helpch.at service.  But if it does, the resulting documents are not purged and not encrypted.
+
+
+* **Economy: EdPrison's economy. Added support for use of EdPrison's economy and custom currencies.**
+This will allow prison to use EdPrison's economy does not also use another established economy that is accessible through vault, or multi-currency.
 
 
 

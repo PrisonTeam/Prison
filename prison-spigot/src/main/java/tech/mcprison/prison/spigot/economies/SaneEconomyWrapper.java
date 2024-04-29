@@ -29,7 +29,7 @@ public class SaneEconomyWrapper
     	try {
     		EconomablePlayer p = toEconomablePlayer(player);
     		
-    		if ( !economyManager.accountExists( p ) ) {
+    		if ( p == null || !economyManager.accountExists( p ) ) {
         		player.sendMessage( "Economy Error: You don't have an account.");
         	}
         	else {
@@ -49,7 +49,7 @@ public class SaneEconomyWrapper
     	try {
     		EconomablePlayer p = toEconomablePlayer(player);
     		
-    		if ( !economyManager.accountExists( p ) ) {
+    		if ( p == null || !economyManager.accountExists( p ) ) {
         		player.sendMessage( "Economy Error: You don't have an account.");
         	}
         	else {

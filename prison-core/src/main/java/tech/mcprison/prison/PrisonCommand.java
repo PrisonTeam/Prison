@@ -1058,6 +1058,17 @@ public class PrisonCommand
     				afw.isBoolean( AutoFeatures.autoBlockEnabled ));
     		
     		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.normalDrop.handleNormalDropsEvents %s", 
+    				afw.isBoolean( AutoFeatures.handleNormalDropsEvents ));
+    		display.addText( "&b   options.normalDrop.normalDropSmelt %s", 
+    				afw.isBoolean( AutoFeatures.normalDropSmelt ));
+    		display.addText( "&b   options.normalDrop.normalDropSmelt %s", 
+    				afw.isBoolean( AutoFeatures.normalDropSmelt ));
+    		display.addText( "&b   options.normalDrop.normalDropCheckForFullInventory %s", 
+    				afw.isBoolean( AutoFeatures.normalDropCheckForFullInventory ));
+    		
+    		
     		
     		display.addText( "&b " );
     		display.addText( "&b   options.general.isCalculateDurabilityEnabled %s", 

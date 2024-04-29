@@ -2381,6 +2381,11 @@ public class SpigotPlatform
 		    		(afw.isBoolean( AutoFeatures.normalDropBlock ) ? "&2Enabled" : "&cDisabled" ),
 		    		(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
     		
+    		results.add( String.format("%s.   Normal Drop Check for Full Inventory:&b %s", 
+    				(isAutoFeaturesEnabled ? "+" : ""), 
+    				(afw.isBoolean( AutoFeatures.normalDropCheckForFullInventory ) ? "&2Enabled" : "&cDisabled" ),
+    				(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
+    		
     		
     		
     		results.add( " " );

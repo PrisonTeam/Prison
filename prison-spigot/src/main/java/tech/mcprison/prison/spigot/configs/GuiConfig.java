@@ -227,8 +227,15 @@ public class GuiConfig extends SpigotConfigComponents{
         	conf.set("Options.Mines.MaterialType.NoMineAccess", noMineAccess );
         	changeCount++;
         }
+        if ( conf.get( "Options.Mines.MaterialType.HasMineAccess" ) == null ) {
+        	
+        	String hasMineAccess = XMaterial.COAL_ORE.name();
+        	
+        	conf.set("Options.Mines.MaterialType.HasMineAccess", hasMineAccess );
+        	changeCount++;
+        }       
         
-        
+
         
         if ( conf.get( "Options.Ranks.MaterialType" ) == null ) {
         	
@@ -256,11 +263,35 @@ public class GuiConfig extends SpigotConfigComponents{
         		changeCount++;
         	}
         }
-        else if ( conf.get( "Options.Ranks.MaterialType.NoMineAccess" ) == null ) {
+        else if ( conf.get( "Options.Ranks.MaterialType.NoRankAccess" ) == null ) {
         	
-        	String noMineAccess = XMaterial.REDSTONE_BLOCK.name();
+        	String noRankAccess = XMaterial.REDSTONE_BLOCK.name();
         	
-        	conf.set("Options.Ranks.MaterialType.NoMineAccess", noMineAccess );
+        	conf.set("Options.Ranks.MaterialType.NoRankAccess", noRankAccess );
+        	changeCount++;
+        }
+        if ( conf.get( "Options.Ranks.MaterialType.HasRankAccess" ) == null ) {
+        	
+        	String hasRankAccess = XMaterial.TRIPWIRE_HOOK.name();
+        	
+        	conf.set("Options.Ranks.MaterialType.HasRankAccess", hasRankAccess );
+        	changeCount++;
+        }
+        
+        // The following is an error and should be removed if it is found:
+        if ( conf.get( "Options.Ranks.MaterialType.NoMineAccess" ) == null ) {
+
+        	conf.set("Options.Ranks.MaterialType.NoMineAccess", null );
+        	changeCount++;
+        }
+        if ( conf.get( "Options.Ranks.Item_gotten_rank" ) == null ) {
+        	
+        	conf.set("Options.Ranks.Item_gotten_rank", null );
+        	changeCount++;
+        }
+        if ( conf.get( "Options.Ranks.Item_not_gotten_rank" ) == null ) {
+        	
+        	conf.set("Options.Ranks.Item_not_gotten_rank", null );
         	changeCount++;
         }
         
@@ -355,7 +386,7 @@ public class GuiConfig extends SpigotConfigComponents{
         dataConfig("Options.Ranks.Permission_GUI_Enabled", false);
         dataConfig("Options.Ranks.Permission_GUI","prison.gui.ranks");
         dataConfig("Options.Ranks.Item_gotten_rank","TRIPWIRE_HOOK");
-        dataConfig("Options.Ranks.Item_not_gotten_rank","REDSTONE_BLOCK");
+//        dataConfig("Options.Ranks.Item_not_gotten_rank","REDSTONE_BLOCK");
         dataConfig("Options.Ranks.Enchantment_effect_current_rank", true);
         dataConfig("Options.Ranks.Ladder","default");
         dataConfig("Options.Ranks.Number_of_Rank_Player_GUI",  false);

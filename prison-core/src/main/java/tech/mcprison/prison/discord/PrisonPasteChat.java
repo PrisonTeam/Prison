@@ -85,7 +85,13 @@ public class PrisonPasteChat {
 	}
 	
 	public String post( String text ) {
-		return post( text, false, false );
+		String results = post( text, false, false );
+		
+		if ( results == null ) {
+			results = postFailureBackup( text, false, false );
+		}
+		
+		return results;
 	}
 
 	/**
@@ -98,11 +104,18 @@ public class PrisonPasteChat {
 	 * @return
 	 */
 	public String postKeepColorCodes( String text ) {
-		return post( text, false, true );
+		String results = post( text, false, true );
+		
+		if ( results == null ) {
+			results = postFailureBackup( text, false, true );
+		}
+		
+		return results;
 	}
 	
-	public String post( String text, boolean raw, boolean keepColorCodes ) {
+	private String post( String text, boolean raw, boolean keepColorCodes ) {
 		String results = null;
+		String src = "privateBin";
 		
 		try {
 			
@@ -113,14 +126,17 @@ public class PrisonPasteChat {
 			String service = Prison.get().getPlatform()
 							.getConfigString( "prison-support.submit-service", "PRIVATEBIN-NET" );
 
+			
 			switch ( service ) {
 			case "PRIVATEBIN-NET":
 				
+				src = "privateBin";
 				results = postPrivateBin( cleanedText, raw );
 				break;
 
 			case "PASTE-HELPCHAT":
 				
+				src = "paste.helpch.at";
 				results = postPasteHelpchAt( cleanedText, raw );
 				break;
 				
@@ -130,7 +146,36 @@ public class PrisonPasteChat {
 			
 		}
 		catch (Exception e) {
-			Output.get().logInfo( "PrisonPasteChat: Failed to paste to paste.helpch.at. " +
+			Output.get().logInfo( "PrisonPasteChat: Failed to paste to " + src + ". " +
+					"You'll have to manually paste the data. [%s]", e.getMessage() );
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * This will "force" the use of the paste.helpch.at service if the privatebin fails.
+	 * 
+	 * @param text
+	 * @param raw
+	 * @param keepColorCodes
+	 * @return
+	 */
+	private String postFailureBackup( String text, boolean raw, boolean keepColorCodes ) {
+		String results = null;
+		
+		try {
+			
+			String cleanedText = cleanText( text, keepColorCodes );
+			
+			cleanedText = addHeaders( cleanedText );
+			
+			results = postPasteHelpchAt( cleanedText, raw );
+			
+		}
+		catch (Exception e) {
+			Output.get().logInfo( "PrisonPasteChat: postFailureBackup: "
+					+ "Failed to paste to paste.helpch.at. " +
 					"You'll have to manually paste the data. [%s]", e.getMessage() );
 		}
 		
@@ -247,6 +292,7 @@ public class PrisonPasteChat {
                 .setExpire( getExpire( expire ) )
                 .setPasteFormat( PasteFormat.PLAINTEXT )
                 .setUserPassword( password )
+//                .setCompression( Compression.GZIP)
 //                .removeIps()
                 .encrypt();
 

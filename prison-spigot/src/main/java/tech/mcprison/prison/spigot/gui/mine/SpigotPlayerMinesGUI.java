@@ -114,7 +114,7 @@ public class SpigotPlayerMinesGUI
         else {
         	// Validate that it is valid, otherwise use redstone_block:
         	try {
-				XMaterial.valueOf( noMineAccessBlockType );
+				XMaterial.matchXMaterial( noMineAccessBlockType ).orElse(null);
 			} 
         	catch (Exception e) {
 				noMineAccessBlockType = XMaterial.REDSTONE_BLOCK.name();
@@ -139,7 +139,7 @@ public class SpigotPlayerMinesGUI
         	mineLore.addAll( mineLore2 );
 
 
-            XMaterial xMat = XMaterial.valueOf( noMineAccessBlockType );
+            XMaterial xMat = XMaterial.matchXMaterial( noMineAccessBlockType ).orElse(null);
 //            XMaterial xMat = XMaterial.REDSTONE_BLOCK;
             
             // Bug: Cannot safely use Material due to variants prior to bukkit v1.13:
@@ -190,7 +190,22 @@ public class SpigotPlayerMinesGUI
             	
             	
             	// Default to COAL_ORE since the player has access to the mine:
-            	xMat = XMaterial.COAL_ORE;
+            	{
+            		xMat = XMaterial.COAL_ORE;
+
+            		String defaultMineAccessXmat = guiConfig.getString(
+            									"Options.Mines.MaterialType.HasMineAccess","COAL_ORE");
+            		try {
+						XMaterial xMatTemp = SpigotUtil.getXMaterial( defaultMineAccessXmat );
+						if ( xMatTemp != null ) {
+							xMat = xMatTemp;
+						}
+					} 
+            		catch (Exception e) {
+					}
+            	}
+            	// xMat = XMaterial.COAL_ORE;
+
             	
             	// The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
             	// based upon the XMaterial enumeration name, or supported past names.

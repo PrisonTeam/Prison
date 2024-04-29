@@ -537,6 +537,7 @@ public abstract class AutoManagerFeatures
 		boolean configNormalDrop = isBoolean( AutoFeatures.handleNormalDropsEvents );
 		boolean configNormalDropSmelt = isBoolean( AutoFeatures.normalDropSmelt );
 		boolean configNormalDropBlock = isBoolean( AutoFeatures.normalDropBlock );
+		boolean configNormalDropCheckForFullInventory = isBoolean( AutoFeatures.normalDropCheckForFullInventory );
 		
 		
 		boolean limit2minesPickup = isBoolean( AutoFeatures.pickupLimitToMines );
@@ -627,6 +628,9 @@ public abstract class AutoManagerFeatures
 						.append( "] " )
 						.append( "normalDropBlock[" )
 						.append( configNormalDropBlock ? "enabled" : "disabled" )
+						.append( "] " )
+						.append( "normalDropCheckForFullInventory[" )
+						.append( configNormalDropCheckForFullInventory ? "enabled" : "disabled" )
 						.append( "] " )
 						.append( ")" );
 					
@@ -1277,6 +1281,22 @@ public abstract class AutoManagerFeatures
 //			}
 		}
 		
+		
+		if ( isBoolean( AutoFeatures.normalDropCheckForFullInventory ) ) {
+			pmEvent.getDebugInfo().append( "(normBlocking: checkForFullInventory: " );
+			
+			if ( pmEvent.getSpigotPlayer().isInventoryFull() ) {
+				pmEvent.getDebugInfo().append( "true)" );
+				
+				notifyPlayerThatInventoryIsFull( pmEvent.getPlayer() );
+			}
+			else {
+				
+				pmEvent.getDebugInfo().append( "false)" );
+			}
+			
+		}
+		
 		return count;
 	}
 
@@ -1711,7 +1731,7 @@ public abstract class AutoManagerFeatures
 		}
 		else {
 			
-			player.sendMessage( message );
+			(new SpigotPlayer( player )).sendMessage( message );
 		}
 
 		// holographic display for showing full inventory does not work well.

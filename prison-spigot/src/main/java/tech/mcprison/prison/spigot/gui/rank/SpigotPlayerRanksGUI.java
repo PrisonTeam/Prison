@@ -161,10 +161,13 @@ public class SpigotPlayerRanksGUI
         
         String guiItemNameDefaultSetting = guiConfig.getString( "Options.Ranks.GuiItemNameDefault" );
 
-        
+
+
         // Not sure how you want to represent this:
-        XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
-        XMaterial materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+        String materialHasStr = guiConfig.getString("Options.Ranks.MaterialType.HasRankAccess", "TRIPWIRE_HOOK");
+        XMaterial materialHas = XMaterial.matchXMaterial( materialHasStr ).orElse(null);
+        XMaterial materialHasNot = XMaterial.matchXMaterial(
+        						guiConfig.getString("Options.Ranks.MaterialType.NoRankAccess")).orElse(null);
 
         
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
@@ -218,7 +221,7 @@ public class SpigotPlayerRanksGUI
         	String materialTypeStr = guiConfig.getString("Options.Ranks.MaterialType." + rank.getName());
         	XMaterial materialType =
         			materialTypeStr == null ? null :
-        				XMaterial.valueOf( materialTypeStr.toUpperCase() );
+        				XMaterial.matchXMaterial( materialTypeStr ).orElse(null);
         	
         	materialType = 
         			!playerHasThisRank ? materialHasNot : 
@@ -308,9 +311,11 @@ public class SpigotPlayerRanksGUI
             // Before adding the button, add an NBT tag for the command and rank name:
 //			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
 //			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemRank.getButtonItem());
-			PrisonNBTUtil.setNBTBoolean( itemRank.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, true);
+			PrisonNBTUtil.setNBTBoolean( itemRank.getButtonItem(), 
+							SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, true);
 //			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, noCommmand );
-			PrisonNBTUtil.setNBTString( itemRank.getButtonItem(), SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_RANK_NAME, rank.getName() );
+			PrisonNBTUtil.setNBTString( itemRank.getButtonItem(), 
+							SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_RANK_NAME, rank.getName() );
 			
             
             gui.addButton(itemRank);

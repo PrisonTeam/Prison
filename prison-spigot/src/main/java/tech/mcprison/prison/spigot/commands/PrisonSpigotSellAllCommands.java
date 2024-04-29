@@ -749,7 +749,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         try {
             XMaterial blockAdd;
             try {
-                blockAdd = XMaterial.valueOf(itemID);
+                blockAdd = XMaterial.matchXMaterial(itemID).orElse(null);
             } catch (IllegalArgumentException ex){
                 Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
                 return;
@@ -854,7 +854,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         try {
             XMaterial blockAdd;
             try{
-                blockAdd = XMaterial.valueOf(itemID);
+                blockAdd = XMaterial.matchXMaterial(itemID).orElse(null);
             } catch (IllegalArgumentException ex){
                 Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
                 return;
@@ -913,7 +913,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     	try {
     		XMaterial blockAdd;
     		try {
-    			blockAdd = XMaterial.valueOf(itemID);
+    			blockAdd = XMaterial.matchXMaterial(itemID).orElse(null);
     		} catch (IllegalArgumentException ex){
     			Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
     			return;
@@ -1555,7 +1555,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         try {
             XMaterial blockAdd;
             try{
-                blockAdd = XMaterial.valueOf(itemID);
+                blockAdd = XMaterial.matchXMaterial(itemID).orElse(null);
             } catch (IllegalArgumentException ex){
                 Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
                 return;

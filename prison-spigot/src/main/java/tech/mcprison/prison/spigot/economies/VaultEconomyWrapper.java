@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.economies;
 
 import java.text.DecimalFormat;
+import java.util.HashSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -31,8 +32,12 @@ public class VaultEconomyWrapper
 	
 	private boolean preV1dot4 = false;
 	
+	private final HashSet<Player> hasNoAccount;
+	
 	public VaultEconomyWrapper(String providerName ) {
 		super();
+		
+		this.hasNoAccount = new HashSet<>();
 		
 		this.providerName = providerName;
 		
@@ -55,6 +60,40 @@ public class VaultEconomyWrapper
 		}
 	}
 	
+	/**
+	 * <p>Checks if the player has an account, if they do not, then they are 
+	 * added to the HashSet and the informational message about no account
+	 * will only be shown once.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public boolean hasAccount( Player player ) {
+		boolean hasAccount = false;
+		
+		OfflinePlayer oPlayer = getOfflinePlayer( player );
+		
+		try {
+			hasAccount = economy.hasAccount( oPlayer );
+		} 
+		catch (Exception e) {
+			
+			if ( !hasNoAccount.contains(player) ) {
+				Output.get().logInfo( 
+						String.format( 
+								"Vault economy: Player %s does not have an econ account. "
+										+ "Informational. Not a concern. Message: [%s]",
+										player.getName(), e.getMessage()
+								));
+				
+				hasNoAccount.add(player);
+			}
+		}
+		
+    	
+    	return hasAccount;
+	}
 	
 	public String getProviderName() {
 		return providerName;
@@ -111,7 +150,9 @@ public class VaultEconomyWrapper
 	public double getBalance(Player player) {
     	double results = 0;
  
-    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    	boolean hasAccount = hasAccount(player);
+    	
+    	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
     	}
     	else 
@@ -159,7 +200,9 @@ public class VaultEconomyWrapper
 	public boolean setBalance(Player player, double amount) {
     	boolean results = false;
 
-    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    	boolean hasAccount = hasAccount(player);
+
+    	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
     	}
     	else 
@@ -199,11 +242,14 @@ public class VaultEconomyWrapper
 	public boolean addBalance(Player player, double amount) {
     	boolean results = false;
     	
+    	boolean hasAccount = hasAccount(player);
+    	
     	if ( amount < 0 ) {
     		results = removeBalance( player, amount );
     	}
     	
-    	else if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    	
+    	else if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
     	}
     	else if (economy != null) {
@@ -254,7 +300,9 @@ public class VaultEconomyWrapper
     		amount *= -1;
     	}
     	
-    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    	boolean hasAccount = hasAccount(player);
+
+    	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
     	}
     	else 
@@ -304,7 +352,9 @@ public class VaultEconomyWrapper
 	public boolean canAfford(Player player, double amount) {
     	boolean results = false;
     	
-    	if ( economy != null && !economy.hasAccount( getOfflinePlayer( player ) ) ) {
+    	boolean hasAccount = hasAccount(player);
+
+    	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
     	}
     	else 

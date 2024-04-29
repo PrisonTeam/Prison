@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
@@ -521,7 +522,10 @@ public class SpigotPlaceholders
 				
 				String value = processPlaceholderHavePlaceholderKey( identifier );
 				
-				if ( ignorePlayerInDisabledWorlds( (SpigotPlayer) identifier.getPlayer() )) {
+				Player player = identifier.getPlayer();
+				
+				if ( player instanceof SpigotPlayer && 
+							ignorePlayerInDisabledWorlds( (SpigotPlayer) player )) {
 					value = "";
 				}
 				

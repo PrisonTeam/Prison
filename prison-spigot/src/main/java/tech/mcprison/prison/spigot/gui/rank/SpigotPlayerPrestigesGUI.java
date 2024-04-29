@@ -171,12 +171,14 @@ public class SpigotPlayerPrestigesGUI
 
         // Not sure how you want to represent this:
         try {
-            materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
+            materialHas = XMaterial.matchXMaterial(
+            		guiConfig.getString("Options.Ranks.Item_gotten_rank")).orElse(null);
         } catch (IllegalArgumentException ignored){
             materialHas = XMaterial.TRIPWIRE_HOOK;
         }
         try {
-            materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+            materialHasNot = XMaterial.matchXMaterial(
+            		guiConfig.getString("Options.Ranks.Item_not_gotten_rank")).orElse(null);
         } catch (IllegalArgumentException ignored){
             materialHasNot = XMaterial.REDSTONE_BLOCK;
         }
