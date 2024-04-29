@@ -235,6 +235,7 @@ public class GuiConfig extends SpigotConfigComponents{
         	changeCount++;
         }       
         
+
         
         if ( conf.get( "Options.Ranks.MaterialType" ) == null ) {
         	
@@ -274,6 +275,23 @@ public class GuiConfig extends SpigotConfigComponents{
         	String hasRankAccess = XMaterial.TRIPWIRE_HOOK.name();
         	
         	conf.set("Options.Ranks.MaterialType.HasRankAccess", hasRankAccess );
+        	changeCount++;
+        }
+        
+        // The following is an error and should be removed if it is found:
+        if ( conf.get( "Options.Ranks.MaterialType.NoMineAccess" ) == null ) {
+
+        	conf.set("Options.Ranks.MaterialType.NoMineAccess", null );
+        	changeCount++;
+        }
+        if ( conf.get( "Options.Ranks.Item_gotten_rank" ) == null ) {
+        	
+        	conf.set("Options.Ranks.Item_gotten_rank", null );
+        	changeCount++;
+        }
+        if ( conf.get( "Options.Ranks.Item_not_gotten_rank" ) == null ) {
+        	
+        	conf.set("Options.Ranks.Item_not_gotten_rank", null );
         	changeCount++;
         }
         
