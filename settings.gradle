@@ -17,7 +17,20 @@
  */
 
 
+
+/*
+ * NOTE: Gradle v8.x will no longer auto provision tool chains. The provisioning 
+ *       tools must be explicitly specificed.  This can be accomplished with 
+ *       the use of plugins to help control the toolchainManagement.
+ * https://docs.gradle.org/current/userguide/toolchains.html#sub:download_repositories
+ */
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+
 rootProject.name = 'prison'
+
 include 'prison-core'
 include 'prison-spigot'
 /* include 'prison-sponge' */
@@ -32,3 +45,9 @@ include 'prison-worldguard7'
 /*
 include 'prison-worldguard8'
 */
+include 'prison-spigot-alt'
+
+
+
+
+
