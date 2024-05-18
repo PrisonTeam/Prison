@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17a 2024-05-18
 
 
+* **Upgrade spiget from v1.4.2 to v1.4.6**
+  Was using a jar with v1.4.2 due to their repo going down frequently.
+  Switched back to pulling through maven and got rid of jar.
+  
+
 * **Upgrade gradle from v7.3.3 to v7.6.4**
   Upgraded from: v7.3.3 -> v7.4 -> v7.4.1 -> v7.4.2 
   		-> v7.5 -> v7.5.1 -> v7.6 -> v7.6.1 -> v7.6.2 -> v7.6.3 -> v7.6.4\

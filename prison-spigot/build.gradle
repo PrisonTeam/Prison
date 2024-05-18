@@ -105,14 +105,19 @@ dependencies {
 //    implementation 'org.bstats:bstats-bukkit:2.2.1'
     
     
-    // Repo keeps going down:
+    // NOTE: A couple of years ago, their Repo kept going down so switched to use a jar:
+    implementation 'org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT'
     //implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
+  	
   
     
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
+
+	// https://mvnrepository.com/artifact/com.google.code.gson/gson
+	implementation 'com.google.code.gson:gson:2.10.1'
 
 
 /*
@@ -209,11 +214,14 @@ dependencies {
 
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
-    			exclude: ['Spiget_v1.4.2.prison-build.jar',
+    			exclude: [
+    					//'spiget-update_bukkit-1.4.6-20220613.151608-1',
+    					// 'Spiget_v1.4.2.prison-build.jar',
     					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     implementation fileTree(dir: 'lib', 
-    			include: ['Spiget_v1.4.2.prison-build.jar',
+    			include: [
+    					//'spiget-update_bukkit-1.4.6-20220613.151608-1',
     					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     					
@@ -253,18 +261,26 @@ processResources {
 
 shadowJar {
     dependencies {
+        include(project(':prison-core'))
+        include(project(':prison-mines'))
+        include(project(':prison-ranks'))
+        include(project(':prison-sellall'))
+
         include(dependency('org.apache.commons:commons-lang3:3.12.0'))
 
         // https://mvnrepository.com/artifact/com.google.code.gson/gson
-		include(dependency('com.google.code.gson:gson:2.10.1'))
+		include(dependency('com.google.code.gson:gson:'))
         //include(dependency('com.google.code.gson:gson:2.8.6'))
                 
-        include(dependency('org.bstats:bstats-base:3.0.2'))
-        include(dependency('org.bstats:bstats-bukkit:3.0.2'))
+        include(dependency('org.bstats:bstats-base:'))
+        include(dependency('org.bstats:bstats-bukkit:'))
+//        include(dependency('org.bstats:bstats-base:3.0.2'))
+//        include(dependency('org.bstats:bstats-bukkit:3.0.2'))
 //        include(dependency('org.bstats:bstats-base:2.2.1'))
 //        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
 
-        include(dependency('me.clip:placeholderapi:2.11.2'))
+        //include(dependency('me.clip:placeholderapi:'))
+        //include(dependency('me.clip:placeholderapi:2.11.2'))
         //include(dependency('me.clip:placeholderapi:2.10.9'))
 
 		// https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
@@ -275,21 +291,22 @@ shadowJar {
         include(dependency('de.tr7zw:item-nbt-api:'))
         //include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         
-        //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
+        include(dependency('org.inventivetalent.spiget-update:bukkit:'))
+        //include(dependency('org.inventivetalent.spiget-update:core:'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
         
-        include(project(':prison-core'))
-        include(project(':prison-mines'))
-        include(project(':prison-ranks'))
-        include(project(':prison-sellall'))
     }
 
-    relocate 'org.bstats', 'tech.mcprison.prison.bstats'
+	// Relocate all libs to the tech.mcprison.prison.libs package:
+    relocate 'org.bstats', 'tech.mcprison.prison.libs.bstats'
+    
+    relocate 'com.google.gson', 'tech.mcprison.prison.libs.gson'
 
-    relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
-    relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
+    relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.libs.spiget'
+    
+    relocate 'com.cryptomorin', 'tech.mcprison.prison.libs.cryptomorin'
 
-	relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.nbtapi'
+	relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.libs.nbtapi'
 //	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
