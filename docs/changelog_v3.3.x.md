@@ -16,6 +16,17 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.17a 2024-05-18
 
+* **Upgraded John Rengelman's shadow, a gradle plugin, from v6.1.0 to v8.1.1**
+
+ 
+
+* **Upgrade gradle from v7.6.4 to v8.7**
+  Upgraded from: v7.6.4 -> v8.0 -> v8.0.2 -> v8.1 -> v8.1.1
+  		-> v8.2 -> v8.3 -> v8.4 -> v8.5 -> v8.6 -> v8.7
+  v8.3 required a configuration change due to `org.gradle.api.plugins.BasePluginConvention` type has been deprecated and will be removed in gradle v9.x.  This is impacting the use of the `build.gradle`'s `archivesBaseNamme`.  This is being replaced by the new `base{}` configuration block.
+  v8.3 also required other config changes.
+  
+
 
 * **Upgrade spiget from v1.4.2 to v1.4.6**
   Was using a jar with v1.4.2 due to their repo going down frequently.
@@ -24,8 +35,9 @@ These change logs represent the work that has been going on within prison.
 
 * **Upgrade gradle from v7.3.3 to v7.6.4**
   Upgraded from: v7.3.3 -> v7.4 -> v7.4.1 -> v7.4.2 
-  		-> v7.5 -> v7.5.1 -> v7.6 -> v7.6.1 -> v7.6.2 -> v7.6.3 -> v7.6.4\
+  		-> v7.5 -> v7.5.1 -> v7.6 -> v7.6.1 -> v7.6.2 -> v7.6.3 -> v7.6.4
   Preparing for Gradle v8.x
+  Around v7.5.1 required a change to auto provisioning
   
 
 **v3.3.0-alpha.17a 2024-04-29**

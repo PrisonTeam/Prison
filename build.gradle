@@ -18,13 +18,44 @@
 import java.text.SimpleDateFormat
 import java.util.Date
 
-apply plugin: 'java'
+
+//apply plugin: 'com.github.johnrengelman.shadow'
+//apply plugin: 'java'
+
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        
+    }
+
+    dependencies {
+        classpath 'com.github.johnrengelman:shadow:8.1.1'
+    }
+
+}
+
+plugins {
+
+	id 'java'
+	id 'base'
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+
+base {
+	archivesName = 'Prison'
+}
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
 
 ext.targetArchiveClassifier = 'Java1.8'
 //ext.targetArchiveClassifier = 'Java16'
+
+
 
 
 // Lists all versions of java that are available to the toolchain
@@ -85,29 +116,18 @@ Example: The spigot build artifact is:
 ==========================================================================
 """
 
-buildscript {
 
-    repositories {
-        mavenCentral()
-        
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
-    }
-
-}
 
 subprojects {
 
+
     apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
 //    apply plugin: 'maven'
 //    apply plugin: 'maven-publish'
-    apply plugin: 'com.github.johnrengelman.shadow'
 
 
-    archivesBaseName = 'Prison'
+//    archivesBaseName = 'Prison'
 
     
     group = 'tech.mcprison.prison'
@@ -121,12 +141,12 @@ subprojects {
         mavenCentral()
        // maven { url "https://maven.sk89q.com/repo/" }
 
-        maven { 
-        	url "https://mvnrepository.com/artifact/org.apache.commons/commons-lang3" 
-        	content {
-    			includeGroup 'org.apache.commons'
-    		}
-        }
+        //maven { 
+        	//url "https://mvnrepository.com/artifact/org.apache.commons/commons-lang3" 
+        	//content {
+    		//	includeGroup 'org.apache.commons'
+    		//}
+        //}
 
         maven { 
         	url "https://mvnrepository.com/artifact" 

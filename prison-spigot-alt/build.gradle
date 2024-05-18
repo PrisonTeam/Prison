@@ -16,24 +16,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-plugins {
-	id 'java'
-	id 'base'
-}
-
-//apply plugin: 'java'
-
-base {
-	archivesName = 'Prison'
-}
-
 group 'tech.mcprison'
+
+apply plugin: 'java'
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
 
-//sourceCompatibility = 1.8
+
+// NOTE: The sourceCompatibility will be removed in gradle v9.x.
+//       Not going to worry about this, since this sub-proect is not being used.
+//		 More info:
+//			https://docs.gradle.org/8.3/userguide/upgrading_version_8.html#java_convention_deprecation
+//sourceCompatibility = 17
 
 repositories {
     mavenCentral()
@@ -103,31 +98,27 @@ dependencies {
     implementation project(':prison-mines')
     implementation project(':prison-ranks')
     implementation project(':prison-sellall')
+    implementation project(':prison-spigot')
 
   //  implementation project(':prison-worldguard6')
 
 
 	// https://mvnrepository.com/artifact/org.bstats/bstats-base
 	// https://mvnrepository.com/artifact/org.bstats/bstats-bukkit
-    implementation 'org.bstats:bstats-base:3.0.2'
-    implementation 'org.bstats:bstats-bukkit:3.0.2'
+//    implementation 'org.bstats:bstats-base:3.0.2'
+//    implementation 'org.bstats:bstats-bukkit:3.0.2'
 //    implementation 'org.bstats:bstats-base:2.2.1'
 //    implementation 'org.bstats:bstats-bukkit:2.2.1'
     
     
-    // NOTE: A couple of years ago, their Repo kept going down so switched to use a jar:
-    implementation 'org.inventivetalent.spiget-update:bukkit:1.4.6-SNAPSHOT'
+    // Repo keeps going down:
     //implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
-  	
   
     
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation 'org.apache.commons:commons-lang3:3.12.0'
+//	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-
-	// https://mvnrepository.com/artifact/com.google.code.gson/gson
-	implementation 'com.google.code.gson:gson:2.10.1'
 
 
 /*
@@ -151,24 +142,21 @@ dependencies {
 
 
 
-    compileOnly 'me.clip:placeholderapi:2.11.5'
+//    compileOnly 'me.clip:placeholderapi:2.11.5'
     //compileOnly 'me.clip:placeholderapi:2.11.2'
     //compileOnly 'me.clip:placeholderapi:2.10.9'
     
     // Repo may be hosted: https://hub.spigotmc.org/nexus/content/groups/public/
     // But do not see v5.0
-    compileOnly 'net.luckperms:api:5.0'
+//    compileOnly 'net.luckperms:api:5.0'
     
     // https://mvnrepository.com/artifact/me.lucko.luckperms/luckperms-api
-    compileOnly 'me.lucko.luckperms:luckperms-api:4.4'
+//    compileOnly 'me.lucko.luckperms:luckperms-api:4.4'
     
     
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:9.10.0'
-//	implementation 'com.github.cryptomorin:XSeries:9.8.0'
-	//implementation 'com.github.cryptomorin:XSeries:9.4.0'
-	//implementation 'com.github.cryptomorin:XSeries:9.2.0'
+//	implementation 'com.github.cryptomorin:XSeries:9.10.0'
     
 
 
@@ -181,7 +169,7 @@ dependencies {
 	// 1.12.2-R0.1-SNAPSHOT works well:
 //    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
 	// 1.13.2 fails since deprecated functions have been removed.
-    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+//    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
 
 
 
@@ -191,8 +179,7 @@ dependencies {
 
 
 	// https://mvnrepository.com/artifact/com.github.MilkBowl/VaultAPI
-	compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
-    //compileOnly 'net.milkbowl.vault:VaultAPI:1.7.0'
+//	compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     
 //    compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT'){
 //        exclude group: 'org.spigotmc'
@@ -209,29 +196,23 @@ dependencies {
  	// https://github.com/tr7zw/Item-NBT-API/wiki/Using-Gradle
 	// https://www.spigotmc.org/resources/nbt-api.7939/
 	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-	implementation 'de.tr7zw:item-nbt-api:2.12.2'
+//	implementation 'de.tr7zw:item-nbt-api:2.12.2'
 //	implementation 'de.tr7zw:item-nbt-api:2.12.0'
-//	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.2'
-//	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
-//	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
 
 
 	// https://github.com/LoneDev6/API-ItemsAdder#-packages
 	// https://github.com/LoneDev6/API-ItemsAdder/tags
-	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
+//	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
 //	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.2.5'
 
 
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
-    			exclude: [
-    					//'spiget-update_bukkit-1.4.6-20220613.151608-1',
-    					// 'Spiget_v1.4.2.prison-build.jar',
+    			exclude: ['Spiget_v1.4.2.prison-build.jar',
     					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     implementation fileTree(dir: 'lib', 
-    			include: [
-    					//'spiget-update_bukkit-1.4.6-20220613.151608-1',
+    			include: ['Spiget_v1.4.2.prison-build.jar',
     					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     					
@@ -270,59 +251,57 @@ processResources {
 }
 
 shadowJar {
+	dependsOn(project(':prison-spigot').shadowJar)
+	
     dependencies {
-        include(project(':prison-core'))
-        include(project(':prison-mines'))
-        include(project(':prison-ranks'))
-        include(project(':prison-sellall'))
-
-        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
+ //       include(dependency('org.apache.commons:commons-lang3:'))
 
         // https://mvnrepository.com/artifact/com.google.code.gson/gson
-		include(dependency('com.google.code.gson:gson:'))
-        //include(dependency('com.google.code.gson:gson:2.8.6'))
-                
-        include(dependency('org.bstats:bstats-base:'))
-        include(dependency('org.bstats:bstats-bukkit:'))
-//        include(dependency('org.bstats:bstats-base:3.0.2'))
-//        include(dependency('org.bstats:bstats-bukkit:3.0.2'))
-//        include(dependency('org.bstats:bstats-base:2.2.1'))
-//        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
+//		include(dependency('com.google.code.gson:gson:'))
 
-        //include(dependency('me.clip:placeholderapi:'))
-        //include(dependency('me.clip:placeholderapi:2.11.2'))
-        //include(dependency('me.clip:placeholderapi:2.10.9'))
+                
+ //       include(dependency('org.bstats:bstats-base:'))
+  //      include(dependency('org.bstats:bstats-bukkit:'))
+
+
+//        include(dependency('me.clip:placeholderapi:'))
 
 		// https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-        include(dependency('com.github.cryptomorin:XSeries:'))
+//        include(dependency('com.github.cryptomorin:XSeries:'))
         
         
         // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-        include(dependency('de.tr7zw:item-nbt-api:'))
-        //include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
+//        include(dependency('de.tr7zw:item-nbt-api:'))
+
         
-        include(dependency('org.inventivetalent.spiget-update:bukkit:'))
-        //include(dependency('org.inventivetalent.spiget-update:core:'))
+        //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
         
+//        include(project(':prison-core'))
+//        include(project(':prison-mines'))
+//        include(project(':prison-ranks'))
+//        include(project(':prison-sellall'))
+//        include(project(':prison-spigot'))
     }
 
-	// Relocate all libs to the tech.mcprison.prison.libs package:
-    relocate 'org.bstats', 'tech.mcprison.prison.libs.bstats'
-    
-    relocate 'com.google.gson', 'tech.mcprison.prison.libs.gson'
-
-    relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.libs.spiget'
-    
-    relocate 'com.cryptomorin', 'tech.mcprison.prison.libs.cryptomorin'
-
-	relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.libs.nbtapi'
-//	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
-
-    //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 
 
-	archiveAppendix = ''
+
+
+    relocate 'tech.mcprison.prison', 'tech.mcprison.prison.alt'
+
+    relocate 'org.bstats', 'tech.mcprison.prison.alt.bstats'
+
+    relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.alt.spiget'
+    relocate 'com.cryptomorin', 'tech.mcprison.prison.alt.cryptomorin'
+
+	relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.alt.nbtapi'
+	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.alt.nbtapi'
+
+    //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.alt.crazyenchantments.api'
+
+
+	archiveAppendix = 'alt'
 	archiveClassifier = ''
 //	archiveClassifier = project.property('targetArchiveClassifier')
 //	archiveClassifier = 'java1.8'
@@ -330,5 +309,6 @@ shadowJar {
     
 //    minimize()
 }
+
 
 build.dependsOn(shadowJar)
