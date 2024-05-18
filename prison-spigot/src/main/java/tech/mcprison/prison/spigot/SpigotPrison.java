@@ -33,14 +33,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.inventivetalent.update.spiget.SpigetUpdate;
-import org.inventivetalent.update.spiget.UpdateCallback;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
-import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.integration.Integration;
@@ -95,7 +92,7 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.spigot.spiget.PrisonSpigetUpdateCheckTask;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
 import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsMineBombs;
@@ -889,35 +886,44 @@ public class SpigotPrison
 	/**
      * Checks to see if there is a newer version of prison that has been released.
      * It checks based upon what is deployed to spigotmc.org.
+     * 
+     * This submits a task that will check for updates about 5 seconds
+     * after prison starts up.
      */
 	private void initUpdater() {
         if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
         }
         
-//        String currentVersion = getDescription().getVersion();
-
-        SpigetUpdate updater = new SpigetUpdate(this, Prison.SPIGOTMC_ORG_PROJECT_ID);
-//        SpigetUpdate updater = new SpigetUpdate(this, 1223);
+        PrisonSpigetUpdateCheckTask updateCheck = new PrisonSpigetUpdateCheckTask();
+        updateCheck.submit();
         
-        BluesSpigetSemVerComparator aRealSemVerComparator = new BluesSpigetSemVerComparator();
-        updater.setVersionComparator( aRealSemVerComparator );
-//        updater.setVersionComparator(VersionComparator.EQUAL);
-
-        updater.checkForUpdate(new UpdateCallback() {
-            @Override
-            public void updateAvailable(String newVersion, String downloadUrl,
-                                        boolean hasDirectDownload) {
-                Alerts.getInstance().sendAlert(
-                        "&3%s is now available. &7Go to the &lSpigot&r&7 page to download the latest release with new features and fixes :)",
-                        newVersion);
-            }
-
-            @Override
-            public void upToDate() {
-                // Plugin is up-to-date
-            }
-        });
+////        String currentVersion = getDescription().getVersion();
+//
+//        SpigetUpdate updater = new SpigetUpdate(this, Prison.SPIGOTMC_ORG_PROJECT_ID);
+////        SpigetUpdate updater = new SpigetUpdate(this, 1223);
+//        
+//        
+//        BluesSpigetSemVerComparator aRealSemVerComparator = new BluesSpigetSemVerComparator();
+//        updater.setVersionComparator( aRealSemVerComparator );
+////        updater.setVersionComparator(VersionComparator.EQUAL);
+//
+//        updater.checkForUpdate( new PrisonSpigetUpdateCallback() );
+//        
+////        updater.checkForUpdate(new UpdateCallback() {
+////            @Override
+////            public void updateAvailable(String newVersion, String downloadUrl,
+////                                        boolean hasDirectDownload) {
+////                Alerts.getInstance().sendAlert(
+////                        "&3%s is now available. &7Go to the &lSpigot&r&7 page to download the latest release with new features and fixes :)",
+////                        newVersion);
+////            }
+////
+////            @Override
+////            public void upToDate() {
+////                // Plugin is up-to-date
+////            }
+////        });
     }
 
     private void initDataDir() {

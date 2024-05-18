@@ -16,6 +16,12 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.17a 2024-05-18
 
+
+* **Spiget: Updated the way prison handles spiget by now submitting a task with a 5 second delay.**
+The messages are more helpful now.
+This also moves it out of the SpigotPrison class.
+
+
 * **Upgraded John Rengelman's shadow, a gradle plugin, from v6.1.0 to v8.1.1**
 
  
