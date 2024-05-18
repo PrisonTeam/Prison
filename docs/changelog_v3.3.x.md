@@ -14,9 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17a 2024-04-29
+# 3.3.0-alpha.17a 2024-05-18
 
 
+* **Upgrade gradle from v7.3.3 to v7.6.4**
+  Upgraded from: v7.3.3 -> v7.4 -> v7.4.1 -> v7.4.2 
+  		-> v7.5 -> v7.5.1 -> v7.6 -> v7.6.1 -> v7.6.2 -> v7.6.3 -> v7.6.4\
+  Preparing for Gradle v8.x
+  
 
 **v3.3.0-alpha.17a 2024-04-29**
 
@@ -29,9 +34,7 @@ These change logs represent the work that has been going on within prison.
 
 * **Initial setup of the GUI tools messages that are at the bottom of a page.**
 Setup the handling of the messages and added the messages to all of the language files.
-Support for prior, current, and next page. Also close.
-
-
+Support for prior, current, and next page. Also c
 * **Update the plugin.yml and removed the permissions configs since they were generating errors (lack of a schema) and the perms and handled through the prison command handler.**
 
 
@@ -1962,7 +1965,7 @@ The major issue here was that mines were being reset in the middle of a reset ac
 
 * **Made many changes to the default configurations of the autoFeatures.**
 This is to try to make it easier to use prison by using more of the settings that are most useful.
-Added more comments to make it easier to understand these settings too.
+Added more comments to make it easier to understand these settings too.f
 
 
 * **Release v3.3.0-alpha.8d 2022-02-20**
@@ -2441,4 +2444,20 @@ v3.2.6, v3.3.0-alpha.1, v3.3.0-alpha.2, v3.2.7, v3.3.0-alpha.3
 * **v3.3.0-alpha.0 2021-04-11**
 
   Start on the alpha.1 release.
+  
+
+
+-------
+------- Upgrading Gradle:
+-------
+
+  Use the following for a list of version for upgrading to:
+  https://gradle.org/releases/
+
+  * <code>gradlew wrapper --gradle-version=7.4</code> :: Sets the new wrapper version  
+  * <code>gradlew --version</code> :: Will actually install the new version  
+  * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
+
+
+
   
