@@ -41,6 +41,8 @@ plugins {
 
 	id 'java'
 	id 'base'
+	
+//    alias(libs.plugins.shadow)
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
@@ -161,18 +163,31 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.apache.commons:commons-lang3:3.12.0'
+    
+    	implementation( libs.commons.lang3 ) 
+
+		implementation( libs.gson )
+		implementation( libs.guava )
+	
+		//implementation( libs.spiget )
+	
+		//implementation( libs.bundles.bstats )
+	    
+	    testImplementation( libs.junit )
+	    
+    
+        //implementation 'org.apache.commons:commons-lang3:3.12.0'
         
         // https://mvnrepository.com/artifact/com.google.guava/guava
-		implementation 'com.google.guava:guava:31.1-jre'
+		//implementation 'com.google.guava:guava:31.1-jre'
         
         //implementation 'com.google.guava:guava:19.0'
         
         // https://mvnrepository.com/artifact/com.google.code.gson/gson
-		implementation 'com.google.code.gson:gson:2.10.1'
+		//implementation 'com.google.code.gson:gson:2.10.1'
         //include(dependency('com.google.code.gson:gson:2.8.6'))
         
-        testImplementation 'junit:junit:4.12'
+        //testImplementation 'junit:junit:4.12'
     }
 
 }

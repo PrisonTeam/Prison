@@ -30,7 +30,7 @@ compileTestJava.options.encoding = "UTF-8"
 
 
 repositories {
-    mavenCentral()
+    //mavenCentral()
 
 
 	maven {
@@ -43,6 +43,8 @@ repositories {
 	      includeGroup 'org.spigotmc'
 	    }
 	 }
+
+
 	 /*
 	   As Spigot-API depends on the BungeeCord ChatComponent-API,
 	  we need to add the Sonatype OSS repository, as Gradle,
@@ -73,6 +75,9 @@ dependencies {
 //    implementation project(':prison-mines')
 //    implementation project(':prison-ranks')
 //    implementation project(':prison-sellall')
+
+
+	//compileOnly( libs.spigotApi )
 
 
 	// https://mvnrepository.com/artifact/org.jetbrains/annotations

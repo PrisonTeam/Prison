@@ -29,6 +29,56 @@ plugins {
 }
 
 
+// https://docs.gradle.org/current/userguide/platforms.html
+// https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:centralized-repository-declaration
+dependencyResolutionManagement {
+	repositories {
+        mavenCentral()
+
+        // spigot-api: 
+	    maven { 
+	    	url = "https://hub.spigotmc.org/nexus/content/groups/public" 
+	    	content {
+	    		includeGroup 'org.spigotmc'
+	    		includeGroup 'org.bukkit'
+	    	}
+	    }
+	
+        	
+	    // The following houses many repos, so don't limit to just luckperms:
+	    // net.milkbowl, be.maximvdw, org.bstats:bstats-bukkit
+	    maven { url = "https://repo.lucko.me/" }
+	
+		// ?? libraries:
+	    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+	    maven { url = "https://nexus.hc.to/content/repositories/pub_releases" }
+	    
+	    // item-nbt-api:
+	    maven { url = "https://repo.codemc.org/repository/maven-public/" }
+	    
+	    maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
+	    
+	
+		maven { url 'https://jitpack.io' }
+		
+		
+		
+//	    maven { 
+//    		url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' 
+//    		content {
+//    			includeGroup 'me.clip'
+//    		}
+//    	}
+	
+    }
+    
+    versionCatalogs {
+        libs {
+
+        }
+    }
+}
+
 rootProject.name = 'prison'
 
 include 'prison-core'

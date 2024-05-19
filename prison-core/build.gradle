@@ -23,14 +23,25 @@ apply plugin: 'java'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
 
+/*
 repositories {
     mavenCentral()
     
     //maven { url = "https://jitpack.io" }
 }
+*/
 
 dependencies {
-	implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+	
+	implementation( libs.commons.lang3 )
+
+	implementation( libs.gson )
+
+
+
+//	implementation 'org.apache.commons:commons-lang3:3.12.0'
+//	implementation( libs.bundles.groovy )
 
 
 	// https://github.com/InstantlyMoist/privatebin-java-api
@@ -55,7 +66,7 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
+        include(dependency('org.apache.commons:commons-lang3:'))
         
         // https://mvnrepository.com/artifact/com.google.code.gson/gson
 		include(dependency('com.google.code.gson:gson:'))
