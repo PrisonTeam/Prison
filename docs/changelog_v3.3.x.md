@@ -14,9 +14,82 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17a 2024-04-29
+# 3.3.0-alpha.18 2024-05-20
 
 
+
+
+**Prison v3.3.0-alpha.18 2024-05-20**
+
+This version has been tested and confirmed to be working with Spigot v1.20.6 and Paper v1.20.6.
+
+
+
+* **Player Ranks GUI:  Fixed an issue with the code not using the correct defaults for NoRankAccess when no value is provided in the configs.**
+
+
+* **Obsolete blocks: Marked an enum as @Deprecated to suppress a compile warning.**  This has not real impact on anything.
+
+
+* **Gradle updates:**
+Upgraded XSeries from v9.10.0 to v10.0.0
+Upgraded nbtApi from v2.12.2 to v2.12.4
+Upgraded luckperms-v5 from v5.0 to v5.4
+
+
+* **Economy: Added a feature to check if a player has an economy account.**
+Currently this is not being used outside of the economy integrations, but it can be used to help suppress initial startup messages where players do not have an account, which will help prevent flooding a lot of messages to the console for some servers.
+
+
+* **Player Cache: There was a report of a concurrent modification exception.**
+This is very rare and generally should not happen.
+The keySet is part of the original TreeMap collection, so the fix here is to take all keys and put them in a new collection so they are then disconnected from the original TreeSet.
+This will prevent a concurrent modification exception if there is an action to add or remove users from the user cache, since the user cache remains active and cannot be locked with a synchronization for any amount of time, other than then smallest possible.
+The standard solution with dealing with this TreeSet collection would be to synchronize the whole activity of saving the dirty elements of the player cache.  Unfortunately, that will cause blocking transactions when player events try to access the player cache.  Therefore it's a balance game of trying to protect the player cache with the minimal amount of synchronizations, but allow the least amount of I/O blocking for all other processes that are trying to use it.
+Hopefully this is sufficient to allow it all to work without conflict, and to be able to provide enough protection.
+
+
+* **Gradle: Removed a lot of the older commented out settings.**
+See prior commits to better understand how things were setup before, or for references.
+
+
+* **Gradle: A few more adjustments to add a few more items to the libs.versions.toml.**
+
+
+
+* **Placeholders:  The placeholder api call from PlaceholderAPI is passing a null OfflinePlayer object.**
+Not sure why this has never been an issue before, but added support for null OfflnePlayers.
+
+
+
+* **Spiget: Updated the way prison handles spiget by now submitting a task with a 5 second delay.**
+The messages are more helpful now.
+This also moves it out of the SpigotPrison class.
+
+
+* **Upgraded John Rengelman's shadow, a gradle plugin, from v6.1.0 to v8.1.1**
+
+ 
+
+* **Upgrade gradle from v7.6.4 to v8.7**
+  Upgraded from: v7.6.4 -> v8.0 -> v8.0.2 -> v8.1 -> v8.1.1
+  		-> v8.2 -> v8.3 -> v8.4 -> v8.5 -> v8.6 -> v8.7
+  v8.3 required a configuration change due to `org.gradle.api.plugins.BasePluginConvention` type has been deprecated and will be removed in gradle v9.x.  This is impacting the use of the `build.gradle`'s `archivesBaseNamme`.  This is being replaced by the new `base{}` configuration block.
+  v8.3 also required other config changes.
+  
+
+
+* **Upgrade spiget from v1.4.2 to v1.4.6**
+  Was using a jar with v1.4.2 due to their repo going down frequently.
+  Switched back to pulling through maven and got rid of jar.
+  
+
+* **Upgrade gradle from v7.3.3 to v7.6.4**
+  Upgraded from: v7.3.3 -> v7.4 -> v7.4.1 -> v7.4.2 
+  		-> v7.5 -> v7.5.1 -> v7.6 -> v7.6.1 -> v7.6.2 -> v7.6.3 -> v7.6.4
+  Preparing for Gradle v8.x
+  Around v7.5.1 required a change to auto provisioning
+  
 
 **v3.3.0-alpha.17a 2024-04-29**
 
@@ -29,9 +102,7 @@ These change logs represent the work that has been going on within prison.
 
 * **Initial setup of the GUI tools messages that are at the bottom of a page.**
 Setup the handling of the messages and added the messages to all of the language files.
-Support for prior, current, and next page. Also close.
-
-
+Support for prior, current, and next page. Also c
 * **Update the plugin.yml and removed the permissions configs since they were generating errors (lack of a schema) and the perms and handled through the prison command handler.**
 
 
@@ -1962,7 +2033,7 @@ The major issue here was that mines were being reset in the middle of a reset ac
 
 * **Made many changes to the default configurations of the autoFeatures.**
 This is to try to make it easier to use prison by using more of the settings that are most useful.
-Added more comments to make it easier to understand these settings too.
+Added more comments to make it easier to understand these settings too.f
 
 
 * **Release v3.3.0-alpha.8d 2022-02-20**
@@ -2441,4 +2512,20 @@ v3.2.6, v3.3.0-alpha.1, v3.3.0-alpha.2, v3.2.7, v3.3.0-alpha.3
 * **v3.3.0-alpha.0 2021-04-11**
 
   Start on the alpha.1 release.
+  
+
+
+-------
+------- Upgrading Gradle:
+-------
+
+  Use the following for a list of version for upgrading to:
+  https://gradle.org/releases/
+
+  * <code>gradlew wrapper --gradle-version=7.4</code> :: Sets the new wrapper version  
+  * <code>gradlew --version</code> :: Will actually install the new version  
+  * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
+
+
+
   

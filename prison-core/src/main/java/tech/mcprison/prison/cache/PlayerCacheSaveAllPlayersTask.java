@@ -2,7 +2,9 @@ package tech.mcprison.prison.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
@@ -62,15 +64,18 @@ public class PlayerCacheSaveAllPlayersTask
 				PlayerCache.PLAYER_CACHE_TIME_TO_LIVE_VALUE_SEC
 				);
 		
-		Set<String> keys = pCache.getPlayers().keySet();
+		Map<String, PlayerCachePlayerData> syncMap = pCache.getPlayers();
+		
+		Set<String> keys = new TreeSet<>( syncMap.keySet() );
 		
 		for ( String key : keys )
 		{
 			PlayerCachePlayerData playerData = null;
 
-			synchronized ( pCache.getPlayers() ) {
-				
-				playerData = pCache.getPlayers().get( key );
+			synchronized ( syncMap ) {
+				if ( syncMap.containsKey( key ) ) {
+					playerData = syncMap.get( key );
+				}
 			}
 			
 			if ( playerData != null ) {
@@ -115,7 +120,7 @@ public class PlayerCacheSaveAllPlayersTask
 			}
 		}
 		
-		synchronized ( pCache.getPlayers() ) {
+		synchronized ( syncMap ) {
 			
 			for ( PlayerCachePlayerData playerData : purge ) {
 				try {

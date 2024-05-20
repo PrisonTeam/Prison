@@ -2,7 +2,7 @@
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-*Documented updated: 2023-11-18*
+*Documented updated: 2024-05-20*
 
 ## Project Related
 
@@ -20,7 +20,7 @@
 ## Build logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
  
- - [v3.2.0 through v3.2.11](prison_changelogs.md)
+ - [v3.2.0 through v3.2.18](prison_changelogs.md)
  
 
 
@@ -28,15 +28,20 @@
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Prison Supports Spigot 1.8 through Spigot 1.20.x+
-# Prison Supports Java 1.8 though Java 20+
-# Prison is created for the Spigot Platform, and works on other platforms based upon Spigot
+# Prison Supports Spigot 1.8 through Spigot 1.20.6 and +
+# Prison Supports Java 1.8 though Java 21+
+# Prison is created for the Spigot Platform, and works on other platforms based upon Spigot, tested with Paper 1.20.6 too.
 
 
-Prison supports Spigot 1.20.x, along with Java 1.8 through Java 20.  At this time there hasn't been any reports of incompatibilities.  Since prison is using a library to support the correct blocks for the version of the server that you are running, we are limited to when updates are released for that library.  Luckily they have had a couple of releases and we have applied them to the latest alpha releases.  So if you are wanting to maximize the new Spigot 1.20 experience, please upgrade to the latest alpha release as found on our discord server in the #alpha channel. 
+Prison supports Spigot 1.20.x, along with Java 1.8 through Java 21.
+
+Prison is using a library to support the correct blocks for the version of the server that you are running, so we are limited to when updates are released for that library. Generally though, they are quick to get updates posted.
+ 
 
 
 ### Newer features and updates in Prison:
+
+NOTE: This list has not been updated in a while...
 
 * Prison's AutoFeatures was redesigned to support more Event Listener Priorities.  This means prison is more flexible and will work with more plugins, using them the way you want to.  Some of the new priorities are `ACCESS` so you can use Prison's Mine and Teleport Access by Rank without having to use Prison's block handlers.  This bypasses the need to configure WorldGuard regions for access to the mines that are linked to Prison Ranks.
 

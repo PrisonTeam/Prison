@@ -62,7 +62,7 @@ public class EdPrisonEconomyWrapper {
 //        return getBalance(player, null);
 //    }
 
-	public double getBalance(Player player, String currencyName) {
+	public double getBalance(Player player, String currencyName, boolean quite) {
 		double results = 0;
 		if ( isEnabled() && currencyName != null ) {
 			results = economy.getEco(player.getUUID(), currencyName);

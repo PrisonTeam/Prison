@@ -23,17 +23,25 @@ public class SaneEconomyWrapper
 		}
 	}
 	
+    
+    public boolean hasAccount( Player player ) {
+    	
+    	EconomablePlayer p = toEconomablePlayer(player);
+    	
+    	return p != null && economyManager.accountExists( p );
+    }
+	
     public double getBalance(Player player) {
     	double result = 0;
         
     	try {
-    		EconomablePlayer p = toEconomablePlayer(player);
     		
-    		if ( p == null || !economyManager.accountExists( p ) ) {
+    		if ( !hasAccount( player ) ) {
         		player.sendMessage( "Economy Error: You don't have an account.");
         	}
         	else {
         		
+        		EconomablePlayer p = toEconomablePlayer(player);
         		result = economyManager.getBalance( p );
         	}
     	}
@@ -47,14 +55,14 @@ public class SaneEconomyWrapper
 
     public void setBalance(Player player, double amount) {
     	try {
-    		EconomablePlayer p = toEconomablePlayer(player);
     		
-    		if ( p == null || !economyManager.accountExists( p ) ) {
+    		if ( !hasAccount( player ) ) {
         		player.sendMessage( "Economy Error: You don't have an account.");
         	}
         	else {
         		
-        		economyManager.setBalance(toEconomablePlayer(player), amount);
+        		EconomablePlayer p = toEconomablePlayer(player);
+        		economyManager.setBalance( p, amount);
         	}
     		
     	}

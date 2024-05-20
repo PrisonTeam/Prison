@@ -69,7 +69,7 @@ public class VaultEconomyWrapper
 	 * @param player
 	 * @return
 	 */
-	public boolean hasAccount( Player player ) {
+	public boolean hasAccount( Player player, boolean sendWarning ) {
 		boolean hasAccount = false;
 		
 		OfflinePlayer oPlayer = getOfflinePlayer( player );
@@ -79,7 +79,7 @@ public class VaultEconomyWrapper
 		} 
 		catch (Exception e) {
 			
-			if ( !hasNoAccount.contains(player) ) {
+			if ( sendWarning && !hasNoAccount.contains(player) ) {
 				Output.get().logInfo( 
 						String.format( 
 								"Vault economy: Player %s does not have an econ account. "
@@ -150,7 +150,7 @@ public class VaultEconomyWrapper
 	public double getBalance(Player player) {
     	double results = 0;
  
-    	boolean hasAccount = hasAccount(player);
+    	boolean hasAccount = hasAccount(player, true);
     	
     	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
@@ -200,7 +200,7 @@ public class VaultEconomyWrapper
 	public boolean setBalance(Player player, double amount) {
     	boolean results = false;
 
-    	boolean hasAccount = hasAccount(player);
+    	boolean hasAccount = hasAccount(player, true);
 
     	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
@@ -242,7 +242,7 @@ public class VaultEconomyWrapper
 	public boolean addBalance(Player player, double amount) {
     	boolean results = false;
     	
-    	boolean hasAccount = hasAccount(player);
+    	boolean hasAccount = hasAccount(player, true);
     	
     	if ( amount < 0 ) {
     		results = removeBalance( player, amount );
@@ -300,7 +300,7 @@ public class VaultEconomyWrapper
     		amount *= -1;
     	}
     	
-    	boolean hasAccount = hasAccount(player);
+    	boolean hasAccount = hasAccount(player, true);
 
     	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");
@@ -352,7 +352,7 @@ public class VaultEconomyWrapper
 	public boolean canAfford(Player player, double amount) {
     	boolean results = false;
     	
-    	boolean hasAccount = hasAccount(player);
+    	boolean hasAccount = hasAccount(player, true);
 
     	if ( economy != null && !hasAccount ) {
     		player.sendMessage( "Economy Error: You don't have an account.");

@@ -81,7 +81,7 @@ public class PlaceHolderAPIIntegrationWrapper
 //			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
 //		}
 
-		UUID playerUuid = player.getUniqueId();
+		UUID playerUuid = player == null ? null : player.getUniqueId();
 		String results = Prison.get().getPlatform().getPlaceholders()
 									.placeholderTranslate( playerUuid, player.getName(), identifier );
 

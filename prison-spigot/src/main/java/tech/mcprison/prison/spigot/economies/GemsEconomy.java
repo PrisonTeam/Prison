@@ -49,6 +49,12 @@ public class GemsEconomy
 		return supported;
 	}
 	
+    
+    @Override
+    public boolean hasAccount( Player player ) {
+    	return wrapper.hasAccount( player );
+    }
+	
     @Override 
     public double getBalance(Player player) {
     	double amount = 0;
@@ -67,11 +73,23 @@ public class GemsEconomy
     	if ( wrapper != null ) {
     			
     		synchronized ( wrapper ) {
-    			amount = wrapper.getBalance(player, currencyName);
+    			amount = wrapper.getBalance(player, currencyName, false);
     		}
     	}
     	return amount;
     }
+
+//    @Override 
+//    public double getBalance(Player player, String currencyName, boolean quite) {
+//    	double amount = 0;
+//    	if ( wrapper != null ) {
+//    		
+//    		synchronized ( wrapper ) {
+//    			amount = wrapper.getBalance(player, currencyName, quite);
+//    		}
+//    	}
+//    	return amount;
+//    }
 
     @Override 
     public boolean setBalance(Player player, double amount) {

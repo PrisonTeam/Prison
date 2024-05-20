@@ -39,15 +39,15 @@ public class CoinsEngineEconomyWrapper {
 	public Currency getCurrency( String currencyNamme ) {
 		return CoinsEngineAPI.getCurrency( currencyNamme );
 	}
-	
+
 	
 	public double getBalance(Player player) {
 
 		Output.get().logWarn( "CoinsEngineEconomy getBalance() - Fail: MUST include a currencyName.");
-        return getBalance(player, null);
+        return getBalance(player, null, false);
     }
 
-	public double getBalance(Player player, String currencyName) {
+	public double getBalance(Player player, String currencyName, boolean quite ) {
 		double results = 0;
 		if (economy != null && player instanceof SpigotPlayer ) {
 			

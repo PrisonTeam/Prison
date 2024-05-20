@@ -99,6 +99,12 @@ public class EssentialsEconomy
 		addDebugInfo( "9" );
 	}
 
+    
+    @Override
+    public boolean hasAccount( Player player ) {
+    	return wrapper.hasAccount( player );
+    }
+    
     @Override 
     public double getBalance(Player player) {
         return wrapper.getBalance(player);

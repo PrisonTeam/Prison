@@ -88,11 +88,16 @@ public class GemsEconomyWrapper
 //		return currency;
 //	}
 	
+    
+    public boolean hasAccount( Player player ) {
+    	return true;
+    }
+	
 	public double getBalance(Player player) {
-        return getBalance(player, null);
+        return getBalance(player, null, false);
     }
 
-	public double getBalance(Player player, String currencyName) {
+	public double getBalance(Player player, String currencyName, boolean quite) {
 		double results = 0;
 		if (economy != null) {
 			if ( currencyName == null ) {
