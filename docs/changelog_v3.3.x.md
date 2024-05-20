@@ -17,6 +17,15 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17a 2024-05-20
 
 
+
+* **Player Cache: There was a report of a concurrent modification exception.**
+This is very rare and generally should not happen.
+The keySet is part of the original TreeMap collection, so the fix here is to take all keys and put them in a new collection so they are then disconnected from the original TreeSet.
+This will prevent a concurrent modification exception if there is an action to add or remove users from the user cache, since the user cache remains active and cannot be locked with a synchronization for any amount of time, other than then smallest possible.
+The standard solution with dealing with this TreeSet collection would be to synchronize the whole activity of saving the dirty elements of the player cache.  Unfortunately, that will cause blocking transactions when player events try to access the player cache.  Therefore it's a balance game of trying to protect the player cache with the minimal amount of synchronizations, but allow the least amount of I/O blocking for all other processes that are trying to use it.
+Hopefully this is sufficient to allow it all to work without conflict, and to be able to provide enough protection.
+
+
 * **Gradle: Removed a lot of the older commented out settings.**
 See prior commits to better understand how things were setup before, or for references.
 
