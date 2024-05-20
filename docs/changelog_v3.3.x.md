@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17a 2024-05-18
+# 3.3.0-alpha.17a 2024-05-19
+
+
+* **Placeholders:  The placeholder api call from PlaceholderAPI is passing a null OfflinePlayer object.**
+Not sure why this has never been an issue before, but added support for null OfflnePlayers.
+
 
 
 * **Spiget: Updated the way prison handles spiget by now submitting a task with a 5 second delay.**
