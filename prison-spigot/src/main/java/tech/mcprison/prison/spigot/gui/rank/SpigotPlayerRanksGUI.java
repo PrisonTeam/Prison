@@ -166,8 +166,11 @@ public class SpigotPlayerRanksGUI
         // Not sure how you want to represent this:
         String materialHasStr = guiConfig.getString("Options.Ranks.MaterialType.HasRankAccess", "TRIPWIRE_HOOK");
         XMaterial materialHas = XMaterial.matchXMaterial( materialHasStr ).orElse(null);
-        XMaterial materialHasNot = XMaterial.matchXMaterial(
-        						guiConfig.getString("Options.Ranks.MaterialType.NoRankAccess")).orElse(null);
+        
+        String materialHasNotStr = guiConfig.getString("Options.Ranks.MaterialType.NoRankAccess", "REDSTONE_BLOCK");
+        XMaterial materialHasNot = XMaterial.matchXMaterial( 
+        			materialHasNotStr != null ? materialHasNotStr : "REDSTONE_BLOCK"
+        						).orElse(null);
 
         
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");

@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17a 2024-05-20
 
 
+* **Player Ranks GUI:  Fixed an issue with the code not using the correct defaults for NoRankAccess when no value is provided in the configs.**
+
+
 * **Obsolete blocks: Marked an enum as @Deprecated to suppress a compile warning.**  This has not real impact on anything.
 
 
