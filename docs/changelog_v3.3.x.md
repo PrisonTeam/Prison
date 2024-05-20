@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17a 2024-05-19
+# 3.3.0-alpha.17a 2024-05-20
+
+
+
+
+* **Gradle: A few more adjustments to add a few more items to the libs.versions.toml.**
+
 
 
 * **Placeholders:  The placeholder api call from PlaceholderAPI is passing a null OfflinePlayer object.**

@@ -136,6 +136,9 @@ dependencies {
     
 	implementation( libs.nbtApi )
     
+    // https://github.com/LoneDev6/API-ItemsAdder#-packages
+	// https://github.com/LoneDev6/API-ItemsAdder/tags
+	compileOnly( libs.itemsAdder )
 
   //  implementation project(':prison-worldguard6')
 
@@ -251,7 +254,7 @@ dependencies {
 
 	// https://github.com/LoneDev6/API-ItemsAdder#-packages
 	// https://github.com/LoneDev6/API-ItemsAdder/tags
-	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
+//	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
 //	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.2.5'
 
 
@@ -354,6 +357,15 @@ shadowJar {
 
 	relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.libs.nbtapi'
 //	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
+
+
+    // For privatebin wrapper: Paste:
+    relocate 'nl.kyllian', 'tech.mcprison.prison.libs.privatebin'
+    
+    // Used with privatebin:
+    relocate 'org.json', 'tech.mcprison.prison.libs.orgjson'
+    
+
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 

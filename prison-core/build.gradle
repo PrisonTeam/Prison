@@ -47,11 +47,11 @@ dependencies {
 	// https://github.com/InstantlyMoist/privatebin-java-api
 	//implementation 'com.github.InstantlyMoist:privatebin-java-api:1.0.2'
 
-	//implementation 'org.json:json:20230227'
+	implementation 'org.json:json:20230227'
 	
 	implementation fileTree(dir: 'lib', 
     			include: ['PrivateBin-java-1.1-SNAPSHOT.jar'
-    					//	, 'json-20230227.jar'
+    						, 'json-20230227.jar'
     						])
 	
 }
@@ -77,10 +77,11 @@ shadowJar {
         include(dependency('com.github.InstantlyMoist:privatebin-java-api:'))
     }
     
-    //relocate 'org.json', 'tech.mcprison.prison.libs.orgjson'
-    
     // For privatebin wrapper: Paste:
     relocate 'nl.kyllian', 'tech.mcprison.prison.libs.privatebin'
+    
+    // Used with privatebin:
+    relocate 'org.json', 'tech.mcprison.prison.libs.orgjson'
     
     
     //classifier 'API'

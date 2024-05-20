@@ -40,6 +40,10 @@ vault = "1.7.1"
 luckperms-v4 = "4.4"
 luckperms-v5 = "5.0"
 
+itemsAdder = "3.5.0b"
+
+
+
 
 [libraries]
 bstats-base = { module = "org.bstats:bstats-base", version.ref = "bstats" }
@@ -59,6 +63,8 @@ papi = { module = "com.github.placeholderapi:placeholderapi", version.ref = "pap
 
 luckperms-v4 = { module = "me.lucko.luckperms:luckperms-api", version.ref = "luckperms-v4" }
 luckperms-v5 = { module = "net.luckperms:api", version.ref = "luckperms-v5" }
+
+itemsAdder = { module = "com.github.LoneDev6:API-ItemsAdder", version.ref = "itemsAdder" }
 
 spiget = { module = "org.inventivetalent.spiget-update:bukkit", version.ref = "spiget" }
 
