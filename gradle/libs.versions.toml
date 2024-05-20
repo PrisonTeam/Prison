@@ -28,17 +28,17 @@ commons-lang3 = "3.12.0"
 groovy = "3.0.9"
 gson = "2.10.1"
 spiget = "1.4.6-SNAPSHOT"
-xseries = "9.10.0"
+xseries = "10.0.0"
 junit = "4.12"
 guava = "31.1-jre"
 spigotApi = "1.13.2-R0.1-SNAPSHOT"
 
-nbtApi = "2.12.2"
+nbtApi = "2.12.4"
 papi = "2.11.5"
 vault = "1.7.1"
 
 luckperms-v4 = "4.4"
-luckperms-v5 = "5.0"
+luckperms-v5 = "5.4"
 
 itemsAdder = "3.5.0b"
 

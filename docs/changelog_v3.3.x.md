@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17a 2024-05-20
 
 
+* **Gradle updates:**
+Upgraded XSeries from v9.10.0 to v10.0.0
+Upgraded nbtApi from v2.12.2 to v2.12.4
+Upgraded luckperms-v5 from v5.0 to v5.4
+
 
 * **Economy: Added a feature to check if a player has an economy account.**
 Currently this is not being used outside of the economy integrations, but it can be used to help suppress initial startup messages where players do not have an account, which will help prevent flooding a lot of messages to the console for some servers.
