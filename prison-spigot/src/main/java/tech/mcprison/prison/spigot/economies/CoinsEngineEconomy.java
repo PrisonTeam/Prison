@@ -61,17 +61,34 @@ public class CoinsEngineEconomy
     	return amount;
     }
     
+    @Override
+    public boolean hasAccount( Player player ) {
+    	return true;
+    }
+    
     @Override 
     public double getBalance(Player player, String currencyName) {
     	double amount = 0;
     	if ( wrapper != null ) {
     			
     		synchronized ( wrapper ) {
-    			amount = wrapper.getBalance(player, currencyName);
+    			amount = wrapper.getBalance(player, currencyName, false);
     		}
     	}
     	return amount;
     }
+    
+//    @Override 
+//    public double getBalance(Player player, String currencyName, boolean quite) {
+//    	double amount = 0;
+//    	if ( wrapper != null ) {
+//    		
+//    		synchronized ( wrapper ) {
+//    			amount = wrapper.getBalance(player, currencyName, quite);
+//    		}
+//    	}
+//    	return amount;
+//    }
 
     @Override 
     public boolean setBalance(Player player, double amount) {

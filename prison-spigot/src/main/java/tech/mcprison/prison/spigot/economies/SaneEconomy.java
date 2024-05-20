@@ -36,6 +36,12 @@ public class SaneEconomy
 		}
 	}
 	
+    
+    @Override
+    public boolean hasAccount( Player player ) {
+    	return econWrapper.hasAccount( player );
+    }
+	
     @Override 
     public double getBalance(Player player) {
         return econWrapper.getBalance(player);

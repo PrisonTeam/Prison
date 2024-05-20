@@ -16,6 +16,8 @@ public abstract class EconomyIntegration
 		
 	}
 	
+    public abstract boolean hasAccount( Player player );
+	
     /**
      * Returns the player's current balance.
      *

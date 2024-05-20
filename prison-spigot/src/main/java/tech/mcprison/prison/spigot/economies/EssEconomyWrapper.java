@@ -36,10 +36,15 @@ import tech.mcprison.prison.internal.Player;
  * @author Faizaan A. Datoo
  */
 class EssEconomyWrapper {
+	
+    
+    public boolean hasAccount( Player player ) {
+    	return Economy.playerExists( player.getName() );
+    }
 
     double getBalance(Player player) {
         try {
-        	if ( Economy.playerExists( player.getName() ) ) {
+        	if ( hasAccount( player ) ) {
         		return Economy.getMoneyExact(player.getName()).doubleValue();
         	}
         	
@@ -54,7 +59,7 @@ class EssEconomyWrapper {
 
     void setBalance(Player player, double amount) {
         try {
-           	if ( Economy.playerExists( player.getName() ) ) {
+           	if ( hasAccount( player ) ) {
            		Economy.setMoney(player.getName(), new BigDecimal(amount));
         	}
            	else {

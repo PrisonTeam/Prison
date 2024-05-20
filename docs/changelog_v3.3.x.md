@@ -18,6 +18,10 @@ These change logs represent the work that has been going on within prison.
 
 
 
+* **Economy: Added a feature to check if a player has an economy account.**
+Currently this is not being used outside of the economy integrations, but it can be used to help suppress initial startup messages where players do not have an account, which will help prevent flooding a lot of messages to the console for some servers.
+
+
 * **Player Cache: There was a report of a concurrent modification exception.**
 This is very rare and generally should not happen.
 The keySet is part of the original TreeMap collection, so the fix here is to take all keys and put them in a new collection so they are then disconnected from the original TreeSet.

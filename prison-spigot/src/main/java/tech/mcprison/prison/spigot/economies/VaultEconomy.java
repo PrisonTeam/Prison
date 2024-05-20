@@ -52,6 +52,13 @@ public class VaultEconomy
 		addDebugInfo( "6" );
 	}
     
+    
+    @Override
+    public boolean hasAccount( Player player ) {
+    	boolean sendWarning = false;
+    	return econWrapper.hasAccount( player, sendWarning );
+    }
+	
 	@Override 
 	public double getBalance(Player player) {
         if (hasIntegrated()) {

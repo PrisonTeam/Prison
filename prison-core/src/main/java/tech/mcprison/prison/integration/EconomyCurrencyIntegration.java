@@ -27,6 +27,8 @@ public abstract class EconomyCurrencyIntegration
 	
 	public abstract boolean supportedCurrency( String currency );
 	
+	public abstract boolean hasAccount( Player player );
+	
 	public abstract double getBalance( Player player, String currency );
 
 	public abstract boolean setBalance( Player player, double amount, String currency );
