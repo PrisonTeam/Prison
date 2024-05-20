@@ -51,6 +51,7 @@ import java.util.List;
  * @since API 1.0
  * @deprecated since v3.2.6
  */
+@Deprecated
 public enum ObsoleteBlockType {
 
 	/**

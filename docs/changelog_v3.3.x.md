@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.17a 2024-05-20
 
 
+* **Obsolete blocks: Marked an enum as @Deprecated to suppress a compile warning.**  This has not real impact on anything.
+
+
 * **Gradle updates:**
 Upgraded XSeries from v9.10.0 to v10.0.0
 Upgraded nbtApi from v2.12.2 to v2.12.4
