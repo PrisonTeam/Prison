@@ -18,20 +18,10 @@
 
 group 'tech.mcprison'
 
-apply plugin: 'java'
-
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
 
-//sourceCompatibility = 1.8
-
-
-// https://www.spigotmc.org/wiki/spigot-gradle/
-
-
 repositories {
-    //mavenCentral()
-
 
 	maven {
 	    url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -77,9 +67,6 @@ dependencies {
 //    implementation project(':prison-sellall')
 
 
-	//compileOnly( libs.spigotApi )
-
-
 	// https://mvnrepository.com/artifact/org.jetbrains/annotations
 	implementation 'org.jetbrains:annotations:24.0.1'
 
@@ -87,10 +74,5 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
 
 
-
     testImplementation group: 'junit', name: 'junit', version: '4.12'
-
 }
-
-
-

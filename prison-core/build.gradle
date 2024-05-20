@@ -16,36 +16,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'eclipse'
-//apply plugin: 'idea'
-apply plugin: 'java'
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
 
-/*
-repositories {
-    mavenCentral()
-    
-    //maven { url = "https://jitpack.io" }
-}
-*/
-
 dependencies {
 
-	
 	implementation( libs.commons.lang3 )
 
 	implementation( libs.gson )
-
-
-
-//	implementation 'org.apache.commons:commons-lang3:3.12.0'
-//	implementation( libs.bundles.groovy )
-
-
-	// https://github.com/InstantlyMoist/privatebin-java-api
-	//implementation 'com.github.InstantlyMoist:privatebin-java-api:1.0.2'
 
 	implementation 'org.json:json:20230227'
 	
@@ -70,7 +49,6 @@ shadowJar {
         
         // https://mvnrepository.com/artifact/com.google.code.gson/gson
 		include(dependency('com.google.code.gson:gson:'))
-        //include(dependency('com.google.code.gson:gson:2.8.6'))
         
         //include(dependency('org.json:json:20230227'))
         

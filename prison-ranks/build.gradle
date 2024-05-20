@@ -1,17 +1,7 @@
 group 'tech.mcprison'
 
-apply plugin: 'java'
-
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
-
-//sourceCompatibility = 1.8
-
-/*
-repositories {
-    mavenCentral()
-}
-*/
 
 dependencies {
     implementation project(':prison-core')
