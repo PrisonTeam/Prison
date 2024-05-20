@@ -14,7 +14,15 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.17a 2024-05-20
+# 3.3.0-alpha.18 2024-05-20
+
+
+
+
+**Prison v3.3.0-alpha.18 2024-05-20**
+
+This version has been tested and confirmed to be working with Spigot v1.20.6 and Paper v1.20.6.
+
 
 
 * **Player Ranks GUI:  Fixed an issue with the code not using the correct defaults for NoRankAccess when no value is provided in the configs.**
