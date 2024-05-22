@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18 2024-05-21
+# 3.3.0-alpha.18a 2024-05-21
+
+
+**v3.3.0-alpha.18a 2024-05-21**
+Releasing this alpha.18a because the fix of the of the new player bug was crippling servers.
 
 
 * **Bug Fix: When a new player was joining prison, and there were placeholders being used in the rank commands for either the default ladder, or the first rank, the resolution of the placeholders was triggering a new player on-join processing within prison.**
