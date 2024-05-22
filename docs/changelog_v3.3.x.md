@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18 2024-05-21
 
 
+* **Bug Fix: When a new player was joining prison, and there were placeholders being used in the rank commands for either the default ladder, or the first rank, the resolution of the placeholders was triggering a new player on-join processing within prison.**
+This happed because the new RankPlayer object was not being added to the PlayerManager before ranking the player... now the player's object will be there when the rank commands are processed.
+Honestly have no idea why this has not been an issue in the past....
+
+
 * **Docs... added curseForge.com to the list of locations where prison can be downloaded from.**
 
 
