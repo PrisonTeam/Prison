@@ -14,9 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18 2024-05-20
+# 3.3.0-alpha.18 2024-05-21
 
 
+
+* **Fix to the docs... for some reason, eclispse, or one of it's plugins failed and corrupted the markdown.**
+I did not realize it was corrupted since it was still showing the correct content, but when restarting the IDE and loading the files, they were missing the first characters.
 
 
 **Prison v3.3.0-alpha.18 2024-05-20**
