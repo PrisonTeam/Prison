@@ -19,7 +19,9 @@ package tech.mcprison.prison.ranks.managers;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -232,7 +234,8 @@ public class PlayerManager
 	        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 	        rankPlayerFactory.firstJoin( rPlayer );
 
-	        PrisonRanks.getInstance().getPlayerManager().savePlayer( rPlayer );
+	        // It now saves the new player changes within firstJoin()
+	        //PrisonRanks.getInstance().getPlayerManager().savePlayer( rPlayer );
 			
 		}
 	}
@@ -293,12 +296,14 @@ public class PlayerManager
     	
     	if ( results == null ) {
     		
+    		debugLogPlayerInfo( "getPlayer(): UUID check:", playerName, false );
+    		
     		for ( RankPlayer rankPlayer : players ) {
     			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
     					
-    					!playerName.isEmpty() &&
-    					rankPlayer.getDisplayName() != null &&
-    					rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
+    				!playerName.isEmpty() &&
+    					rankPlayer.getName() != null &&
+    					rankPlayer.getName().equalsIgnoreCase( playerName ) ) {
     				
     				// This checks to see if they have a new name, if so, then adds it to the history:
     				// But the UID must match:
@@ -320,21 +325,25 @@ public class PlayerManager
 //    							player.checkName( playerName )))).findFirst();
     	
     	if ( results == null && playerName != null && !"console".equalsIgnoreCase( playerName ) ) {
+    		
+    		debugLogPlayerInfo( "getPlayer(): addPlayer:", playerName, false );
+    		
     		results = addPlayer(uid, playerName);
     		
-    		if ( results != null ) {
-    			
-    			results.setDirty( true );
-    		}
+    		// addPlayer() will save the player:
+//    		if ( results != null ) {
+//    			
+//    			results.setDirty( true );
+//    		}
     		
 //    		dirty = results != null;
     	}
     	
-    	// Save if dirty (changed or new):
-    	if ( results != null && results.isDirty() ) {
-    		savePlayer( results );
-    		
-    	}
+//    	// Save if dirty (changed or new):
+//    	if ( results != null && results.isDirty() ) {
+//    		savePlayer( results );
+//    		
+//    	}
     	
     	return results;
     }
@@ -392,15 +401,28 @@ public class PlayerManager
         			
         			// We need to create a new player data file.
         			newPlayer = new RankPlayer( uid, playerName );
-        			newPlayer.checkName( playerName );
+//        			newPlayer.checkName( playerName );
         			newPlayer.setDirty( true );
         			
-        			rankPlayerFactory.firstJoin( newPlayer );
+        			// WARNING: Must save the newPlayer object to the playerManager collections
+        			//          before calling firstJoin():
         			
         			players.add(newPlayer);
         			getPlayersByName().put( playerName, newPlayer );
+
         			
-        			savePlayer(newPlayer);
+        			debugLogPlayerInfo( "addPlayerSyncTask: firstJoin:", playerName, false );
+        			
+        			rankPlayerFactory.firstJoin( newPlayer );
+        			
+        			
+        			boolean joined = newPlayer.getPlayerRankDefault() != null;
+        			String msg = joined ? "joined" : "failed";
+        			debugLogPlayerInfo( "addPlayerSyncTask: " + msg, playerName, false );
+        			
+        			
+        			// the new player is now saved in firstJoin()(
+        			//savePlayer(newPlayer);
 
         			
 //        			try {
@@ -430,10 +452,34 @@ public class PlayerManager
     	
     	Player player = event.getPlayer();
     	
+    	debugLogPlayerInfo( "onPlayerJoin:", player.getName(), true );
+
     	// Player is auto added if they do not exist when calling getPlayer so don't try to
     	// add them a second time.
-        getPlayer(player.getUUID(), player.getName());
+        RankPlayer rPlayer = getPlayer(player.getUUID(), player.getName());
         
+        rPlayer.doNothing();
+    }
+    
+    public void debugLogPlayerInfo( String eventName, String playerName, boolean date ) {
+    	
+    	if ( Output.get().isDebug() ) {
+    		
+    		boolean newPlayer = !getPlayersByName().containsKey( playerName );
+    		
+    		SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    		
+    		String msg = String.format(
+    				"&6%s:  &c%s  &6%s  &d%s",
+    				eventName,
+    				playerName,
+    				date ? sdFmt.format(new Date()) : "",
+    				newPlayer ? "[New Player]" : ""
+    				);
+    		
+    		Output.get().logInfo( msg );
+    	}
+    	
     }
 
     
