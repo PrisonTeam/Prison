@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-05-21
 
 
+* **Docs: Fixed a typo.**
+
+
 **v3.3.0-alpha.18a 2024-05-21**
 Releasing this alpha.18a because the fix of the of the new player bug was crippling servers.
 
