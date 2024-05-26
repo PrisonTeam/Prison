@@ -78,7 +78,7 @@ public class PlayerManager
     private transient Set<String> playerErrors;
 
     public PlayerManager(Collection collection) {
-    	super("PlayerMangager");
+    	super("PlayerManager");
     	
         this.collection = collection;
         
@@ -165,30 +165,39 @@ public class PlayerManager
      * @throws IOException If the file could not be created or written to.
      * @see #savePlayer(RankPlayer) To save with the default conventional filename.
      */
-    private void savePlayer(RankPlayer player, String playerFile) throws IOException {
+    private boolean savePlayer(RankPlayer player, String playerFile) throws IOException {
+    	boolean success = false;
     	
     	if ( !player.isEnableDirty() || player.isEnableDirty() && player.isDirty() ) {
     		
     		collection.save(playerFile, RankPlayerFactory.toDocument( player ) );
     		
     		player.setDirty( false );
+    		
+    		success = true;
     	}
 //    	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     	
 //        collection.save(playerFile, RankPlayerFactory.toDocument( player ) );
-//        collection.insert(playerFile, player.toDocument());
+//        collection.insert(playerFile, player.toDocument());y
+    	
+    	return success;
     }
 
-    public void savePlayer(RankPlayer player) {
+    public boolean savePlayer(RankPlayer player) {
+    	boolean success = false;
+    	
     	try {
-    		this.savePlayer(player, player.filename());
+    		success = this.savePlayer(player, player.filenamePlayer());
     	}
     	catch (IOException e) {
 			
-			String errorMessage = cannotSaveNewPlayerFile( player.getName(), player.filename() );
+			String errorMessage = cannotSaveNewPlayerFile( player.getName(), player.filenamePlayer() );
 			
 			Output.get().logError( errorMessage, e);
 		}
+    	
+    	return success;
     }
 
     /**

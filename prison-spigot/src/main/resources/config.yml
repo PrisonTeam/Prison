@@ -145,7 +145,34 @@ ranks:
   
 
 
+#
+# The setting `add-new-players-on-startup` will allow prison to scan for new players that
+# have not been setup in prison, and add them at server startup.
+# This can be disabled. If it is, then when new players are "accessed" then they should be
+# added to prison upon demand.  It's been reported that adding new players can take a few
+# seconds (2 to 5 seconds) per player, which has not been confirmed.  But if true, then
+# existing servers switching over to Prison could take a long time to setup all players
+# at startup. So this setting may make sense in those conditions.
+# NOTE: Its not possible to test all situations where new players are bypassed when starting
+#       Prison. Therefore disabling this setting is at your own risk. But if any issues are
+#       encountered, then PLEASE contact support on our discord server ASAP and we will 
+#       fix the issues for you. We want Prison to be bug free, but are not able to ensure
+#       all functions able to handle new players that have not been added to Prison due to
+#       the degree of complexity of some sections of prison.
+#
+# Older player files, under 'plugins/Prison/data_storage/ranksDB/players', were based upon 
+# the player's UUID, which is difficult to figure out which file is for each player.'
+# The setting 'use-friendly-user-file-names: true' will enable a new file name format, which
+# is similar to the file names used under the playerCache directory.
+# This setting is disabled by default.  The idea is that this new feature will be rolled out, 
+# but will not be enabled yet. When this is enabled for everyone, this setting will go away.
+# When this feature is enabled, the old file formats will be replaced with the new format
+# automatically. Once converted, the files cannot be reverted back to the old names.
 prison-ranks:
+  startup:
+    add-new-players-on-startup: true
+  use-friendly-user-file-names: false
+
 
 
 # WARNING: Never use the following setting to disable the vault-economy

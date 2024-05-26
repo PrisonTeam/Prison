@@ -14,7 +14,15 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-05-21
+# 3.3.0-alpha.18a 2024-05-26
+
+
+* **Player file name update: The file names used for the rank players and the player cache are being updated.**
+These files have the player's name as part of them, but the big change is that the new format now is supporting bedrock players.
+The bedrock player UUIDs are all zeros at the beginning of the UUID, so it was leading to possible issues when there were more than one bedrock player due to the cache trying to load the wrong file.
+The transition to the new file format will not be forced yet.  The old format will continue to be used until a major release is made in the future.
+The new format can be enabled through the config.yml file.  There is also a new task and command under '/prison support updates playerFilenameUpdate`.
+The prison system is now able to track and store different events and settings in a new 'pluigins/Prison/backups/prison-system-settings.json' file.  This will track the usage of the player name update.
 
 
 * **Docs: Fixed a typo.**

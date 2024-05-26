@@ -3,6 +3,7 @@ package tech.mcprison.prison.cache;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * <p>This periodically ran task will go through all cached players and update 
@@ -65,7 +66,11 @@ public class PlayerCacheCheckTimersTask
 			
 			try
 			{
-				Set<String> keys = pCache.getPlayers().keySet();
+				Set<String> keys = null;
+				
+				synchronized ( pCache.getPlayers() ) {
+					keys = new TreeSet<>( pCache.getPlayers().keySet() );
+				}
 				
 				for ( String key : keys )
 				{

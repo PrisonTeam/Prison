@@ -59,7 +59,7 @@ public class SpigotOfflinePlayer
      */
     public String getPlayerFileName() {
     	
-    	return JsonFileIO.getPlayerFileName( this );
+    	return JsonFileIO.filenamePlayer( this );
     }
 
     @Override

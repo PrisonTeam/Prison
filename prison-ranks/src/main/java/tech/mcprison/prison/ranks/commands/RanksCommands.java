@@ -50,6 +50,7 @@ import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
+import tech.mcprison.prison.ranks.tasks.PlayerNewFileNameCheckAsyncTask;
 import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Text;
 
@@ -2369,6 +2370,68 @@ public class RanksCommands
     	
     }
     
+    
+	
+    
+    @Command(identifier = "prison support updates playerFileNameUpdate", 
+    		description = "&3This command will run a task that will check both the " +
+    					"Player Rank files and the Player Cache files to see if " +
+    					"they are using an old naming format.  If they are, then the " +
+    					"files are renamed to the new format. This command can be " +
+    					"ran multiple times, since nothing will be changed if the " +
+    					"file names have already been converted." +
+    					"{br}" +
+    					"&3Inorder to use the new naming formats, the 'config.yml' must " +
+    					"contain the boolean property " +
+    					"'prison-ranks.use-friendly-user-file-name' with a value of " +
+    					"<b>true</b>. Failure to both set that to a value of true, and " +
+    					"to run this updater may lead to possible player data corruption." +
+    					"" +
+    					"" +
+    					"{br}" +
+    					"&3The new format for player-based file names includes the " +
+    					"player's name, and uses a UUID fragment that is actually " +
+    					"bedrock friendly.  The UUID parts that are used, are the " +
+    					"first eight digits of the UUID, plus the last 12. Bedrock " +
+    					"UUIDs can have first 16 to 20 digits being all zeros, which " +
+    					"could result in ambiguous file names where all bedrock players " +
+    					"would have the same prefix.  The whole point of only using the " +
+    					"first eight hex digits was that they would have still be all " +
+    					"unique.{br}", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportPlayerFileNameUpdateCmd(CommandSender sender,
+			@Arg(name = "action", def = "status", 
+				description = "Only shows the PrisonSystemStatus for the "
+						+ "'PlayerFileNameUpdate' and will not try to run the "
+						+ "update. Default: 'status'. [status, run]") String action
+    		) {
+
+    	// Get the PrisonSystemSettings for the PlayerFileNameUpdate and format the results:
+    	List<String> msg = new PlayerNewFileNameCheckAsyncTask().getStatusDetails();
+    	
+    	boolean useNewFormat = Prison.get().getPlatform()
+				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+    	
+//    	msg.add( "" );
+
+    	sender.sendMessage(msg);
+    	
+    	if ( action != null && action.trim().equalsIgnoreCase("run")) {
+    		
+    		if ( !useNewFormat ) {
+    			Output.get().logInfo( "&cCommand failure: &aBefore the player file names can be " +
+    					"checked, the setting '&cprison-ranks.use-friendly-user-file-name&a' " +
+    					"must be set to '&ctrue&a'.  Once enabled, this can not be " +
+    					"reverted because the player files (Player Ranks and Player Caches) " +
+    					"could be corrupted.");
+    		}
+    		else {
+    			long delayTicks = 0;
+    			PlayerNewFileNameCheckAsyncTask.submitTaskSync( delayTicks );
+    		}
+    	}
+    	
+    }
     
     private boolean contains( String search, String... values ) {
     	boolean results = false;

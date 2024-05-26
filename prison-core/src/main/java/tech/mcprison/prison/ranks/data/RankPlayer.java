@@ -227,26 +227,7 @@ public class RankPlayer
     	return getName() + " " + getRanks();
     }
     
-    
-    /**
-     * <p>This constructs a player file named based upon the UUID followed 
-     * by the player's name.  This format is used so it's easier to identify
-     * the correct player.
-     * </p>
-     * 
-     * <p>The format should be UUID-PlayerName.json.  The UUID is a shortened 
-     * format, which should still produce a unique id.  The name, when read, 
-     * is based upon the UUID and not the player's name, which may change.
-     * This format includes the player's name to make it easier to identify
-     * who's record is whom's.
-     * </p>
-     * 
-     * @return
-     */
-    public String getPlayerFileName() {
-    	
-    	return JsonFileIO.getPlayerFileName( this );
-    }
+
     
 	
     public String getRanks() {
@@ -357,6 +338,27 @@ public class RankPlayer
 //		this.blocksMined = blocksMined;
 //	}
 
+    
+    /**
+     * <p>This constructs a player file named based upon the UUID followed 
+     * by the player's name.  This format is used so it's easier to identify
+     * the correct player.
+     * </p>
+     * 
+     * <p>The format should be UUID-PlayerName.json.  The UUID is a shortened 
+     * format, which should still produce a unique id.  The name, when read, 
+     * is based upon the UUID and not the player's name, which may change.
+     * This format includes the player's name to make it easier to identify
+     * who's record is whom's.
+     * </p>
+     * 
+     * @return
+     */
+    public String getPlayerFileName() {
+    	
+    	return filenamePlayer();
+    }
+    
 	/**
      * <p>This is a helper function to ensure that the given file name is 
      * always generated correctly and consistently.
@@ -364,10 +366,44 @@ public class RankPlayer
      * 
      * @return "player_" plus the least significant bits of the UID
      */
-    public String filename()
+    public String filenamePlayer()
     {
-    	return "player_" + uid.getLeastSignificantBits();
+    	return JsonFileIO.filenamePlayer( this );
+    	
+//    	boolean useNewFormat = Prison.get().getPlatform()
+//    				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+//    	
+//    	return useNewFormat ? filenamePlayerNew() : filenamePlayerOld();
     }
+    
+    public String filenameCache()
+    {
+    	return JsonFileIO.filenameCache( this );
+    	
+//    	boolean useNewFormat = Prison.get().getPlatform()
+//    			.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+//    	
+//    	return useNewFormat ? 
+//    			filenameCacheNew() : filenamePlayerOld();
+    }
+    
+//    public String filenameCacheNew() {
+//    	
+//    	return "cache_" + JsonFileIO.getPlayerFileNameNewVersion( this );
+//    }
+//    public String filenameCacheOld() {
+//    	return JsonFileIO.getPlayerFileNameShortVersion( this );
+//    }
+//    
+//    public String filenamePlayerNew()
+//    {
+//    	return "player_" + JsonFileIO.getPlayerFileNameNewVersion( this );
+//    }
+//    
+//    public String filenamePlayerOld()
+//    {
+//    	return "player_" + uid.getLeastSignificantBits();
+//    }
     
     
 //    /**

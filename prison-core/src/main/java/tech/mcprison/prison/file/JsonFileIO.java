@@ -5,6 +5,7 @@ import java.io.File;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.ModuleStatus;
@@ -51,9 +52,146 @@ public class JsonFileIO
 				.create();
 	}
 	
-	
+	/**
+	 * <p>This function generate a partial user file name. This is based upon
+	 * the UUID-fragment (first and last parts of the player UUID), 
+	 * plus the player's name, and the file suffix, which is '.json'.
+	 * This function does not add any prefix such as 'player_' or 
+	 * 'cache_'.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+    private static String getPlayerFileNameNewVersion( Player player ) {
+    	
+		String uuidFragment = getFileNamePrefixNew( player );
+		
+		return uuidFragment + "_" + player.getName() + FILE_SUFFIX_JSON;
+    }
 	
     /**
+     * <p>This generates the fragment UUID that is used within file names.
+     * This is based upon the first 8 UUID digits, plus the hyphen.  Followed
+     * by the last segment of the UUID, which starts at character 25.
+     * </p>
+     * 
+     * <p>This uses the start and end of the UUID because bedrock players 
+     * only have zeros for the first part of the UUID, so the ending must
+     * be included too.
+     * </p>
+     * 
+     * <p>Examples:
+     * </p>
+     * '22cacd8c-d0ff-4dd7-a8ba-2a6a8b46be92'
+     * ''
+     * 
+     * @param player
+     * @return
+     */
+	private static String getFileNamePrefixNew( Player player ) {
+		String uuid = player.getUUID().toString();
+		return uuid.substring( 0, 9 ) + 
+				uuid.substring( 25 );
+	}
+	
+	/**
+	 * <p>This function extracts the UUID fragment from player file names.
+	 * </p>
+	 * 
+	 * @param filename
+	 * @return
+	 */
+	public static String getFileNameUUIDFragment( String filename ) {
+		String uuid = null;
+		
+		if ( filename != null && filename.trim().length() > 0 ) {
+			
+			String uuidTmp = filename.replace("cache_", "").replace("player_", "");
+			
+			uuid = uuidTmp.indexOf("_") > 0 ?
+						uuidTmp.substring(0, uuidTmp.indexOf("_")) 
+						: uuidTmp;
+		}
+		return uuid;
+		
+//		String uuid = player.getUUID().toString();
+//		return uuid.substring( 0, 9 ) + 
+//				uuid.substring( 25 );
+	}
+	
+	/**
+     * <p>This is a helper function to ensure that the given file name is 
+     * always generated correctly and consistently.
+     * </p>
+     * 
+     * @return "player_" plus the least significant bits of the UID
+     */
+    public static String filenamePlayer( Player player )
+    {
+    	boolean useNewFormat = Prison.get().getPlatform()
+    				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+    	
+    	return useNewFormat ? filenamePlayerNew( player ) : filenamePlayerOld( player );
+    }
+    
+    public static String filenameCache( Player player )
+    {
+    	boolean useNewFormat = Prison.get().getPlatform()
+    			.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+    	
+    	return useNewFormat ? 
+    			filenameCacheNew( player ) : filenameCacheOld( player );
+    }
+    
+    /**
+     * Do not use.  Use 'filenameCache( player )'.
+     * 
+     * @param player
+     * @return
+     */
+    public static String filenameCacheNew( Player player ) {
+    	
+    	return "cache_" + getPlayerFileNameNewVersion( player );
+    }
+    /**
+     * Do not use.  Use 'filenameCache( player )'.
+     * 
+     * @param player
+     * @return
+     */
+    public static String filenameCacheOld( Player player ) {
+    	
+    	return getPlayerFileNameShortVersion( player );
+    }
+    
+    /**
+     * Do not use.  Use 'filenamePlayer( player )'.
+     * 
+     * @param player
+     * @return
+     */
+    public static String filenamePlayerNew( Player player )
+    {
+    	return "player_" + getPlayerFileNameNewVersion( player );
+    }
+    /**
+     * Do not use.  Use 'filenamePlayer( player )'.
+     * 
+     * @param player
+     * @return
+     */
+    public static String filenamePlayerOld( Player player )
+    {
+    	return "player_" + player.getUUID().getLeastSignificantBits() + FILE_SUFFIX_JSON;
+    }
+    
+	
+    /**
+     * <p>Do not use. This version is not compatible with bedrock players 
+     * because all bedrock UUIDs are just zeros when using this formmat.
+     * The newer format also includes the trailing 
+     * 
      * <p>This constructs a player file named based upon the UUID followed 
      * by the player's name.  This format is used so it's easier to identify
      * the correct player.
@@ -68,15 +206,20 @@ public class JsonFileIO
      * 
      * @return
      */
-    public static String getPlayerFileName( Player player ) {
+	@Deprecated
+    public static String getPlayerFileNameShortVersion( Player player ) {
     	
     	String UUIDString = player.getUUID().toString();
-		String uuidFragment = getFileNamePrefix( UUIDString );
+		String uuidFragment = getFileNamePrefixObsolete( UUIDString );
 		
 		return uuidFragment + "_" + player.getName() + FILE_SUFFIX_JSON;
     }
     
 	/**
+	 * <p>Do not use.  This does not support bedrock players because
+	 * the prefix of bedrock UUIDs is all zeros.
+	 * </p>
+	 * 
 	 * <p>This function returns the first 13 characters of the supplied
 	 * file name, or UUID String. The hyphen is around the 12 or 13th position, 
 	 * so it may or may not include it.
@@ -85,7 +228,8 @@ public class JsonFileIO
 	 * @param playerFileName
 	 * @return
 	 */
-	private static String getFileNamePrefix( String UUIDString ) {
+	@Deprecated
+	private static String getFileNamePrefixObsolete( String UUIDString ) {
 		return UUIDString.substring( 0, 14 );
 	}
 	

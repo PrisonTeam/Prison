@@ -440,7 +440,7 @@ public class TopNPlayers
 
 			TopNPlayersData topN = null;
 			
-			String key = player.getPlayerFileName();
+			String key = player.getUUID().toString();
 			if ( getTopNMap().containsKey(key) ) {
 				topN = getTopNMap().get(key);
 				
@@ -580,7 +580,7 @@ public class TopNPlayers
 		
 		TopNPlayersData topN = null;
 		
-		String key = rPlayer.getPlayerFileName();
+		String key = rPlayer.getUUID().toString();
 		
 		if ( getTopNMap().containsKey( key ) ) {
 			

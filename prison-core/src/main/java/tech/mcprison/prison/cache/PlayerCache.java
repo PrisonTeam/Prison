@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
@@ -132,36 +133,42 @@ public class PlayerCache {
 		if ( getPlayers().size() > 0 ) {
 
 
-			Set<String> keys = getPlayers().keySet();
-
+			Set<String> keys = null; 
+			
 			synchronized ( getPlayers() ) {
+				keys = new TreeSet<>( getPlayers().keySet() );
+			}
+
+			
+			for ( String key : keys ) {
+				// Remove the player from the cache and get the playerData:
+				PlayerCachePlayerData playerData = null; 
 				
-				for ( String key : keys ) {
-					// Remove the player from the cache and get the playerData:
-					PlayerCachePlayerData playerData = getPlayers().remove( key );
+				synchronized ( getPlayers() ) {
+					playerData = getPlayers().remove( key );
+				}
+				
+				if ( playerData != null ) {
 					
-					if ( playerData != null ) {
+					// Note: Since we are logging online time, then all players that are
+					//       in the cache are considered constantly dirty and needs to be
+					//       saved.
+					
+					// Since the disable function has been called, we can only assume the
+					// server is shutting down.  We need to save dirty player caches, but
+					// they must be done in-line so the shutdown process will wait for all
+					// players to be saved.
+					
+					getCacheFiles().toJsonFile( playerData );
+					
+					if ( playerData.getTask() != null ) {
 						
-						// Note: Since we are logging online time, then all players that are
-						//       in the cache are considered constantly dirty and needs to be
-						//       saved.
-						
-						// Since the disable function has been called, we can only assume the
-						// server is shutting down.  We need to save dirty player caches, but
-						// they must be done in-line so the shutdown process will wait for all
-						// players to be saved.
-						
-						getCacheFiles().toJsonFile( playerData );
-						
-						if ( playerData.getTask() != null ) {
+						synchronized( getTasks() ) {
 							
-							synchronized( getTasks() ) {
-								
-								getTasks().remove( playerData.getTask() );
-							}
-							
-							PrisonTaskSubmitter.cancelTask( playerData.getTask().getTaskId() );
+							getTasks().remove( playerData.getTask() );
 						}
+						
+						PrisonTaskSubmitter.cancelTask( playerData.getTask().getTaskId() );
 					}
 				}
 			}

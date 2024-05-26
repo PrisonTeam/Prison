@@ -93,7 +93,7 @@ public class SpigotPlayer
      */
     public String getPlayerFileName() {
     	
-    	return JsonFileIO.getPlayerFileName( this );
+    	return JsonFileIO.filenamePlayer( this );
     }
     
     @Override 
