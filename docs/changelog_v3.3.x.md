@@ -17,6 +17,13 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-05-27
 
 
+* **Friendly player files: changes to get everything working.**
+The command is able to convert player files, and to update the active player cache.
+The players do not need to be reloaded, since the system will automatically use the newer file format once the conversion is ran.
+The checks for which file format should be used is based upon the config.yml setting and if the conversion was ran.
+Update some notes on the `/ranks reload players`.
+
+
 * **New feature: Reloadable players.**
 Players can now be reloaded with the command: `/ranks reload players` or the alias '/prison reload players'
 If a player's RankPlayer file, as found in `plugins/Prison/data_storage/ranksDB/players/players_*.json', is modified manually, or replaced with a backup copy, then this command will reload all players for the server.

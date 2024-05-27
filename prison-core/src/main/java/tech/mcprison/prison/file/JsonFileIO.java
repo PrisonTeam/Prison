@@ -6,7 +6,7 @@ import java.io.FileFilter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.backups.PrisonSystemSettings;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.ModuleStatus;
@@ -131,19 +131,31 @@ public class JsonFileIO
      */
     public static String filenamePlayer( Player player )
     {
-    	boolean useNewFormat = Prison.get().getPlatform()
-    				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+    	boolean useNewFormat = useFriendlyUserFileNames();
     	
     	return useNewFormat ? filenamePlayerNew( player ) : filenamePlayerOld( player );
     }
     
     public static String filenameCache( Player player )
     {
-    	boolean useNewFormat = Prison.get().getPlatform()
-    			.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+    	boolean useNewFormat = useFriendlyUserFileNames();
     	
-    	return useNewFormat ? 
-    			filenameCacheNew( player ) : filenameCacheOld( player );
+    	return useNewFormat ? filenameCacheNew( player ) : filenameCacheOld( player );
+    }
+    
+    
+    /**
+     * <p>This function will check two things.  First will be the config settings within 
+     * 'config.yml' to see if the new format is enabled. Secondly, it checks to see if 
+     * the PrisonSystemSettings has recorded if the conversion has taken place.
+     * Both have to be true in order for this function to return a value of true.,
+     * </p>
+     * 
+     * @return
+     */
+    public static boolean useFriendlyUserFileNames() {
+    	
+    	return PrisonSystemSettings.useFriendlyUserFileNames();
     }
     
     /**

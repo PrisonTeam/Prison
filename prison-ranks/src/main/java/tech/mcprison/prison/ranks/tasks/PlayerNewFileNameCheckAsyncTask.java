@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.backups.PrisonSystemSettings;
-import tech.mcprison.prison.backups.PrisonSystemSettings.SystemSettingKey;
+import tech.mcprison.prison.backups.PrisonSystemSettings.SystemSettingsKey;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.output.Output;
@@ -33,12 +33,13 @@ public class PlayerNewFileNameCheckAsyncTask
 	public static void submitTaskSync( long delayTicks ) {
 		
 		boolean useNewFormat = Prison.get().getPlatform()
-				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+				.getConfigBooleanFalse( 
+						PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
 		
 		if ( useNewFormat ) {
 			
 			Output.get().logInfo( 
-					"&PlayerFileNameCheck Task: &aUsing Friendly User filenames: "
+					"&3PlayerFileNameCheck Task: &aUsing Friendly User filenames: "
 					+ "&dConversion file check async task submitted." );
 			
 			Output.get().logInfo( 
@@ -50,7 +51,11 @@ public class PlayerNewFileNameCheckAsyncTask
 			PrisonTaskSubmitter.runTaskLaterAsync( task, delayTicks );
 		}
 		else {
-			// Fail silently...
+			Output.get().logInfo( 
+					"&3layerFileNameCheck Task: &aFailed.  The 'config.yml' setting '%s' "
+					+ "is not enabled so this task cannot run.",
+					PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
+
 		}
 	}
 	
@@ -63,12 +68,14 @@ public class PlayerNewFileNameCheckAsyncTask
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		List<RankPlayer> players = pm.getPlayers();
 		
-		File playerRankpath = new File( new File( Prison.get().getDataFolder(), "ranksDb" ), "players");
-		File playerCachePath = new File( Prison.get().getDataFolder(), "playerCache" );
+		File dataStoragePath = new File( Prison.get().getDataFolder(), "data_storage" );
+		
+		File playerRankpath = new File( new File( dataStoragePath, "ranksDb" ), "players");
+		File playerCachePath = new File( dataStoragePath, "playerCache" );
 				
 		for (RankPlayer player : players) {
 			
-			// Rank player file:
+			// Rank player file directory:
 			if ( playerRankpath.exists() )
 			{
 				
@@ -88,7 +95,7 @@ public class PlayerNewFileNameCheckAsyncTask
 			}
 			
 			
-			// Player cache file:
+			// Player cache file directory:
 			if ( playerCachePath.exists() )
 			{
 				
@@ -148,7 +155,7 @@ public class PlayerNewFileNameCheckAsyncTask
 	public void saveStatusDetailLog( int changedPlayRankFiles, int changedCacheFiles ) {
 		// Need to log it:
 		TreeMap<String, Object> settings = PrisonSystemSettings.getInstance()
-									.getRootSetting( SystemSettingKey.PlayerFileNameUpdate );
+									.getRootSetting( SystemSettingsKey.PlayerFileNameUpdate );
 		
 		if ( !settings.containsKey( "converted") ) {
 			settings.put("converted", Boolean.TRUE );
@@ -174,7 +181,7 @@ public class PlayerNewFileNameCheckAsyncTask
 		PrisonSystemSettings.getInstance().save();
 		
 		// Unload the data:
-		PrisonSystemSettings.getInstance().unload();
+//		PrisonSystemSettings.getInstance().unload();
 		
 
 	}
@@ -182,22 +189,23 @@ public class PlayerNewFileNameCheckAsyncTask
 	public List<String> getStatusDetails() {
 		List<String> msg = new ArrayList<>();
 
-		String msgFmt = "  %-13s  %7s  %7s";
+		String msgFmt = "  %-22s  %7s  %7s";
 		
     	boolean useNewFormat = Prison.get().getPlatform()
-				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+				.getConfigBooleanFalse( PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
     	
     	TreeMap<String, Object> pfnUpdate = 
-    			PrisonSystemSettings.getInstance().getRootSetting( SystemSettingKey.PlayerFileNameUpdate );
+    			PrisonSystemSettings.getInstance().getRootSetting( SystemSettingsKey.PlayerFileNameUpdate );
 
 		// Unload the data:
-		PrisonSystemSettings.getInstance().unload();
+//		PrisonSystemSettings.getInstance().unload();
     	
     	boolean converted = !pfnUpdate.containsKey("converted") ?
     						false : (Boolean) pfnUpdate.get("converted");
     	
     	msg.add( "PlayerFileNameUpdate: status: " );
-    	msg.add( "  'prison-ranks.use-friendly-user-file-name': " + Boolean.toString(useNewFormat) );
+    	msg.add( "  '" + PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES + "': " + 
+    						Boolean.toString(useNewFormat) );
     	msg.add( "  converted: " + Boolean.toString(converted) );
     	
     	if ( converted ) {
@@ -207,7 +215,7 @@ public class PlayerNewFileNameCheckAsyncTask
 			
 			msg.add( String.format(msgFmt, "", "Changed", "Changed"));
 			msg.add( String.format(msgFmt, "Date", "P-Ranks", "P-Cache"));
-			msg.add( String.format(msgFmt, "-----------", "-------", "-------"));
+			msg.add( String.format(msgFmt, "-----------------", "-------", "-------"));
 			
 			for (Object logObj : logs) {
 				@SuppressWarnings("unchecked")

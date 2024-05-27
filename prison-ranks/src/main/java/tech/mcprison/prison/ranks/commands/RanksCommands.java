@@ -15,6 +15,7 @@ import java.util.Set;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.backups.PrisonSystemSettings;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
@@ -2411,7 +2412,7 @@ public class RanksCommands
     	List<String> msg = new PlayerNewFileNameCheckAsyncTask().getStatusDetails();
     	
     	boolean useNewFormat = Prison.get().getPlatform()
-				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
+				.getConfigBooleanFalse( PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
     	
 //    	msg.add( "" );
 
@@ -2421,10 +2422,12 @@ public class RanksCommands
     		
     		if ( !useNewFormat ) {
     			Output.get().logInfo( "&cCommand failure: &aBefore the player file names can be " +
-    					"checked, the setting '&cprison-ranks.use-friendly-user-file-name&a' " +
+    					"checked, the setting '&c%s&a' " +
     					"must be set to '&ctrue&a'.  Once enabled, this can not be " +
     					"reverted because the player files (Player Ranks and Player Caches) " +
-    					"could be corrupted.");
+    					"could be corrupted.",
+    					PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES
+    					);
     		}
     		else {
     			long delayTicks = 0;
@@ -2437,7 +2440,12 @@ public class RanksCommands
     
 
     @Command(identifier = "ranks reload players", 
-    		description = "Reloads all players.", 
+    		description = "Reloads all players. Use at your own risk. Prison is not responsible "
+    				+ "if player save files are manually changed, replaced, modified in anyway. "
+    				+ "Actual impact of reloading players is not 100% predictable, but  "
+    				+ "should be safe under most conditions. Before making any manual changes to "
+    				+ "any prison file, please run `/prison support backup save help` and make a backup "
+    				+ "copy of prison's settings.", 
     		aliases = "prison reload players",
     				onlyPlayers = false, permissions = "ranks.set")
     public void reloadPlayersCmd(CommandSender sender ){
