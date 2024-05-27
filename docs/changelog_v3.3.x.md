@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-05-26
+# 3.3.0-alpha.18a 2024-05-27
+
+
+* **RankPlayer files and PlayerCache files:** Update to how prison is managing these files, and how it's tracking more of the data that is added to the RankPlayer so that way the TopN process will not have to access the player cache.
+RankPlayer file changes will increase the frequency of updates on this file.  Used to be primarily when there would be a rank change but now it's tracking more information which will be updated when the player cache is saved or unloaded.
 
 
 * **Player file name update: The file names used for the rank players and the player cache are being updated.**

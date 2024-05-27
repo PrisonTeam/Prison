@@ -68,6 +68,16 @@ public class RankPlayer
     private UUID uid;
     
     
+
+	private long totalBlocks;
+
+	private long totalTokens;
+	private double currentBalance;
+	
+	private long lastSeenDate;
+	
+	
+    
     // This is used to track if a RankPlayer was saved, or needs to be saved.
     private transient boolean enableDirty = false;
     private transient boolean dirty = false;
@@ -246,7 +256,106 @@ public class RankPlayer
     	return uid;
     }
     
-    public boolean isEnableDirty() {
+    /**
+     * <p>Note that this is a passive field that is actually maintained in the 
+     * player cache. Use that instead of this field. This field is intended to
+     * be used within TopN stats when the player is offline so the player cache
+     * does not need to be loaded.
+     * </p>
+     * 
+     * @return
+     */
+    public long getTotalBlocksTemp() {
+		return totalBlocks;
+	}
+	public void setTotalBlocksTemp(long totalBlocks) {
+		this.totalBlocks = totalBlocks;
+	}
+
+    /**
+     * <p>Note that this is a passive field that is actually maintained in the 
+     * player cache. Use that instead of this field. This field is intended to
+     * be used within TopN stats when the player is offline so the player cache
+     * does not need to be loaded.
+     * </p>
+     * 
+     * @return
+     */
+	public long getTotalTokensTemp() {
+		return totalTokens;
+	}
+	public void setTotalTokensTemp(long currentTokens) {
+		this.totalTokens = currentTokens;
+	}
+
+    /**
+     * <p>Note that this is a passive field that is actually maintained in the 
+     * player cache. Use that instead of this field. This field is intended to
+     * be used within TopN stats when the player is offline so the player cache
+     * does not need to be loaded.
+     * </p>
+     * 
+     * @return
+     */
+	public double getCurrentBalanceTemp() {
+		return currentBalance;
+	}
+	public void setCurrentBalanceTemp(double currentBalance) {
+		this.currentBalance = currentBalance;
+	}
+
+    /**
+     * <p>Note that this is a passive field that is actually maintained in the 
+     * player cache. Use that instead of this field. This field is intended to
+     * be used within TopN stats when the player is offline so the player cache
+     * does not need to be loaded.
+     * </p>
+     * 
+     * @return
+     */
+	public long getLastSeenDateTemp() {
+		return lastSeenDate;
+	}
+	public void setLastSeenDateTemp(long lastSeenDate) {
+		this.lastSeenDate = lastSeenDate;
+	}
+	
+	public void updateTotalLastValues( PlayerCachePlayerData cacheData ) {
+		updateTotalLastValues( cacheData, true );
+	}
+	
+	public void updateTotalLastValues( PlayerCachePlayerData cacheData, boolean update ) {
+		
+		if ( cacheData != null ) {
+			
+			if ( cacheData.getBlocksTotal() != getTotalBlocksTemp() ) {
+				
+				setTotalBlocksTemp( cacheData.getBlocksTotal() );
+				setDirty( true );
+			}
+			
+			if ( cacheData.getLastSeenDate() != getLastSeenDateTemp() ) {
+				
+				setLastSeenDateTemp( cacheData.getLastSeenDate() );
+				setDirty( true );
+			}
+			
+			if ( cacheData.getTokensTotal() != getTotalTokensTemp() ) {
+				
+				setTotalTokensTemp( cacheData.getTokensTotal() );
+				setDirty( true );
+			}
+			
+			if ( update ) {
+				
+				// Save if dirty:
+				Prison.get().getPlatform().saveRankPlayer( this );
+			}
+		}
+	}
+	
+
+	public boolean isEnableDirty() {
 		return enableDirty;
 	}
 	public void setEnableDirty(boolean enableDirty) {
@@ -369,41 +478,12 @@ public class RankPlayer
     public String filenamePlayer()
     {
     	return JsonFileIO.filenamePlayer( this );
-    	
-//    	boolean useNewFormat = Prison.get().getPlatform()
-//    				.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
-//    	
-//    	return useNewFormat ? filenamePlayerNew() : filenamePlayerOld();
     }
     
     public String filenameCache()
     {
     	return JsonFileIO.filenameCache( this );
-    	
-//    	boolean useNewFormat = Prison.get().getPlatform()
-//    			.getConfigBooleanFalse( "prison-ranks.use-friendly-user-file-name" );
-//    	
-//    	return useNewFormat ? 
-//    			filenameCacheNew() : filenamePlayerOld();
     }
-    
-//    public String filenameCacheNew() {
-//    	
-//    	return "cache_" + JsonFileIO.getPlayerFileNameNewVersion( this );
-//    }
-//    public String filenameCacheOld() {
-//    	return JsonFileIO.getPlayerFileNameShortVersion( this );
-//    }
-//    
-//    public String filenamePlayerNew()
-//    {
-//    	return "player_" + JsonFileIO.getPlayerFileNameNewVersion( this );
-//    }
-//    
-//    public String filenamePlayerOld()
-//    {
-//    	return "player_" + uid.getLeastSignificantBits();
-//    }
     
     
 //    /**
@@ -1230,6 +1310,9 @@ public class RankPlayer
 			}
 			
 			setCachedRankPlayerBalance( null, results );
+			
+			// Store player's balance for stats such as TopN:
+			setCurrentBalanceTemp(results);
 		}
 		
 		return results;
@@ -1287,6 +1370,8 @@ public class RankPlayer
 		if ( economy != null ) {
 			results = economy.addBalance( this, amount );
 			addCachedRankPlayerBalance( null, amount );
+			
+			setCurrentBalanceTemp( economy.getBalance( this ) );
 		}
 		return results;
 	}
@@ -1510,7 +1595,12 @@ public class RankPlayer
 	
 	@Override
 	public PlayerCachePlayerData getPlayerCachePlayerData() {
-		return PlayerCache.getInstance().getOnlinePlayer( this );
+		PlayerCachePlayerData cacheData = PlayerCache.getInstance().getOnlinePlayer( this );
+		
+		// Do not update here... it gets called too many times:
+		//updateTotalLastValues( cacheData );
+		
+		return cacheData;
 	}
 	
 	@Override

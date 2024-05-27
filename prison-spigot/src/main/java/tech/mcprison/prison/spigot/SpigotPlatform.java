@@ -271,7 +271,36 @@ public class SpigotPlatform
         
     }
     
-    @Override public Optional<Player> getPlayer(String name) {
+    @Override
+    public RankPlayer getRankPlayer( UUID uuid, String name ) {
+    	RankPlayer rPlayer = null;
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+			
+			rPlayer = pm.getPlayer( uuid, name );
+			
+		}
+    	
+    	return rPlayer;
+    }
+    
+    @Override
+    public boolean saveRankPlayer( RankPlayer rPlayer ) {
+    	boolean results = false;
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		
+    		results = pm.savePlayer(rPlayer);
+    		
+    	}
+    	
+    	return results;
+    }
+    
+    @Override 
+    public Optional<Player> getPlayer(String name) {
     	
     	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
     	

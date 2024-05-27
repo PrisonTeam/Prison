@@ -1,6 +1,7 @@
 package tech.mcprison.prison.file;
 
 import java.io.File;
+import java.io.FileFilter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,6 +19,7 @@ public class JsonFileIO
 	public static final String FILE_PREFIX_BACKUP = ".backup_";
 	public static final String FILE_SUFFIX_BACKUP = ".bu";
 	public static final String FILE_SUFFIX_TEMP = ".temp";
+	public static final String FILE_SUFFIX_TXT = ".txt";
 	public static final String FILE_TIMESTAMP_FORMAT = "_yyyy-MM-dd_HH-mm-ss";
 
 	private final Gson gson;
@@ -238,6 +240,24 @@ public class JsonFileIO
 		String json = getGson().toJson( obj );
 				
 		return json;
+	}
+	
+	
+	public static FileFilter getPrisonFileFilter() {
+		
+		FileFilter fileFilter = (file) -> {
+			
+			String fname = file.getName();
+			boolean isTemp = fname.startsWith( FILE_PREFIX_BACKUP ) ||
+							 fname.endsWith( FILE_SUFFIX_BACKUP ) ||
+							 fname.endsWith( FILE_SUFFIX_TEMP ) ||
+							 fname.endsWith( FILE_SUFFIX_TXT );
+			
+			return !file.isDirectory() && !isTemp &&
+						fname.endsWith( FILE_SUFFIX_JSON );
+		};
+		
+		return fileFilter;
 	}
 	
 	/**

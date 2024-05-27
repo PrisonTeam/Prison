@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.google.gson.internal.LinkedTreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -83,16 +84,67 @@ public class RankPlayerFactory
 	        	}
 	        }
 	        
+	        
+	        
+	        if ( document.get("balance") != null ) {
+	        	
+	        	rankPlayer.setCurrentBalanceTemp( (Double) document.get("balance") );
+	        }
+	        
+	        if ( document.get("totalBlocks") != null ) {
+	     	        	
+	        	rankPlayer.setTotalBlocksTemp( getLong( rankPlayer.getName(), "totalBlocks", document ) );
+	        }
+	        
+	        if ( document.get("totalTokens") != null ) {
+	        	
+	        	rankPlayer.setTotalTokensTemp( getLong( rankPlayer.getName(), "totalTokens", document ) );
+	        }
+	        
+	        if ( document.get("lastSeenDate") != null ) {
+	        	
+	        	rankPlayer.setTotalBlocksTemp( getLong( rankPlayer.getName(), "lastSeenDate", document ) );
+	        }
+	        
+	        
 	        return rankPlayer;
 	    }
 
+	   private long getLong( String playerName, String field, Document document ) {
+		   	long value = 0L;
+        	
+		   	Object obj = document.get(field);
+		   	if ( obj == null ) {
+		   	}
+        	if ( obj instanceof Long ) {
+        		value = (Long) obj;
+        	}
+        	else if ( obj instanceof Double ) {
+        		Double duble = (Double) obj;
+        		value = duble.longValue();
+        	}
+        	
+        	return value;
+	   }
 	    public static Document toDocument( RankPlayer rankPlayer ) {
+	    	
+	    	// Update some stats from the playerCache:
+	    	PlayerCachePlayerData cacheData = rankPlayer.getPlayerCache().getOnlinePlayerCached(rankPlayer);
+	    	rankPlayer.updateTotalLastValues( cacheData , false);
+	    	
 	        Document ret = new Document();
 	        ret.put("uid", rankPlayer.getUUID());
 	        ret.put("ranks", rankPlayer.getRanksRefs() );
 //	        ret.put("prestige", this.prestige);
 	        
 	        ret.put("names", rankPlayer.getNames());
+	        
+	        
+	        ret.put("balance", Double.valueOf( rankPlayer.getCurrentBalanceTemp() ));
+	        ret.put("totalBlocks", Long.valueOf( rankPlayer.getTotalBlocksTemp() ));
+	        ret.put("totalTokens", Long.valueOf( rankPlayer.getTotalTokensTemp() ));
+	        ret.put("lastSeenDate", Long.valueOf( rankPlayer.getLastSeenDateTemp() ));
+	        
 
 //	        ret.put("blocksMined", rankPlayer.getBlocksMined() );
 	        return ret;

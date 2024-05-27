@@ -1,6 +1,7 @@
 package tech.mcprison.prison.file;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,9 +56,13 @@ public class FileCollection
     public List<Document> getAll() {
     	List<Document> allDocs = new ArrayList<>();
     	
+    	FileFilter fFilter = JsonFileIO.getPrisonFileFilter();
+    	
+    	
     	// Each folder in the root directory is its own database.
     	// We'll initialize each of them here.
-    	File[] collectionFiles = this.collDir.listFiles((dir, name) -> name.endsWith(".json"));
+    	File[] collectionFiles = this.collDir.listFiles( fFilter );
+//    	File[] collectionFiles = this.collDir.listFiles((dir, name) -> name.endsWith(".json"));
     	if (collectionFiles != null) {
     		for (File dbFile : collectionFiles) {
     			if ( isDeleted( dbFile ) ) {
@@ -80,7 +85,9 @@ public class FileCollection
 
     @Override 
     public Optional<Document> get(String key) {
-    	File dbFile = new File(collDir, key + ".json");
+    	
+    	String suffix = key.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
+    	File dbFile = new File(collDir, key + suffix);
     	Document doc = (Document) readJsonFile(dbFile, new Document());
     	
         return Optional.ofNullable(doc);
@@ -95,21 +102,24 @@ public class FileCollection
     @Override 
     public void save(String filename, Document document)
     {
-    	File dbFile = new File(collDir, filename + ".json");
+    	String suffix = filename.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
+    	File dbFile = new File(collDir, filename + suffix);
     	saveJsonFile( dbFile, document );
     }
     
     @Override 
     public boolean delete(String name)
     {
-    	File dbFile = new File(collDir, name + ".json");
+    	String suffix = name.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
+    	File dbFile = new File(collDir, name + suffix);
     	return virtualDelete( dbFile );
     }
     
     @Override 
     public File backup( String name )
     {
-    	File dbFile = new File(collDir, name + ".json");
+    	String suffix = name.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
+    	File dbFile = new File(collDir, name + suffix);
     	File backupFile = virtualBackup( dbFile );
     	
     	return backupFile;

@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.backups.PrisonSystemSettings;
 import tech.mcprison.prison.backups.PrisonSystemSettings.SystemSettingKey;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -102,6 +103,18 @@ public class PlayerNewFileNameCheckAsyncTask
 					oldCacheFile.renameTo(newCacheFile);
 //						Files.move( oldCacheFile, newCacheFile );
 					changedCacheFiles++;
+					
+					// The player's cache data object contains a File object pointing to
+					// the old cache file, which needs to be replaced with the new
+					// cache File object, otherwise the player cache will keep trying to
+					// write to the old file name.
+					// If the player cache does not contain this player, then it will not
+					// be loaded. If the player is loaded later on, then it will load
+					// from the newly renamed files.
+					PlayerCachePlayerData pCache = player.getPlayerCache().getOnlinePlayerCached( player );
+					if ( pCache != null ) {
+						pCache.setPlayerFile( newCacheFile );
+					}
 				}
 			}
  		}

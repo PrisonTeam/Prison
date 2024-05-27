@@ -66,7 +66,11 @@ public class PlayerCacheSaveAllPlayersTask
 		
 		Map<String, PlayerCachePlayerData> syncMap = pCache.getPlayers();
 		
-		Set<String> keys = new TreeSet<>( syncMap.keySet() );
+		Set<String> keys = null;
+		
+		synchronized ( syncMap ) {
+			keys = new TreeSet<>( syncMap.keySet() );
+		}
 		
 		for ( String key : keys )
 		{

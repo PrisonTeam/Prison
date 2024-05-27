@@ -73,6 +73,12 @@ public interface Platform {
     public void getWorldLoadErrors( ChatDisplay display );
     
     
+	public RankPlayer getRankPlayer(UUID uuid, String name);
+	
+	
+	public boolean saveRankPlayer(RankPlayer rPlayer);
+	
+	
     /**
      * Returns the player with the specified name.
      */

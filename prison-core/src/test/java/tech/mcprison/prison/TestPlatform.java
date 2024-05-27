@@ -79,6 +79,16 @@ public class TestPlatform implements Platform {
     	
     }
     
+    @Override
+	public RankPlayer getRankPlayer(UUID uuid, String name) {
+    	return null;
+    }
+    
+    @Override
+    public boolean saveRankPlayer(RankPlayer rPlayer) {
+    	return false;
+    }
+    
     @Override 
     public Optional<Player> getPlayer(String name) {
         return null;

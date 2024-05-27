@@ -266,6 +266,24 @@ public class PlayerCache {
 				
 		return playerData;
 	}
+	/**
+	 * <p>This function will only return a player cache object if it's 
+	 * already in the player cache.  If the player is not in the cache,
+	 * then this will return a null, and the player will not be loaded.
+	 * </p>
+	 * 
+	 * <p>Any player that is not in the cache will not be loaded because of
+	 * the usage of this function.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public PlayerCachePlayerData getOnlinePlayerCached( Player player ) {
+		PlayerCachePlayerData playerData = getPlayer( player, false );
+		
+		return playerData;
+	}
 	
 	private PlayerCachePlayerData getPlayer( Player player ) {
 		return getPlayer( player, true );
