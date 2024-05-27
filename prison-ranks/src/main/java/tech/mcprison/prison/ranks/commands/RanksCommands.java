@@ -1,5 +1,6 @@
 package tech.mcprison.prison.ranks.commands;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2431,6 +2432,35 @@ public class RanksCommands
     		}
     	}
     	
+    }
+    
+    
+
+    @Command(identifier = "ranks reload players", 
+    		description = "Reloads all players.", 
+    		aliases = "prison reload players",
+    				onlyPlayers = false, permissions = "ranks.set")
+    public void reloadPlayersCmd(CommandSender sender ){
+    	
+
+    	try {
+			PrisonRanks.getInstance().getPlayerManager().reloadAllPlayers();
+			
+			String msg = String.format(
+					"&3Reload Players: Successful. Maybe..."  );
+			
+			sender.sendMessage(msg);
+			
+		} 
+    	catch (IOException e) {
+			String msg = String.format(
+					"&cReload Players: Failed. [%s]",
+					e.getMessage() );
+			
+			sender.sendMessage(msg);
+		}
+
+
     }
     
     private boolean contains( String search, String... values ) {

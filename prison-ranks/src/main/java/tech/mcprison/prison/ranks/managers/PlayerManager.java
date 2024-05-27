@@ -36,6 +36,7 @@ import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
+import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
@@ -2202,6 +2203,52 @@ public class PlayerManager
     	// Regenerate the translated placeholders:
     	getTranslatedPlaceHolderKeys();
     }
+
+	public void unloadAllPlayers() {
+
+		for (RankPlayer player : getPlayers() ) {
+			
+			if ( player.isDirty() ) {
+				savePlayer(player);
+			}
+		}
+		
+		getPlayers().clear();
+		getPlayersByName().clear();
+		
+		getPlayerErrors().clear();
+	}
+
+
+	public void loadAllPlayers() 
+			throws IOException {
+		Output.get().logInfo( "Ranks: Loading Players..." );
+
+		loadPlayers();
+
+
+
+        // Hook up all players to the ranks:
+        //  - parameter checkPlayerBalances is set to false
+        connectPlayersToRanks( false );
+        
+        Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
+	}
+
+	
+	public void reloadAllPlayers() 
+			throws IOException {
+		
+		synchronized ( getPlayers() ) {
+			
+			unloadAllPlayers();
+			
+			
+			loadAllPlayers();
+			
+			reloadPlaceholders();
+		}
+	}
 
 
 }

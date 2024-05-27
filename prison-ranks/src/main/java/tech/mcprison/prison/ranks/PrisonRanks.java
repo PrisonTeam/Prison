@@ -187,8 +187,9 @@ public class PrisonRanks
 
         playerManager = new PlayerManager(initCollection("players"));
         
+        
         try {
-            playerManager.loadPlayers();
+        	playerManager.loadAllPlayers();
         } 
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
@@ -200,14 +201,6 @@ public class PrisonRanks
         	getStatus().addMessage( prisonRanksFailedLoadingPlayersMsg( e.getMessage() ));
         	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
-
-
-        // Hook up all players to the ranks:
-        //  - parameter checkPlayerBalances is set to false
-        playerManager.connectPlayersToRanks( false );
-        
-        Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
-        
   
         
         // Load up the commands

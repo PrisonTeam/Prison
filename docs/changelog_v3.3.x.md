@@ -17,6 +17,15 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-05-27
 
 
+* **New feature: Reloadable players.**
+Players can now be reloaded with the command: `/ranks reload players` or the alias '/prison reload players'
+If a player's RankPlayer file, as found in `plugins/Prison/data_storage/ranksDB/players/players_*.json', is modified manually, or replaced with a backup copy, then this command will reload all players for the server.
+When this command is issued, prison will attempt to save all changed player files and remove them from the rank's PlayerManager.  Once all players have been removed, the process of reloading them will begin.
+There is a chance there could be a currently running process that is using the older copy of the player's RankPlayer obect/file.  This will not terminate any process, or swap usage of an object in mid-stream.
+All risks of using this new feature are placed on the individual using this command since it is unknown how some operations and tasks may respond.  That said, this really should have minimal to no impact.
+This feature should not be used frequently; it should only be used on the rare occasion.  If this is used frequently, then perhaps there is a larger over arching issue that needs to be addressed.
+
+
 * **RankPlayer files and PlayerCache files:** Update to how prison is managing these files, and how it's tracking more of the data that is added to the RankPlayer so that way the TopN process will not have to access the player cache.
 RankPlayer file changes will increase the frequency of updates on this file.  Used to be primarily when there would be a rank change but now it's tracking more information which will be updated when the player cache is saved or unloaded.
 
