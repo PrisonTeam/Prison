@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Location;
@@ -13,7 +14,7 @@ public class BlockUtils
 {
 	private static BlockUtils instance;
 	
-	private HashMap<Location, UnbreakableBlockData> unbreakableBlocks;
+	private HashMap<String, UnbreakableBlockData> unbreakableBlocks;
 	private HashMap<Mine, HashSet<UnbreakableBlockData>> unbreakableBlocksByMine;
 	
 	
@@ -42,14 +43,32 @@ public class BlockUtils
 		if ( block != null ) {
 			PrisonBlock pBlock = block.getPrisonBlock();
 			results = isUnbreakable( pBlock );
+			
+//			dumpUnbreakables( block, results );
 		}
 		return results;
 	}
 	
+//	private void dumpUnbreakables(SpigotBlock block, boolean unbreakable) {
+//		StringBuilder sb = new StringBuilder();
+//		
+//		sb.append( String.format( 
+//				"Unbreakable dump: unbreakable: %s   targetBlockLocation: %s {br}     unbreakables: ",
+//				Boolean.toString(unbreakable),
+//				block.getLocation().toWorldCoordinates() ));
+//		
+//		for (String loc : unbreakableBlocks.keySet() ) {
+//			sb.append( String.format( "%s ", loc));
+//			
+//		}
+//		
+//		Output.get().logInfo( sb.toString() );
+//	}
+
 	public boolean isUnbreakable( PrisonBlock block ) {
 		
 		return block == null || block.getLocation() == null ? false : 
-						getUnbreakableBlocks().containsKey( block.getLocation() );
+						getUnbreakableBlocks().containsKey( block.getLocation().toWorldCoordinates() );
 	}
 	
 	
@@ -69,7 +88,7 @@ public class BlockUtils
 		if ( location != null ) {
 			data = new UnbreakableBlockData( location, block, mine );
 			
-			getUnbreakableBlocks().put( data.getKey(), data );
+			getUnbreakableBlocks().put( data.getKey().toWorldCoordinates(), data );
 			
 			if ( mine != null ) {
 				if ( !getUnbreakableBlocksByMine().containsKey( mine ) ) {
@@ -97,7 +116,7 @@ public class BlockUtils
 			HashSet<UnbreakableBlockData> blocks = getUnbreakableBlocksByMine().get( mine );
 
 			for ( UnbreakableBlockData data : blocks ) {
-				getUnbreakableBlocks().remove( data.getKey() );
+				getUnbreakableBlocks().remove( data.getKey().toWorldCoordinates() );
 
 				if ( data.getTaskId() > 0 ) {
 					// If task is still queued to run, cancel it:
@@ -111,13 +130,13 @@ public class BlockUtils
 	}
 	
 	public void removeUnbreakable( Location location ) {
-		if ( location != null && getUnbreakableBlocks().containsKey( location ) ) {
+		if ( location != null && getUnbreakableBlocks().containsKey( location.toWorldCoordinates() ) ) {
 			
 			synchronized ( BlockUtils.class ) {
 				
-				if ( getUnbreakableBlocks().containsKey( location ) ) {
+				if ( getUnbreakableBlocks().containsKey( location.toWorldCoordinates() ) ) {
 					
-					UnbreakableBlockData data = getUnbreakableBlocks().remove( location );
+					UnbreakableBlockData data = getUnbreakableBlocks().remove( location.toWorldCoordinates() );
 					
 					if ( data != null && data.getMine() != null && 
 							getUnbreakableBlocksByMine().containsKey( data.getMine() )) {
@@ -140,7 +159,7 @@ public class BlockUtils
 		}
 	}
 	
-	public HashMap<Location, UnbreakableBlockData> getUnbreakableBlocks() {
+	public HashMap<String, UnbreakableBlockData> getUnbreakableBlocks() {
 		return unbreakableBlocks;
 	}
 

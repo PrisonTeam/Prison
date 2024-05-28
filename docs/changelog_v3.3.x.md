@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-05-27
+# 3.3.0-alpha.18a 2024-05-28
+
+
+* **Block utils: Unbreakable blocks breaking.**  There was an issue with the unbreakable blocks not identifying a collection with a Location for a key.  Changed the key to a String using the world-coordinates and it fixed the issue.
 
 
 * **Friendly player files: changes to get everything working.**
