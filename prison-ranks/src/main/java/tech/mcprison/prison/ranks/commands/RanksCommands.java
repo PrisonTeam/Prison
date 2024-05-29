@@ -53,6 +53,7 @@ import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
 import tech.mcprison.prison.ranks.tasks.PlayerNewFileNameCheckAsyncTask;
+import tech.mcprison.prison.ranks.tasks.PlayerNewFileNameCheckAsyncTask.ReportMode;
 import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Text;
 
@@ -2405,11 +2406,19 @@ public class RanksCommands
 			@Arg(name = "action", def = "status", 
 				description = "Only shows the PrisonSystemStatus for the "
 						+ "'PlayerFileNameUpdate' and will not try to run the "
-						+ "update. Default: 'status'. [status, run]") String action
+						+ "update. Default: 'status'. [status, run, cache, player]") 
+    					String action,
+			@Arg(name = "page", def = "1",
+					description = "If a report of 'cache' or 'player', then page is used if there " + 
+							"are more than 25 players. Default = 1. Valid values 1 and higher. [ >= 1]" )
+    					int page
     		) {
 
+    	ReportMode reportMode = ReportMode.fromString( action );
+    	
     	// Get the PrisonSystemSettings for the PlayerFileNameUpdate and format the results:
-    	List<String> msg = new PlayerNewFileNameCheckAsyncTask().getStatusDetails();
+    	PlayerNewFileNameCheckAsyncTask task = new PlayerNewFileNameCheckAsyncTask();
+    	List<String> msg = task.getStatusDetails();
     	
     	boolean useNewFormat = Prison.get().getPlatform()
 				.getConfigBooleanFalse( PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
@@ -2418,7 +2427,11 @@ public class RanksCommands
 
     	sender.sendMessage(msg);
     	
-    	if ( action != null && action.trim().equalsIgnoreCase("run")) {
+    	if ( reportMode == ReportMode.cache || reportMode == ReportMode.players ) {
+    		
+    		task.playerConverterReport( reportMode, page );
+    	}
+    	else if ( reportMode == ReportMode.run ) {
     		
     		if ( !useNewFormat ) {
     			Output.get().logInfo( "&cCommand failure: &aBefore the player file names can be " +
@@ -2467,8 +2480,29 @@ public class RanksCommands
 			
 			sender.sendMessage(msg);
 		}
-
-
+    }
+    
+    
+    @Command(identifier = "ranks reload ranksLaddersAndPlayers", 
+    		description = "Reloads all Ranks and then Ladders. Also reloads players too so they are "
+    				+ "properly hooked in to the newly loaded ranks and ladders. "
+    				+ "Use at your own risk. Prison is not responsible "
+    				+ "if rank and ladder save files are manually changed, replaced, modified in anyway. "
+    				+ "Actual impact of reloading ladders and ranks are not 100% predictable, but  "
+    				+ "should be safe under most conditions. Before making any manual changes to "
+    				+ "any prison file, please run `/prison support backup save help` and make a backup "
+    				+ "copy of prison's settings.", 
+    				aliases = "prison reload ranksLaddersAndPlayers",
+    				onlyPlayers = false, permissions = "ranks.set")
+    public void reloadLaddersAndRanksCmd(CommandSender sender ){
+    	
+    	
+    	PrisonRanks.getInstance().reloadRanksAndLadders();
+    	
+    	String msg = String.format(
+    			"&3Reload ranks, ladders and players: Successful. Maybe..."  );
+    	    	
+    	sender.sendMessage(msg);
     }
     
     private boolean contains( String search, String... values ) {

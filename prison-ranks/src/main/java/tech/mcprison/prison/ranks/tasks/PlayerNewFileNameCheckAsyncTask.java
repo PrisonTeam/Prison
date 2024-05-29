@@ -26,6 +26,26 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 public class PlayerNewFileNameCheckAsyncTask
 	implements PrisonRunnable {
 
+	public enum ReportMode {
+		status,
+		run,
+		players,
+		cache;
+		
+		public static ReportMode fromString( String reportMode ) {
+			ReportMode results = players;
+			
+			for (ReportMode mode : values()) {
+				if ( reportMode != null && mode.name().equalsIgnoreCase(reportMode) ) {
+					results = mode;
+					break;
+				}
+			}
+			
+			return results;
+		}
+	}
+	
 	public PlayerNewFileNameCheckAsyncTask() {
 		super();
 	}
@@ -239,4 +259,105 @@ public class PlayerNewFileNameCheckAsyncTask
     	return msg;
 	}
 
+	
+	/**
+	 * <p>This generates a report in the console that will list all players in prison
+	 * and their old and new file names for a given mode.
+	 * </p> 
+	 * 
+	 * @param page
+	 */
+	public void playerConverterReport( ReportMode mode, int page ) {
+		
+		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+		List<RankPlayer> players = pm.getPlayers();
+		
+		
+		int pageSize = 25;
+		
+		if ( page <= 1 ) {
+			page = 1;
+		}
+		
+		
+		int pageStart = (page - 1) * pageSize;
+		int pageEnd = pageStart + pageSize;
+
+		
+		if ( pageEnd >= players.size() ) {
+			pageEnd = players.size() - 1;
+			
+			pageStart = pageEnd - pageSize;
+			
+			if ( pageStart < 0 ) {
+				pageStart = 0;
+			}
+		}
+		
+		String pattern = "%4s %-6s  %-5s  %-5s  %-60s  %-60s \n";
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Headers:
+		sb.append( String.format( pattern, "Plyr", "Report", "Using", "Using", "", "" ) );
+		sb.append( String.format( pattern, "Nmbr", "Mode",   "Old",   "new", "Old Filename", "New Filename" ) );
+		sb.append( String.format( pattern, "----", "------", "-----", "-----", 
+				"--------- --------- --------- --------- --------- ---------", 
+				"--------- --------- --------- --------- --------- ---------" ) );
+		
+		File dataStoragePath = new File( Prison.get().getDataFolder(), "data_storage" );
+		
+		File playerRankpath = new File( new File( dataStoragePath, "ranksDb" ), "players");
+		File playerCachePath = new File( dataStoragePath, "playerCache" );
+				
+		
+		for ( int i = pageStart; i <= pageEnd; i++ ) {
+			
+			RankPlayer player = players.get(i);
+		
+			// Rank player file directory:
+			if ( mode == ReportMode.players ) {
+				
+				String oldFilename = JsonFileIO.filenamePlayerOld( player );
+				String newFilename = JsonFileIO.filenamePlayerNew( player );
+				
+				File oldPlayerFile = new File( playerRankpath, oldFilename );
+				File newPlayerFile = new File( playerRankpath, newFilename );
+				
+				sb.append( String.format( pattern,
+						Integer.toString(i),
+						mode.name(), 
+						oldPlayerFile.exists(), 
+						newPlayerFile.exists(), 
+						oldFilename, newFilename ) );
+			}
+			
+			
+			// Player cache file directory:
+			if ( mode == ReportMode.cache ) {
+				
+				String oldFilename = JsonFileIO.filenameCacheOld( player );
+				String newFilename = JsonFileIO.filenameCacheNew( player );
+				
+				File oldCacheFile = new File( playerCachePath, oldFilename );
+				File newCacheFile = new File( playerCachePath, newFilename );
+				
+				sb.append( String.format( pattern, 
+						Integer.toString(i),
+						mode.name(), 
+						oldCacheFile.exists(), 
+						newCacheFile.exists(), 
+						oldFilename, newFilename ) );
+			}
+			
+			
+ 		}
+		
+		Output.get().logInfo( 
+				"&3Prison Player's new file name format report: \n" +
+						"%s",
+						sb.toString() );
+		
+	}
+	
 }
