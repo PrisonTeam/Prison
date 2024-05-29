@@ -80,13 +80,13 @@ public class LadderManager
      * @param fileKey The key that this ladder is stored as. This is case-sensitive.
      * @throws IOException If the file could not be read or does not exist.
      */
-    public void loadLadder(String fileKey) throws IOException {
+    public void loadLadder(String fileKey, RankManager rankManager) throws IOException {
         
     	Document doc = collection.get(fileKey).orElseThrow(IOException::new);
         
         RankLadderFactory rlFactory = new RankLadderFactory();
         
-        RankLadder ladder = rlFactory.createRankLadder(doc, prisonRanks);
+        RankLadder ladder = rlFactory.createRankLadder(doc, rankManager);
         loadedLadders.add(ladder);
         
         // Will be dirty if load a ladder and the rank name does not exist and it adds them:
@@ -100,13 +100,14 @@ public class LadderManager
      *
      * @throws IOException If the folder could not be found, or if a file could not be read or does not exist.
      */
-    public void loadLadders() throws IOException {
+    public void loadLadders( RankManager rankManager ) 
+    		throws IOException {
         List<Document> documents = collection.getAll();
         
         final RankLadderFactory rlFactory = new RankLadderFactory();
         
         documents.forEach(document -> loadedLadders.add(
-        						rlFactory.createRankLadder(document, prisonRanks)) );
+        						rlFactory.createRankLadder(document, rankManager)) );
         
         for ( RankLadder ladder : loadedLadders ) {
         	// Will be dirty if load a ladder and the rank name does not exist and it adds them:
@@ -384,6 +385,82 @@ public class LadderManager
 			}
 		}
 		return results;
+	}
+	
+    /**
+     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
+     */
+    public void createDefaultLadder() {
+        if ( getLadder(LadderManager.LADDER_DEFAULT) == null ) {
+            RankLadder rankLadder = createLadder(LadderManager.LADDER_DEFAULT);
+
+            if ( rankLadder == null ) {
+            	
+            	String failureMsg = prisonRanks.prisonRanksFailureCreateDefaultLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                prisonRanks.getStatus().toFailed( failureMsg );
+                return;
+            }
+
+            if ( !save( rankLadder ) ) {
+            	
+            	String failureMsg = prisonRanks.prisonRanksFailureSavingDefaultLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                prisonRanks.getStatus().toFailed( failureMsg );
+            }
+        }
+
+        if ( getLadder(LadderManager.LADDER_PRESTIGES) == null ) {
+            RankLadder rankLadder = createLadder(LadderManager.LADDER_PRESTIGES);
+
+            if ( rankLadder == null ) {
+
+            	String failureMsg = prisonRanks.prisonRanksFailureCreatePrestigeLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                prisonRanks.getStatus().toFailed( failureMsg );
+                return;
+            }
+
+            if ( !save( rankLadder ) ) {
+
+            	String failureMsg = prisonRanks.prisonRanksFailureSavingPrestigeLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                prisonRanks.getStatus().toFailed( failureMsg );
+            }
+        }
+
+    }
+
+
+	
+	public List<RankLadder> getLoadedLadders() {
+		return loadedLadders;
+	}
+	public void setLoadedLadders(List<RankLadder> loadedLadders) {
+		this.loadedLadders = loadedLadders;
+	}
+
+	
+	private void resetAllLadders() {
+		
+		this.loadedLadders = new ArrayList<>();
+	}
+	
+	public void reloadAllLadders( RankManager rankManager ) 
+			throws IOException {
+		Output.get().logInfo( "Ranks: Loading Ladders..." );
+
+		resetAllLadders();
+		
+		loadLadders( rankManager );
+
+		
+        Output.get().logInfo( "Ranks: Finished Loading Ladders." );
+
 	}
 	
 }

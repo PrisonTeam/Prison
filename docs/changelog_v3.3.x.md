@@ -1,4 +1,4 @@
-[Prison Documents - Table of Contents](prison_docs_000_toc.md)
+[Prison Documents - Table of Co9ntents](prison_docs_000_toc.md)
 
 ## Prison Build Logs for v3.3.x
 
@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-05-28
+# 3.3.0-alpha.18a 2024-05-29
+
+
+* **New feature: Reloadable ranks and ladders.**
 
 
 * **Block utils: Unbreakable blocks breaking.**  There was an issue with the unbreakable blocks not identifying a collection with a Location for a key.  Changed the key to a String using the world-coordinates and it fixed the issue.

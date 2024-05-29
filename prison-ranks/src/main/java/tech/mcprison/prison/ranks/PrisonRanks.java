@@ -149,7 +149,7 @@ public class PrisonRanks
 
         ladderManager = new LadderManager(initCollection("ladders"), this);
         try {
-            ladderManager.loadLadders();
+            ladderManager.loadLadders( getRankManager() );
         } 
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
@@ -158,7 +158,7 @@ public class PrisonRanks
 
             logStartupMessageError( prisonRanksFailureLoadingLadderMsg( e.getMessage() ) );
         }
-        createDefaultLadder();
+        ladderManager.createDefaultLadder();
 
         
 //        // Set the rank relationships:
@@ -270,6 +270,48 @@ public class PrisonRanks
         
     }
 
+    
+    public boolean reloadRanksAndLadders() {
+    	boolean success = false;
+    	
+    	try {
+    		
+    		// New temp RankManager to reload ranks:
+    		RankManager rManager = new RankManager(initCollection("ranks"));
+    		
+    		rManager.reloadAllRanks();
+
+            // Load up the ladders
+
+    		// New temp LadderManager to reload ladders:
+            LadderManager lManager = new LadderManager(initCollection("ladders"), this);
+            
+            // NOTE: This instance of the LadderManager requires the new temp instance of the rank manager:
+            lManager.reloadAllLadders( rManager );
+           
+            
+            // Now replace all rank data and ladder data with the newly loaded data:
+            getRankManager().setLoadedRanks( rManager.getRanks() );
+            getRankManager().setRanksByName( rManager.getRanksByName() );
+            getRankManager().setRanksById( rManager.getRanksById() );
+            
+            getLadderManager().setLoadedLadders( lManager.getLoadedLadders() );
+			
+            
+            // Must reload all players now, so they are properly aligned with the ranks and ladders:
+            getPlayerManager().reloadAllPlayers();
+            
+            
+		} catch (IOException e) {
+			String msg = String.format(
+					"PrisonRanks: reloadRanksAndLadders: Failed. [%s]",
+					e.getMessage());
+			
+			Output.get().logInfo( msg );
+		}
+    	
+    	return success;
+    }
 
 	public void checkAllPlayersForJoin()
 	{
@@ -404,54 +446,54 @@ public class PrisonRanks
         return collectionOptional.orElseThrow(RuntimeException::new);
     }
 
-    /**
-     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
-     */
-    private void createDefaultLadder() {
-        if ( ladderManager.getLadder(LadderManager.LADDER_DEFAULT) == null ) {
-            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_DEFAULT);
-
-            if ( rankLadder == null ) {
-            	
-            	String failureMsg = prisonRanksFailureCreateDefaultLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
-                super.getStatus().toFailed( failureMsg );
-                return;
-            }
-
-            if ( !ladderManager.save( rankLadder ) ) {
-            	
-            	String failureMsg = prisonRanksFailureSavingDefaultLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
-                super.getStatus().toFailed( failureMsg );
-            }
-        }
-
-        if ( ladderManager.getLadder(LadderManager.LADDER_PRESTIGES) == null ) {
-            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_PRESTIGES);
-
-            if ( rankLadder == null ) {
-
-            	String failureMsg = prisonRanksFailureCreatePrestigeLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
-                super.getStatus().toFailed( failureMsg );
-                return;
-            }
-
-            if ( !ladderManager.save( rankLadder ) ) {
-
-            	String failureMsg = prisonRanksFailureSavingPrestigeLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
-                super.getStatus().toFailed( failureMsg );
-            }
-        }
-
-    }
-
+//    /**
+//     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
+//     */
+//    private void createDefaultLadder() {
+//        if ( ladderManager.getLadder(LadderManager.LADDER_DEFAULT) == null ) {
+//            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_DEFAULT);
+//
+//            if ( rankLadder == null ) {
+//            	
+//            	String failureMsg = prisonRanksFailureCreateDefaultLadderMsg();
+//            	
+//            	Output.get().logError( failureMsg );
+//                super.getStatus().toFailed( failureMsg );
+//                return;
+//            }
+//
+//            if ( !ladderManager.save( rankLadder ) ) {
+//            	
+//            	String failureMsg = prisonRanksFailureSavingDefaultLadderMsg();
+//            	
+//            	Output.get().logError( failureMsg );
+//                super.getStatus().toFailed( failureMsg );
+//            }
+//        }
+//
+//        if ( ladderManager.getLadder(LadderManager.LADDER_PRESTIGES) == null ) {
+//            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_PRESTIGES);
+//
+//            if ( rankLadder == null ) {
+//
+//            	String failureMsg = prisonRanksFailureCreatePrestigeLadderMsg();
+//            	
+//            	Output.get().logError( failureMsg );
+//                super.getStatus().toFailed( failureMsg );
+//                return;
+//            }
+//
+//            if ( !ladderManager.save( rankLadder ) ) {
+//
+//            	String failureMsg = prisonRanksFailureSavingPrestigeLadderMsg();
+//            	
+//            	Output.get().logError( failureMsg );
+//                super.getStatus().toFailed( failureMsg );
+//            }
+//        }
+//
+//    }
+//
 
 
     private void logStartupMessageError( String message ) {

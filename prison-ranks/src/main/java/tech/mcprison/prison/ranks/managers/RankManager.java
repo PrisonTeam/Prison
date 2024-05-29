@@ -719,7 +719,8 @@ public class RankManager
     	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
     	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
     	PlaceholderAttributeText attributeText = identifier.getAttributeText();
-    	PlaceholderAttributeTime attributeTime = identifier.getAttributeTime();
+    	@SuppressWarnings("unused")
+		PlaceholderAttributeTime attributeTime = identifier.getAttributeTime();
 		
 		int sequence = identifier.getSequence();
     	
@@ -1590,11 +1591,11 @@ public class RankManager
 		return loadedRanks;
 	}
 
-	private TreeMap<String, Rank> getRanksByName() {
+	public TreeMap<String, Rank> getRanksByName() {
 		return ranksByName;
 	}
 
-	private TreeMap<Integer, Rank> getRanksById() {
+	public TreeMap<Integer, Rank> getRanksById() {
 		return ranksById;
 	}
 	
@@ -1627,4 +1628,33 @@ public class RankManager
 		this.ladderCommands = ladderCommands;
 	}
 
+	public void setLoadedRanks(List<Rank> loadedRanks) {
+		this.loadedRanks = loadedRanks;
+	}
+	public void setRanksByName(TreeMap<String, Rank> ranksByName) {
+		this.ranksByName = ranksByName;
+	}
+	public void setRanksById(TreeMap<Integer, Rank> ranksById) {
+		this.ranksById = ranksById;
+	}
+
+	private void resetAllRanks() {
+		
+        this.loadedRanks = new ArrayList<>();
+        this.ranksByName = new TreeMap<>();
+        this.ranksById = new TreeMap<>();
+	}
+	
+	public void reloadAllRanks() 
+			throws IOException {
+		Output.get().logInfo( "Ranks: Loading Ranks..." );
+
+		resetAllRanks();
+		
+		loadRanks();
+
+        
+        Output.get().logInfo( "Ranks: Finished Loading Ranks." );
+
+	}
 }

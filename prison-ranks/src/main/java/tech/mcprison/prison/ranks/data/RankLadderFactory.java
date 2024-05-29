@@ -13,7 +13,7 @@ public class RankLadderFactory
 {
 	
 	@SuppressWarnings( "unchecked" )
-	public RankLadder createRankLadder(Document document, PrisonRanks prisonRanks) {
+	public RankLadder createRankLadder(Document document, RankManager rankManager) {
 		RankLadder rankLadder = null;
 	    	
 	    	boolean isDirty = false;
@@ -23,7 +23,7 @@ public class RankLadderFactory
 	    	
 	    	rankLadder = new RankLadder( id, name );
 	    	
-	    	RankManager rankManager = prisonRanks.getRankManager();
+//	    	RankManager rankManager = prisonRanks.getRankManager();
 	    	
 	    	if ( rankManager == null ) {
 

@@ -36,7 +36,6 @@ import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
-import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
@@ -2063,6 +2062,7 @@ public class PlayerManager
      * @param results
      * @return
      */
+	@SuppressWarnings("unused")
 	private String applySecondaryPlaceholders(RankPlayer rankPlayer, String results) {
 
 		results = applySecondaryPlaceholdersCheck( "{player}", rankPlayer.getName(), results );
