@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-05-29
 
 
+* **Mine notifications: Added support for world and server modes.**
+
+
+
 * **Friendly player files: Slight adjustments.  Added two report features so list both old and new file names for all players, for either player or cache files.**
 
 

@@ -2299,7 +2299,7 @@ public class MinesCommands
         @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to "
         		+ "apply to all mines. [*all*]") String mineName,
         @Arg(name = "mode", def="displayOptions", description = "The notification mode "
-        		+ "to use: [disabled within radius]") 
+        		+ "to use: [disabled within radius world server]") 
     					String mode,
         @Arg(name = "radius", def="0", description = "The distance from the center of the mine to notify players of a reset." ) 
     					String radius
@@ -2311,7 +2311,7 @@ public class MinesCommands
     	
     	if ( noteMode == MineNotificationMode.displayOptions ) {
     		sender.sendMessage( "&7Select a Mode: &bdisabled&7, &bwithin &7the mine, &bradius " +
-    				"&7from center of mine." );
+    				"&7from center of mine&7, &bworld&7, &bserver&7." );
     		return;
     	}
     	

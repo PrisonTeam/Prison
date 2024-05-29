@@ -271,8 +271,16 @@ public abstract class MineTasks
     			for (Player player : players) {
     				
     				// Check for either mode: Within the mine, or by radius from mines center:
-    				if ( getNotificationMode() == MineNotificationMode.within && 
+    				if ( 
+    						getNotificationMode() == MineNotificationMode.server ||
+    						
+							getNotificationMode() == MineNotificationMode.world &&
+							getBounds().getMin().getWorld().getName().equalsIgnoreCase( 
+											player.getLocation().getWorld().getName() ) ||
+    						
+    						getNotificationMode() == MineNotificationMode.within && 
     						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
+    						
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					
@@ -322,8 +330,16 @@ public abstract class MineTasks
 					for (Player player : players) {
 						
 						// Check for either mode: Within the mine, or by radius from mines center:
-						if ( getNotificationMode() == MineNotificationMode.within && 
+						if (
+								getNotificationMode() == MineNotificationMode.server ||
+	    						
+								getNotificationMode() == MineNotificationMode.world &&
+								getBounds().getMin().getWorld().getName().equalsIgnoreCase( 
+												player.getLocation().getWorld().getName() ) ||
+	    						
+								getNotificationMode() == MineNotificationMode.within && 
 								getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
+								
 								getNotificationMode() == MineNotificationMode.radius && 
 								getBounds().within(player.getLocation(), getNotificationRadius()) ) {
 							
@@ -365,8 +381,16 @@ public abstract class MineTasks
     				Prison.get().getPlatform().getOnlinePlayers());
     			for (Player player : players) {
     				// Check for either mode: Within the mine, or by radius from mines center:
-    				if ( getNotificationMode() == MineNotificationMode.within && 
+    				if ( 
+    						getNotificationMode() == MineNotificationMode.server ||
+    						
+							getNotificationMode() == MineNotificationMode.world &&
+							getBounds().getMin().getWorld().getName().equalsIgnoreCase( 
+											player.getLocation().getWorld().getName() ) ||
+    						
+    						getNotificationMode() == MineNotificationMode.within && 
     						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
+    						
     						getNotificationMode() == MineNotificationMode.radius && 
     						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
     					

@@ -167,6 +167,8 @@ public abstract class MineData
     	disable,
     	within,
     	radius,
+    	world,
+    	server,
     	
     	displayOptions
     	;
