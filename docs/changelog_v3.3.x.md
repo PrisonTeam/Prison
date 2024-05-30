@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-05-29
 
 
+* **Mine reset notifications: Forgot to add support for 'server' notification mode.**
+
+
 * **Mine notifications: Added support for world and server modes.**
 
 

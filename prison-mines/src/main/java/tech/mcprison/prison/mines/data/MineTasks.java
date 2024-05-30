@@ -266,8 +266,15 @@ public abstract class MineTasks
     		World world = getBounds().getCenter().getWorld();
     		
     		if ( world != null ) {
-    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    				Prison.get().getPlatform().getOnlinePlayers());
+    			
+				boolean useWorld = getNotificationMode() != MineNotificationMode.server &&
+						world != null && world.getPlayers() != null;
+				
+				List<Player> players = 
+						useWorld ?
+								world.getPlayers() :
+								Prison.get().getPlatform().getOnlinePlayers();
+				
     			for (Player player : players) {
     				
     				// Check for either mode: Within the mine, or by radius from mines center:
@@ -325,8 +332,15 @@ public abstract class MineTasks
 				World world = getBounds().getCenter().getWorld();
 				
 				if ( world != null ) {
-					List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-						Prison.get().getPlatform().getOnlinePlayers());
+					
+					boolean useWorld = getNotificationMode() != MineNotificationMode.server &&
+							world != null && world.getPlayers() != null;
+					
+					List<Player> players = 
+							useWorld ?
+									world.getPlayers() :
+									Prison.get().getPlatform().getOnlinePlayers();
+						
 					for (Player player : players) {
 						
 						// Check for either mode: Within the mine, or by radius from mines center:
@@ -377,8 +391,15 @@ public abstract class MineTasks
     		World world = getBounds().getCenter().getWorld();
     		
     		if ( world != null ) {
-    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    				Prison.get().getPlatform().getOnlinePlayers());
+    			
+				boolean useWorld = getNotificationMode() != MineNotificationMode.server &&
+						world != null && world.getPlayers() != null;
+				
+				List<Player> players = 
+						useWorld ?
+								world.getPlayers() :
+								Prison.get().getPlatform().getOnlinePlayers();
+				
     			for (Player player : players) {
     				// Check for either mode: Within the mine, or by radius from mines center:
     				if ( 
