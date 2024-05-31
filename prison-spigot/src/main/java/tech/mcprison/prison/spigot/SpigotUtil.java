@@ -178,11 +178,14 @@ public class SpigotUtil {
 	public static SpigotItemStack getSpigotItemStackXMat( XMaterial xMaterial, int amount ) {
 		SpigotItemStack itemStack = null;
 		
-		try {
-			itemStack = new SpigotItemStack( getItemStack( xMaterial, amount ) );
-		} 
-		catch (PrisonItemStackNotSupportedRuntimeException e) {
-			// ignore
+		if ( xMaterial != null ) {
+			
+			try {
+				itemStack = new SpigotItemStack( getItemStack( xMaterial, amount ) );
+			} 
+			catch (PrisonItemStackNotSupportedRuntimeException e) {
+				// ignore
+			}
 		}
 		
 		return itemStack;

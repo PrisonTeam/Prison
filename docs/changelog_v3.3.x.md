@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-05-29
+# 3.3.0-alpha.18a 2024-05-30
+
+
+* **Spigot utils: saw a rare situation where a NPE happened when prison had custom blocks setup, but the plugin was removed.**
+This prevents a NPE if the backing 3rd plugin goes away.
+
 
 
 * **Mine reset notifications: Forgot to add support for 'server' notification mode.**
