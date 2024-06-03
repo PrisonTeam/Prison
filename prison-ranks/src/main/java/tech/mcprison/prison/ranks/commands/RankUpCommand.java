@@ -156,8 +156,9 @@ public class RankUpCommand
 			"command with other ladders, the users must have the correct perms as listed with this " +
 			"command's help information. "
 			, 
-			permissions = "ranks.user", 
-			altPermissions = {"ranks.rankup.default", "ranks.rankup.prestiges", "ranks.rankup.[ladderName]"}, 
+//			permissions = "ranks.user", 
+			altPermissions = {"ranks.user", "ranks.rankup.default", "ranks.rankup.prestiges", 
+					"ranks.rankup.[ladderName]"}, 
 			onlyPlayers = false) 
     public void rankUp(CommandSender sender,
 		@Arg(name = "ladder", description = "The ladder to rank up on. Defaults to 'default'.", def = "default")  String ladder,
@@ -180,6 +181,8 @@ public class RankUpCommand
 			playerName = "";
 		}
 		
+		
+		// NOTE: If this is being ran from the console, the a 'playerName' parameter must be supplied:
         if ( !isPlayer && playerName.length() == 0 ) {
         	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
         	return;
@@ -222,26 +225,62 @@ public class RankUpCommand
 //			return;
 //		}
         
+        boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
+        boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+
+        boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+        		Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+        
+        
+        boolean isDefaultBypassPermCheck = isLadderDefault &&
+        		Prison.get().getPlatform().getConfigBooleanTrue( 
+        				"ranks.rankup-bypass-perm-check" ); 
+        
+        boolean hasDefaultPerm = sender.hasPermission( "ranks.user" ) || 
+        							sender.hasPermission( "ranks.rankup.default");
+        
+        boolean isPrestigeBypassPermCheck = isLadderPrestiges &&
+        		isPrestigesEnabled &&
+        		Prison.get().getPlatform().getConfigBooleanTrue( 
+        				"prestige.prestige-bypass-perm-check" ); 
+        
+        
         String perms = "ranks.rankup.";
         String permsLadder = perms + ladder;
+        
+        boolean hasLadderPerm = sender.hasPermission(permsLadder);
     	
-		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
-				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
-		
-		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
-		boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
+        String permsCheck = String.format( 
+        		"isDefaultBypassPermCheck: %s, isPrestigeBypassPermCheck: %s, 'ranks.user': %s, '%s': %s ", 
+        		Boolean.toString(isDefaultBypassPermCheck),
+        		Boolean.toString(isPrestigeBypassPermCheck),
+        		Boolean.toString( sender.hasPermission( "ranks.user" ) ),
+        		
+        		permsLadder,
+        		Boolean.toString(hasLadderPerm)
+        		);
+        
     	
-    	if ( isLadderDefault ||
+    	if ( isDefaultBypassPermCheck || 
+    			isPrestigeBypassPermCheck ||
     			
-    			(isPrestigesEnabled && isLadderPrestiges ||
-    			!isLadderPrestiges ) && 
-    			sender.hasPermission( permsLadder) 
+    			isLadderDefault && hasDefaultPerm ||
+    			
+    			isPrestigesEnabled && isLadderPrestiges &&
+    					hasLadderPerm ||
+    					
+    					
+    			!isLadderDefault && !isLadderPrestiges &&
+    					hasLadderPerm 
+    			
     			) {
+    		
     		Output.get().logDebug( DebugTarget.rankup, 
-    				"Rankup: cmd '/rankup %s%s'  Passed perm check: %s", 
+    				"Rankup: cmd '/rankup %s%s'  Passed perm check: %s  [%s]]", 
     				ladder, 
     				( playerName.length() == 0 ? "" : " " + playerName ),
-    				permsLadder );
+    				permsLadder,
+    				permsCheck );
         
         	
 //        	Output.get().logDebug( DebugTarget.rankup, 
@@ -262,8 +301,8 @@ public class RankUpCommand
     	else {
     		Player player = getPlayer( sender, playerName );
     		Output.get().logDebug( DebugTarget.rankup, 
-    				"Rankup: Failed: cmd '/rankup %s'  Does not have the permission %s", 
-    				ladder, permsLadder );
+    				"Rankup: Failed: cmd '/rankup %s'  Does not have the permission %s. [%s]", 
+    				ladder, permsLadder, permsCheck );
     		rankupMaxNoPermissionMsg( sender, permsLadder, player.getRankPlayer() );
     	}
         
@@ -279,8 +318,8 @@ public class RankUpCommand
 			+ "if the config.yml setting 'prestige.enable__ranks_rankup_prestiges__permission` is set to a "
 			+ "value of 'true' (defaults to 'false'). "
 			+ "Examples: '/prestige', '/presetige confirm', '/prestige <playerName> confirm'.", 
-			permissions = "ranks.user", 
-			altPermissions = {"ranks.rankup.prestiges"}, 
+//			permissions = "ranks.user", 
+			altPermissions = {"ranks.user", "ranks.rankup.prestiges"}, 
 			onlyPlayers = false) 
     public void prestigeCmd(CommandSender sender,
 		@Arg(name = "playerName", def = "", 
@@ -324,14 +363,37 @@ public class RankUpCommand
         }
         
         
-        String perms = "ranks.rankup.";
-        String permsLadder = perms + LadderManager.LADDER_PRESTIGES;
-        boolean hasPermsLadder = sender.hasPermission(permsLadder);
-        boolean usePerms = Prison.get().getPlatform().getConfigBooleanFalse( "enable__ranks_rankup_prestiges__permission" );
-        boolean hasAcessToPrestige = usePerms && hasPermsLadder || !usePerms;
 
-		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
-				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+        boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+        		Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+        
+        
+        boolean hasPrestigePerm = sender.hasPermission( "ranks.user" ) || 
+        							sender.hasPermission( "ranks.rankup.prestiges");
+        
+        boolean isPrestigeBypassPermCheck = 
+        		isPrestigesEnabled &&
+        		Prison.get().getPlatform().getConfigBooleanTrue( 
+        				"prestige.prestige-bypass-perm-check" ); 
+       
+        String permsCheck = String.format( 
+        		"isPrestigesEnabled: %s, isPrestigeBypassPermCheck: %s, 'ranks.user': %s, 'ranks.rankup.prestiges': %s ", 
+        		Boolean.toString(isPrestigesEnabled),
+        		Boolean.toString(isPrestigeBypassPermCheck),
+        		Boolean.toString( sender.hasPermission( "ranks.user" ) ),
+        		
+        		Boolean.toString( sender.hasPermission( "ranks.rankup.prestiges") )
+        		);
+
+        
+        String perms = "ranks.rankup.";
+//        String permsLadder = perms + LadderManager.LADDER_PRESTIGES;
+//        boolean hasPermsLadder = sender.hasPermission(permsLadder);
+//        boolean usePerms = Prison.get().getPlatform().getConfigBooleanFalse( "enable__ranks_rankup_prestiges__permission" );
+//        boolean hasAcessToPrestige = usePerms && hasPermsLadder || !usePerms;
+
+//		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+//				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
 		
 		boolean isResetDefaultLadder = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.resetDefaultLadder" );
 		boolean isResetMoney = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.resetMoney" );
@@ -391,17 +453,15 @@ public class RankUpCommand
 			return;
 		}
 		
-		if ( isPrestigesEnabled && hasAcessToPrestige ) {
+		if ( isPrestigeBypassPermCheck ||
+				
+				isPrestigesEnabled && hasPrestigePerm  ) {
 			
     		Output.get().logDebug( DebugTarget.rankup, 
-    				"Rankup: cmd '/prestige %s%s'  Has Access to '/prestiges': %b   "
-    				+ "Has perms: %b  Perms: %s", 
+    				"Rankup: cmd '/prestige %s%s'  [%s]", 
     				(playerName.length() == 0 ? "" : " " + playerName ),
     				(confirm == null ? "" : " " + confirm ),
-
-    				hasAcessToPrestige,
-    				hasPermsLadder,
-    				permsLadder );
+    				permsCheck );
         
         	
         	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
@@ -413,6 +473,16 @@ public class RankUpCommand
         	Player player = getPlayer( sender, playerName );
         	submitCmdTasks( player, cmdTasks );
         }
+		else {
+    		Player player = getPlayer( sender, playerName );
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: Failed: cmd '/prestige %s%s'  Does not have the permission %s. [%s]", 
+    				(playerName.length() == 0 ? "" : " " + playerName ),
+    				(confirm == null ? "" : " " + confirm ),
+    				permsCheck );
+    		
+    		//prestigeNoPermissionMsg( sender, "ranks.rankup.prestiges", player.getRankPlayer() );
+    	}
         
     }
 
