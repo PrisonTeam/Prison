@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-06-02
+# 3.3.0-alpha.18a 2024-06-05
+
+
+* **Prison support troubleshoot autosell: Added a new feature to help identify why autosell may not be working.**
+This new command also provides a lot more information about what the individual features do, and how they work.
+It also provides additional information on features related to sellall that the users may not understand or are aware of,
+these features may help provide understanding on how to fix issues they may have with other plugins.
 
 
 * **Rankups: Change how rankups are working by default.  They no longer require perms, but within the 'plugis/Prison/config.yml' they can be enabled.**
