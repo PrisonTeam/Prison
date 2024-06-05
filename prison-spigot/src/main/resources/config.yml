@@ -99,6 +99,7 @@ prestige:
   prestige-confirm-gui: true
   force-sellall: false
   no-prestige-value: ""
+  prestige-bypass-perm-check: true
   enable__ranks_rankup_prestiges__permission: false
 
 
@@ -142,6 +143,7 @@ ranks:
   gui-prestiges-include-rankup-button: true
   gui-others-include-rankup-button: true
   player-economy-cache-update-delay-ticks: 60
+  rankup-bypass-perm-check: true
   
 
 
