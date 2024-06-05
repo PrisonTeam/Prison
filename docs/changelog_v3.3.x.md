@@ -14,7 +14,20 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-05-30
+# 3.3.0-alpha.18a 2024-06-02
+
+
+* **Rankups: Change how rankups are working by default.  They no longer require perms, but within the 'plugis/Prison/config.yml' they can be enabled.**
+The reason for this change is due to the fact that a lot of people have been saying that perms are suddenly forcing a perm check, which has been failing.
+So although this is a change that may break a few servers which do not want players to be able to control their own rankup or prestige, this is a fix that will make it easier for many others.
+
+```yaml
+ranks:
+  rankup-bypass-perm-check: true
+prestige:
+  prestige-bypass-perm-check: true
+```
+
 
 
 * **Spigot utils: saw a rare situation where a NPE happened when prison had custom blocks setup, but the plugin was removed.**
