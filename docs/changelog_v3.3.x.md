@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-06-05
+# 3.3.0-alpha.18a 2024-06-07
+
+
+* **Prison support troubleshoot sellallmines:  This new commmand will review all blocks used in all mines, and show a report based upon each block to identify if it is setup in the sellall shop.**
+This is a good way to identify if all blocks that are used have an entry within sellall.
+Note that this only reviews the blocks, but not their possible drops, which may differ.
 
 
 * **Prison support troubleshoot autosell: Added a new feature to help identify why autosell may not be working.**

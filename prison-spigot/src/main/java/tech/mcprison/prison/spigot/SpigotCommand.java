@@ -1,15 +1,22 @@
 package tech.mcprison.prison.spigot;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.sellall.PrisonSellall;
 import tech.mcprison.prison.spigot.customblock.PrisonItemsAdder;
@@ -32,9 +39,9 @@ public class SpigotCommand {
     				+ "any changes to any configs. This will help identify if "
     				+ "autosell is properly configured, and if not, then it "
     				+ "will suggest changes.", 
-    		aliases = "prison reload players",
-    				onlyPlayers = false, permissions = "ranks.set")
-    public void supportRanksCmd(CommandSender sender ){
+    				onlyPlayers = false, 
+    				permissions = "ranks.set")
+    public void supportTroubleshootAutosellCmd(CommandSender sender ){
     	
     	List<String> msgs = new ArrayList<>();
     	
@@ -325,9 +332,279 @@ public class SpigotCommand {
     	sender.sendMessage(msgs);
     }
     
+    
+    
+    
+
+    @Command(identifier = "prison support troubleshoot sellallMines", 
+    		description = "Prison support troubleshooting: sellall for Mines. "
+    				+ "This command can be ran at any time. It does not make "
+    				+ "any changes to any configs. This will help identify if "
+    				+ "sellall is properly setup for all mines.  This will "
+    				+ "check all mines to confirm that all blocks are represented "
+    				+ "within sellall.", 
+    				onlyPlayers = false, 
+    				permissions = "ranks.set")
+    public void supportTroubleshootSellallMinesCmd(CommandSender sender,
+			@Arg(name = "action", 
+			description = "Perform different actions related to this comand. "
+					+ "The default action will show only the blocks that are not "
+					+ "setup in sellall."
+					+ "The action 'all' will show all of the blocks, including which "
+					+ "mines are using that block, including the chance. ",
+			def = "notInSellall" ) 
+					String action ) {
+    	
+    	List<String> msgs = new ArrayList<>();
+
+    	boolean reportAllblocks = action != null && action.trim().equalsIgnoreCase( "all" );;
+    	
+    	boolean sellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
+    	
+    	if ( !sellallEnabled ) {
+    		msgs.add( "&cWarning: sellall is disabled. It needs to be turned on." );
+ 
+    		msgs.add( "" );
+    		msgs.add( "This support commmand cannot validate if the blocks used within the mines " );
+    		msgs.add( "are within sellall if sellall is not even enabled." );
+    		msgs.add( "" );
+    		msgs.add( "If you are not wanting to use Prison's sellall ,then do not use this command " );
+    		msgs.add( "since it will not help you configure, or troubleshoot, other plugins that " );
+    		msgs.add( "are handling the selling of the blocks players are getting from mining." );
+    		msgs.add( "" );
+    		
+    	}
+    	else {
+    		SellAllUtil saUtils = SellAllUtil.get();
+
+    		int sellallItemCount = saUtils.getSellAllItems().size();
+    		
+    		msgs.add( "  SellAll is enabled." );
+
+    		msgs.add( "    Items in sellall: " + sellallItemCount );
+    		
+    		msgs.add( "" );
+
+    		boolean minesEnabled = PrisonMines.getInstance().isEnabled();
+    		
+    		if ( !minesEnabled ) {
+    			msgs.add( "&cWarning: mines are disabled. It needs to be turned on." );
+    			 
+    			msgs.add( "" );
+        		msgs.add( "This support commmand cannot validate if the blocks used within the mines " );
+        		msgs.add( "are supported within sellall if the Prison Mines's module isn't even enabled." );
+        		msgs.add( "" );
+
+    		}
+    		else {
+    			PrisonMines pMines = PrisonMines.getInstance();
+    			List<Mine> mines = pMines.getMines();
+    			
+    			TreeMap<String,SupportBlockMines> blocksInMines = new TreeMap<>();
+    			
+    			
+    			
+    	   		msgs.add( "  Mines are enabled." );
+
+        		msgs.add( "    Total mines: " + mines.size() );
+        		
+
+        		for (Mine mine : mines) {
+        			
+        			List<PrisonBlock> blocks = mine.getPrisonBlocks();
+        			
+        			for ( PrisonBlock block : blocks ) {
+						
+        				if ( !blocksInMines.containsKey( block.getBlockName() ) ) {
+        					SupportBlockMines blockMines = new SupportBlockMines( block );
+        					blocksInMines.put( blockMines.getKey(), blockMines );
+        				}
+        				
+        				SupportBlockMines blockMines = blocksInMines.get(block.getBlockName());
+        				
+        				blockMines.addMine( mine );
+        				
+					}
+					
+				}
+        		
+        		msgs.add( "    Unique blocks within all mines: " + blocksInMines.size()  );
+        		msgs.add( "" );
+        		
+        		
+        		Set<String> keys = blocksInMines.keySet();
+
+        		int validBlocks = 0;
+        		int invalidBlocks = 0;
+        		
+        		
+        		// validate all blocks with sellall:
+        		for (String key : keys) {
+					SupportBlockMines blockMines = blocksInMines.get( key );
+					
+					//saUtils.getSellAllItems().get( )
+					
+					PrisonBlock saPrisonBlock = saUtils.getSellallItem( 
+								blockMines.getBlock() );
+					
+					if (  saPrisonBlock != null ) {
+						
+						blockMines.setBlockInSellall( true );
+						validBlocks++;
+					}
+					else {
+						
+						blockMines.setBlockInSellall( false );
+						invalidBlocks++;
+					}
+					
+				}
+        		
+        		
+        		msgs.add( "Total blocks in all mines: " + (validBlocks + invalidBlocks) );
+        		msgs.add( "   Total valid blocks:   " + validBlocks );
+        		msgs.add( "   Total invalid blocks: " + invalidBlocks );
+        		msgs.add( " " );
+
+        		if ( reportAllblocks ) {
+        			
+        			msgs.add( "All valid and invalid blocks: " );
+        		}
+        		else {
+        			
+        			msgs.add( "Only invalid blocks. Rerun with 'all' to view all blocks." );
+        		}
+        		msgs.add( " " );
+        		
+        		
+        		
+        		// Print block lists:
+        		SupportBlockMines headers = new SupportBlockMines();
+        		msgs.add( headers.header1() );
+        		msgs.add( headers.header2() );
+        		for (String key : keys) {
+					SupportBlockMines blockMines = blocksInMines.get( key );
+					
+					if ( !reportAllblocks && !blockMines.isBlockInSellall() || 
+							reportAllblocks ) {
+						
+						String msg = blockMines.toString();
+						
+						msgs.add( msg );
+					}
+				}
+        		
+        		
+        		
+    		}
+    		
+    		msgs.add( "" );
+    		msgs.add( "" );
+    		msgs.add( "" );
+    		
+    	}
+
+    	
+    	sender.sendMessage(msgs);
+    }
+
+    public class SupportBlockMines {
+    	private PrisonBlock block;
+    	
+    	private boolean blockInSellall;
+    	
+    	private TreeMap<String, Mine> mines;
+    	
+    	public SupportBlockMines() {
+    		super();
+    		
+    		this.block = null;
+    		this.blockInSellall = false;
+    		this.mines = new TreeMap<>();
+    	}
+    	
+    	public SupportBlockMines( PrisonBlock block ) {
+    		this();
+    		
+    		this.block = block;
+    	}
+
+		public String getKey() {
+    		return block.getBlockName();
+    	}
+		
+		public void addMine(Mine mine) {
+			String key = mine.getName();
+			if ( !getMines().containsKey(key)) {
+				getMines().put(key, mine);
+			}
+		}
+		
+		public String header1() {
+			return "  Block:  mine (chance),  ...";
+		}
+		public String header2() {
+			return "  ------  --------------  ...";
+		}
+		
+		
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			
+			DecimalFormat dFmt = Prison.getDecimalFormatStaticDouble();
+			
+			sb.append( " ").append( getKey() )
+			.append( ": " );
+			
+			if ( getMines() != null ) {
+				
+				Set<String> keys = getMines().keySet();
+				
+				int len = sb.length();
+				for ( String key : keys ) {
+					if ( sb.length() != len ) {
+						sb.append( ", " );
+					}
+					Mine mine = getMines().get(key);
+					
+					// Must get the mine's PrisonBlock since that will contain the chance:
+					PrisonBlock mineBlock = mine.getPrisonBlock( getKey() );
+					sb.append( mine.getName() )
+					.append( " (" )
+					.append( dFmt.format( mineBlock.getChance()) )
+					.append( ")" );
+					
+				}
+			}
+			
+			return sb.toString();
+		}
+
+		public PrisonBlock getBlock() {
+			return block;
+		}
+		public void setBlock(PrisonBlock block) {
+			this.block = block;
+		}
+
+		public boolean isBlockInSellall() {
+			return blockInSellall;
+		}
+		public void setBlockInSellall(boolean blockInSellall) {
+			this.blockInSellall = blockInSellall;
+		}
+
+		public TreeMap<String, Mine> getMines() {
+			return mines;
+		}
+		public void setMines(TreeMap<String, Mine> mines) {
+			this.mines = mines;
+		}
+    }
 
 
-    @Command(identifier = "prison support test itemsAdder", 
+
+	@Command(identifier = "prison support test itemsAdder", 
     		description = "Initial test of accessing ItemsAdder.", 
     		onlyPlayers = false, permissions = "prison.admin" )
     public void testItemAdderCommand(CommandSender sender ) {

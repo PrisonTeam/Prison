@@ -930,6 +930,13 @@ public class SellAllUtil
     	return soldItem;
     }
     
+    public PrisonBlock getSellallItem( PrisonBlock block ) {
+    	
+    	PrisonBlock pBlockSellAll = sellAllItems.get( block.getBlockNameSearch() );
+    	
+    	return pBlockSellAll;
+    }
+    
 //    /**
 //     * Get SellAll Sell Money, calculated from all the enabled backpacks (from sellAll config and integrations) and
 //     * main inventory.

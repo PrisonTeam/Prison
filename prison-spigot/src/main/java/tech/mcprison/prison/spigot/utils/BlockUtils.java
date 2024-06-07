@@ -5,7 +5,6 @@ import java.util.HashSet;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Location;
