@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-06-07
+# 3.3.0-alpha.18a 2024-06-08
+
+
+* **New feature: AutoFeatures: Smelt and Blocking: New option to include the player's current inventory when performing a smelting and/or blocking.**
+The way this works, is that before "trying" to smelt or block an item in the drops list for the player, that it removes that same item from the player's inventory, and adds them to the player's drops.
+This ensures that the inventory gets smelted or blocked, and any leftovers are then returned to the inventory.
+These new features default to false, which off, so as the older behavior is honored and this will not break any existing servers.
 
 
 * **Prison support troubleshoot sellallmines:  This new commmand will review all blocks used in all mines, and show a report based upon each block to identify if it is setup in the sellall shop.**

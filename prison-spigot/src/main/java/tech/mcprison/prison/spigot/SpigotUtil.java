@@ -471,6 +471,22 @@ public class SpigotUtil {
 		return count;
 	}
 
+	
+	public static void getAllDroppedItemTypesFromPlayerInventory( 
+			Player player, XMaterial xMat, SpigotItemStack drop ) {
+
+		if ( xMat != null ) {
+			
+			int inventoryCount = itemStackRemoveAll(player, xMat);
+			
+			if ( inventoryCount > 0 ) {
+				
+				int count = drop.getAmount();
+				drop.setAmount( count + inventoryCount );
+			}
+		}
+	}
+	
 	/**
 	 * <p>This function is used to convert a map to a String. It has been created to provide a
 	 * String conversion for ItemStack.serialize() functions.  

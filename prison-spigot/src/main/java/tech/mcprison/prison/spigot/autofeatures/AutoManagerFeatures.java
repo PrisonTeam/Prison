@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.autofeatures;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -556,6 +555,9 @@ public abstract class AutoManagerFeatures
 		
 		isAutoBlock = (mine != null || mine == null && !limit2minesBlock) && isAutoBlock;
 		
+		boolean includePlayerInventoryWhenSmelting = isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting );
+		boolean includePlayerInventoryWhenBlocking = isBoolean( AutoFeatures.includePlayerInventoryWhenBlocking );
+		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
 			pmEvent.getDebugInfo().append( "{br}||  (applyAutoEvents: " )
@@ -586,6 +588,7 @@ public abstract class AutoManagerFeatures
 				.append( permSmelt ? "perm " : "" )
 				.append( configSmelt ? "config " : "" )
 				.append( limit2minesSmelt ? "mines" : "noLimit" )
+				.append( includePlayerInventoryWhenSmelting ? " includePlayerInventory" : "" )
 				.append( "] ")
 				
 				.append( " Block [")
@@ -594,6 +597,7 @@ public abstract class AutoManagerFeatures
 				.append( permBlock ? "perm " : "" )
 				.append( configBlock ? "config " : "" )
 				.append( limit2minesBlock ? "mines" : "noLimit" )
+				.append( includePlayerInventoryWhenBlocking ? " includePlayerInventory" : "" )
 				.append( "] ");
 				
 			}
@@ -625,10 +629,13 @@ public abstract class AutoManagerFeatures
 						.append( "{br}||  (NormalDrop handling enabled: " )
 						.append( "normalDropSmelt[" )
 						.append( configNormalDropSmelt ? "enabled" : "disabled" )
+						.append( configNormalDropSmelt && includePlayerInventoryWhenSmelting ? " includePlayerInventory" : "" )
 						.append( "] " )
 						.append( "normalDropBlock[" )
 						.append( configNormalDropBlock ? "enabled" : "disabled" )
+						.append( configNormalDropBlock && includePlayerInventoryWhenBlocking ? " includePlayerInventory" : "" )
 						.append( "] " )
+						
 						.append( "normalDropCheckForFullInventory[" )
 						.append( configNormalDropCheckForFullInventory ? "enabled" : "disabled" )
 						.append( "] " )
@@ -870,14 +877,16 @@ public abstract class AutoManagerFeatures
 			// Smelt
 			if ( isAutoSmelt ) {
 				debugInfo.append( "(autoSmelting: drops)" );
-				normalDropSmelt( drops );
+				
+				normalDropSmelt( pmEvent.getPlayer(), drops );
 			}
 			
 			
 			// Block
 			if ( isAutoBlock ) {
 				debugInfo.append( "(autoBlocking: drops)" );
-				normalDropBlock( drops );
+				
+				normalDropBlock( pmEvent.getPlayer(), drops );
 			}
 			
 			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
@@ -1186,13 +1195,15 @@ public abstract class AutoManagerFeatures
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
 				pmEvent.getDebugInfo().append( "(normSmelting: drops)" );
-				normalDropSmelt( drops );
+				
+				normalDropSmelt( pmEvent.getPlayer(), drops );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
 				pmEvent.getDebugInfo().append( "(normBlocking: drops)" );
-				normalDropBlock( drops );
+
+				normalDropBlock( pmEvent.getPlayer(), drops );
 			}
 			
 			
@@ -2227,11 +2238,13 @@ public abstract class AutoManagerFeatures
 	 * 
 	 * @param drops
 	 */
-	protected void normalDropSmelt( List<SpigotItemStack> drops ) {
+	protected void normalDropSmelt( Player player, List<SpigotItemStack> drops ) {
 		
 		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
 		
-		Set<XMaterial> xMats = new HashSet<>();
+		boolean includePlayerInventory = isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting );
+		
+		TreeMap<XMaterial, SpigotItemStack> xMats = new TreeMap<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			
 			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ||
@@ -2251,21 +2264,25 @@ public abstract class AutoManagerFeatures
 				xMat = SpigotCompatibility.getInstance().getXMaterial( sItemStack.getMaterial() );
 			}
 			
-			if ( xMat != null && !xMats.contains( xMat ) ) {
-				xMats.add( xMat );
+			if ( xMat != null && !xMats.containsKey( xMat ) ) {
+				xMats.put( xMat, sItemStack );
 			}
 			
 		}
 		
-		
-		for ( XMaterial source : xMats ) {
-			
+		Set<XMaterial> keys = xMats.keySet();
+		for ( XMaterial source : keys ) {
+			SpigotItemStack drop = xMats.get( source );
 			
 			switch ( source )
 			{
 				case COBBLESTONE:
 					if ( isAll || isBoolean( AutoFeatures.smeltCobblestone ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.STONE, 1 );
 					}
 					break;
@@ -2277,6 +2294,10 @@ public abstract class AutoManagerFeatures
 					
 					if ( isAll || isBoolean( AutoFeatures.smeltGoldOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
 					}
 					break;
@@ -2286,6 +2307,10 @@ public abstract class AutoManagerFeatures
 				case RAW_IRON:
 					if ( isAll || isBoolean( AutoFeatures.smeltIronOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
 					}
 					break;
@@ -2294,6 +2319,10 @@ public abstract class AutoManagerFeatures
 				case DEEPSLATE_COAL_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltCoalOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL, 1 );
 					}
 					break;
@@ -2302,6 +2331,10 @@ public abstract class AutoManagerFeatures
 				case DEEPSLATE_DIAMOND_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
 					}
 					break;
@@ -2310,6 +2343,10 @@ public abstract class AutoManagerFeatures
 				case DEEPSLATE_EMERALD_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
 					}
 					break;
@@ -2318,6 +2355,10 @@ public abstract class AutoManagerFeatures
 				case DEEPSLATE_LAPIS_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltLapisOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
 					}
 					break;
@@ -2326,6 +2367,10 @@ public abstract class AutoManagerFeatures
 				case DEEPSLATE_REDSTONE_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
 					}
 					break;
@@ -2333,6 +2378,10 @@ public abstract class AutoManagerFeatures
 				case NETHER_QUARTZ_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltNetherQuartzOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
 					}
 					break;
@@ -2340,6 +2389,10 @@ public abstract class AutoManagerFeatures
 				case ANCIENT_DEBRIS:
 					if ( isAll || isBoolean( AutoFeatures.smeltAncientDebris ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
 					}
 					break;
@@ -2350,6 +2403,10 @@ public abstract class AutoManagerFeatures
 				case RAW_COPPER:
 					if ( isAll || isBoolean( AutoFeatures.smeltCopperOre ) ) {
 						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
 					}
 					break;
@@ -2369,11 +2426,13 @@ public abstract class AutoManagerFeatures
 	 * 
 	 * @param drops
 	 */
-	protected void normalDropBlock( List<SpigotItemStack> drops ) {
+	protected void normalDropBlock( Player player, List<SpigotItemStack> drops ) {
 		
 		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
 		
-		Set<XMaterial> xMats = new HashSet<>();
+		boolean includePlayerInventory = isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting );
+		
+		TreeMap<XMaterial, SpigotItemStack> xMats = new TreeMap<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			
 			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ||
@@ -2386,97 +2445,146 @@ public abstract class AutoManagerFeatures
 				
 				XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
 				
-				if ( !xMats.contains( source  ) ) {
-					xMats.add( source );
+				if ( !xMats.containsKey( source  ) ) {
+					xMats.put( source, sItemStack );
 				}
 			}
 		}
 		
-		
-		for ( XMaterial source : xMats ) {
+		Set<XMaterial> keys = xMats.keySet();
+		for ( XMaterial source : keys ) {
+			SpigotItemStack drop = xMats.get( source );
 			
 			switch ( source )
 			{
 				case GOLD_INGOT:
 					if ( isAll || isBoolean( AutoFeatures.blockGoldBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_BLOCK, 9 );
 					}
 					break;
 					
 				case IRON_INGOT:
 					if ( isAll || isBoolean( AutoFeatures.blockIronBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_BLOCK, 9 );
 					}
 					break;
 
 				case COAL:
 					if ( isAll || isBoolean( AutoFeatures.blockCoalBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL_BLOCK, 9 );
 					}
 					break;
 					
 				case DIAMOND:
 					if ( isAll || isBoolean( AutoFeatures.blockDiamondBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND_BLOCK, 9 );
 					}
 					break;
 					
 				case REDSTONE:
 					if ( isAll || isBoolean( AutoFeatures.blockRedstoneBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source,XMaterial.REDSTONE_BLOCK, 9 );
 					}
 					break;
 					
 				case EMERALD:
 					if ( isAll || isBoolean( AutoFeatures.blockEmeraldBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD_BLOCK, 9 );
 					}
 					break;
 					
 				case QUARTZ:
 					if ( isAll || isBoolean( AutoFeatures.blockQuartzBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ_BLOCK, 4 );
 					}
 					break;
 					
 				case PRISMARINE_SHARD:
 					if ( isAll || isBoolean( AutoFeatures.blockPrismarineBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.PRISMARINE, 4 );
 					}
 					break;
 					
 				case SNOWBALL:
 					if ( isAll || isBoolean( AutoFeatures.blockSnowBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4 );
 					}
 					break;
 					
 				case GLOWSTONE_DUST:
 					if ( isAll || isBoolean( AutoFeatures.blockGlowstone ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GLOWSTONE, 4 );
 					}
 					break;
 					
 				case LAPIS_LAZULI:
 					if ( isAll || isBoolean( AutoFeatures.blockLapisBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 9 );
 					}
 					break;
 					
 				case COPPER_INGOT:
 					if ( isAll || isBoolean( AutoFeatures.blockCopperBlock ) ) {
-						
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_BLOCK, 9 );
 					}
 					break;

@@ -248,7 +248,9 @@ public class AutoFeaturesFileConfig {
 				actionBarMessageIfInventoryIsFull(inventory, true),
 //				hologramIfInventoryIsFull(general, false),
 
-				
+
+				includePlayerInventoryWhenSmelting(inventory, false),
+				includePlayerInventoryWhenBlocking(inventory, false),
 			
 			tokens(options),
 				

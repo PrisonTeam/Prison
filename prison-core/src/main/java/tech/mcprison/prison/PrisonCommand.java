@@ -1070,6 +1070,16 @@ public class PrisonCommand
     		
     		
     		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.inventory.includePlayerInventoryWhenSmelting %s", 
+    				afw.isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting ));
+    		display.addText( "&b   options.inventory.includePlayerInventoryWhenBlocking %s", 
+    				afw.isBoolean( AutoFeatures.includePlayerInventoryWhenBlocking ));
+   		
+    		
+    		
+    		
     		display.addText( "&b " );
     		display.addText( "&b   options.general.isCalculateDurabilityEnabled %s", 
     				afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
@@ -1085,6 +1095,7 @@ public class PrisonCommand
     				afw.getMessage( AutoFeatures.fortuneMultiplierGlobal ));
     		display.addText( "&b   options.general.fortuneMultiplierMax %s", 
     				afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
+    		
     		
     		display.addText( "&b " );
     		display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 

@@ -2418,6 +2418,16 @@ public class SpigotPlatform
     		
     		
     		results.add( " " );
+    		results.add( String.format(".   Include player inventory when smelting:&b%s", 
+    				(afw.isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting ) ? "&2Enabled" : "&cDisabled" )
+    				 ) );
+    		results.add( String.format(".   Include player inventory when blocking:&b%s", 
+    				(afw.isBoolean( AutoFeatures.includePlayerInventoryWhenBlocking ) ? "&2Enabled" : "&cDisabled" )
+    				) );
+
+    		
+    		
+    		results.add( " " );
     		
     		boolean isDurabilityEnabled = afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled );
     		results.add( String.format("%s.   Calculate Durability:&b %s", 
