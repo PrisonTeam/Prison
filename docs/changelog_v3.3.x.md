@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-06-22
+# 3.3.0-alpha.18b 2024-06-22
+
+
+** v3.3.0-alpha.18b  2024-06-23**
 
 
 * **Prison nbtApi: Found an issue when a newer version of spigot broke the functionality of the nbtApi library, it was causing failures in prison.**
