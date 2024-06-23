@@ -16,6 +16,12 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.18a 2024-06-22
 
+
+* **Prison nbtApi: Found an issue when a newer version of spigot broke the functionality of the nbtApi library, it was causing failures in prison.**
+Made changes to prevent an nbt failure from causing prison to fail.  Provided new controls to log a simple error message, but still enable the rest of the prison's functions to work.
+The under laying problem was with a 3rd party library and not prison.  But this fix allows prison to better handle when future of versions of spigot may break things again.
+
+
 * **Upgraded nbtApi to v2.13.1 from v2.12.4.**
 This better supports spigot 1.21.x.
 

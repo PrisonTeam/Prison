@@ -46,10 +46,19 @@ public class PrisonNBTUtil {
 	public static String getNBTString( ItemStack bukkitStack, String key ) {
 		String results = null;
 		
-		Function<ReadableItemNBT, String> gsFnc = nbt -> nbt.getString(key);
-		
-		results = NBT.get(bukkitStack, gsFnc );
-//		results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
+		try {
+			Function<ReadableItemNBT, String> gsFnc = nbt -> nbt.getString(key);
+			
+			results = NBT.get(bukkitStack, gsFnc );
+//			results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
+		}
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.getNBTString(): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
+		}
 		
 		return results;
 	}
@@ -57,45 +66,81 @@ public class PrisonNBTUtil {
 	public static String getNBTString( Block bukkitBlock, String key ) {
 		String results = null;
 		
-		Function<ReadableNBT, String> gsFnc = nbt -> nbt.getString(key);
-		
-		BlockState blockState = bukkitBlock.getState();
-		
-		results = NBT.get(blockState, gsFnc );
+		try {
+			Function<ReadableNBT, String> gsFnc = nbt -> nbt.getString(key);
+			
+			BlockState blockState = bukkitBlock.getState();
+			
+			results = NBT.get(blockState, gsFnc );
+		} 
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.getNBTString(block): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
+		}
 		
 		return results;
 	}
 
 	public static void setNBTString( ItemStack bukkitStack, String key, String value ) {
 	
-		NBT.modify(bukkitStack, nbt -> {
-			nbt.setString(key, value);
-		});
-			 
-		if ( isEnableDebugLogging() ) {
-			nbtDebugLog( bukkitStack, "setNBTString" );
+		try {
+			NBT.modify(bukkitStack, nbt -> {
+				nbt.setString(key, value);
+			});
+				 
+			if ( isEnableDebugLogging() ) {
+				nbtDebugLog( bukkitStack, "setNBTString" );
+			}
+		} 
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.setNBTString(): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
 		}
 	}
 	
 	public static boolean getNBTBoolean( ItemStack bukkitStack, String key ) {
 		boolean results = false;
 		
-		Function<ReadableItemNBT, Boolean> gbFnc = nbt -> nbt.getBoolean(key);
+		try {
+			Function<ReadableItemNBT, Boolean> gbFnc = nbt -> nbt.getBoolean(key);
 
-		results = NBT.get(bukkitStack, gbFnc );
+			results = NBT.get(bukkitStack, gbFnc );
 //		results = NBT.get(bukkitStack, nbt -> nbt.getBoolean(key));
+		} 
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.getNBTBoolean(): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
+		}
 		
 		return results;
 	}
 	
 	public static void setNBTBoolean( ItemStack bukkitStack, String key, boolean value ) {
 		
-		NBT.modify(bukkitStack, nbt -> {
-			nbt.setBoolean(key, value);
-		});
-		
-		if ( isEnableDebugLogging() ) {
-			nbtDebugLog( bukkitStack, "setNBTBoolean" );
+		try {
+			NBT.modify(bukkitStack, nbt -> {
+				nbt.setBoolean(key, value);
+			});
+			
+			if ( isEnableDebugLogging() ) {
+				nbtDebugLog( bukkitStack, "setNBTBoolean" );
+			}
+		} 
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.setNBTBoolean(): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
 		}
 	}
 
