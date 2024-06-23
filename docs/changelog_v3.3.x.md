@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-06-22
 
 
+* **XMaterial bug fix.  If a newer version of spigot is being use that XSeries does not support**, there is a chance an error could happen if a newer block type is added to the sellall shop list, or some other need tries to access all block types on the server.
+This prevents a parse error within XMaterial from shutting down prison's ability to process all of the blocks.  This should have been a very rare condition, but now it's guarded against cause problems.
+
+
 * **Upgrade XSeries to v11.1.0 to support spigot v1.21.0.**
 XSeries v11.x no longer directly supports the matching to spigot 1.8 resources by the use of id and data byte.  So added the support directly to the prison compatibility class for spigot 1.8 so prison can continue to use XSeries with spigot 1.8 without any issues.
 

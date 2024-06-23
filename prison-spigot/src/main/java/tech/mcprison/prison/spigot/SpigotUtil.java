@@ -663,7 +663,19 @@ public class SpigotUtil {
 		for ( XMaterial xMat : XMaterial.values() ) {
 			if ( xMat.isSupported() ) {
 				
-				ItemStack itemStack = xMat.parseItem();
+				ItemStack itemStack = null;
+				
+				try {
+					itemStack = xMat.parseItem();
+				} 
+				catch (Exception e) {
+					Output.get().logInfo(
+							"Notice: invalid XMaterial type encountered when trying to use 'parseItem()'. %s " +
+							"Contact prison support. XSeries may need to be updated to support " +
+							"the current version of spigot. ",
+							xMat.name()
+							);
+				}
 				
 				if ( xMat.name().toLowerCase().contains( "_wood" ) ) {
 					
