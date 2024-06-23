@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18a 2024-06-08
+# 3.3.0-alpha.18a 2024-06-22
+
+
+* **Upgrade XSeries to v11.1.0 to support spigot v1.21.0.**
+XSeries v11.x no longer directly supports the matching to spigot 1.8 resources by the use of id and data byte.  So added the support directly to the prison compatibility class for spigot 1.8 so prison can continue to use XSeries with spigot 1.8 without any issues.
 
 
 * **New feature: AutoFeatures: Smelt and Blocking: New option to include the player's current inventory when performing a smelting and/or blocking.**

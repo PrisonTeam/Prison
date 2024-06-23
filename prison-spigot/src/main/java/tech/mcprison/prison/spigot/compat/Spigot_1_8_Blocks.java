@@ -228,7 +228,9 @@ public abstract class Spigot_1_8_Blocks
 				if ( results == null ) {
 					// Last chance: try to match by id:
 					int id = spigotBlock.getType().getId();
-					results = XMaterial.matchXMaterial( id, data ).orElse( null );
+					
+					results = matchXMaterial( id, data );
+//					results = XMaterial.matchXMaterial( id, data ).orElse( null );
 				}
 				
 				if ( results == null ) {
@@ -262,6 +264,49 @@ public abstract class Spigot_1_8_Blocks
 		return results == NULL_TOKEN ? null : results;
 	}
 	
+	
+	/**
+	 * This function was removed from XMaterial as of XSeries v11.0.0.
+	 * 
+	 * This behaves the same, so spigot 1.8 can still be used with 
+	 * XSeries v11.1.0+.
+	 * 
+     * Gets the XMaterial based on the material's ID (Magic Value) and data value.<br>
+     * You should avoid using this for performance issues.
+     * 
+     * Since prison uses a material cache in this function, this will only get the 
+     * XMaterial the first time the item is requested.  So performance is bad, but
+     * it's a one time hit.
+	 *
+	 * Warning: this method loops through all the available materials and matches their 
+	 * ID using {@link #getId()} which takes a really long time.
+     *
+     * @param id   the ID (Magic value) of the material.
+     * @param data the data value of the material.
+     * @return a parsed XMaterial with the same ID and data value.
+     * @see #matchXMaterial(ItemStack)
+     */
+    public static XMaterial matchXMaterial(int id, byte data) {
+    	XMaterial results = null;
+    	
+    	// NOTE: XMaterial.MAX_ID == 2267.
+//        if (id < 0 || id > 2267 || data < 0) return null;
+
+    	if (id >= 0 && id <= 2267 && data >= 0) {
+    		
+    		for (XMaterial materials : XMaterial.VALUES) {
+    			if (materials.getData() == data && materials.getId() == id) {
+    				
+    				results = materials;
+    				break;
+    			}
+    		}
+    	}
+        
+        return results;
+    }
+    
+    
 	@Override
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
 		XMaterial results = NULL_TOKEN;
