@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-06-22
 
 
+* **Block break of unknown block type: Handle a condition of when a target block is not a known.***  Cancels the event.
+
+
 * **XMaterial bug fix.  If a newer version of spigot is being use that XSeries does not support**, there is a chance an error could happen if a newer block type is added to the sellall shop list, or some other need tries to access all block types on the server.
 This prevents a parse error within XMaterial from shutting down prison's ability to process all of the blocks.  This should have been a very rare condition, but now it's guarded against cause problems.
 

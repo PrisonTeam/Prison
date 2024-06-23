@@ -46,7 +46,8 @@ public class OnBlockBreakMines
 		ignore_event__block_already_counted, 
 		cancel_event__block_already_counted, 
 		ignore_event__monitor_priority_but_not_AIR, 
-		cancel_event__player_has_no_access
+		cancel_event__player_has_no_access, 
+		cancel_event__block_is_not_mappable_to_target_block
 		;
 		
 	}
@@ -381,6 +382,15 @@ public class OnBlockBreakMines
 								results.setCancelEvent( true );
 							}
 						}
+					}
+					else {
+						// A targetBlock could not be found for the current block.  
+						// So it must be invalid:
+						
+						// Do not cancel the event... 
+						results.setResultsReason( EventResultsReasons.cancel_event__block_is_not_mappable_to_target_block );
+						
+						results.setCancelEvent( true );
 					}
 				}
 				
