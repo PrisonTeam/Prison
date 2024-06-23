@@ -452,8 +452,12 @@ public class RankUtil
 
         PlayerRank pRankNext = null;
         
+        
+        // ??? Why not use targetRank here?  Isn't that always non-null?
         if ( originalRank == null ) {
-        	Rank nextRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank().orElse( null );
+        	Rank nextRank = ladder.getLowestRank().orElse( null );
+//        	Rank nextRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank().orElse( null );
+        	
         	pRankNext = rankPlayer.createPlayerRank(nextRank);
         }
         else {
