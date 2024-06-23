@@ -16,6 +16,9 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.18a 2024-06-22
 
+* **Upgraded nbtApi to v2.13.1 from v2.12.4.**
+This better supports spigot 1.21.x.
+
 
 * **Auto and manual smelting: List all possible smelting conditions.**
 Should provide a similar list for blocking.  This list shows what manual settings will effect the actual blocks, since one setting can control multiple blocks.

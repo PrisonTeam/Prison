@@ -13,6 +13,12 @@
 # https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 # https://mvnrepository.com/artifact/com.google.guava/guava
 #
+## NOTE: mavenrepository.com is not the offical repo.
+## NOTE: This item-nbt MUST use the API and not the plugin version!
+## Good: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api/
+## Bad?: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
+
+
 # Note: papi has two possible URLs: The second one is the offical but the repo does not work well.
 #  com.github.placeholderapi:placeholderapi
 #  me.clip:placeholderapi
@@ -33,7 +39,7 @@ junit = "4.12"
 guava = "31.1-jre"
 spigotApi = "1.13.2-R0.1-SNAPSHOT"
 
-nbtApi = "2.12.4"
+nbtApi = "2.13.1"
 papi = "2.11.5"
 vault = "1.7.1"
 
