@@ -2274,6 +2274,67 @@ public abstract class AutoManagerFeatures
 		for ( XMaterial source : keys ) {
 			SpigotItemStack drop = xMats.get( source );
 			
+			// smeltCobblestone:
+			//   cCobblestone : stone
+			// smeltGoldOre:
+			//   gold_ore : gold_ingot
+			//   nether_gold_ore : gold_ingot
+			//   deepslate_gold_ore : gold_ingot
+			//   raw_gold : gold_ingot
+			// smeltIronOre:
+			//   iron_ore : iron_ingot
+			//   deepslate_iron_ore : iron_ingot
+			//   raw_iron : iron__ingot
+			// smeltCoalOre:
+			//   coal_ore: coal
+			//   deeplate_core__ore : coal
+			// smeltDiamondlOre:
+			//   diamond_ore : diamond
+			//   deepslate_diamon_ore : diamond
+			// smeltEmeraldOre:
+		    //   emerald_ore : emerald
+			//   deepslate_emerald_ore : emerald
+			// smeltLapisOre:
+			//   lapis_ore : lapis_lazuli
+			//   deepslate_lapis_ore : lapis_lazuli
+			// smeltRedstoneOre:
+			//   redstone_ore : redstone
+			//   deepslate_redstone_ore : redstone
+			// smeltNetherQuartzOre:
+			//   nether_quartz__ore : quartz
+			// smeltAncientDebris:
+			//   ancient_debris : netherite_scrap
+			// smeltCopperOre:
+			//   copper_ore : copper_ingot
+			//   deepslate_copper_ore : copper_ingot
+			//   raw_copper : copper_ingot
+			
+			// No smelting:
+			// stone : smooth stone
+			// stone_bricks : cracked_stone_bricks
+			// cobbled_deepslate : deepslate
+			// deepslate_bricks : cracked_deepslate_bricks
+			// deepslate_tiles : cracked_deepslate_tiles
+			// sandstone : smooth_red_sandstone
+			// red_sandstone : smooth_red_sandstone
+			// nether_bricks : cracked_nether_bricks
+			// basalt : smooth_basalt
+			// polished_blackstone_bricks : cracked_polished_blackstone_bricks
+			// block_of_quartz : smooth_quartz
+			// clay : terracotta
+			// dyed terracotta : glazed_terracotta
+			// sand : glass
+			// wet_sponge : sponge
+			// log : charcoal
+			// wood : charcoal
+			// stripped_log : charcoal
+			// stripped_wood : charcoal
+			// chorus_fruit : popped_chorus_fruit
+			// sea_pickle : lime_dye
+			// cactus : green_dye
+			// clay_ball : brick
+			// netherrack : nether_brick
+			
 			switch ( source )
 			{
 				case COBBLESTONE:

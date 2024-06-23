@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18a 2024-06-22
 
 
+* **Auto and manual smelting: List all possible smelting conditions.**
+Should provide a similar list for blocking.  This list shows what manual settings will effect the actual blocks, since one setting can control multiple blocks.
+
+
 * **Rankup and Presetige: Fixed a bug where when prestiging for the first time that it was taking the cost of the default ladder's first rank (generally zero value).**
 This now uses the correct ladder based upon which ladder is being targeted for the rankup or prestige.
 
