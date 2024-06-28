@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-06-22
+# 3.3.0-alpha.18b 2024-06-28
+
+
+* **ranks ladder moveRank: Added the ability to remove a rank from a ladder.**
+This was not possible before, but yet prison would temporarily disconnect a rank from a ladder before assigning it to another ladder.
+It should be noted that ranks should always be tied to a ladder, so this is mostly used for testing purposes.
 
 
 ** v3.3.0-alpha.18b  2024-06-23**

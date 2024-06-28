@@ -255,7 +255,9 @@ public class LadderCommands
     		"ladder position or a new ladder.", 
 			onlyPlayers = false, permissions = "ranks.ladder")
 		public void ladderMoveRank(CommandSender sender, 
-				@Arg(name = "ladderName") String ladderName,
+				@Arg(name = "ladderName", 
+						description = "Use a valid ladder name, or '*no-ladder*' "
+								+ "to remove the ladder.") String ladderName,
 				@Arg(name = "rankName") String rankName,
 				@Arg(name = "position", def = "0", verifiers = "min[0]", 
 				description = "Position where you want the rank to be moved to. " +
@@ -264,7 +266,13 @@ public class LadderCommands
     	ladderMoveRankNoticeMsg( sender );
     	
     	ladderRemoveRank( sender, rankName );
-    	ladderAddRank(sender, ladderName, rankName, position );
+    	
+    	// If '*no-ladder*' then don't try to reassign it to another ladder:
+    	if ( !ladderName.equalsIgnoreCase( "*no-ladder*" ) ) {
+    		
+    		ladderAddRank(sender, ladderName, rankName, position );
+    	}
+    	
     }
 
 //    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder, or move a rank.", 
@@ -342,7 +350,14 @@ public class LadderCommands
 
         RankLadder ladder = rank.getLadder();
         
+        if ( ladder == null ) {
+        	Output.get().logInfo(
+        			"The rank %s has no ladder, so ladder cannot be removed.",
+        			rank.getName() );
+        	return;
+        }
         ladder.removeRank( rank );
+        
 //        ladder.removeRank(ladder.getPositionOfRank(rank));
 
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
