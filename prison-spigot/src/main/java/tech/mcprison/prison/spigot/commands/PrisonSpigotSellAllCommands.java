@@ -1278,6 +1278,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     				"you give to players can be integers, or doubles. They can be greater than 1, or less than " +
     				"1, or even negative.  All multipliers are added together to provide the player's total " +
     				"amount. " +
+    				"Please note that sellall rank multiplers will NOT apply to higher ranks. " +
+    				"If there is a sellall rank multiplier for P1 and not P2, and when the player ranks " +
+    				"up to P2, they will not get the multiplier from P1. " +
     				"Permission multipliers for player's `prison.sellall.multiplier.<value>`, "
     				+ "example `prison.sellall.multiplier.2` will add a 2x multiplier. "
     				+ "The multiplier values do not have to integers, but can be less than one, or "
@@ -1289,7 +1292,15 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             permissions = "prison.admin", onlyPlayers = false)
     private void sellAllAddMultiplierCommand(CommandSender sender,
            @Arg(name = "rank", description = "The rank name for the multiplier.") String rank,
-           @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier) {
+           @Arg(name = "multiplier", description = "Multiplier value.") Double multiplier,
+           @Arg(name = "options", def = "Use '*applyToHigherRanks*' to copy this "
+           		+ "multipler to all higher ranks above this rank. This will apply the multipler "
+           		+ "through to the last rank, or until it hits a higher rank that already has a "
+           		+ "multipler defined.  Example: If you have a multiplier set for P20 and you "
+           		+ "add one at P10 with this option enabled, then P11 through P19 will get the "
+           		+ "same multiplier that is given to P10.",
+        		   description = "") String options
+    		) {
 
         if (!isEnabled() ) {
             return;
@@ -1301,7 +1312,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (sellAllUtil.addSellallRankMultiplier(rank, multiplier)){
+        boolean applyToHigherRanks = options != null && "*applyToHigherRanks*".equalsIgnoreCase(options);
+        
+        if (sellAllUtil.addSellallRankMultiplier(rank, multiplier, applyToHigherRanks)){
             Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_add_success));
         }
         else {

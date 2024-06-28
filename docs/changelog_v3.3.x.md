@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-06-28
 
 
+* **sellall multiplier add to many ranks: new feature to add (replace) a rank multiplier and have it apply that value to all higher ranks until the end of the ladder or until it hits another rank with a multiplier.**
+So if you have p10 and p20 setup and want to fill in p11 through p19, you can use this command by reading p10 with this new option and it will apply the multiplier through p19.
+
+
 * **ranks ladder moveRank: Added the ability to remove a rank from a ladder.**
 This was not possible before, but yet prison would temporarily disconnect a rank from a ladder before assigning it to another ladder.
 It should be noted that ranks should always be tied to a ladder, so this is mostly used for testing purposes.

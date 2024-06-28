@@ -1478,6 +1478,9 @@ public class SellAllUtil
 //        return addSellAllBlock(XMaterial.matchXMaterial(material), value);
 //    }
 
+    public boolean addSellallRankMultiplier(String rankName, double multiplier){
+    	return addSellallRankMultiplier(rankName, multiplier, false);
+    }
     /**
      * Add Multiplier to SellAll depending on the Rank (Rank from any ladder).
      *
@@ -1485,10 +1488,11 @@ public class SellAllUtil
      *
      * @param rankName - Name of the Rank as String.
      * @param multiplier - Double value.
+     * @param applyToHigherRanks 
      *
      * @return boolean.
      * */
-    public boolean addSellallRankMultiplier(String rankName, double multiplier){
+    public boolean addSellallRankMultiplier(String rankName, double multiplier, boolean applyToHigherRanks){
 
         PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? 
         		null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME) );
@@ -1523,14 +1527,17 @@ public class SellAllUtil
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             
-            if ( rank.getLadder().isPrestiges() ) {
-            	conf.set("Multiplier." + rank.getName() + ".PRESTIGE_NAME", rank.getName());
-            }
-            else {
-            	conf.set("Multiplier." + rank.getName() + ".RANK_NAME", rank.getName());
-            }
+            setRankMultiplier(rank, multiplier, conf);
             
-            conf.set("Multiplier." + rank.getName() + ".MULTIPLIER", multiplier);
+            if ( applyToHigherRanks ) {
+            	
+            	Rank nextRank = rank.getRankNext();
+            	while ( nextRank != null && !getPrestigeMultipliers().containsKey(nextRank.getName()) ) {
+
+            		setRankMultiplier(nextRank, multiplier, conf);
+            		nextRank = nextRank.getRankNext();
+            	}
+            }
             
             conf.save(sellAllFile);
         } 
@@ -1544,6 +1551,17 @@ public class SellAllUtil
         
         return true;
     }
+
+	private void setRankMultiplier(Rank rank, double multiplier, FileConfiguration conf) {
+		if ( rank.getLadder().isPrestiges() ) {
+			conf.set("Multiplier." + rank.getName() + ".PRESTIGE_NAME", rank.getName());
+		}
+		else {
+			conf.set("Multiplier." + rank.getName() + ".RANK_NAME", rank.getName());
+		}
+		
+		conf.set("Multiplier." + rank.getName() + ".MULTIPLIER", multiplier);
+	}
 
     /**
      * Add SellAll Item Trigger.
