@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
+import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 
@@ -155,6 +156,10 @@ public class MineBombData {
 	private int itemRemovalDelayTicks = 5; // 0.25 seconds
 	
 	
+	
+	private AnimationPattern animationPattern = AnimationPattern.infinity;
+
+	
 	/**
 	 * <p>On spigot versions that support it, the bomb, when placed, will glow.
 	 * Was introduced with Minecraft 1.9.  Applies only to Entities, of which
@@ -275,6 +280,8 @@ public class MineBombData {
 		this.cooldownTicks = 30 * 20;
 		
 		this.itemRemovalDelayTicks = 5;
+		
+		this.animationPattern = AnimationPattern.infinity;
 		
 		this.glowing = false;
 		this.gravity = true;
@@ -516,6 +523,13 @@ public class MineBombData {
 	}
 	public void setItemRemovalDelayTicks( int itemRemovalDelayTicks ) {
 		this.itemRemovalDelayTicks = itemRemovalDelayTicks;
+	}
+
+	public AnimationPattern getAnimationPattern() {
+		return animationPattern;
+	}
+	public void setAnimationPattern(AnimationPattern animationPattern) {
+		this.animationPattern = animationPattern;
 	}
 
 	public boolean isAutosell() {

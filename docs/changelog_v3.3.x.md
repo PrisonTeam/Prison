@@ -14,7 +14,16 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-06-28
+# 3.3.0-alpha.18b 2024-06-29
+
+
+* **Mine Bombs: Added support for an AnimationPattern for the mine bombs.**
+This Animation pattern will control the animation sequence as the bomb is ticking down.
+
+
+* **Mine bombs: Setup a better system to validate mine bombs when creating the defaults and when loading from the save file.**
+Now if a mine bomb effect is not valid for that version of bukkit/spigot, it will not be included in the mine bomb so this will eliminate the startup error messages.
+
 
 
 * **sellall multiplier add to many ranks: new feature to add (replace) a rank multiplier and have it apply that value to all higher ranks until the end of the ladder or until it hits another rank with a multiplier.**

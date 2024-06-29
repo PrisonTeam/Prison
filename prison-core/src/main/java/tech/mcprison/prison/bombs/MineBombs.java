@@ -80,7 +80,23 @@ public class MineBombs
 		full
 	}
 	
-	private MineBombs() {
+	
+	public enum AnimationPattern {
+		none,
+		infinity,
+		bounce,
+		orbital
+		
+		;
+	}
+	
+	/**
+	 * DO NOT USE!
+	 * This has been set to protected only to be used by
+	 * junit tests!
+	 * DO NOT USE this constructor!
+	 */
+	protected MineBombs() {
 		super();
 		
 		this.configData = new MineBombsConfigData();

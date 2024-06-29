@@ -1,6 +1,7 @@
 package tech.mcprison.prison.bombs;
 
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
+import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
 import tech.mcprison.prison.output.Output;
 
@@ -76,6 +77,8 @@ public class MineBombDefaultConfigSettings {
 				
 				mbd.setCooldownTicks( 10 );
 
+				mbd.setAnimationPattern( AnimationPattern.infinity );
+
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 				
 			}
@@ -103,6 +106,8 @@ public class MineBombDefaultConfigSettings {
 				mbd.addVisualEffects( mbeExplode06.clone() );
 
 				mbd.setCooldownTicks( 60 );
+
+				mbd.setAnimationPattern( AnimationPattern.infinity );
 				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 				
@@ -133,6 +138,8 @@ public class MineBombDefaultConfigSettings {
 				mbd.addVisualEffects( mbeExplode06a.clone() );
 
 				mbd.setCooldownTicks( 60 );
+
+				mbd.setAnimationPattern( AnimationPattern.infinity );
 				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -190,6 +197,8 @@ public class MineBombDefaultConfigSettings {
 				
 				mbd.setCooldownTicks( 60 );
 				mbd.setFuseDelayTicks( 13 * 20 ); // 13 seconds
+				
+				mbd.setAnimationPattern( AnimationPattern.infinity );
 
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -248,6 +257,8 @@ public class MineBombDefaultConfigSettings {
 				
 				mbd.setCooldownTicks( 5 );
 
+				mbd.setAnimationPattern( AnimationPattern.infinity );
+				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
 			
@@ -276,6 +287,8 @@ public class MineBombDefaultConfigSettings {
 				mbd.setGlowing( true );
 				
 				mbd.setCooldownTicks( 60 );
+
+				mbd.setAnimationPattern( AnimationPattern.infinity );
 
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
