@@ -23,8 +23,8 @@ public class MineBombEffectsData
 				Comparable<MineBombEffectsData>
 {
 
-	private EffectType effectType;
-	
+	private EffectType effectType = EffectType.unknown;
+ 	
 	private String effectName;
 	
 	private EffectState effectState;
@@ -38,6 +38,7 @@ public class MineBombEffectsData
 	
 	
 	public enum EffectType {
+		unknown,
 		sounds,
 		visuals;
 	}
@@ -59,7 +60,7 @@ public class MineBombEffectsData
 			int offsetTicks ) {
 		super();
 		
-		this.effectType = null;
+		this.effectType = EffectType.unknown;
 		
 		this.effectName = effectName;
 		this.effectState = effectState;

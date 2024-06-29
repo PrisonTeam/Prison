@@ -159,7 +159,10 @@ public class MineBombData
 	private int itemRemovalDelayTicks = 5; // 0.25 seconds
 	
 	
-	
+	/**
+	 * <p>This setting controls the animation while the bomb counts down.
+	 * </p>
+	 */
 	private AnimationPattern animationPattern = AnimationPattern.infinity;
 
 	
@@ -285,6 +288,7 @@ public class MineBombData
 		this.itemRemovalDelayTicks = 5;
 		
 		this.animationPattern = AnimationPattern.infinity;
+//		setAnimationPattern( AnimationPattern.infinity );
 		
 		this.glowing = false;
 		this.gravity = true;
@@ -326,6 +330,8 @@ public class MineBombData
 		
 		cloned.setGlowing( isGlowing() );
 		cloned.setGravity( isGravity() );
+		
+		cloned.setAnimationPattern( getAnimationPattern() );
 		
 		cloned.setItemRemovalDelayTicks( getItemRemovalDelayTicks() );
 		
@@ -574,11 +580,30 @@ public class MineBombData
 		this.itemRemovalDelayTicks = itemRemovalDelayTicks;
 	}
 
+
+	/**
+	 * If the animationPatternString is null, this will default to the 
+	 * infinity pattern.
+	 * 
+	 * AnimationPattern should never be null, so it will fall back to it's default
+	 * value which is infinity.
+	 * 
+	 * @return
+	 */
 	public AnimationPattern getAnimationPattern() {
+		if ( animationPattern == null ) {
+			// Note: if animationPatternString is null it will return 'infinity' which
+			//       is the default value.
+			animationPattern = AnimationPattern.infinity;
+		}
 		return animationPattern;
 	}
 	public void setAnimationPattern(AnimationPattern animationPattern) {
-		this.animationPattern = animationPattern;
+		
+		this.animationPattern = 
+					animationPattern == null ? 
+							AnimationPattern.infinity : 
+							animationPattern;
 	}
 
 	public boolean isAutosell() {

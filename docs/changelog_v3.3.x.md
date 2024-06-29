@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-06-29
 
 
+* **Mine Bombs: Finalizing the validation and hooking in the new AnimationPatterns.**
+Next is to work on adding new animation patterns.
+
+
 * **Prison platform: Added a setPlatform function so this can be used for unit testing.**  The test fixture is the TestPlatform object that is not connect to any spigot runtime.
 
 

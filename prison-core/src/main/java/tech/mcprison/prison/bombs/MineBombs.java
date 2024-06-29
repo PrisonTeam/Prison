@@ -89,6 +89,22 @@ public class MineBombs
 		orbital
 		
 		;
+		
+		public static final AnimationPattern fromString( String animationPattern ) {
+			AnimationPattern results = AnimationPattern.infinity;
+			
+			if ( animationPattern != null ) {
+				
+				for (AnimationPattern ap : values() ) {
+					if ( ap.name().equalsIgnoreCase( animationPattern) ) {
+						results = ap;
+						break;
+					}
+				}
+			}
+			
+			return results;
+		}
 	}
 	
 	/**
