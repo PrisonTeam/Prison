@@ -768,6 +768,17 @@ public class Prison
     public Platform getPlatform() {
         return platform;
     }
+    
+    /**
+     * Do not use!
+     * This is for junit tests only to create and use a test fixture.
+     * DO NOT USE!
+     * 
+     * @param platform
+     */
+    public void setPlatform( Platform platform ) {
+    	this.platform = platform; 
+    }
 
     /**
      * Returns the core data folder, which is located at "/plugins/Prison". This contains the

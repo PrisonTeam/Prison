@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-06-29
 
 
+* **Prison platform: Added a setPlatform function so this can be used for unit testing.**  The test fixture is the TestPlatform object that is not connect to any spigot runtime.
+
+
 * **Json File IO: Changed how errors are reported.**  Since the exception message may be null, provided a check and an alternative message instead of just passing a null value to the string formatting parameter.
 The JSON data can be huge, so only printing the first 500 characters.
 
