@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-06-29
 
 
+* **Mine Bombs: Setup reporting on when validation of bomb effects fail. ** It's not an error as much as that version of the effect is not supported by the active spigot/paper version the server is running.  It's a runtime check.
+**Added unit tests for the conversion of mine bombs to JSON and back to the mine bomb config objects.**  **Added units for cloning** that are similar in how it validates what has been cloned and restored from json.
+
+
 * **Mine Bombs: Added support for an AnimationPattern for the mine bombs.**
 This Animation pattern will control the animation sequence as the bomb is ticking down.
 
