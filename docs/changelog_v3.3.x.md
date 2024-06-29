@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-06-29
 
 
+* **Json File IO: Changed how errors are reported.**  Since the exception message may be null, provided a check and an alternative message instead of just passing a null value to the string formatting parameter.
+The JSON data can be huge, so only printing the first 500 characters.
+
+
 * **Mine Bombs: Setup reporting on when validation of bomb effects fail. ** It's not an error as much as that version of the effect is not supported by the active spigot/paper version the server is running.  It's a runtime check.
 **Added unit tests for the conversion of mine bombs to JSON and back to the mine bomb config objects.**  **Added units for cloning** that are similar in how it validates what has been cloned and restored from json.
 
