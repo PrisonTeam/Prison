@@ -254,6 +254,15 @@ public class JsonFileIO
 		return json;
 	}
 	
+	public <T> T fromString( String json, Class<T> klass ) {
+		
+		
+		T obj = getGson().fromJson( json, klass );
+		
+		
+		return obj;
+	}
+	
 	
 	public static FileFilter getPrisonFileFilter() {
 		

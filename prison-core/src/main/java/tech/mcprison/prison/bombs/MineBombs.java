@@ -14,6 +14,7 @@ import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 public class MineBombs
+	implements Comparable<MineBombs>
 {
 	public static final String MINE_BOMBS_FILE_NAME = "mineBombsConfig.json";
 	public static final String MINE_BOMBS_PATH_NAME = "module_conf/mines";
@@ -117,6 +118,28 @@ public class MineBombs
 		}
 		return instance;
 	}
+
+	
+	@Override
+	public int compareTo(MineBombs o) {
+
+		int results = 0;
+
+		if ( o == null ) {
+			results = -1;
+		}
+		
+		if ( results == 0 ) {
+			
+			MineBombsConfigData cData = getConfigData();
+			MineBombsConfigData cDataO = o.getConfigData();
+			
+			results = cData.compareTo( cDataO );
+		}
+		
+		return results;
+	}
+	
 	
 	/**
 	 * <p>This finds a bomb with the given name, and returns a clone.  The clone is
@@ -152,6 +175,22 @@ public class MineBombs
 		
 	}
 	
+	public String toJson() {
+		JsonFileIO fio = new JsonFileIO( null, null );
+		
+		String json = fio.toString( this );
+		
+		return json;
+	}
+	
+	public static MineBombs fromJson( String json ) {
+		JsonFileIO fio = new JsonFileIO();
+		
+		MineBombs mBombs = fio.fromString( json, MineBombs.class );
+
+		return mBombs;
+	}
+	
 	public File getConfigFile( JsonFileIO jsonFileIO ) {
 
 		File path = new File( jsonFileIO.getProjectRootDiretory(), MINE_BOMBS_PATH_NAME );
@@ -181,11 +220,12 @@ public class MineBombs
 
 			if ( configs != null ) {
 				
-				configs.validateMineBombEffects();
+				boolean dirty = configs.validateMineBombEffects();
 				
 				setConfigData( configs );
 				
-				if ( configs.getDataFormatVersion() < 
+				if ( dirty ||
+						configs.getDataFormatVersion() < 
 								MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION ) {
 					
 					// Need to update the format version then save a new copy of the configs.
@@ -200,7 +240,7 @@ public class MineBombs
 
 					boolean renamed = configFile.renameTo( backupFile );
 					
-					if ( renamed ) {
+					if ( renamed || dirty ) {
 						configs.setDataFormatVersion( MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION );
 						
 						fio.saveJsonFile( configFile, configs );

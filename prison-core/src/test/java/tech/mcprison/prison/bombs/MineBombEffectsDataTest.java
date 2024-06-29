@@ -1,12 +1,20 @@
 package tech.mcprison.prison.bombs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.Test;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.TestPlatform;
+import tech.mcprison.prison.internal.platform.Platform;
 
 public class MineBombEffectsDataTest
 		extends MineBombEffectsData
@@ -58,5 +66,66 @@ public class MineBombEffectsDataTest
 		assertEquals( mbef03, testList.get( 4 ) );
 		
 	}
+	
+	@Test
+	public final void testJson()
+	{
+		
+		Platform platform = new TestPlatform( new File("tempDir"), true );
+		Prison.get().setPlatform( platform );
+		
+		
+		MineBombs mBombs = new MineBombs();
+		
+		// First build the default bombs:
+		MineBombDefaultConfigSettings defConfigs = new MineBombDefaultConfigSettings();
+		defConfigs.setupDefaultMineBombData(mBombs);
+
+		String json = mBombs.toJson();
+		
+		MineBombs mBombsTwo = MineBombs.fromJson(json);
+		
+		assertNotNull( mBombs );
+		assertNotNull( mBombsTwo );
+
+		assertEquals( 0, mBombs.compareTo(mBombsTwo ));
+		
+//		assertEquals( mBombs, mBombsTwo );
+	}
+	
+	
+	@Test
+	public final void testClone()
+	{
+		
+		Platform platform = new TestPlatform( new File("tempDir"), true );
+		Prison.get().setPlatform( platform );
+		
+		
+		MineBombs mBombs = new MineBombs();
+		
+		// First build the default bombs:
+		MineBombDefaultConfigSettings defConfigs = new MineBombDefaultConfigSettings();
+		defConfigs.setupDefaultMineBombData(mBombs);
+		
+		MineBombs mBombsTwo = new MineBombs();
+		
+		Set<String> keys = mBombs.getConfigData().getBombs().keySet();
+		for (String key : keys) {
+			MineBombData mBomb = mBombs.getConfigData().getBombs().get(key);
+			
+			mBombsTwo.getConfigData().getBombs().put(
+					key, mBomb.clone() );
+			
+		}
+		
+		assertNotNull( mBombs );
+		assertNotNull( mBombsTwo );
+		
+		assertEquals( 0, mBombs.compareTo(mBombsTwo ));
+		
+//		assertEquals( mBombs, mBombsTwo );
+	}
+	
 
 }

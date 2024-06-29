@@ -9,8 +9,11 @@ import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
 import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
 
-public class MineBombData {
+public class MineBombData
+		implements Comparable<MineBombData> 
+{
 
 	public static final String MINE_BOMB_DEFAULT_ITEM_NAME = "&c-= &7{name}&c =-";
 	
@@ -360,6 +363,52 @@ public class MineBombData {
 		
 		return cloned;
 	}
+	
+	
+
+	@Override
+	public int compareTo(MineBombData o) {
+		int results = 0;
+		
+		if ( o == null ) {
+			results = -1;
+		}
+		
+		results = getName().compareTo( o.getName() );
+
+		// This is basically used in unit testing and with JSON conversions.
+		// conversions of numeric values shouldn't be an issue, so do not 
+		// add to this compareTo.
+		
+		
+		if ( results == 0 ) {
+			
+			results = getNameTag().compareTo( o.getNameTag() );
+			if ( results == 0 ) {
+				
+				results = getDescription().compareTo( o.getDescription() );
+				if ( results == 0 ) {
+					
+					results = getAnimationPattern().compareTo( o.getAnimationPattern() );
+					if ( results == 0 ) {
+						
+						results = Integer.compare( getSoundEffects().size(), o.getSoundEffects().size() );
+						if ( results == 0 ) {
+							
+							results = Integer.compare( getVisualEffects().size(), o.getVisualEffects().size());
+							if ( results == 0 ) {
+								
+								results = getExplosionShape().compareTo( o.getExplosionShape() );
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return results;
+	}
+
 
 	public String getName() {
 		return name;
@@ -575,7 +624,9 @@ public class MineBombData {
 	}
 
 	
-	public void addSoundEffects( MineBombEffectsData effect ) {
+	public boolean addSoundEffects( MineBombEffectsData effect ) {
+		boolean results = false;
+		
 		effect.setEffectType( EffectType.sounds );
 		
 		Prison.get().getPlatform().validateMineBombEffect( effect );
@@ -583,6 +634,19 @@ public class MineBombData {
 		if ( effect.isValid() ) {
 			getSoundEffects().add(effect);
 		}
+		else {
+			String msg = String.format(
+					"MineBombData.addSoundEffects: Invalid effect. "
+					+ "This effect is not valid for the version of Spigot that you're "
+					+ "running and will be excluded. This is not an error. "
+					+ "MineBomb: %s  Effect: [[%s]] ",
+					getName(), 
+					effect.toString()
+					);
+			Output.get().logInfo( msg );
+			results = true;
+		}
+		return results;
 	}
 	public TreeSet<MineBombEffectsData> getSoundEffects() {
 		return soundEffects;
@@ -591,7 +655,9 @@ public class MineBombData {
 		this.soundEffects = soundEffects;
 	}
 
-	public void addVisualEffects( MineBombEffectsData effect ) {
+	public boolean addVisualEffects( MineBombEffectsData effect ) {
+		boolean results = false;
+		
 		effect.setEffectType( EffectType.visuals );
 		
 		Prison.get().getPlatform().validateMineBombEffect( effect );
@@ -599,6 +665,19 @@ public class MineBombData {
 		if ( effect.isValid() ) {
 			getVisualEffects().add(effect);
 		}
+		else {
+			String msg = String.format(
+					"MineBombData.addVisualEffects: Invalid effect. "
+					+ "This effect is not valid for the version of Spigot that you're "
+					+ "running and will be excluded. This is not an error. "
+					+ "MineBomb: %s  Effect: [[%s]] ",
+					getName(), 
+					effect.toString()
+					);
+			Output.get().logInfo( msg );
+			results = true;
+		}
+		return results;
 	}
 	public TreeSet<MineBombEffectsData> getVisualEffects() {
 		return visualEffects;
