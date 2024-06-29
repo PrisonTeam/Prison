@@ -20,6 +20,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombEffectsData;
+import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
 import tech.mcprison.prison.commands.Arg;
@@ -1089,7 +1090,83 @@ public class PrisonUtilsMineBombs
 		
 		return results;
 	}
+
 	
+
+	public void validateMineBommbEffect(MineBombEffectsData mineBombEffect) {
+		
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else if ( mineBombEffect == null ) {
+			
+			Output.get().logInfo( "Prison utils MineBomb: MineBombEffect is null. The specified effects cannot include nulls." );
+		}
+		else {
+			
+			switch ( mineBombEffect.getEffectType() ) {
+			
+			case sounds:
+				
+				{
+					mineBombEffect.setValid( false );
+					
+					for ( XSound p : XSound.values() ) {
+						if ( p.name().equalsIgnoreCase( mineBombEffect.getEffectName() ) ) {
+							mineBombEffect.setValid( true );
+							break;
+						}
+					}
+				}
+				
+				break;
+				
+			case visuals:
+
+				{
+					mineBombEffect.setValid( false );
+					
+					// bukkit 1.8.8:
+//					Effect.values()
+					
+					// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
+					boolean is1_8 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+
+					if ( is1_8 ) {
+						for ( Effect p : Effect.values() ) {
+							if ( p.name().equalsIgnoreCase( mineBombEffect.getEffectName() ) ) {
+								mineBombEffect.setValid( true );
+								break;
+							}
+						}
+						
+					}
+					else {
+						
+						for ( Particle p : Particle.values() ) {
+							if ( p.name().equalsIgnoreCase( mineBombEffect.getEffectName() ) ) {
+								mineBombEffect.setValid( true );
+								break;
+							}
+						}
+					}	
+				}
+				
+				break;
+
+			default:
+				break;
+			}
+			
+			if ( mineBombEffect.getEffectType() == EffectType.sounds ) {
+				
+			}
+			if ( mineBombEffect.getEffectType() == EffectType.visuals ) {
+				
+			}
+		}
+	}
 
 	public boolean utilsMineBombsValidate( String mbObjectType,
 			String name

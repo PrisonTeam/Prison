@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 
@@ -558,6 +560,16 @@ public class MineBombData {
 		this.applyToPlayersBlockCount = applyToPlayersBlockCount;
 	}
 
+	
+	public void addSoundEffects( MineBombEffectsData effect ) {
+		effect.setEffectType( EffectType.sounds );
+		
+		Prison.get().getPlatform().validateMineBombEffect( effect );
+		
+		if ( effect.isValid() ) {
+			getSoundEffects().add(effect);
+		}
+	}
 	public TreeSet<MineBombEffectsData> getSoundEffects() {
 		return soundEffects;
 	}
@@ -565,6 +577,15 @@ public class MineBombData {
 		this.soundEffects = soundEffects;
 	}
 
+	public void addVisualEffects( MineBombEffectsData effect ) {
+		effect.setEffectType( EffectType.visuals );
+		
+		Prison.get().getPlatform().validateMineBombEffect( effect );
+		
+		if ( effect.isValid() ) {
+			getVisualEffects().add(effect);
+		}
+	}
 	public TreeSet<MineBombEffectsData> getVisualEffects() {
 		return visualEffects;
 	}

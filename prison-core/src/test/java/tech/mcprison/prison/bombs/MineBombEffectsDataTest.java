@@ -17,12 +17,17 @@ public class MineBombEffectsDataTest
 	{
 		
 		MineBombEffectsData mbef01 = new MineBombEffectsData("ABC", EffectState.explode, 0 );
+		mbef01.setEffectType( EffectType.sounds );
 		MineBombEffectsData mbef02 = new MineBombEffectsData("XYZ", EffectState.placed, 3 );
+		mbef02.setEffectType( EffectType.sounds );
 
 		MineBombEffectsData mbef03 = new MineBombEffectsData("BDF", EffectState.finished, 14 );
+		mbef03.setEffectType( EffectType.sounds );
 		MineBombEffectsData mbef04 = new MineBombEffectsData("DEF", EffectState.finished, 0 );
+		mbef04.setEffectType( EffectType.sounds );
 
 		MineBombEffectsData mbef05 = new MineBombEffectsData("ABC", EffectState.placed, 0 );
+		mbef05.setEffectType( EffectType.sounds );
 
 		
 		assertEquals( 1, compare( mbef01, mbef02 ) );

@@ -164,6 +164,9 @@ public class MineBombs
 					(MineBombsConfigData) fio.readJsonFile( configFile, getConfigData() );
 
 			if ( configs != null ) {
+				
+				configs.validateMineBombEffects();
+				
 				setConfigData( configs );
 				
 				if ( configs.getDataFormatVersion() < 

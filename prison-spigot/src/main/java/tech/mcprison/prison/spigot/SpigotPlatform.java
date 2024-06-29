@@ -67,6 +67,7 @@ import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.backpacks.BackpackEnums.BackpackType;
+import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.backpacks.PlayerBackpack;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.PluginCommand;
@@ -143,6 +144,7 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
+import tech.mcprison.prison.spigot.utils.PrisonUtilsMineBombs;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -3556,5 +3558,24 @@ public class SpigotPlatform
 		
 
 		return values;
+	}
+	
+	
+	/**
+	 * This function is used when setting up mine bomb's effects.
+	 * If first checks to see if an effect is valid for the platform's version,
+	 * and if it is, then the effect is marked as valid.
+	 * 
+	 * Any invalid effects are not added to the mine bombs.  This eliminates and
+	 * runtime errors using invalid effects.
+	 * 
+	 */
+	public MineBombEffectsData validateMineBombEffect(MineBombEffectsData mineBombEffect ) {
+	
+		PrisonUtilsMineBombs mbUtil =  PrisonUtilsMineBombs.getInstance();
+		
+		mbUtil.validateMineBommbEffect( mineBombEffect );
+		
+		return mineBombEffect;
 	}
 }

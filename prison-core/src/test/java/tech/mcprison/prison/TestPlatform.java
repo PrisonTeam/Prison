@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.backpacks.PlayerBackpack;
+import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
@@ -599,5 +600,9 @@ public class TestPlatform implements Platform {
 	public String dumpEventListenersPlayerPickupItemEvents() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public MineBombEffectsData validateMineBombEffect(MineBombEffectsData mineBombEffectsData) {
+		return mineBombEffectsData;
 	}
 }

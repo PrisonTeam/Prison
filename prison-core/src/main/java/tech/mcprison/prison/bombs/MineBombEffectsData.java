@@ -23,6 +23,8 @@ public class MineBombEffectsData
 				Comparable<MineBombEffectsData>
 {
 
+	private EffectType effectType;
+	
 	private String effectName;
 	
 	private EffectState effectState;
@@ -32,6 +34,14 @@ public class MineBombEffectsData
 	private float volumne;
 	private float pitch;
 	
+	private transient boolean valid;
+	
+	
+	public enum EffectType {
+		sounds,
+		visuals;
+	}
+	
 	public enum EffectState {
 		placed,
 		explode,
@@ -40,11 +50,16 @@ public class MineBombEffectsData
 	
 	protected MineBombEffectsData() {
 		super();
+		
+		this.valid = true;
 	}
 	
-	public MineBombEffectsData( String effectName, EffectState effectState, 
+	public MineBombEffectsData(  
+			String effectName, EffectState effectState, 
 			int offsetTicks ) {
 		super();
+		
+		this.effectType = null;
 		
 		this.effectName = effectName;
 		this.effectState = effectState;
@@ -52,10 +67,13 @@ public class MineBombEffectsData
 		
 		this.volumne = 1.0f;
 		this.pitch = 1.0f;
+		
+		this.valid = true;
 	}
 	
 	
-	public MineBombEffectsData( String effectName, EffectState effectState, 
+	public MineBombEffectsData( 
+			String effectName, EffectState effectState, 
 			int offsetTicks, float volume, float pitch ) {
 		this( effectName, effectState, offsetTicks );
 		
@@ -65,30 +83,42 @@ public class MineBombEffectsData
 	
 	
 	public MineBombEffectsData clone() {
-		return new MineBombEffectsData( getEffectName(), getEffectState(), getOffsetTicks(),
+		MineBombEffectsData cloned = new MineBombEffectsData( 
+				getEffectName(), getEffectState(), getOffsetTicks(),
 				getVolumne(), getPitch() );
+		
+		cloned.setEffectType( getEffectType() );
+		cloned.setValid( isValid() );
+		
+		return cloned;
 	}
 
 	@Override
 	public String toString() {
-		return getEffectName() + " (state: " + getEffectState().name() + " offset: " + getOffsetTicks() +  
+		return getEffectName() + " (" + getEffectType().name() + 
+				" state: " + getEffectState().name() + " offset: " + getOffsetTicks() +  
 				" ticks  v: " + getVolumne() + "  p: " + getPitch() + ")";
 	}
 	public String toStringShort() {
-		return getEffectName() + " (state: " + getEffectState().name() + " offset: " + getOffsetTicks() +  
+		return getEffectName() + " (" + getEffectType().name() + 
+				" state: " + getEffectState().name() + " offset: " + getOffsetTicks() +  
 				" ticks)";
 	}
 	
 	@Override
 	public int compare( MineBombEffectsData o1, MineBombEffectsData o2 )
 	{
-		int results = o1.getEffectState().compareTo( o2.getEffectState() );
+		int results = o1.getEffectType().compareTo( o2.getEffectType() );
 		
 		if ( results == 0 ) {
-			results = Integer.compare( o1.getOffsetTicks(), o2.getOffsetTicks() );
+			results = o1.getEffectState().compareTo( o2.getEffectState() );
 			
 			if ( results == 0 ) {
-				results = o1.getEffectName().compareTo( o2.getEffectName() );
+				results = Integer.compare( o1.getOffsetTicks(), o2.getOffsetTicks() );
+				
+				if ( results == 0 ) {
+					results = o1.getEffectName().compareTo( o2.getEffectName() );
+				}
 			}
 		}
 		return results;
@@ -101,6 +131,13 @@ public class MineBombEffectsData
 	}
 
 	
+	public EffectType getEffectType() {
+		return effectType;
+	}
+	public void setEffectType(EffectType effectType) {
+		this.effectType = effectType;
+	}
+
 	public String getEffectName() {
 		return effectName;
 	}
@@ -142,6 +179,13 @@ public class MineBombEffectsData
 		this.pitch = pitch;
 		
 		return this;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 
 }

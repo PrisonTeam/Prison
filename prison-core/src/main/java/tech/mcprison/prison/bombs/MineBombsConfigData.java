@@ -1,7 +1,9 @@
 package tech.mcprison.prison.bombs;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.file.FileIOData;
 
@@ -37,6 +39,27 @@ public class MineBombsConfigData
 		this.dataFormatVersion = dataFormatVersion;
 	}
 
+	public void validateMineBombEffects() {
+		
+		Set<String> keys = getBombs().keySet();
+		for ( String key : keys ) {
+			MineBombData bomb = getBombs().get( key );
+			
+			TreeSet<MineBombEffectsData> sounds = new TreeSet<>( bomb.getSoundEffects() );
+			bomb.getSoundEffects().clear();
+			for ( MineBombEffectsData sound : sounds ) {
+				bomb.addSoundEffects( sound );
+			}
+			
+			TreeSet<MineBombEffectsData> visuals = new TreeSet<>( bomb.getVisualEffects() );
+			bomb.getVisualEffects().clear();
+			for ( MineBombEffectsData visual : visuals ) {
+				bomb.addVisualEffects( visual );
+			}
+			
+		}
+	}
+	
 	public Map<String, MineBombData> getBombs() {
 		return bombs;
 	}
