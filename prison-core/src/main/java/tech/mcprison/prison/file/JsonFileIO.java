@@ -340,8 +340,11 @@ public class JsonFileIO
 				String message = String.format( 
 						"JsonFileIO.readJsonFile: JsonParse failure: file: [%s] " +
 						"error: [%s]  json: [%s] ", 
-						file.getAbsoluteFile(), e.getMessage(), 
-						json );
+						file.getAbsoluteFile(), 
+						(e.getMessage() == null ? "no-error-message" : e.getMessage()), 
+						(json.length() > 500 ? 
+								json.substring(0, 500) + "... (first 500 chars)" : json )
+									.replace("%", "\\%"));
 				
 				Output.get().logError( message );
 
