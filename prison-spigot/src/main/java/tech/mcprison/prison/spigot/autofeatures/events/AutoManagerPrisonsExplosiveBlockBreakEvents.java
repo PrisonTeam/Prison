@@ -336,8 +336,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
     		
     		
     		
-    		pmEvent.setApplyToPlayersBlockCount( 
-    				e.getMineBomb().isApplyToPlayersBlockCount() );
+    		if ( e.getMineBomb() != null ) {
+    			pmEvent.setApplyToPlayersBlockCount( 
+    					e.getMineBomb().isApplyToPlayersBlockCount() );
+    		}
   
 			
 			if ( !validateEvent( pmEvent ) ) {

@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-01
 
 
+* **Mine bombs: potential bug fix.  If a mine bomb is null, this was causing problems.  This now properly handles null mine bombs.**
+
+
 * **Player info fix: When creating the new entity support, there were times when the names were being lost and as such this code was failing because the name was null.**
 Normally it never will be null, so I cannot really call this a bug.  But this fixes the issue if it happens again in the future. If a name is null, it now will properly support it.
 
