@@ -17,6 +17,14 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-01
 
 
+* **Mine Bombs: New feature to remove stray amour stands.**
+`/prison utils bomb findAmourStands help`
+This lists all amour stands in a given radius and you have the option to remove them.
+Early on, mine bombs use of amour stands could glitch and not be removed.  
+This command can identify them, and remove them.  
+This command should be used with caution since you could also remove holographic displays too, and if you do, you may not be able to regenerate them too easily, so use with caution.
+
+
 * **Mine bombs: potential bug fix.  If a mine bomb is null, this was causing problems.  This now properly handles null mine bombs.**
 
 

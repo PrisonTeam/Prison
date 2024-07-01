@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,9 +14,11 @@ import org.bukkit.entity.Player;
 //import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import com.cryptomorin.xseries.XEntityType;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -25,7 +28,9 @@ import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
@@ -36,11 +41,14 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.game.SpigotEntity;
+import tech.mcprison.prison.spigot.game.SpigotEntityType;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -95,6 +103,155 @@ public class PrisonUtilsMineBombs
 		return true;
 	}
 
+	
+	
+	@Command(identifier = "prison utils bomb findArmorStands", 
+			description = "This will remove abandonded/zombi armor stands within "
+					+ "a radius of a player, or self.",
+		onlyPlayers = false, 
+		permissions = "prison.utils.bombs",
+		altPermissions = "prison.utils.bombs.others")
+	public void utilsFindMineBombsArmorStands( CommandSender sender, 
+			@Arg(name = "radius", def = "10",
+				description = "Number of blocks in a radius from the player "
+						+ "to search for armor stands to remove.") int radius,
+			@Arg(name = "playerName", description = "Player name") String playerName,
+			@Wildcard(join=true)
+			@Arg(name = "options", def = "list",
+					description = "Action to perform. 'list' will list all armor stands within"
+							+ "the general cubic-radius. "
+							+ "'show' will make the armor stands visible for a few minutes "
+							+ "and optionally provide an id for showing only one.  "
+							+ "removeAll' will remove all armor stands "
+							+ "within the general cubic-radius. And 'removeId' will remove "
+							+ "only one armor stand that matches the supplied ID. "
+							+ " [list, show <id>, removeAll, removeId <id>]") String options
+			
+			) {
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else {
+			
+			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
+					"prison.utils.bomb", "prison.utils.bomb.others" );
+
+			boolean list = false;
+			boolean show = false;
+			boolean removeAll = false;
+			boolean removeId = false;
+			
+			
+			String uuid = null;
+			
+			options = options.toLowerCase().trim();
+			
+			if ( options.contains( "list" ) ) {
+				list = true;
+				options = options.replace( "list", "" ).trim();
+			}
+			if ( options.contains( "show" ) ) {
+				show = true;
+				options = options.replace( "show", "" ).trim();
+				uuid = options;
+			}
+			if ( options.contains( "removeall" ) ) {
+				removeAll = true;
+				options = options.replace( "removeall", "" ).trim();
+			}
+			if ( options.contains( "removeid" ) ) {
+				removeId = true;
+				options = options.replace( "removeid", "" ).trim();
+				uuid = options;
+			}
+			
+			if ( player != null ) {
+
+				if ( show ) {
+					Output.get().logInfo( "&3Sorry 'show' is not yet implemented. "
+							+ "Please ping Blue on discord. ");
+				}
+				
+				Location loc = player.getLocation();
+				SpigotEntityType seType = new SpigotEntityType( XEntityType.ARMOR_STAND );
+				
+				List<Entity> entities = player.getNearbyEntities(radius, seType);
+				
+				DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
+				DecimalFormat dFmt = Prison.getDecimalFormatStatic( "#,##0.0");
+				
+				for (Entity entity : entities) {
+					SpigotEntity sEntity = (SpigotEntity) entity;
+					
+					Location l = entity.getLocation();
+					
+					String id = entity.getUniqueId().toString().substring(30);
+					
+					int ticks = entity.getTicksLived();
+					double times = ticks / 20.0;
+					String sfx = "secs";
+					if ( times > 60 ) {
+						times /= 60;
+						sfx = "mins";
+					}
+					if ( times > 60 ) {
+						times /= 60;
+						sfx = "hrs";
+					}
+					
+					Bounds bounds = new Bounds( loc, l );
+					
+					String status = "";
+					
+					// actions:
+					if ( show ) {
+//						sEntity.getWrapper().
+					}
+					if ( list ) {
+						// Do nothing:
+					}
+					else if ( removeAll ||
+								removeId && id.equalsIgnoreCase( uuid ) 
+							) {
+						sEntity.remove();
+						status = "&a** removed **";
+					}
+					
+					String msg = String.format(
+							"&3ArmorStand: distance &7%4s  &3id: &7%s  &3x:%4s y:%4s z: %4s  age: %s %s  %s",
+							iFmt.format( bounds.getDistance3d() ),
+							id,
+							iFmt.format( l.getBlockX() ),
+							iFmt.format( l.getBlockY() ),
+							iFmt.format( l.getBlockZ() ),
+							dFmt.format( times ),
+							sfx, 
+							status
+							);
+					
+					sender.sendMessage( msg );
+				}
+				
+				
+//				 Location EntityArea = new Location(Bukkit.getWorld("world"),125,71,105);
+//	                World world = Bukkit.getServer().getWorld("world");
+//	                List<Entity> entList = world.getEntities();
+//	             
+//	                for(Entity current : entList){
+//	                    if(current instanceof Item){
+//	                        current.remove();
+//	                    }
+//	                }
+				
+			}
+			
+		}
+		
+
+	}
+	
+	
 	@Command(identifier = "prison utils bombs", 
 			description = "Activates a mine bomb for a given player at a specific location. " +
 					"The attributes of the bomb can be controlled with this command, such " +
