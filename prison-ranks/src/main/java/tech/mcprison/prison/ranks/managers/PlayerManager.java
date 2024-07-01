@@ -474,7 +474,11 @@ public class PlayerManager
     	
     	if ( Output.get().isDebug() ) {
     		
-    		boolean newPlayer = !getPlayersByName().containsKey( playerName );
+    		boolean newPlayer =  playerName != null ? !getPlayersByName().containsKey( playerName ) : false;
+    		
+    		if ( playerName == null ) {
+    			playerName = "**Error No player name**";
+    		}
     		
     		SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     		

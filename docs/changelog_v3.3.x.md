@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-01
 
 
+* **Player info fix: When creating the new entity support, there were times when the names were being lost and as such this code was failing because the name was null.**
+Normally it never will be null, so I cannot really call this a bug.  But this fixes the issue if it happens again in the future. If a name is null, it now will properly support it.
+
+
 * **Prison Entity support added!**
 This is a major change to prison.  Support for bukkit Entities has been added, which had to be worked in between the SpigotCommandSender and the players. 
 This is a significant change since it does allow more complex support for other features, such as newer and enhanced support for mine bomb animations, which uses armour stands, which are entities.
