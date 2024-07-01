@@ -14,7 +14,17 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-06-29
+# 3.3.0-alpha.18b 2024-07-01
+
+
+* **File saves for players with the ranks and player cache: reworked how the files saves will work and how they will process the files.**
+Before I had them setup to be "enabled" by a command that they admin would run.  But there were some problems with that.
+One thing that happened on my test server was that the save file that kept the config status disappeared and as such, there was some conflicts with which file was actually being used.
+As a result, some of the settings got screwed up for a couple of players.
+The solution was to change how files are read... basically it checks to see if either the new format is being used, and if not, then checks for the old format, and if not, then it uses the new file.  If the old file is used, then it's renamed.
+When checking for these files preexisting, it does as such with filtering all files to find files with the given prefix.  Therefore, it finds the correct file even if the player's name has been changed.
+This appears to be working very well at this point. 
+NOTE: There are other commits that need to happen, and will follow this one, that will allow everything to compile successfully.  This commit may not e able to be compiled.
 
 
 * **Mine Bombs: Finalizing the validation and hooking in the new AnimationPatterns.**

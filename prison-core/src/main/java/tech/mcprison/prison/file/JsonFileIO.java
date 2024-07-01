@@ -2,10 +2,13 @@ package tech.mcprison.prison.file;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.backups.PrisonSystemSettings;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.Player;
@@ -21,6 +24,9 @@ public class JsonFileIO
 	public static final String FILE_SUFFIX_TEMP = ".temp";
 	public static final String FILE_SUFFIX_TXT = ".txt";
 	public static final String FILE_TIMESTAMP_FORMAT = "_yyyy-MM-dd_HH-mm-ss";
+	
+	public static final String PLAYER_PATH = "data_storage/ranksDb/players/";
+	public static final String CACHE_PATH = "data_storage/playerCache/";
 
 	private final Gson gson;
 	
@@ -122,25 +128,101 @@ public class JsonFileIO
 //				uuid.substring( 25 );
 	}
 	
-	/**
-     * <p>This is a helper function to ensure that the given file name is 
-     * always generated correctly and consistently.
-     * </p>
-     * 
-     * @return "player_" plus the least significant bits of the UID
-     */
-    public static String filenamePlayer( Player player )
-    {
-    	boolean useNewFormat = useFriendlyUserFileNames();
-    	
-    	return useNewFormat ? filenamePlayerNew( player ) : filenamePlayerOld( player );
+//	/**
+//     * <p>This is a helper function to ensure that the given file name is 
+//     * always generated correctly and consistently.
+//     * </p>
+//     * 
+//     * @return "player_" plus the least significant bits of the UID
+//     */
+//    public static String filenamePlayer( Player player )
+//    {
+//    	boolean useNewFormat = useFriendlyUserFileNames();
+//    	
+//    	return useNewFormat ? filenamePlayerNew( player ) : filenamePlayerOld( player );
+//    }
+    
+//    public static String filenameCache( Player player )
+//    {
+//    	boolean useNewFormat = useFriendlyUserFileNames();
+//    	
+//    	return useNewFormat ? filenameCacheNew( player ) : filenameCacheOld( player );
+//    }
+    
+    public String filenamePrefix( String filename, String prefixDeliminator ) {
+    	int idx = filename.lastIndexOf( prefixDeliminator ) + 1;
+    	String prefix = idx > 0 ? filename.substring(0, idx) : null;
+    	return prefix;
     }
     
-    public static String filenameCache( Player player )
-    {
-    	boolean useNewFormat = useFriendlyUserFileNames();
+    /**
+     * Using the path and file name, this will check to see if any files 
+     * preexist with the given file prefix so if the player changes their 
+     * name, it will still load the correct file.
+     * 
+     * If no file is found, then it will crate a new File object based 
+     * upon the path and filename.
+     * 
+     * If existing file are found, there should only be at most one, but
+     * if there is more than one, then use the first one.
+     * 
+     * @param path
+     * @param filename
+     * @return
+     */
+    public File checkFile( File path, String filename, String prefixDeliminator ) {
     	
-    	return useNewFormat ? filenameCacheNew( player ) : filenameCacheOld( player );
+    	String prefix = filenamePrefix( filename, prefixDeliminator );
+    	
+    	List<File> files = getFilesFromPrefix( prefix, path );
+    	
+    	return files.size() > 0 ? files.get(0) : new File( path, filename );
+    }
+    
+    public static File filePlayer( Player player ) {
+    	JsonFileIO jfIO = new JsonFileIO();
+    	return jfIO.checkFiles( filenamePlayerNew( player ), filenamePlayerOld( player ), PLAYER_PATH );
+    }
+    
+    public static File fileCache( Player player ) {
+    	JsonFileIO jfIO = new JsonFileIO();
+    	return jfIO.checkFiles( filenameCacheNew( player ), filenameCacheOld( player ), CACHE_PATH );
+    }
+    
+    private File checkFiles( String newFileName, String oldFileName, String pathName )
+    {
+    	File results = null;
+    	
+    	File path = new File( Prison.get().getDataFolder(), pathName );
+    	
+    	File newPlayerFile = checkFile( path, newFileName, "_" );
+    	
+    	if ( newPlayerFile.exists() ) {
+    		results = newPlayerFile;
+    	}
+    	else {
+    		File oldPlayerFile = checkFile( path, oldFileName, "." );
+    		
+    		if ( oldPlayerFile.exists() ) {
+    			results = oldPlayerFile;
+    		}
+    	}
+    	
+    	if ( results == null ) {
+    		// Did not find a new format file, or an old file format, so use the new format:
+    		results = newPlayerFile;
+    	}
+    	
+    	// If the file chosen is not equal to the newFileName, then rename it:
+    	else if ( !newFileName.equals(results.getName()) ) {
+    		File newFile = new File( path, newFileName );
+    		results.renameTo(newFile);
+    		
+    		// Rename does not change the original file path in results so have to reassign it:
+    		results = newFile;
+    	}
+
+    	return results;
     }
     
     
@@ -263,6 +345,41 @@ public class JsonFileIO
 		return obj;
 	}
 	
+	
+	
+	public List<File> getFilesFromPrefix( String filePrefix, File path ) {
+		List<File> results = new ArrayList<>();
+    	
+    	FileFilter fFilter = getFilePrefixFilter( filePrefix );
+    	
+    	
+    	File[] collectionFiles = path.listFiles( fFilter );
+    	for (File file : collectionFiles ) {
+			results.add(file);
+		}
+
+    	return results;
+	}
+	
+	
+	public FileFilter getFilePrefixFilter( String filePrefix ) {
+		
+		FileFilter fileFilter = (file) -> {
+			
+			String fname = file.getName();
+			boolean isTemp = fname.startsWith( FILE_PREFIX_BACKUP ) ||
+							 fname.endsWith( FILE_SUFFIX_BACKUP ) ||
+							 fname.endsWith( FILE_SUFFIX_TEMP ) ||
+							 fname.endsWith( FILE_SUFFIX_TXT );
+			
+			return 
+					fname.toLowerCase().startsWith( filePrefix.toLowerCase() ) &&
+					!file.isDirectory() && !isTemp &&
+					fname.endsWith( FILE_SUFFIX_JSON );
+		};
+		
+		return fileFilter;
+	}
 	
 	public static FileFilter getPrisonFileFilter() {
 		

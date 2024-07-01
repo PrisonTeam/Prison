@@ -151,10 +151,12 @@ public abstract class CoreCacheFiles {
 	public CoreCacheData fromJson( Player player, Class<? extends CoreCacheData> classOfT ) {
 		CoreCacheData results = null;
 		
-		String cacheFilename = JsonFileIO.filenameCache(player);
-//		String playerId = player.getUUID().toString();
+		File playerCacheFile = JsonFileIO.fileCache(player);
 		
-		File playerCacheFile = getPlayerFile( cacheFilename );
+//		String cacheFilename = JsonFileIO.filenameCache(player);
+////		String playerId = player.getUUID().toString();
+//		
+//		File playerCacheFile = getPlayerFile( cacheFilename );
 		
 //		// This is the "target" file name for the player, based upon their
 //		// current name. The saved cache file may not be named exactly the same,
@@ -272,16 +274,16 @@ public abstract class CoreCacheFiles {
 		}
 	}
 
-	/**
-	 * <p>Constructs a File object for a specific player.
-	 * </p>
-	 * 
-	 * @param playerFileName
-	 * @return
-	 */
-	protected File getPlayerFile(String playerFileName) {
-		return new File( getPlayerFilePath(), playerFileName );
-	}
+//	/**
+//	 * <p>Constructs a File object for a specific player.
+//	 * </p>
+//	 * 
+//	 * @param playerFileName
+//	 * @return
+//	 */
+//	protected File getPlayerFile(String playerFileName) {
+//		return new File( getPlayerFilePath(), playerFileName );
+//	}
 
 //	protected TreeMap<String, File> getPlayerFiles() {
 //		// load the player's files:

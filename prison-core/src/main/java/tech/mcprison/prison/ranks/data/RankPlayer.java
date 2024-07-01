@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.ranks.data;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,10 @@ public class RankPlayer
      */
 
     private UUID uid;
+    
+    
+    private transient File filePlayer;
+    private transient File fileCache;
     
     
 
@@ -141,6 +146,9 @@ public class RankPlayer
 //        this.blocksMined = new HashMap<>();
         
         this.playerBalances = new TreeMap<>();
+        
+        this.filePlayer = null;
+        this.fileCache = null;
     }
     
     public RankPlayer( UUID uid ) {
@@ -468,6 +476,27 @@ public class RankPlayer
     	return filenamePlayer();
     }
     
+    
+	public File getFilePlayer() {
+		if ( filePlayer == null ) {
+			filePlayer = JsonFileIO.filePlayer( this );;
+		}
+		return filePlayer;
+	}
+	public void setFilePlayer(File filePlayer) {
+		this.filePlayer = filePlayer;
+	}
+
+	public File getFileCache() {
+		if ( fileCache == null ) {
+			fileCache = JsonFileIO.fileCache( this );
+		}
+		return fileCache;
+	}
+	public void setFileCache(File fileCache) {
+		this.fileCache = fileCache;
+	}
+
 	/**
      * <p>This is a helper function to ensure that the given file name is 
      * always generated correctly and consistently.
@@ -477,12 +506,14 @@ public class RankPlayer
      */
     public String filenamePlayer()
     {
-    	return JsonFileIO.filenamePlayer( this );
+    	return getFilePlayer().getName();
+//    	return JsonFileIO.filenamePlayer( this );
     }
     
     public String filenameCache()
     {
-    	return JsonFileIO.filenameCache( this );
+    	return getFileCache().getName();
+//    	return JsonFileIO.filenameCache( this );
     }
     
     

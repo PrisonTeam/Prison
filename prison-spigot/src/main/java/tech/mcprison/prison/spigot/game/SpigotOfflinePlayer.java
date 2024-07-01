@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.game;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,12 @@ public class SpigotOfflinePlayer
 	
 	private OfflinePlayer offlinePlayer;
 	
+	
+    private transient File filePlayer;
+    private transient File fileCache;
+    
+   
+	
 	public SpigotOfflinePlayer(OfflinePlayer offlinePlayer) {
 		this.offlinePlayer = offlinePlayer;
 	}
@@ -59,8 +66,53 @@ public class SpigotOfflinePlayer
      */
     public String getPlayerFileName() {
     	
-    	return JsonFileIO.filenamePlayer( this );
+    	return filenamePlayer();
     }
+    
+    
+	public File getFilePlayer() {
+		if ( filePlayer == null ) {
+			filePlayer = JsonFileIO.filePlayer( this );;
+		}
+		return filePlayer;
+	}
+	public void setFilePlayer(File filePlayer) {
+		this.filePlayer = filePlayer;
+	}
+
+	public File getFileCache() {
+		if ( fileCache == null ) {
+			fileCache = JsonFileIO.fileCache( this );
+		}
+		return fileCache;
+	}
+	public void setFileCache(File fileCache) {
+		this.fileCache = fileCache;
+	}
+
+	/**
+     * <p>This is a helper function to ensure that the given file name is 
+     * always generated correctly and consistently.
+     * </p>
+     * 
+     * @return "player_" plus the least significant bits of the UID
+     */
+    public String filenamePlayer()
+    {
+    	return getFilePlayer().getName();
+//    	return JsonFileIO.filenamePlayer( this );
+    }
+    
+    public String filenameCache()
+    {
+    	return getFileCache().getName();
+//    	return JsonFileIO.filenameCache( this );
+    }
+    
+//    public String getPlayerFileName() {
+//    	
+//    	return JsonFileIO.filenamePlayer( this );
+//    }
 
     @Override
     public String toString() {

@@ -72,7 +72,8 @@ public class TestPlayer
      */
     public String getPlayerFileName() {
     	
-    	return JsonFileIO.filenamePlayer( this );
+    	return JsonFileIO.filePlayer( this ).getName();
+//    	return JsonFileIO.filenamePlayer( this );
     }
     
     @Override public void updateInventory() {

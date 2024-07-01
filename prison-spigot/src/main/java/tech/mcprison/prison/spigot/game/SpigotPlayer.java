@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.spigot.game;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +71,12 @@ public class SpigotPlayer
 	private RankPlayer rankPlayer;
 	
     private org.bukkit.entity.Player bukkitPlayer;
+    
+    
+    private transient File filePlayer;
+    private transient File fileCache;
+    
+   
 
     public SpigotPlayer(org.bukkit.entity.Player bukkitPlayer) {
         super(bukkitPlayer);
@@ -93,12 +100,45 @@ public class SpigotPlayer
      */
     public String getPlayerFileName() {
     	
-    	return JsonFileIO.filenamePlayer( this );
+    	return filenamePlayer();
     }
     
-    @Override 
-    public UUID getUUID() {
-        return bukkitPlayer.getUniqueId();
+    
+	public File getFilePlayer() {
+		if ( filePlayer == null ) {
+			filePlayer = JsonFileIO.filePlayer( this );;
+		}
+		return filePlayer;
+	}
+	public void setFilePlayer(File filePlayer) {
+		this.filePlayer = filePlayer;
+	}
+
+	public File getFileCache() {
+		if ( fileCache == null ) {
+			fileCache = JsonFileIO.fileCache( this );
+		}
+		return fileCache;
+	}
+	public void setFileCache(File fileCache) {
+		this.fileCache = fileCache;
+	}
+
+	/**
+     * <p>This is a helper function to ensure that the given file name is 
+     * always generated correctly and consistently.
+     * </p>
+     * 
+     * @return "player_" plus the least significant bits of the UID
+     */
+    public String filenamePlayer()
+    {
+    	return getFilePlayer().getName();
+    }
+    
+    public String filenameCache()
+    {
+    	return getFileCache().getName();
     }
 
     @Override public String getDisplayName() {
