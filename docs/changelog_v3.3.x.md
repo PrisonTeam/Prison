@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-01
 
 
+* **Prison Entity support added!**
+This is a major change to prison.  Support for bukkit Entities has been added, which had to be worked in between the SpigotCommandSender and the players. 
+This is a significant change since it does allow more complex support for other features, such as newer and enhanced support for mine bomb animations, which uses armour stands, which are entities.
+This will allow the animations to be moved to the core and be associated with the mine bomb package.
+
+
 * **File saves for players with the ranks and player cache: reworked how the files saves will work and how they will process the files.**
 Before I had them setup to be "enabled" by a command that they admin would run.  But there were some problems with that.
 One thing that happened on my test server was that the save file that kept the config status disappeared and as such, there was some conflicts with which file was actually being used.

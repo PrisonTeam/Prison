@@ -133,8 +133,8 @@ public class TestPlayer
 	}
 	
 	
-    @Override public void teleport(Location location) {
-
+    @Override public boolean teleport(Location location) {
+    	return false;
     }
 
     @Override public boolean isOnline() {

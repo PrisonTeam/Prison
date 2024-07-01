@@ -18,12 +18,17 @@
 
 package tech.mcprison.prison.spigot.game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 
+import com.cryptomorin.xseries.XEntityType;
+
+import tech.mcprison.prison.internal.Entity;
+import tech.mcprison.prison.internal.EntityType;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
@@ -43,7 +48,8 @@ import tech.mcprison.prison.util.Location;
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotWorld implements World {
+public class SpigotWorld 
+		implements World {
 
     private org.bukkit.World bukkitWorld;
     
@@ -66,6 +72,41 @@ public class SpigotWorld implements World {
             					bukkitWorld.getName()))
             .map((Function<org.bukkit.entity.Player, SpigotPlayer>) SpigotPlayer::new)
             .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<Entity> getEntities() {
+    	List<Entity> results = new ArrayList<>();
+    	
+    	for (org.bukkit.entity.Entity bukkitEnitity : getWrapper().getEntities() ) {
+			
+    		results.add( new SpigotEntity( bukkitEnitity) );
+		}
+    	
+    	return results;
+    }
+    
+    /**
+     * Filters the returned Entities by the selected EntityType.
+     * 
+     * @param eType
+     * @return
+     */
+    public List<Entity> getEntities( EntityType eType ) {
+    	List<Entity> results = new ArrayList<>();
+    	
+    	SpigotEntityType seType = eType == null ? null : (SpigotEntityType) eType;
+    	
+    	for (org.bukkit.entity.Entity bukkitEnitity : getWrapper().getEntities() ) {
+    		
+    		if ( seType == null ||
+					seType.getxEType() == XEntityType.of(bukkitEnitity) ) {
+				
+				results.add( new SpigotEntity( bukkitEnitity ));
+			}
+    	}
+    	
+    	return results;
     }
 
     /**
@@ -219,6 +260,8 @@ public class SpigotWorld implements World {
     public org.bukkit.World getWrapper() {
         return bukkitWorld;
     }
+
+
     
 
 }

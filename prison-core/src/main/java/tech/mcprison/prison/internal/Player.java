@@ -105,7 +105,7 @@ public interface Player
      *
      * @param location The new {@link Location}.
      */
-    public void teleport(Location location);
+    public boolean teleport(Location location);
 
     /**
      * @return Returns true if the player is online, false otherwise.

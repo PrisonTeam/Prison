@@ -44,6 +44,13 @@ public interface World {
      */
     List<Player> getPlayers();
 
+    
+    /**
+     * Returns a list of all entities in this world.
+     * @return
+     */
+    List<Entity> getEntities();
+    
     /**
      * Returns the {@link Block} at a specified location.
      *

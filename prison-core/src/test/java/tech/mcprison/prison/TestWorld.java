@@ -18,8 +18,10 @@
 
 package tech.mcprison.prison;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
 import tech.mcprison.prison.internal.World;
@@ -74,6 +76,11 @@ public class TestWorld implements World {
 							MineResetType resetType,
 							PrisonStatsElapsedTimeNanos nanos ) {
 		
+	}
+
+	@Override
+	public List<Entity> getEntities() {
+		return new ArrayList<>();
 	}
 
 

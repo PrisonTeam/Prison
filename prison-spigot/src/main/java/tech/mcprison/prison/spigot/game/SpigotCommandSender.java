@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
@@ -51,14 +52,25 @@ public class SpigotCommandSender
         this.bukkitSender = sender;
     }
     
-//    @Override 
-//    public UUID getUUID() {
-//    	UUID uuid = null;
-//    	if ( isPlayer() ) {
-//    		uuid = ((org.bukkit.entity.Player) bukkitSender).getUniqueId();
-//    	}
-//        return uuid;
-//    }
+
+    /**
+     * We have both this function, getUniqueId() and getUUID(), because different
+     * sources (player vs entity) have different requirements and expectations for
+     * field names.
+     * 
+     * @return
+     */
+    public UUID getUniqueId() {
+		return getUUID();
+	}
+    
+    public UUID getUUID() {
+    	UUID uuid = null;
+    	if ( isPlayer() ) {
+    		uuid = ((org.bukkit.entity.Player) bukkitSender).getUniqueId();
+    	}
+        return uuid;
+    }
 
     @Override 
     public String getName() {

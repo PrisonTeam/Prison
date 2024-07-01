@@ -22,14 +22,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -65,7 +63,8 @@ import tech.mcprison.prison.util.Location;
  * @author Faizaan A. Datoo
  */
 public class SpigotPlayer 
-				extends SpigotCommandSender 
+				extends SpigotEntity 
+//				extends SpigotCommandSender 
 				implements Player, Comparable<SpigotPlayer> {
 
 	private RankPlayer rankPlayer;
@@ -140,41 +139,65 @@ public class SpigotPlayer
     {
     	return getFileCache().getName();
     }
+//    public String getPlayerFileName() {
+//    	
+//    	return JsonFileIO.filenamePlayer( this );
+//    }
+    
+//    @Override 
+//    public UUID getUUID() {
+//        return bukkitPlayer.getUniqueId();
+//    }
+    
+//    @Override
+//    public String getName() {
+//    	return bukkitPlayer.getName();
+//    }
 
-    @Override public String getDisplayName() {
+    @Override 
+    public String getDisplayName() {
         return bukkitPlayer.getDisplayName();
     }
 
-    @Override public void setDisplayName(String newDisplayName) {
+    @Override 
+    public void setDisplayName(String newDisplayName) {
         bukkitPlayer.setDisplayName(newDisplayName);
     }
 
-    @Override public void give(ItemStack itemStack) {
+    @Override 
+    public void give(ItemStack itemStack) {
         bukkitPlayer.getInventory().addItem(SpigotUtil.prisonItemStackToBukkit(itemStack));
     }
 
-    @Override public Location getLocation() {
-        return SpigotUtil.bukkitLocationToPrison(bukkitPlayer.getLocation());
-    }
+//    @Override 
+//    public Location getLocation() {
+//        return SpigotUtil.bukkitLocationToPrison(bukkitPlayer.getLocation());
+//    }
 
-    @Override public void teleport(Location location) {
-        bukkitPlayer.teleport(SpigotUtil.prisonLocationToBukkit(location),
-            PlayerTeleportEvent.TeleportCause.PLUGIN);
-    }
+//    @Override public boolean teleport(Location location) {
+//    	
+//    	
+//        return bukkitPlayer.teleport(SpigotUtil.prisonLocationToBukkit(location),
+//            PlayerTeleportEvent.TeleportCause.PLUGIN);
+//    }
 
-    @Override public boolean isOnline() {
+    @Override 
+    public boolean isOnline() {
         return bukkitPlayer.isOnline();
     }
 
-    @Override public void setScoreboard(Scoreboard scoreboard) {
+    @Override 
+    public void setScoreboard(Scoreboard scoreboard) {
         bukkitPlayer.setScoreboard(((SpigotScoreboard) scoreboard).getWrapper());
     }
 
-    @Override public Gamemode getGamemode() {
+    @Override 
+    public Gamemode getGamemode() {
         return Gamemode.valueOf(getWrapper().getGameMode().toString());
     }
 
-    @Override public void setGamemode(Gamemode gamemode) {
+    @Override 
+    public void setGamemode(Gamemode gamemode) {
         getWrapper().setGameMode(GameMode.valueOf(gamemode.toString()));
     }
 
@@ -283,11 +306,15 @@ public class SpigotPlayer
         bukkitPlayer.updateInventory();
     }
 
-//	@Override
-//	public void recalculatePermissions() {
-//		bukkitPlayer.recalculatePermissions();
-//	}
+	@Override
+	public void recalculatePermissions() {
+		bukkitPlayer.recalculatePermissions();
+	}
 
+	@Override
+	public boolean isPlayer() {
+		return true;
+	}
 
 //    @Override 
 //    public boolean isOp() {
@@ -351,7 +378,8 @@ public class SpigotPlayer
     
 	@Override
 	public int compareTo( SpigotPlayer sPlayer) {
-		return getName().compareTo( sPlayer.getName() );
+		return getUUID().compareTo( sPlayer.getUUID() );
+//		return getName().compareTo( sPlayer.getName() );
 	}
 	
 	
@@ -1104,4 +1132,6 @@ public class SpigotPlayer
 		return results;
 	}
 
+
+	
 }

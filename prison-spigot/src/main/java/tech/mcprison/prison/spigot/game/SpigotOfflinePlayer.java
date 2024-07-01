@@ -197,8 +197,9 @@ public class SpigotOfflinePlayer
 	}
 
 	@Override
-	public void teleport( Location location ) {
+	public boolean teleport( Location location ) {
 		Output.get().logError( "SpigotOfflinePlayer.teleport: Offline players cannot be teleported." );
+		return false;
 	}
 
 	@Override

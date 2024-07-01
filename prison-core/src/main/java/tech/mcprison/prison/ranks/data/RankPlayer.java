@@ -1106,8 +1106,9 @@ public class RankPlayer
 	
 	
 	@Override
-	public void teleport( Location location ) {
+	public boolean teleport( Location location ) {
 //		Output.get().logError( "RankPlayer.teleport: Offline players cannot be teleported." );
+		return false;
 	}
 
 	@Override
