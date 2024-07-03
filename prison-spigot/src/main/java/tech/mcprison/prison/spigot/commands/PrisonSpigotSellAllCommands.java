@@ -334,8 +334,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         boolean notifications = (notification != null && "silent".equalsIgnoreCase( notification ));
-
-        sellAllUtil.sellAllSell(p, false, notifications, true, true, false, true);
+        boolean delayNotifications = false;
+        boolean delayNotificationsEarnings = false;
+        
+        sellAllUtil.sellAllSell(p, false, notifications, true, delayNotifications, delayNotificationsEarnings, true);
         
         SpigotPlayer sPlayer = new SpigotPlayer( p );
         PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );

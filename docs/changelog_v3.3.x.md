@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-03
 
 
+* **Sellall: when sellall message delay is enabled for autosell, changed it to when the player does `/sellall sell` it reports the sale for that transaction instead of waiting until 15 to 20 seconds later.**
+
+
+
 * **Refactor JsonFileIO to push more of the non-json content to FileIO where it really should be located.**
 
 

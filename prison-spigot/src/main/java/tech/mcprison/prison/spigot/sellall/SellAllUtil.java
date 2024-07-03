@@ -2773,7 +2773,10 @@ public class SellAllUtil
     				if (!isPlayerWaitingAutoSellNotification(p)){
     					// Initialize && Force delayed notifications, even if delayed is disabled:
     					autoSellEarningsNotificationWaiting.put(p, 0.00);
-    					Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removeFromAutoSellDelayAndNotify(p), 20L * defaultAutoSellEarningNotificationDelay);
+    					
+    					Bukkit.getScheduler().scheduleSyncDelayedTask(
+    							SpigotPrison.getInstance(), () -> 
+    							removeFromAutoSellDelayAndNotify(p), 20L * defaultAutoSellEarningNotificationDelay);
 
     				} 
     				
