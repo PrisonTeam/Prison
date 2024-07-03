@@ -322,6 +322,8 @@ public class RankPlayer
     			RankPlayerName rpn = new RankPlayerName( playerName, System.currentTimeMillis() );
     			getNames().add( rpn );
     			
+    			dirty = true;
+    			
     			added = true;
     		}
     	}
@@ -2021,6 +2023,15 @@ public class RankPlayer
 		}
 		
 		return results;
+	}
+
+	/**
+	 * Does nothing like the function name says.
+	 * 
+	 * This is just a placeholder so the compiler won't generate 
+	 * a variable not used warning.
+	 */
+	public void doNothing() {
 	}
 
 //	public long getRankScoreCooldown() {

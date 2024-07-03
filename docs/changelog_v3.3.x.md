@@ -14,9 +14,24 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18 2024-05-20
+# 3.3.0-alpha.18a 2024-05-21
 
 
+**v3.3.0-alpha.18a 2024-05-21**
+Releasing this alpha.18a because the fix of the of the new player bug was crippling servers.
+
+
+* **Bug Fix: When a new player was joining prison, and there were placeholders being used in the rank commands for either the default ladder, or the first rank, the resolution of the placeholders was triggering a new player on-join processing within prison.**
+This happed because the new RankPlayer object was not being added to the PlayerManager before ranking the player... now the player's object will be there when the rank commands are processed.
+Honestly have no idea why this has not been an issue in the past....
+
+
+* **Docs... added curseForge.com to the list of locations where prison can be downloaded from.**
+
+
+
+* **Fix to the docs... for some reason, eclispse, or one of it's plugins failed and corrupted the markdown.**
+I did not realize it was corrupted since it was still showing the correct content, but when restarting the IDE and loading the files, they were missing the first characters.
 
 
 **Prison v3.3.0-alpha.18 2024-05-20**

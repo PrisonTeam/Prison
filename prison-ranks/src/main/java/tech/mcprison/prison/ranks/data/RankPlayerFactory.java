@@ -109,15 +109,19 @@ public class RankPlayerFactory
      * since it will skip processing for them.
      * </p>
      * 
-     * <p>Note, this will not save the player's new rank.  The save function must be
-     * managed and called outside of this.
+     * <p>Note, this will save the player's new rank.
      * </p>
      */
     public void firstJoin( RankPlayer rankPlayer) {
     	
     	RankLadder defaultLadder = PrisonRanks.getInstance().getDefaultLadder();
     	
-    	if ( !rankPlayer.getLadderRanks().containsKey( defaultLadder ) ) {
+    	if ( defaultLadder == null ) {
+    		
+    		Output.get().logError( "RankPlayerFactory.firstJoin: No default ladder!!" );
+    		
+    	}
+    	else if ( !rankPlayer.getLadderRanks().containsKey( defaultLadder ) ) {
     		
     		Optional<Rank> firstRank = defaultLadder.getLowestRank();
     		
@@ -130,6 +134,9 @@ public class RankPlayerFactory
     			rankupCommands.setPlayerRankFirstJoin( rankPlayer, defaultRank );
     			rankPlayer.setDirty( true );
     			
+    			
+    			// Saves the new player's rank:
+    			PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
     			
 //    			rankPlayer.addRank( defaultRank );
     			
