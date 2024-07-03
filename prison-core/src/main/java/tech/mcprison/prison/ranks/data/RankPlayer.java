@@ -134,6 +134,15 @@ public class RankPlayer
     
     private long economyCacheUpdateDelayTicks = -1;
     
+    
+    private long lastSaved = -1;
+    private long lastRefreshed = -1;
+
+	private List<String> permsSnapShot;
+	
+	private List<String> sellallMultipliers;
+
+	
 
     public RankPlayer() {
     	super();
@@ -146,6 +155,11 @@ public class RankPlayer
 //        this.blocksMined = new HashMap<>();
         
         this.playerBalances = new TreeMap<>();
+        
+        this.permsSnapShot = new ArrayList<>();
+        
+        this.sellallMultipliers = new ArrayList<>();
+        
         
         this.filePlayer = null;
         this.fileCache = null;
@@ -2191,6 +2205,66 @@ public class RankPlayer
 	 */
 	public void doNothing() {
 	}
+
+	
+	
+	public long getLastSaved() {
+		return lastSaved;
+	}
+	public void setLastSaved(long lastSaved) {
+		this.lastSaved = lastSaved;
+	}
+	
+	
+	/**
+	 * Notice: This last refreshed timestamp refers to when the permsSnapShot 
+	 * and sellallMultipliers were last updated.  It maybe be older than the 
+	 * last time the players were seen?
+	 * @return
+	 */
+	public long getLastRefreshed() {
+		return lastRefreshed;
+	}
+	public void setLastRefreshed(long lastRefreshed) {
+		this.lastRefreshed = lastRefreshed;
+	}
+
+	/**
+	 * DO NOT USE!
+	 * 
+	 * This is just temporary and unofficial list of permissions 
+	 * to be used when the player is offline.  These are only accurate
+	 * when they are extracted when the player is online and the player's
+	 * RankPlayer object is saved.
+	 * 
+	 * @return
+	 */
+	public List<String> getPermsSnapShot() {
+		return permsSnapShot;
+	}
+	public void setPermsSnapShot(List<String> permsSnapShot) {
+		this.permsSnapShot = permsSnapShot;
+	}
+
+	/**
+	 * DO NOT USE!
+	 * 
+	 * This is just temporary and unofficial list of sellall multipliers 
+	 * to be used when the player is offline.  These are only accurate
+	 * when they are extracted when the player is online and the player's
+	 * RankPlayer object is saved.
+	 * 
+	 * @return
+	 */
+	public List<String> getSellallMultipliers() {
+		return sellallMultipliers;
+	}
+	public void setSellallMultipliers(List<String> sellallMultipliers) {
+		this.sellallMultipliers = sellallMultipliers;
+	}
+
+	
+
 
 //	public long getRankScoreCooldown() {
 //		return rankScoreCooldown;

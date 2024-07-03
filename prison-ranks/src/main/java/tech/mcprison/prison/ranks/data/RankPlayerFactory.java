@@ -1,15 +1,19 @@
 package tech.mcprison.prison.ranks.data;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import com.google.gson.internal.LinkedTreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
+import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -21,13 +25,20 @@ import tech.mcprison.prison.util.ConversionUtil;
 
 public class RankPlayerFactory
 {
+	JsonFileIO jfIO = new JsonFileIO();
 	
 	   @SuppressWarnings( "unchecked" )
 		public RankPlayer createRankPlayer(Document document) {
 		   RankPlayer rankPlayer = null;
 		   
 	    	
-	        UUID uuid = UUID.fromString((String) document.get("uid"));
+		   String uuidStr = document.containsKey("uid") ?
+				   				(String) document.get("uid") :
+				   					document.containsKey("uuid") ?
+				   						(String) document.get("uuid") :
+				   							null;
+		   
+	        UUID uuid = UUID.fromString( uuidStr );
 	        
 	        rankPlayer = new RankPlayer( uuid );
 	        
@@ -39,13 +50,26 @@ public class RankPlayerFactory
 //	        LinkedTreeMap<String, Object> blocksMinedLocal =
 //	        		(LinkedTreeMap<String, Object>) document.get("blocksMined");
 	        
-	        Object namesListObject = document.get( "names" );
 	        
 
 	        for (String key : ranksLocal.keySet()) {
 	        	
-	        	int rankId = ConversionUtil.doubleToInt(ranksLocal.get(key));
-	        	rankPlayer.getRanksRefs().put(key, rankId );
+	        	Object rankObj = ranksLocal.get(key);
+	        	
+	        	if ( rankObj instanceof Double ) {
+	        		int rankId = ConversionUtil.doubleToInt( rankObj );
+	        		rankPlayer.getRanksRefs().put(key, rankId );
+	        	}
+	        	else {
+	        		// It's a json object:
+	        		// We only need to get the rankId from the json String, but the other fields are there
+	        		// for human readability.
+	        		String json = rankObj.toString();
+	        		RankPlayerFactoryDataRank rData = jfIO.fromString( json, RankPlayerFactoryDataRank.class );
+	        		if ( rData != null ) {
+	        			rankPlayer.getRanksRefs().put( key, rData.getRankId() );
+	        		}
+	        	}
 	        	
 	        }
 	        
@@ -66,6 +90,9 @@ public class RankPlayerFactory
 //	        		rankPlayer.getBlocksMined().put(key, ConversionUtil.doubleToInt(blocksMinedLocal.get(key)));
 //	        	}
 //	        }
+
+	        
+	        Object namesListObject = document.get( "names" );
 	        
 	        if ( namesListObject != null ) {
 	        	
@@ -103,7 +130,37 @@ public class RankPlayerFactory
 	        
 	        if ( document.get("lastSeenDate") != null ) {
 	        	
-	        	rankPlayer.setTotalBlocksTemp( getLong( rankPlayer.getName(), "lastSeenDate", document ) );
+	        	rankPlayer.setLastSeenDateTemp( getLong( rankPlayer.getName(), "lastSeenDate", document ) );
+	        }
+	        
+	        
+	        if ( document.get("lastSaved") != null ) {
+	        	rankPlayer.setLastSaved( getLong( rankPlayer.getName(), "lastSaved", document )  );
+	        }
+	        
+	        
+	        if ( document.get("lastRefreshed") != null ) {
+	        	rankPlayer.setLastRefreshed( getLong( rankPlayer.getName(), "lastRefreshed", document )  );
+	        }
+	        
+	        
+
+	     
+	        
+	        // The new field permsSnapShot will be a list of all of the player's perms, captured 
+	        // at major moments when they are online.  Since perms are not available offline, 
+	        // this will provide a "rough" listing of what they maybe.  Its beyond the scope of 
+	        // this snap shot to ensure these perms are "current"; if they change after this 
+	        // image is taken, then that's not our problem.
+	        if ( document.get("permsSnapShot") != null ) {
+	        	List<String> perms = (List<String>) document.get("permsSnapShot");
+	        	rankPlayer.setPermsSnapShot( perms );
+	        }
+
+	        
+	        if ( document.get("sellallMultipliers") != null ) {
+	        	List<String> mults = (List<String>) document.get("sellallMultipliers");
+	        	rankPlayer.setSellallMultipliers( mults );
 	        }
 	        
 	        
@@ -128,13 +185,32 @@ public class RankPlayerFactory
 	   }
 	    public static Document toDocument( RankPlayer rankPlayer ) {
 	    	
+	    	JsonFileIO jfIO = new JsonFileIO();
+	    	
 	    	// Update some stats from the playerCache:
 	    	PlayerCachePlayerData cacheData = rankPlayer.getPlayerCache().getOnlinePlayerCached(rankPlayer);
 	    	rankPlayer.updateTotalLastValues( cacheData , false);
 	    	
 	        Document ret = new Document();
 	        ret.put("uid", rankPlayer.getUUID());
-	        ret.put("ranks", rankPlayer.getRanksRefs() );
+	        
+	        
+	        
+	        Set<RankLadder> ladders = rankPlayer.getLadderRanks().keySet();
+	        TreeMap<String,Object> playerRanks = new TreeMap<>();
+	        for (RankLadder ladder : ladders) {
+	        	PlayerRank rank = rankPlayer.getLadderRanks().get(ladder);
+	        	
+	        	RankPlayerFactoryDataRank rData = new RankPlayerFactoryDataRank( 
+	        			rank.getRank().getName(), ladder.getName(), rank.getRank().getId() );
+//	        	String json = jfIO.toString( rData );
+	        	playerRanks.put( rData.getRankName(), rData.getJsonObject() );
+			}
+	        
+	        ret.put("ranks", playerRanks );
+//	        ret.put("ranks", rankPlayer.getRanksRefs() );
+
+	        
 //	        ret.put("prestige", this.prestige);
 	        
 	        ret.put("names", rankPlayer.getNames());
@@ -144,6 +220,56 @@ public class RankPlayerFactory
 	        ret.put("totalBlocks", Long.valueOf( rankPlayer.getTotalBlocksTemp() ));
 	        ret.put("totalTokens", Long.valueOf( rankPlayer.getTotalTokensTemp() ));
 	        ret.put("lastSeenDate", Long.valueOf( rankPlayer.getLastSeenDateTemp() ));
+	        
+	        
+	        
+	        Player sPlayer = rankPlayer.getPlatformPlayer();
+	        
+	        
+//	        // create a timestamp:
+//	        ret.put( "lastSeenDate", Long.valueOf( rankPlayer.getLastSeenDate() ));
+	        
+	        // create a timestamp:
+	        ret.put( "lastSaved", Long.valueOf( System.currentTimeMillis() ));
+
+	        
+	        if ( sPlayer != null && sPlayer.isOnline() ) {
+	        	ret.put( "lastRefreshed", Long.valueOf( System.currentTimeMillis() ));
+	        }
+	        else {
+	        	ret.put( "lastRefreshed", rankPlayer.getLastRefreshed() );
+	        }
+	        
+
+	        // The new field permsSnapShot will be a list of all of the player's perms, captured 
+	        // at major moments when they are online.  Since perms are not available offline, 
+	        // this will provide a "rough" listing of what they maybe.  Its beyond the scope of 
+	        // this snap shot to ensure these perms are "current"; if they change after this 
+	        // image is taken, then that's not our problem.
+	        List<String> perms = new ArrayList<>();
+	        
+	        
+	        if ( sPlayer != null && sPlayer.isOnline() ) {
+	        	// If the player is online, get a fresh list of perms:
+	        	perms = sPlayer.getPermissions();
+	        }
+	        else {
+	        	// Otherwise since the player if offline, then save whatever permsSnapShot is already available:
+	        	rankPlayer.getPermsSnapShot();
+	        }
+	        ret.put( "permsSnapShot", perms );
+	        
+
+	        List<String> multipliers = new ArrayList<>();
+	        if ( sPlayer != null && sPlayer.isOnline() ) {
+	        	multipliers = sPlayer.getSellAllMultiplierListings();
+	        }
+	        else {
+	        	// Otherwise since offline, save the existing list of multipliers:
+	        	multipliers = rankPlayer.getSellallMultipliers();
+	        }
+	        ret.put("sellallMultipliers", multipliers);
+	        
 	        
 
 //	        ret.put("blocksMined", rankPlayer.getBlocksMined() );

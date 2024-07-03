@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-07-01
+# 3.3.0-alpha.18b 2024-07-03
+
+
+* **RankPlayer: Added new fields to expand what is being stored in the RankPlayer object to store data that is not available when the player is offline.**
+This can provide additional support for players when they are offline.
 
 
 * **Mine Bombs: New feature to remove stray amour stands.**
