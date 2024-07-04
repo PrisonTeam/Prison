@@ -17,6 +17,14 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-03
 
 
+* **Updated XSeries to v11.2.0 from v11.1.0.**
+* **Update Papi to v2.11.6 from v2.11.5.**
+
+
+* **Prison semantic version: Moved the code of prison's semantic version tools to the prison-core module.**
+This was needed to be used within the core, so it's movement and the elimination of dependencies on spiget was beneficial.
+
+
 * **Sellall: when sellall message delay is enabled for autosell, changed it to when the player does `/sellall sell` it reports the sale for that transaction instead of waiting until 15 to 20 seconds later.**
 
 
