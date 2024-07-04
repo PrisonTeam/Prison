@@ -50,11 +50,11 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
 import tech.mcprison.prison.tasks.PrisonCommandTasks;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -1701,12 +1701,12 @@ public abstract class AutoManagerFeatures
 			
 			if ( sound == null ) {
 				
-				if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ) {
+				if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ) {
 					
 					// 1.8.x
 					sound = getSound("NOTE_PLING");
 				}
-				else if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.13.0" ) < 0 ) {
+				else if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.13.0" ) < 0 ) {
 					
 					// 1.9.x through 1.12.x
 					sound = getSound("BLOCK_NOTE_PLING");

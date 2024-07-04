@@ -47,7 +47,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -458,7 +458,7 @@ public class PrisonUtilsMineBombs
 //				Effect.values()
 				
 				// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
-				boolean is18 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+				boolean is18 = new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
 
 				if ( is18 ) {
 					for ( Effect p : Effect.values() ) {
@@ -1288,7 +1288,7 @@ public class PrisonUtilsMineBombs
 //					Effect.values()
 					
 					// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
-					boolean is1_8 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+					boolean is1_8 = new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
 
 					if ( is1_8 ) {
 						for ( Effect p : Effect.values() ) {
@@ -1375,7 +1375,7 @@ public class PrisonUtilsMineBombs
 //				Effect.values()
 				
 				// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
-				boolean is1_8 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+				boolean is1_8 = new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
 
 				if ( is1_8 ) {
 					for ( Effect p : Effect.values() ) {

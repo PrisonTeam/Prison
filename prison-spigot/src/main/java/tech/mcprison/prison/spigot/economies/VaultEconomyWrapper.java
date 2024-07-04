@@ -12,7 +12,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 
 /**
  * <p>Prison does not support banks since the only way to identify a bank is through
@@ -52,7 +52,7 @@ public class VaultEconomyWrapper
 					Bukkit.getPluginManager().getPlugin( getProviderName() )
 								.getDescription().getVersion();
 			
-			this.preV1dot4 = ( new BluesSpigetSemVerComparator().compareTo( getVaultVersion(), 
+			this.preV1dot4 = ( new BluesSemanticVersionComparator().compareTo( getVaultVersion(), 
 									"1.4.0" ) < 0 );
 			
 //			Output.get().logInfo( "### VaultEconomyWrapper : vaultVersion = " + getVaultVersion() + 

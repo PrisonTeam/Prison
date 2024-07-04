@@ -11,7 +11,7 @@ import org.bukkit.plugin.RegisteredListener;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 
 public class OnBlockBreakExternalEvents {
 	
@@ -41,7 +41,7 @@ public class OnBlockBreakExternalEvents {
 		super();
 		
 		// if mc version is greater than or equal to 1.13.0.
-		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.13.0") >= 0 ) {
+		if ( new BluesSemanticVersionComparator().compareMCVersionTo("1.13.0") >= 0 ) {
 			this.isDropItemsSupported = true;
 		}
 		

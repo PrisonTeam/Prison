@@ -1,8 +1,8 @@
 package tech.mcprison.prison.spigot.compat;
 
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionData;
 
 public class SpigotCompatibility {
 
@@ -23,7 +23,7 @@ public class SpigotCompatibility {
 			
 			Compatibility results = null;
 			
-			String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
+			String bukkitVersion =  new BluesSemanticVersionComparator().getBukkitVersion();
 			
 			if ( bukkitVersion == null ) {
 				

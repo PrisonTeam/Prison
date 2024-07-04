@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.spiget;
+package tech.mcprison.prison.util;
 
 import java.util.ArrayList;
 import java.util.List;

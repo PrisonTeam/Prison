@@ -67,8 +67,8 @@ import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.backpacks.BackpackEnums.BackpackType;
-import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.backpacks.PlayerBackpack;
+import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
@@ -141,12 +141,12 @@ import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsMineBombs;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.store.Storage;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.PrisonJarReporter;
@@ -948,7 +948,7 @@ public class SpigotPlatform
 	public YamlFileIO getYamlFileIO( File yamlFile ) {
 		
 		boolean supportsDropsCanceling = 
-				( new BluesSpigetSemVerComparator().compareMCVersionTo("1.12.0") >= 0 );
+				( new BluesSemanticVersionComparator().compareMCVersionTo("1.12.0") >= 0 );
 		
 		
 		return new SpigotYamlFileIO( yamlFile, supportsDropsCanceling );
@@ -2894,7 +2894,7 @@ public class SpigotPlatform
 			sb.append( eventDisplay.toStringBuilder() );
 		}
 			
-		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.17.0") < 0 ) {
+		if ( new BluesSemanticVersionComparator().compareMCVersionTo("1.17.0") < 0 ) {
 			
 			eventDisplay = dumpEventListenersChatDisplay(
 								"PlayerChatEvent", 
@@ -3282,7 +3282,7 @@ public class SpigotPlatform
 	
 	@Override
 	public int compareServerVerisonTo( String comparisonVersion ) {
-		return new BluesSpigetSemVerComparator().compareMCVersionTo( comparisonVersion );
+		return new BluesSemanticVersionComparator().compareMCVersionTo( comparisonVersion );
 	}
 	
 	@Override

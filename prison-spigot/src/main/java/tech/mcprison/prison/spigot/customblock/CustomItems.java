@@ -15,7 +15,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -35,7 +35,7 @@ public class CustomItems
 	@Override
 	public void integrate() {
 
-		BluesSpigetSemVerComparator semVer = new BluesSpigetSemVerComparator();
+		BluesSemanticVersionComparator semVer = new BluesSemanticVersionComparator();
 
 		if ( isRegistered()) {
 			try {

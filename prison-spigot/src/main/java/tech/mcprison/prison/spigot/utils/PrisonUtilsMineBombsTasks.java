@@ -34,7 +34,7 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -158,7 +158,7 @@ public class PrisonUtilsMineBombsTasks
 		
 		
 		// If running MC 1.9.0 or higher, then can use the glowing feature.  Ignore for 1.8.x.
-		boolean is18 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+		boolean is18 = new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
 		
 		SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
 		org.bukkit.Location bLocation = sBlock.getWrapper().getLocation();
@@ -569,7 +569,7 @@ public class PrisonUtilsMineBombsTasks
 			armorStand.setRightArmPose(arm);
 			
 			
-			if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
 				
 				armorStand.setGlowing( bomb.isGlowing() );
 				
