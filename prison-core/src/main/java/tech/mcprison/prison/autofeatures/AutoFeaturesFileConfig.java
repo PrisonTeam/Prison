@@ -429,8 +429,10 @@ public class AutoFeaturesFileConfig {
 		    	blockAllBlocks(blockFeature, true),
 
 		    	
+		    	blockRawGoldBlock(blockFeature, true),
 		    	blockGoldBlock(blockFeature, true),
 		    	blockIronBlock(blockFeature, true),
+		    	blockRawIronBlock(blockFeature, true),
 		    	blockCoalBlock(blockFeature, true),
 		    	blockDiamondBlock(blockFeature, true),
 		    	blockRedstoneBlock(blockFeature, true),
@@ -440,6 +442,7 @@ public class AutoFeaturesFileConfig {
 		    	blockLapisBlock(blockFeature, true),
 		    	blockSnowBlock(blockFeature, true),
 		    	blockGlowstone(blockFeature, true),
+		    	blockRawCopperBlock(blockFeature, true),
 		    	blockCopperBlock(blockFeature, true),
 		   
 		    	
@@ -454,7 +457,7 @@ public class AutoFeaturesFileConfig {
 		    			+ "this will replace the list of hard coded blocks listed above for "
 		    			+ "blocking and smelting."),
     	
-    			isEnabledBlockConvertersEventTriggers(blockConverters, false )
+    			isEnabledBlockConvertersEventTriggers(blockConverters, false ), 
 		    	
     			
     			

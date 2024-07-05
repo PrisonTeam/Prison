@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-05
 
 
+* **AutoFeatures: Added new blocking capabilities: raw to raw blocks.** 
+raw_gold => raw_gold_block, raw_iron => raw_iron_block, and raw_copper => raw_copper_block.
+
+
 * **Entity clean up:  Small changes that missed the last commit related to the addition of the Entity and mine bomb animations.**
 
 

@@ -2518,9 +2518,20 @@ public abstract class AutoManagerFeatures
 			
 			switch ( source )
 			{
+				case RAW_GOLD:
+					if ( isAll || isBoolean( AutoFeatures.blockRawGoldBlock ) ) {
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_GOLD_BLOCK, 9 );
+					}
+					break;
+					
 				case GOLD_INGOT:
 					if ( isAll || isBoolean( AutoFeatures.blockGoldBlock ) ) {
-
+						
 						if ( includePlayerInventory ) {
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
@@ -2529,9 +2540,20 @@ public abstract class AutoManagerFeatures
 					}
 					break;
 					
+				case RAW_IRON:
+					if ( isAll || isBoolean( AutoFeatures.blockRawIronBlock ) ) {
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_IRON_BLOCK, 9 );
+					}
+					break;
+					
 				case IRON_INGOT:
 					if ( isAll || isBoolean( AutoFeatures.blockIronBlock ) ) {
-
+						
 						if ( includePlayerInventory ) {
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
@@ -2639,9 +2661,20 @@ public abstract class AutoManagerFeatures
 					}
 					break;
 					
+				case RAW_COPPER:
+					if ( isAll || isBoolean( AutoFeatures.blockRawCopperBlock ) ) {
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_COPPER_BLOCK, 9 );
+					}
+					break;
+					
 				case COPPER_INGOT:
 					if ( isAll || isBoolean( AutoFeatures.blockCopperBlock ) ) {
-
+						
 						if ( includePlayerInventory ) {
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
