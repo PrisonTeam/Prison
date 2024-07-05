@@ -52,6 +52,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.game.entity.SpigotEntity;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;

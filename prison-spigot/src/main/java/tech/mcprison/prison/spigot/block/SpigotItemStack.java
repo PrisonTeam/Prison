@@ -28,7 +28,7 @@ public class SpigotItemStack
 //	private NBTItem nbtBukkitStack;
 //	private boolean nbtChecked = false;
 //	private org.bukkit.inventory.ItemStack bukkitStack;
-	private org.bukkit.inventory.ItemStack deserialize;
+//	private org.bukkit.inventory.ItemStack deserialize;
 	
 	public SpigotItemStack( org.bukkit.inventory.ItemStack bukkitStack )
 		throws PrisonItemStackNotSupportedRuntimeException {

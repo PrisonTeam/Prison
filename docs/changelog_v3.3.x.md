@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-05
 
 
+* **Entity clean up:  Small changes that missed the last commit related to the addition of the Entity and mine bomb animations.**
+
+
 * **Prison API: I noticed that an API class had an PrisonItemStack qualifying the class?**]
 I have no idea what happened here, or why it even was added.  All I can think of is that it was a stray paste or something. 
 This was removed.
