@@ -51,17 +51,15 @@ import tech.mcprison.prison.util.Location;
  * <p>If you need something special, then please ask on our discord server and we 
  * can probably provide it for you.
  * </p>
- * @param <PrisonItemStack>
- *
  */
-public class PrisonSpigotAPI<PrisonItemStack> {
+public class PrisonSpigotAPI {
 	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
 	private SellAllUtil sellAll;
 	
 	
-	private void junk() {
+//	private void junk() {
 		
 //		SpigotPrison.getInstance().isSellAllEnabled();
 //		
@@ -75,7 +73,7 @@ public class PrisonSpigotAPI<PrisonItemStack> {
 //		
 		
 	//	PrisonSpigotAPI.sellPlayerItems(Player player );
-	}
+//	}
 
 //	private void handleAffectedBlocks(Player p, IWrappedRegion region, List<Block> blocksAffected) {
 //        double totalDeposit = 0.0;
