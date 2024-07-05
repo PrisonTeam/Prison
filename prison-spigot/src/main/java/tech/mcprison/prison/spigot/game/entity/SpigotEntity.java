@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.game;
+package tech.mcprison.prison.spigot.game.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,9 @@ import com.cryptomorin.xseries.XEntityType;
 import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.EntityType;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.spigot.game.SpigotCommandSender;
+import tech.mcprison.prison.spigot.game.SpigotLocation;
+import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Vector;
 

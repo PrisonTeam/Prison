@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-07-03
+# 3.3.0-alpha.18b 2024-07-05
+
+
+* **Prison Bomb Animations: Initial setup and switch over to use the new prison bomb animations. Non-functional.**
+This state of development has the animations working, but the bomb's actual explosions are not yet enabled, so this commit is non-functional.  It's being committed due to the number of classes changed and for how much is working well too.
+The animations were pushed back to core so that way it's not more code that is being crammed within the spigot module, which was originally intended to be a light weight layer sitting between the actual prison code, and the platform.
+The animations are designed so that there can be a number of variations created, and then they would be available to use with the mine bomb configs.
 
 
 * **Updated XSeries to v11.2.0 from v11.1.0.**

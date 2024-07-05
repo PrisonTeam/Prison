@@ -85,6 +85,7 @@ public class MineBombs
 	public enum AnimationPattern {
 		none,
 		infinity,
+		infinityEight,
 		bounce,
 		orbital
 		

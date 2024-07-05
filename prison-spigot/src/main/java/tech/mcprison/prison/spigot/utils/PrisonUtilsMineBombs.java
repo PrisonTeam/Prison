@@ -26,6 +26,7 @@ import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
+import tech.mcprison.prison.bombs.animations.BombAnimationsTask;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
@@ -41,10 +42,10 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.spigot.game.SpigotEntity;
-import tech.mcprison.prison.spigot.game.SpigotEntityType;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.game.entity.SpigotEntity;
+import tech.mcprison.prison.spigot.game.entity.SpigotEntityType;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.BluesSemanticVersionComparator;
@@ -1120,12 +1121,18 @@ public class PrisonUtilsMineBombs
 					
 						
 						
+						// This setups the animations that are assigned to each bomb type and 
+						// will submit the tasks, unless no animations are chosen.
+						BombAnimationsTask animationsTask = new BombAnimationsTask();
+						
+						animationsTask.animatorFactory( bomb, bombBlock, itemInHand );
+						
 
 						
 						
-						@SuppressWarnings( "unused" )
-						PlacedMineBombItemTask submitPlacedMineBombItem = 
-								submitPlacedMineBombItemTask( bomb, bombBlock, bombs );
+//						@SuppressWarnings( "unused" )
+//						PlacedMineBombItemTask submitPlacedMineBombItem = 
+//								submitPlacedMineBombItemTask( bomb, bombBlock, bombs );
 //    						placeMineBombItem( bomb, bombBlock, bombs );
 						
 						// This places the item so it will float:
@@ -1153,7 +1160,7 @@ public class PrisonUtilsMineBombs
 						
 						// Submit the bomb's task to go off:
 						
-						setoffBombDelayed( sPlayer, bomb, bombBlock );
+						//setoffBombDelayed( sPlayer, bomb, bombBlock );
 						
 						
 						

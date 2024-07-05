@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.game;
+package tech.mcprison.prison.spigot.game.entity;
 
 import com.cryptomorin.xseries.XEntityType;
 
@@ -30,6 +30,18 @@ public class SpigotEntityType
 		this.xEType = xEType;
 		
 		this.bEntityType = xEType.get();
+	}
+	
+	public static SpigotEntityType getSpigotEntityType( EntityType entityType ) {
+		SpigotEntityType results = null;
+		
+		XEntityType xEType = XEntityType.of( entityType.getEntityType().toUpperCase() ).orElse( null );
+
+		if ( xEType != null ) {
+			results = new SpigotEntityType( xEType );
+		}
+		
+		return results;
 	}
 	
 	public org.bukkit.entity.EntityType getbEntityType() {

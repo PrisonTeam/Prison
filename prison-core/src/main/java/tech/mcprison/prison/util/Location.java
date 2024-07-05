@@ -19,6 +19,9 @@
 package tech.mcprison.prison.util;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.ArmorStand;
+import tech.mcprison.prison.internal.Entity;
+import tech.mcprison.prison.internal.EntityType;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -290,5 +293,16 @@ public class Location {
 		
 		return getWorld().getBlockAt( results );
 	}
+	
+	public Entity spawnEntity( EntityType entityType ) {
+		return getWorld().spawnEntity( this, entityType );
+	}
 
+	
+	public ArmorStand spawnArmorStand() {
+		return getWorld().spawnArmorStand( this );
+	}
+	
+	
+	
 }

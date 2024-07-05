@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 
 import com.cryptomorin.xseries.XEntityType;
 
+import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.EntityType;
 import tech.mcprison.prison.internal.ItemStack;
@@ -43,6 +44,9 @@ import tech.mcprison.prison.spigot.block.SpigotBlockSetAsynchronously;
 import tech.mcprison.prison.spigot.block.SpigotBlockSetSynchronously;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.game.entity.SpigotArmorStand;
+import tech.mcprison.prison.spigot.game.entity.SpigotEntity;
+import tech.mcprison.prison.spigot.game.entity.SpigotEntityType;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -260,6 +264,49 @@ public class SpigotWorld
     public org.bukkit.World getWrapper() {
         return bukkitWorld;
     }
+
+	@Override
+	public Entity spawnEntity( Location location, EntityType entityType) {
+		
+		SpigotLocation sLocation =
+				( location instanceof SpigotLocation ? 
+							(SpigotLocation) location : 
+							new SpigotLocation( location ));
+		
+		SpigotEntityType sEtityType = SpigotEntityType.getSpigotEntityType( entityType );
+		
+		org.bukkit.entity.Entity bEntity = 
+					((SpigotWorld) sLocation.getWorld()).getWrapper().spawnEntity( 
+							sLocation.getBukkitLocation(), sEtityType.getbEntityType() );
+		
+		return new SpigotEntity( bEntity );
+	}
+
+	@Override
+	public ArmorStand spawnArmorStand( Location location ) {
+		Entity e = spawnEntity( location, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
+		SpigotEntity sEntity = (SpigotEntity) e;
+		
+		org.bukkit.entity.ArmorStand armorStand = (org.bukkit.entity.ArmorStand) sEntity.getBukkitEntity();
+		SpigotArmorStand sArmorStand = new SpigotArmorStand( armorStand );
+		
+		return sArmorStand;
+	}
+	
+	/**
+	 * This creates a new instance of a SpigotWorld object based upon the world's name.
+	 * This uses the 'org.bukkit.World.getWorld( worldName );' to return a bukkit world, 
+	 * then wrap it in a SpigotWorld object.
+	 * 
+	 * @param worldName
+	 * @return
+	 */
+	public static SpigotWorld getWorld(String worldName) {
+		
+		org.bukkit.World world = Bukkit.getWorld( worldName );
+		
+		return new SpigotWorld( world );
+	}
 
 
     

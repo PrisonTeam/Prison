@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.utils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,22 +10,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.EulerAngle;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.particles.ParticleDisplay;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionOrientation;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
+import tech.mcprison.prison.bombs.animations.BombAnimationsTask;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
@@ -36,7 +32,6 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.Text;
 
 public class PrisonUtilsMineBombsTasks
 	extends PrisonUtils
@@ -443,200 +438,210 @@ public class PrisonUtilsMineBombsTasks
 		return results;
 	}
 	
-	public PlacedMineBombItemTask submitPlacedMineBombItemTask( MineBombData bomb, SpigotBlock sBlock, SpigotItemStack item ) {
+	public BombAnimationsTask submitPlacedMineBombItemTask( MineBombData bomb, SpigotBlock sBlock, SpigotItemStack item ) {
 		
-		PlacedMineBombItemTask placedTask = new PlacedMineBombItemTask( bomb, sBlock, item );
 		
-		BukkitTask task = placedTask.runTaskTimer( 
-				SpigotPrison.getInstance(), 1, 1 );
 		
-		placedTask.setBukkitTask( task );
+		// This setups the animations that are assigned to each bomb type and 
+		// will submit the tasks, unless no animations are chosen.
+		BombAnimationsTask animationsTask = new BombAnimationsTask();
 		
-		return placedTask;
+		animationsTask.animatorFactory( bomb, sBlock, item );
+		
+		return animationsTask;
+		
+//		PlacedMineBombItemTask placedTask = new PlacedMineBombItemTask( bomb, sBlock, item );
+//		
+//		BukkitTask task = placedTask.runTaskTimer( 
+//				SpigotPrison.getInstance(), 1, 1 );
+//		
+//		placedTask.setBukkitTask( task );
+		
+//		return placedTask;
 	}
 	
-	public class PlacedMineBombItemTask 
-		extends BukkitRunnable
-	{
-		
-		private MineBombData bomb;
-		private SpigotBlock sBlock;
-		private SpigotItemStack item;
-		
-		private double eulerAngleX = 1.0;
-		private double eulerAngleY = 0;
-		private double eulerAngleZ = 0;
-		
-		private double twoPI;
-		
-		private ArmorStand armorStand;
-		private boolean isDyanmicTag = false;
-		private String tagName;
-
-//		long ageTicks = 0L;
-		long terminateOnZeroTicks = 0L;
-				
-		private BukkitTask bukkitTask;
-		
-		private DecimalFormat dFmt;
-		
-		public PlacedMineBombItemTask( MineBombData bomb, 
-									SpigotBlock sBombBlock, SpigotItemStack item ) {
-			super();
-			
-			this.bomb = bomb;
-			this.sBlock = sBombBlock;
-			this.item = item;
-			
-			
-			this.twoPI = Math.PI * 2;
-			
-//			this.ageTicks = 0;
-			this.terminateOnZeroTicks = getTaskLifeSpan();
-
-			this.isDyanmicTag = bomb.getNameTag().contains( "{countdown}" );
-			this.tagName = "";
-			
-			this.dFmt = Prison.get().getDecimalFormat( "0.0" );
-			
-			initializeArmorStand();
-		}
-		
-		
-		/**
-		 * <p>This will calculate how long the placed item needs to 
-		 * exist before removal, and this task will remove itself.
-		 * While this item is placed, this task will run every 2 
-		 * ticks and will spin the item in 3d space.
-		 * </p>
-		 * 
-		 * <p>Removal is based upon the fuseDelayTicks which will take it to
-		 * the explosion, then scanning the final effects to find how long
-		 * the last one will be submitted for.  Then add 15 ticks.
-		 * </p>
-		 * 
-		 * <p>At this time, not 100% sure if this item or armor stand
-		 * will be used to "place" the effects.  Probably not.  If it's not
-		 * needed, then this can be removed when the explosions start.
-		 * </p>
-		 * 
-		 * @return
-		 */
-		private long getTaskLifeSpan()
-		{
-			int removeInTicks = bomb.getFuseDelayTicks() + bomb.getItemRemovalDelayTicks();
-			return removeInTicks;
-		}
-
-
-		private void initializeArmorStand() {
-			
-			Location location = sBlock.getLocation();
-			location.setY( location.getY() + 2.5 );
-			
-			SpigotWorld sWorld = (SpigotWorld) location.getWorld();
-
-			
-			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
-			
-			armorStand = sWorld.getWrapper().spawn( 
-					sWorld.getBukkitLocation( location ), 
-						ArmorStand.class);
-			
-//			int removeInTicks = (int) getTaskLifeSpan();
-			
-			//armorStand.addAttachment( SpigotPrison.getInstance(), removeInTicks );
-			
-			if ( bomb.getNameTag() != null && !bomb.getNameTag().trim().isEmpty() ) {
-
-				String tagName = bomb.getNameTag();
-				if ( tagName.contains( "{name}" ) ) {
-					tagName = tagName.replace( "{name}", bomb.getName() );
-				}
-				this.tagName = Text.translateAmpColorCodes( tagName );
-				
-				//updateArmorStandCustomName();
-				armorStand.setCustomName( this.tagName );
-				armorStand.setCustomNameVisible(true);
-			}
-			else {
-				
-				armorStand.setCustomNameVisible(false);
-			}
-			armorStand.setVisible(false);
-			armorStand.setRemoveWhenFarAway(false);
-			armorStand.setItemInHand( sWorld.getBukkitItemStack( item ) );
-			armorStand.setRightArmPose(arm);
-			
-			
-			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
-				
-				armorStand.setGlowing( bomb.isGlowing() );
-				
-				// setGravity is invalid for spigot 1.8.8:
-				armorStand.setGravity( bomb.isGravity() );
-			}
-		}
-
-		private void updateArmorStandCustomName()
-		{
-			if ( isDyanmicTag ) {
-			
-				double countdown = (terminateOnZeroTicks / 20.0d);
-				String tagName = this.tagName.replace( "{countdown}", dFmt.format( countdown) );
-				
-				armorStand.setCustomName( tagName );
-			}
-		}
-
-
-		@Override
-		public void run()
-		{
-			
-			double speed = 0.35;
-			
-			eulerAngleX += speed;
-			eulerAngleY += speed / 3;
-			eulerAngleZ += speed / 5;
-			
-			
-			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
-			
-			armorStand.setRightArmPose(arm);
-			
-			
-			if ( eulerAngleX > twoPI ) {
-				eulerAngleX -= twoPI;
-			}
-			if ( eulerAngleY > twoPI ) {
-				eulerAngleY -= twoPI;
-			}
-			if ( eulerAngleZ > twoPI ) {
-				eulerAngleZ -= twoPI;
-			}
-			
-
-			// Track the time that this has lived:
-			if ( --terminateOnZeroTicks == 0 || !armorStand.isValid() ) {
-				
-				armorStand.remove();
-				
-				this.cancel();
-			}
-			
-			updateArmorStandCustomName();
-			
-		}
-
-		public BukkitTask getBukkitTask() {
-			return bukkitTask;
-		}
-		public void setBukkitTask( BukkitTask bukkitTask ) {
-			this.bukkitTask = bukkitTask;
-		}
-		
-	}
+//	public class PlacedMineBombItemTask 
+//		extends BukkitRunnable
+//	{
+//		
+//		private MineBombData bomb;
+//		private SpigotBlock sBlock;
+//		private SpigotItemStack item;
+//		
+//		private double eulerAngleX = 1.0;
+//		private double eulerAngleY = 0;
+//		private double eulerAngleZ = 0;
+//		
+//		private double twoPI;
+//		
+//		private ArmorStand armorStand;
+//		private boolean isDyanmicTag = false;
+//		private String tagName;
+//
+////		long ageTicks = 0L;
+//		long terminateOnZeroTicks = 0L;
+//				
+//		private BukkitTask bukkitTask;
+//		
+//		private DecimalFormat dFmt;
+//		
+//		public PlacedMineBombItemTask( MineBombData bomb, 
+//									SpigotBlock sBombBlock, SpigotItemStack item ) {
+//			super();
+//			
+//			this.bomb = bomb;
+//			this.sBlock = sBombBlock;
+//			this.item = item;
+//			
+//			
+//			this.twoPI = Math.PI * 2;
+//			
+////			this.ageTicks = 0;
+//			this.terminateOnZeroTicks = getTaskLifeSpan();
+//
+//			this.isDyanmicTag = bomb.getNameTag().contains( "{countdown}" );
+//			this.tagName = "";
+//			
+//			this.dFmt = Prison.get().getDecimalFormat( "0.0" );
+//			
+//			initializeArmorStand();
+//		}
+//		
+//		
+//		/**
+//		 * <p>This will calculate how long the placed item needs to 
+//		 * exist before removal, and this task will remove itself.
+//		 * While this item is placed, this task will run every 2 
+//		 * ticks and will spin the item in 3d space.
+//		 * </p>
+//		 * 
+//		 * <p>Removal is based upon the fuseDelayTicks which will take it to
+//		 * the explosion, then scanning the final effects to find how long
+//		 * the last one will be submitted for.  Then add 15 ticks.
+//		 * </p>
+//		 * 
+//		 * <p>At this time, not 100% sure if this item or armor stand
+//		 * will be used to "place" the effects.  Probably not.  If it's not
+//		 * needed, then this can be removed when the explosions start.
+//		 * </p>
+//		 * 
+//		 * @return
+//		 */
+//		private long getTaskLifeSpan()
+//		{
+//			int removeInTicks = bomb.getFuseDelayTicks() + bomb.getItemRemovalDelayTicks();
+//			return removeInTicks;
+//		}
+//
+//
+//		private void initializeArmorStand() {
+//			
+//			Location location = sBlock.getLocation();
+//			location.setY( location.getY() + 2.5 );
+//			
+//			SpigotWorld sWorld = (SpigotWorld) location.getWorld();
+//
+//			
+//			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
+//			
+//			armorStand = sWorld.getWrapper().spawn( 
+//					sWorld.getBukkitLocation( location ), 
+//						ArmorStand.class);
+//			
+////			int removeInTicks = (int) getTaskLifeSpan();
+//			
+//			//armorStand.addAttachment( SpigotPrison.getInstance(), removeInTicks );
+//			
+//			if ( bomb.getNameTag() != null && !bomb.getNameTag().trim().isEmpty() ) {
+//
+//				String tagName = bomb.getNameTag();
+//				if ( tagName.contains( "{name}" ) ) {
+//					tagName = tagName.replace( "{name}", bomb.getName() );
+//				}
+//				this.tagName = Text.translateAmpColorCodes( tagName );
+//				
+//				//updateArmorStandCustomName();
+//				armorStand.setCustomName( this.tagName );
+//				armorStand.setCustomNameVisible(true);
+//			}
+//			else {
+//				
+//				armorStand.setCustomNameVisible(false);
+//			}
+//			armorStand.setVisible(false);
+//			armorStand.setRemoveWhenFarAway(false);
+//			armorStand.setItemInHand( sWorld.getBukkitItemStack( item ) );
+//			armorStand.setRightArmPose(arm);
+//			
+//			
+//			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+//				
+//				armorStand.setGlowing( bomb.isGlowing() );
+//				
+//				// setGravity is invalid for spigot 1.8.8:
+//				armorStand.setGravity( bomb.isGravity() );
+//			}
+//		}
+//
+//		private void updateArmorStandCustomName()
+//		{
+//			if ( isDyanmicTag ) {
+//			
+//				double countdown = (terminateOnZeroTicks / 20.0d);
+//				String tagName = this.tagName.replace( "{countdown}", dFmt.format( countdown) );
+//				
+//				armorStand.setCustomName( tagName );
+//			}
+//		}
+//
+//
+//		@Override
+//		public void run()
+//		{
+//			
+//			double speed = 0.35;
+//			
+//			eulerAngleX += speed;
+//			eulerAngleY += speed / 3;
+//			eulerAngleZ += speed / 5;
+//			
+//			
+//			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
+//			
+//			armorStand.setRightArmPose(arm);
+//			
+//			
+//			if ( eulerAngleX > twoPI ) {
+//				eulerAngleX -= twoPI;
+//			}
+//			if ( eulerAngleY > twoPI ) {
+//				eulerAngleY -= twoPI;
+//			}
+//			if ( eulerAngleZ > twoPI ) {
+//				eulerAngleZ -= twoPI;
+//			}
+//			
+//
+//			// Track the time that this has lived:
+//			if ( --terminateOnZeroTicks == 0 || !armorStand.isValid() ) {
+//				
+//				armorStand.remove();
+//				
+//				this.cancel();
+//			}
+//			
+//			updateArmorStandCustomName();
+//			
+//		}
+//
+//		public BukkitTask getBukkitTask() {
+//			return bukkitTask;
+//		}
+//		public void setBukkitTask( BukkitTask bukkitTask ) {
+//			this.bukkitTask = bukkitTask;
+//		}
+//		
+//	}
 	
 	
 

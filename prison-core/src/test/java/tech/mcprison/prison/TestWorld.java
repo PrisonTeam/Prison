@@ -21,7 +21,9 @@ package tech.mcprison.prison;
 import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.Entity;
+import tech.mcprison.prison.internal.EntityType;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
 import tech.mcprison.prison.internal.World;
@@ -81,6 +83,16 @@ public class TestWorld implements World {
 	@Override
 	public List<Entity> getEntities() {
 		return new ArrayList<>();
+	}
+
+	@Override
+	public Entity spawnEntity( Location location, EntityType entityType ) {
+		return null;
+	}
+
+	@Override
+	public ArmorStand spawnArmorStand(Location location) {
+		return null;
 	}
 
 

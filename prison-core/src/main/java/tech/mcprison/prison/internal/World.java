@@ -79,5 +79,14 @@ public interface World {
 						MineResetType resetType, 
 								PrisonStatsElapsedTimeNanos nanos );
 
+	
+
+//	public Entity spawnEntity(EntityType entityType);
+
+	public Entity spawnEntity( Location loc, EntityType entityType);
+
+	
+	public ArmorStand spawnArmorStand( Location location );
+
 
 }

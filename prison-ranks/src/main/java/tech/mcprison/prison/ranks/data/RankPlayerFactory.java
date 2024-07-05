@@ -185,8 +185,6 @@ public class RankPlayerFactory
 	   }
 	    public static Document toDocument( RankPlayer rankPlayer ) {
 	    	
-	    	JsonFileIO jfIO = new JsonFileIO();
-	    	
 	    	// Update some stats from the playerCache:
 	    	PlayerCachePlayerData cacheData = rankPlayer.getPlayerCache().getOnlinePlayerCached(rankPlayer);
 	    	rankPlayer.updateTotalLastValues( cacheData , false);
