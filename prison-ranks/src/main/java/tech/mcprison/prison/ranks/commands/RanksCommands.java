@@ -1634,7 +1634,8 @@ public class RanksCommands
     	
     	
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
+    	RankPlayer rankPlayer = player.getRankPlayer();
+//		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
 
 		// Get the cachedPlayer:
 		PlayerCachePlayerData cPlayer = PlayerCache.getInstance().getOnlinePlayer( rankPlayer );

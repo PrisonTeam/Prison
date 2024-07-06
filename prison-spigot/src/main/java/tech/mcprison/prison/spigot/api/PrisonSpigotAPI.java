@@ -26,7 +26,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -168,14 +167,30 @@ public class PrisonSpigotAPI {
 	}
 	
 	
+	/**
+	 * <p>This will get the prison's RankPlayer object, which will trigger adding the
+	 * given player to Prison if they do not already exist.  This is done through the
+	 * SpigotPlayer.
+	 * </p>
+	 * 
+	 * @param bukkitPlayer
+	 * @return
+	 */
 	public RankPlayer getRankPlayer( Player bukkitPlayer ) {
 		RankPlayer results = null;
 		
 		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			
-			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+			SpigotPlayer sPlayer = new SpigotPlayer( bukkitPlayer );
 			
-			results = pm.getPlayer( bukkitPlayer.getUniqueId(), bukkitPlayer.getName() );
+			if ( sPlayer != null ) {
+				
+				results = sPlayer.getRankPlayer();
+			}
+			
+//			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//			
+//			results = pm.getPlayer( bukkitPlayer.getUniqueId(), bukkitPlayer.getName() );
 		}
 		
 		return results;
@@ -780,7 +795,8 @@ public class PrisonSpigotAPI {
 			boolean completelySilent = notifyPlayerEarned || notifyPlayerDelay || notifyPlayerEarningDelay || playSoundOnSellAll;
 			
 			SpigotPlayer sPlayer = new SpigotPlayer( player );
-			RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+			RankPlayer rankPlayer = sPlayer.getRankPlayer();
+//			RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
 			
 			currency = currency != null && currency.equalsIgnoreCase("default") ? null : currency;
 			

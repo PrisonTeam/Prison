@@ -289,6 +289,7 @@ public class PlayerManager
      * <p>Get the player, if they don't exist, add them.
      * </p>
      * 
+     * 
      * @param uid
      * @return
      */
@@ -305,7 +306,9 @@ public class PlayerManager
     	
     	if ( results == null ) {
     		
-    		debugLogPlayerInfo( "getPlayer(): UUID check:", playerName, false );
+    		// Debug info on player when results are null from the first "search".
+    		debugLogPlayerInfo( "getPlayer(): UUID check (could not match on playerName):", playerName, 
+    							uid == null ? "none" : uid.toString(), false );
     		
     		for ( RankPlayer rankPlayer : players ) {
     			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
@@ -335,7 +338,8 @@ public class PlayerManager
     	
     	if ( results == null && playerName != null && !"console".equalsIgnoreCase( playerName ) ) {
     		
-    		debugLogPlayerInfo( "getPlayer(): addPlayer:", playerName, false );
+    		debugLogPlayerInfo( "getPlayer(): addPlayer (final attempt: could not match on playerName or UUID):", 
+    						playerName, uid == null ? "none" : uid.toString(), false );
     		
     		results = addPlayer(uid, playerName);
     		
@@ -360,6 +364,12 @@ public class PlayerManager
     public RankPlayer getPlayer( Player player ) {
     	RankPlayer rPlayer = null;
     	if ( player != null ) {
+    		
+    		// This function is called by SpigotCommander, as an example, and if we use the
+    		// function 'player.getRankPlayer()' then that will become an endless loop.
+    		// Also, we cannot use that either, because if the RankPlayer is null, then it
+    		// needs to be added, which is what this class's 'getPlayer()' does.
+//    		rPlayer = player.getRankPlayer();
     		rPlayer = getPlayer( player.getUUID(), player.getName() );
     	}
     	return rPlayer;
@@ -420,14 +430,16 @@ public class PlayerManager
         			getPlayersByName().put( playerName, newPlayer );
 
         			
-        			debugLogPlayerInfo( "addPlayerSyncTask: firstJoin:", playerName, false );
+        			debugLogPlayerInfo( "addPlayerSyncTask: firstJoin:", playerName, 
+        							newPlayer.getUUID().toString(), false );
         			
         			rankPlayerFactory.firstJoin( newPlayer );
         			
         			
         			boolean joined = newPlayer.getPlayerRankDefault() != null;
         			String msg = joined ? "joined" : "failed";
-        			debugLogPlayerInfo( "addPlayerSyncTask: " + msg, playerName, false );
+        			debugLogPlayerInfo( "addPlayerSyncTask: " + msg, playerName, 
+        							newPlayer.getUUID().toString(), false );
         			
         			
         			// the new player is now saved in firstJoin()(
@@ -461,16 +473,19 @@ public class PlayerManager
     	
     	Player player = event.getPlayer();
     	
-    	debugLogPlayerInfo( "onPlayerJoin:", player.getName(), true );
-
-    	// Player is auto added if they do not exist when calling getPlayer so don't try to
-    	// add them a second time.
-        RankPlayer rPlayer = getPlayer(player.getUUID(), player.getName());
-        
-        rPlayer.doNothing();
+    	if ( player != null ) {
+    		debugLogPlayerInfo( "onPlayerJoin:", player.getName(), player.getUUID().toString(), true );
+    		
+    		// Player is auto added if they do not exist when calling getPlayer so don't try to
+    		// add them a second time.
+    		RankPlayer rPlayer = player.getRankPlayer();
+//    		RankPlayer rPlayer = getPlayer(player.getUUID(), player.getName());
+    		
+    		rPlayer.doNothing();
+    	}
     }
     
-    public void debugLogPlayerInfo( String eventName, String playerName, boolean date ) {
+    public void debugLogPlayerInfo( String eventName, String playerName, String uuid, boolean date ) {
     	
     	if ( Output.get().isDebug() ) {
     		
@@ -483,11 +498,12 @@ public class PlayerManager
     		SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     		
     		String msg = String.format(
-    				"&6%s:  &c%s  &6%s  &d%s",
+    				"&6%s:  &c%s  &6%s  &d%s  uuid=%s",
     				eventName,
     				playerName,
     				date ? sdFmt.format(new Date()) : "",
-    				newPlayer ? "[New Player]" : ""
+    				newPlayer ? "[New Player]" : "",
+    				uuid
     				);
     		
     		Output.get().logInfo( msg );

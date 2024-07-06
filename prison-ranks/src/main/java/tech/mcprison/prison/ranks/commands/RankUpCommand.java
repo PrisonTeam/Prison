@@ -1186,10 +1186,21 @@ public class RankUpCommand
 	}
 
 
+	/**
+	 * This gets the RankPlayer for the given UUID or playerName.  The 'sender' generally is the 
+	 * console, or an admin that is trying to run the command for a player.
+	 * So although the sender has a 'getRankPlayer()' function, it may be for the wrong player.
+	 * 
+
+	 * 
+	 * @param sender The one who should get an messages, but is not the one for RankPlayer.
+	 * @param playerUuid
+	 * @param playerName
+	 * @return
+	 */
 	public RankPlayer getRankPlayer( CommandSender sender, UUID playerUuid, String playerName ) {
 		
-		RankPlayer player =
-							PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
+		RankPlayer player = PrisonRanks.getInstance().getPlayerManager().getPlayer(playerUuid, playerName);
 
         // Well, this isn't supposed to happen...
         if ( player == null ) {
