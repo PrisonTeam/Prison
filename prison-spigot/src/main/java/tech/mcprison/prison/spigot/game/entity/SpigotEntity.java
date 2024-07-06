@@ -12,6 +12,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotLocation;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Vector;
 
@@ -28,6 +29,24 @@ public class SpigotEntity
     }
 
 
+	@Override
+	public String getNbtString( String key ) {
+		String results = "";
+		
+		if ( bukkitEntity != null ) {
+			results = PrisonNBTUtil.getNBTString(bukkitEntity, key);
+		}
+		
+		return results;
+	}
+	@Override
+	public void setNbtString( String key, String value ) {
+		if ( bukkitEntity != null ) {
+			PrisonNBTUtil.setNBTString(bukkitEntity, key, value);
+		}
+	}
+	
+	
 	@Override
 	public UUID getUniqueId() {
 		return getBukkitEntity().getUniqueId();

@@ -16,6 +16,9 @@ import tech.mcprison.prison.util.Text;
 public class MineBombs
 	implements Comparable<MineBombs>
 {
+	public static final String MINE_BOMBS_NBT_KEY = "MineBombNbtKey";
+	public static final String MINE_BOMBS_NBT_THROWER_UUID = "MineBombNbtThrowerUUID";
+
 	public static final String MINE_BOMBS_FILE_NAME = "mineBombsConfig.json";
 	public static final String MINE_BOMBS_PATH_NAME = "module_conf/mines";
 	

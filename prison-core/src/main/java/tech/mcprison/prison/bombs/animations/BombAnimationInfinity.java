@@ -1,6 +1,7 @@
 package tech.mcprison.prison.bombs.animations;
 
 import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
@@ -67,6 +68,8 @@ public class BombAnimationInfinity
 		
 		
 		armorStand = location.spawnArmorStand();
+		
+		armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
 		
 		if ( armorStand != null ) {
 			

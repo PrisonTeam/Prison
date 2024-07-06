@@ -184,6 +184,17 @@ public class PrisonUtilsMineBombs
 				
 				for (Entity entity : entities) {
 					SpigotEntity sEntity = (SpigotEntity) entity;
+					boolean hasId = false;
+					
+					String bombName = sEntity.getNbtString( MineBombs.MINE_BOMBS_NBT_KEY );
+					if ( bombName != null && bombName.trim().length() > 0 ) {
+						hasId = true;
+					}
+					
+					if ( any && !hasId ) {
+						// Not a mine bomb armor stand so continue and bypass processing:
+						continue;
+					}
 					
 					Location l = entity.getLocation();
 					
@@ -220,7 +231,8 @@ public class PrisonUtilsMineBombs
 					}
 					
 					String msg = String.format(
-							"&3ArmorStand: distance &7%4s  &3id: &7%s  &3x:%4s y:%4s z: %4s  age: %s %s  %s",
+							"&3ArmorStand: distance &7%4s  &3id: &7%s  "
+							+ "&3x:%4s y:%4s z: %4s  age: %s %s  %s  bombName: %s",
 							iFmt.format( bounds.getDistance3d() ),
 							id,
 							iFmt.format( l.getBlockX() ),
@@ -228,7 +240,8 @@ public class PrisonUtilsMineBombs
 							iFmt.format( l.getBlockZ() ),
 							dFmt.format( times ),
 							sfx, 
-							status
+							status,
+							hasId ? bombName : "none"
 							);
 					
 					sender.sendMessage( msg );

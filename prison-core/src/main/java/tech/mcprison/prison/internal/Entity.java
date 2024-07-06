@@ -11,6 +11,10 @@ public interface Entity
 {
 
 
+	public String getNbtString( String key );
+	public void setNbtString( String key, String value );
+	
+	
     /** Returns a unique and persistent id for this entity */
     public UUID getUniqueId();
     

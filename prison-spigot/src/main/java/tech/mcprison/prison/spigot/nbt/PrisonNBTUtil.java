@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -145,6 +146,54 @@ public class PrisonNBTUtil {
 	}
 
 	
+	
+	public static boolean hasNBTString( Entity entity, String key ) {
+		String results = null;
+		
+		results = getNBTString( entity, key );
+		
+		return results != null && results.trim().length() > 0;
+	}
+	public static String getNBTString( Entity entity, String key ) {
+		String results = null;
+		
+		try {
+			Function<ReadableNBT, String> gsFnc = nbt -> nbt.getString(key);
+			
+			results = NBT.get(entity, gsFnc );
+//			results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
+		}
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.getNBTString(): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
+		}
+		
+		return results;
+	}
+	public static void setNBTString( Entity entity, String key, String value ) {
+		
+		try {
+			NBT.modify(entity, nbt -> {
+				nbt.setString(key, value);
+			});
+				 
+			if ( isEnableDebugLogging() ) {
+				nbtDebugLog( entity, "setNBTString" );
+			}
+		} 
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.setNBTString(): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
+		}
+	}
+	
+	
 	public static void nbtDebugLog( ItemStack bukkitStack, String desc ) {
 		if ( Output.get().isDebug() ) {
 			
@@ -159,6 +208,24 @@ public class PrisonNBTUtil {
 							bukkitStack.getItemMeta().getDisplayName() :
 								bukkitStack.getType().name(),
 								nbtDebug,
+								sysId );
+			
+			Output.get().logInfo( message );
+			
+			//Output.get().logInfo( "NBT: " + new NBTItem( getBukkitStack() ) );
+			
+		}
+	}
+	
+	public static void nbtDebugLog( Entity entity, String desc ) {
+		if ( Output.get().isDebug() ) {
+			
+			int sysId = System.identityHashCode(entity);
+			
+			String message = Output.stringFormat( 
+					"NBT %s ItemStack for %s:  sysId: %d", 
+					desc,
+					entity.getName(),
 								sysId );
 			
 			Output.get().logInfo( message );

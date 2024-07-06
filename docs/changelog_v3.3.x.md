@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-05
 
 
+* **Mine Bombs: Added NBT ids to all mine bomb armor stands so they can be identified as being part of the mine bombs processes.**
+Added this support to the `/prison utils bomb findArmorStand` command so it applies to only mine bomb used ones.
+
+
 * **AutoFeatures: Added new blocking capabilities: raw to raw blocks.** 
 raw_gold => raw_gold_block, raw_iron => raw_iron_block, and raw_copper => raw_copper_block.
 
