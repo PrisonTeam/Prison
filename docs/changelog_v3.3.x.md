@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-07-05
+# 3.3.0-alpha.18b 2024-07-06
+
+
+* **Mines: Converted a mine cache lookup from using longs which were a fragment of the player's uuid, to using their whole uuid. **
+This change was made to ensure that bedrock players won't have problems.
 
 
 * **Mine Bombs: Added NBT ids to all mine bomb armor stands so they can be identified as being part of the mine bombs processes.**

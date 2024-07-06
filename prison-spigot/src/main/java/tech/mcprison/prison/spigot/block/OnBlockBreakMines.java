@@ -191,10 +191,10 @@ public class OnBlockBreakMines
 	
 	public Mine findMine( UUID playerUUID, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
 	{
-		Long playerUUIDLSB = Long.valueOf( playerUUID.getLeastSignificantBits() );
+//		Long playerUUIDLSB = Long.valueOf( playerUUID.getLeastSignificantBits() );
 
 		// Get the cached mine, if it exists:
-		Mine mine = getPlayerCache().get( playerUUIDLSB );
+		Mine mine = getPlayerCache().get( playerUUID.toString() );
 		
 		if ( mine == null || sBlock != null && !mine.isInMineExact( sBlock.getLocation() ) )
 		{
@@ -232,7 +232,8 @@ public class OnBlockBreakMines
 			// Store the mine in the player cache if not null:
 			if ( mine != null )
 			{
-				getPlayerCache().put( playerUUIDLSB, mine );
+				getPlayerCache().put( playerUUID.toString(), mine );
+//				getPlayerCache().put( playerUUIDLSB, mine );
 			}
 		}
 
@@ -681,9 +682,9 @@ public class OnBlockBreakMines
 	}
 	
 
-	private TreeMap<Long, Mine> getPlayerCache() {
+	private TreeMap<String, Mine> getPlayerCache() {
 		return getPrisonMineManager() == null ? 
-				new TreeMap<Long, Mine>() :
+				new TreeMap<String, Mine>() :
 				getPrisonMineManager().getPlayerCache();
 	}
 

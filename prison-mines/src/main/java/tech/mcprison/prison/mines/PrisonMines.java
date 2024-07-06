@@ -78,7 +78,7 @@ public class PrisonMines extends Module {
      * </p>
      * 
      */
-	private final TreeMap<Long, Mine> playerCache;
+	private final TreeMap<String, Mine> playerCache;
 
 	
     
@@ -229,17 +229,20 @@ public class PrisonMines extends Module {
 		return mine;
 	}
 
-	public TreeMap<Long, Mine> getPlayerCache() {
+	public TreeMap<String, Mine> getPlayerCache() {
 		return playerCache;
 	}
 	
 	public Mine findMineLocation( Player player ) {
 		Mine results = null;
 		
-		Long playerUUIDLSB = Long.valueOf( player.getUUID().getLeastSignificantBits() );
+		String uuid = player.getUUID().toString();
+		
+//		Long playerUUIDLSB = Long.valueOf( player.getUUID().getLeastSignificantBits() );
 		
 		// Get the cached mine, if it exists:
-		Mine mine = getPlayerCache().get( playerUUIDLSB );
+		Mine mine = getPlayerCache().get( uuid );
+//		Mine mine = getPlayerCache().get( playerUUIDLSB );
 		
 		if ( mine != null && mine.isInMineIncludeTopBottomOfMine( player.getLocation() )) {
 			results = mine;
@@ -251,10 +254,10 @@ public class PrisonMines extends Module {
 			
 			// Store the mine in the player cache if not null:
 			if ( results != null ) {
-				getPlayerCache().put( playerUUIDLSB, results );
+				getPlayerCache().put( uuid, results );
 			}
 			else {
-				getPlayerCache().remove( playerUUIDLSB );
+				getPlayerCache().remove( uuid );
 			}
 		}
 

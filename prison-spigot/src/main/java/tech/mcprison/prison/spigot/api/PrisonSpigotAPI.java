@@ -359,10 +359,11 @@ public class PrisonSpigotAPI {
     			// Need to wrap in a Prison block so it can be used with the mines:
     			SpigotBlock spigotBlock = SpigotBlock.getSpigotBlock(block);
     			
-    			Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
+    			String uuid = player.getUniqueId().toString();
+//    			Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
 
     			// Get the cached mine, if it exists:
-    			Mine mine = getPlayerCache().get( playerUUIDLSB );
+    			Mine mine = getPlayerCache().get( uuid );
     			
     			if ( mine == null || !mine.isInMineExact( spigotBlock.getLocation() ) ) {
     				// Look for the correct mine to use. 
@@ -371,7 +372,7 @@ public class PrisonSpigotAPI {
     				
     				// Store the mine in the player cache if not null:
     				if ( mine != null ) {
-    					getPlayerCache().put( playerUUIDLSB, mine );
+    					getPlayerCache().put( uuid, mine );
     				}
     			}
     			
@@ -448,7 +449,7 @@ public class PrisonSpigotAPI {
 		return results;
 	}
 
-	private TreeMap<Long, Mine> getPlayerCache() {
+	private TreeMap<String, Mine> getPlayerCache() {
 		return getPrisonMineManager().getPlayerCache();
 	}
 
