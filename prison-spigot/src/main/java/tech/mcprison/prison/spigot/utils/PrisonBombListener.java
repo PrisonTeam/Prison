@@ -2,30 +2,40 @@ package tech.mcprison.prison.spigot.utils;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.game.SpigotLocation;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.game.entity.SpigotArmorStand;
 import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Location;
 
@@ -74,7 +84,7 @@ public class PrisonBombListener
         		
         		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
         		
-        		boolean canceled = processBombTriggerEvent(event, player, bombName, 
+        		boolean canceled = processBombTriggerEvent( player, bombName, 
         				targetBlock, hand );
         		
         		if ( canceled ) {
@@ -114,7 +124,7 @@ public class PrisonBombListener
         		
         		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
         		
-        		boolean canceled = processBombTriggerEvent(event, player, bombName, 
+        		boolean canceled = processBombTriggerEvent( player, bombName, 
         				targetBlock, hand );
         		
         		if ( canceled ) {
@@ -154,9 +164,41 @@ public class PrisonBombListener
 		return bombName;
 	}
 
-	private boolean processBombTriggerEvent( Event event, Player player, 
+    private boolean processBombTriggerEvent( SpigotPlayer sPlayer,
+			String bombName, SpigotBlock sBlock) {
+
+    	EquipmentSlot hand = null;
+    	
+    	return processBombTriggerEvent( sPlayer, bombName, sBlock, hand );
+	}
+	private boolean processBombTriggerEvent( Player player, 
 					String bombName, Block targetBlock,
 					EquipmentSlot hand ) {
+		
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		SpigotBlock sBlock = null;
+		
+//		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		// If clicking AIR, then event.getClickedBlock() will be null...
+		// so if null, then use the player's location for placing the bomb.
+		if ( targetBlock == null ) {
+			Location loc = sPlayer.getLocation();
+			
+			// Get the block 3 away from the player, in the direction (vector) in which
+			// the player is looking.
+			sBlock = (SpigotBlock) loc.add( loc.getDirection().multiply( 3 ) ) .getBlockAt();
+		}
+		else {
+			sBlock = SpigotBlock.getSpigotBlock( targetBlock );
+		}
+		
+		return processBombTriggerEvent( sPlayer, bombName, sBlock, hand );
+	}
+	
+	private boolean processBombTriggerEvent( SpigotPlayer sPlayer, 
+				String bombName, SpigotBlock sBlock, EquipmentSlot hand ) {
 		
 		boolean canceled = false;
 		
@@ -190,25 +232,25 @@ public class PrisonBombListener
 			return canceled;
 		}
 		
-		SpigotBlock sBlock = null;
+//		SpigotBlock sBlock = null;
+//		
+////		SpigotPlayer sPlayer = new SpigotPlayer( player );
+//		
+//		// If clicking AIR, then event.getClickedBlock() will be null...
+//		// so if null, then use the player's location for placing the bomb.
+//		if ( targetBlock == null ) {
+//			Location loc = sPlayer.getLocation();
+//			
+//			// Get the block 3 away from the player, in the direction (vector) in which
+//			// the player is looking.
+//			sBlock = (SpigotBlock) loc.add( loc.getDirection().multiply( 3 ) ) .getBlockAt();
+//		}
+//		else {
+//			sBlock = SpigotBlock.getSpigotBlock( targetBlock );
+//		}
 		
-		SpigotPlayer sPlayer = new SpigotPlayer( player );
 		
-		// If clicking AIR, then event.getClickedBlock() will be null...
-		// so if null, then use the player's location for placing the bomb.
-		if ( targetBlock == null ) {
-			Location loc = sPlayer.getLocation();
-			
-			// Get the block 3 away from the player, in the direction (vector) in which
-			// the player is looking.
-			sBlock = (SpigotBlock) loc.add( loc.getDirection().multiply( 3 ) ) .getBlockAt();
-		}
-		else {
-			sBlock = SpigotBlock.getSpigotBlock( targetBlock );
-		}
-		
-		
-		Mine mine = blockBreakMines.findMine(player, sBlock, null, null);
+		Mine mine = blockBreakMines.findMine( sPlayer, sBlock, null, null);
 		if ( mine == null ) {
 			// player is not in a mine, so do not allow them to trigger a mine bomb:
 			
@@ -257,7 +299,7 @@ public class PrisonBombListener
 //        	EquipmentSlot hand = event.getHand();
 		
 //        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
-		if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock, hand ) ) {
+		if ( getPrisonUtilsMineBombs().setBombInHand( sPlayer, bomb, sBlock, hand ) ) {
 			
 			// The item was a bomb and it was activated.
 			// Cancel the event so the item will not be placed or processed farther.

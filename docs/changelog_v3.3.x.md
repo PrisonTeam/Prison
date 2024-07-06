@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Mine Bombs:  Refactoring how mine bombs are handled when placed.**  Had to shift a lot of the variable types over to more of the prison flavors to allow for better support of the newer functions.
+This is setting up support for throwing mine bombs.
+
+
 * **More work on the findArmorStands function.**
 Fixed an issue with getting the entities within an area too.  Found that was not working correctly.
 

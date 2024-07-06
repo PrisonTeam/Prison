@@ -972,7 +972,7 @@ public class PrisonUtilsMineBombs
 	 * @param bomb 
 	 * @return
 	 */
-	public boolean setBombInHand( Player player, 
+	public boolean setBombInHand( SpigotPlayer sPlayer, 
 					MineBombData bomb, SpigotBlock sBlock, 
 					tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot hand ) {
 		boolean isABomb = false;
@@ -1021,9 +1021,11 @@ public class PrisonUtilsMineBombs
 					bomb.setToolInHandName( xMat.name() );
 				}
 				
-				SpigotPlayer sPlayer = new SpigotPlayer( player );
+//				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				
-				String playerUUID = player.getUniqueId().toString();
+				String playerUUID = sPlayer.getUniqueId().toString();
+//				String playerUUID = player.getUniqueId().toString();
+
 				int cooldownTicks = checkPlayerCooldown( playerUUID );
 				
 				if ( cooldownTicks == 0 ) {
@@ -1094,7 +1096,7 @@ public class PrisonUtilsMineBombs
 						
 						// check if in a mine:
 						OnBlockBreakMines obbm = new OnBlockBreakMines();
-						Mine mine = obbm.findMine( player, bombBlock, null, null );
+						Mine mine = obbm.findMine( sPlayer, bombBlock, null, null );
 						
 						if ( mine == null ) {
 							// Cannot set the bomb outside of a mine, so cancel:
@@ -1108,8 +1110,8 @@ public class PrisonUtilsMineBombs
 						
 						SpigotItemStack itemInHand = 
 								hand == EquipmentSlot.HAND ? 
-										SpigotCompatibility.getInstance().getPrisonItemInMainHand( player ) :
-											SpigotCompatibility.getInstance().getPrisonItemInOffHand( player )
+										SpigotCompatibility.getInstance().getPrisonItemInMainHand( sPlayer ) :
+											SpigotCompatibility.getInstance().getPrisonItemInOffHand( sPlayer )
 											;
 						
 						// Remove from inventory:
@@ -1118,7 +1120,7 @@ public class PrisonUtilsMineBombs
 							if ( hand == EquipmentSlot.HAND ) {
 								
 								SpigotCompatibility.getInstance()
-											.setItemInMainHand( player, null );
+											.setItemInMainHand( sPlayer, null );
 							}
 							else {
 								
@@ -1138,7 +1140,7 @@ public class PrisonUtilsMineBombs
 						
 						
 						// Apply updates to the player's inventory:
-						player.updateInventory();
+						sPlayer.updateInventory();
 					
 						
 						

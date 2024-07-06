@@ -184,6 +184,11 @@ public class OnBlockBreakMines
 
 	}
 	
+	public Mine findMine( SpigotPlayer player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
+	{
+		return findMine( player.getUniqueId(), sBlock, altBlocksSource, pmEvent );
+	}
+	
 	public Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
 	{
 		return findMine( player.getUniqueId(), sBlock, altBlocksSource, pmEvent );

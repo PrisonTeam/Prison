@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.game;
 
 import org.bukkit.Bukkit;
 
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.util.Location;
 
@@ -12,6 +13,10 @@ public class SpigotLocation
 	
 	public SpigotLocation( Location location ) {
 		super( location );
+	}
+	
+	public SpigotLocation( World world, double x, double y, double z, float yaw, float pitch ) {
+		super( new Location( world, x, y, z, yaw, pitch) );
 	}
 	
 	public SpigotLocation( org.bukkit.Location bukkitLocation ) {
