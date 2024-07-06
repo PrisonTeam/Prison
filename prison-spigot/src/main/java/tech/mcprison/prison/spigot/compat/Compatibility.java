@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 /**
@@ -53,7 +54,11 @@ public interface Compatibility
     
     public SpigotItemStack getPrisonItemInMainHand(Player player);
 
+    public SpigotItemStack getPrisonItemInMainHand(SpigotPlayer player);
+
     public SpigotItemStack getPrisonItemInOffHand(Player player);
+
+    public SpigotItemStack getPrisonItemInOffHand(SpigotPlayer player);
     
     public ItemStack getItemInOffHand(PlayerInteractEvent e);
 
@@ -64,6 +69,8 @@ public interface Compatibility
     public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack );
 
     public void setItemInMainHand(Player p, ItemStack itemStack);
+
+    public void setItemInMainHand(SpigotPlayer p, ItemStack itemStack);
     
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack );
     

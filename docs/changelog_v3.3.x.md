@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Spigot compatibility: Expanded some of the compatibility functions so that some other mine bomb code can be simplified.**
+
+
 * **Mines: Converted a mine cache lookup from using longs which were a fragment of the player's uuid, to using their whole uuid. **
 This change was made to ensure that bedrock players won't have problems.
 

@@ -29,6 +29,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 /**
@@ -75,8 +76,16 @@ public class Spigot_1_8
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
     
+    public SpigotItemStack getPrisonItemInMainHand(SpigotPlayer player) {
+    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player.getWrapper() ) );
+    }
+    
     public SpigotItemStack getPrisonItemInOffHand(Player player) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    }
+    
+    public SpigotItemStack getPrisonItemInOffHand(SpigotPlayer player) {
+    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player.getWrapper() ) );
     }
 
 	@Override 
@@ -108,6 +117,12 @@ public class Spigot_1_8
     @Override
     public void setItemInMainHand(Player p, ItemStack itemStack) {
         p.getInventory().setItemInHand(itemStack);
+    }
+    
+    @SuppressWarnings("deprecation")
+    @Override
+    public void setItemInMainHand(SpigotPlayer p, ItemStack itemStack) {
+    	p.getWrapper().getInventory().setItemInHand(itemStack);
     }
 
     /**
