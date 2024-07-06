@@ -3,6 +3,7 @@ package tech.mcprison.prison.cache;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 
 public class PlayerCacheUnloadPlayerTask
@@ -31,10 +32,21 @@ public class PlayerCacheUnloadPlayerTask
 			
 			UUID uuid = UUID.fromString( removed.getPlayerUuid() );
 			
-			RankPlayer rPlayer = Prison.get().getPlatform()
-								.getRankPlayer( uuid, 
+			RankPlayer rPlayer = null;
+			
+			Player player = getPlayerData().getPlayer();
+			if ( player != null ) {
+				rPlayer = player.getRankPlayer();
+			}
+			else {
+				rPlayer = Prison.get().getPlatform()
+						.getRankPlayer( uuid, 
 								removed != null ? removed.getPlayerName() : "" );
-			rPlayer.updateTotalLastValues( removed );
+				
+			}
+			if ( rPlayer != null ) {
+				rPlayer.updateTotalLastValues( removed );
+			}
 			
 			pCache.getCacheFiles().toJsonFile( removed );
 		}

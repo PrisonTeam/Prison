@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 
 /**
@@ -93,21 +94,32 @@ public class PlayerCacheCheckTimersTask
 					
 					if ( playerData != null ) {
 						
+						
 						playerData.checkTimers();
 						
 						// By adding a zero earnings, this will force the earnings "cache" to 
 						// progress, even if the player stopped mining.
 						playerData.addEarnings( 0, null );
-					}
-					
-					UUID uuid = UUID.fromString( key );
-					
-					RankPlayer rPlayer = Prison.get().getPlatform()
-										.getRankPlayer( uuid, 
-										playerData != null ? playerData.getPlayerName() : "" );
-					
-					if ( rPlayer != null ) {
-						rPlayer.updateTotalLastValues(playerData);
+
+						RankPlayer rPlayer = null;
+						
+						Player player = playerData.getPlayer();
+						
+						if ( player != null ) {
+							rPlayer = player.getRankPlayer();
+						}
+						else {
+							UUID uuid = UUID.fromString( key );
+							
+							
+							rPlayer = Prison.get().getPlatform()
+									.getRankPlayer( uuid, 
+											playerData != null ? playerData.getPlayerName() : "" );
+						}
+						
+						if ( rPlayer != null ) {
+							rPlayer.updateTotalLastValues(playerData);
+						}
 					}
 					
 				}

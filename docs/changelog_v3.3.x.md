@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Player Cache: Adjustments to improve access to the RankPlayer object.**
+
+
 * **Mine Bombs:  Refactoring how mine bombs are handled when placed.**  Had to shift a lot of the variable types over to more of the prison flavors to allow for better support of the newer functions.
 This is setting up support for throwing mine bombs.
 
