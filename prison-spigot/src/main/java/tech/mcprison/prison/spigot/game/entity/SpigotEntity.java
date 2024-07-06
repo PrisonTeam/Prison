@@ -104,9 +104,11 @@ public class SpigotEntity
 	 * @return
 	 */
 	public List<Entity> getNearbyEntities( int r, EntityType eType ) {
-		Location loc = getLocation();
+//		Location loc = getLocation();
+		
 		List<org.bukkit.entity.Entity> bEntities = getBukkitEntity()
-				.getNearbyEntities( loc.getX() + r, loc.getY() + r, loc.getZ() + r);
+				.getNearbyEntities( r * 2, r * 2, r * 2 );
+		
 		return convertEntities( bEntities, (SpigotEntityType) eType );
 	}
 

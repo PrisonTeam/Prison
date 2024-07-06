@@ -113,20 +113,21 @@ public class PrisonUtilsMineBombs
 		permissions = "prison.utils.bombs",
 		altPermissions = "prison.utils.bombs.others")
 	public void utilsFindMineBombsArmorStands( CommandSender sender, 
-			@Arg(name = "radius", def = "10",
-				description = "Number of blocks in a radius from the player "
-						+ "to search for armor stands to remove.") int radius,
 			@Arg(name = "playerName", description = "Player name") String playerName,
+			@Arg(name = "radius", def = "10",
+			description = "Number of blocks in a radius from the player "
+					+ "to search for armor stands to remove.") int radius,
 			@Wildcard(join=true)
 			@Arg(name = "options", def = "list",
 					description = "Action to perform. 'list' will list all armor stands within"
-							+ "the general cubic-radius. "
+							+ "the general cubic-radius that are marked with the mine bomb NBT Id."
+							+ "To include 'any' armor stand include the keyword '*any*'. "
 							+ "'show' will make the armor stands visible for a few minutes "
 							+ "and optionally provide an id for showing only one.  "
 							+ "removeAll' will remove all armor stands "
 							+ "within the general cubic-radius. And 'removeId' will remove "
 							+ "only one armor stand that matches the supplied ID. "
-							+ " [list, show <id>, removeAll, removeId <id>]") String options
+							+ " [list, show <id>, removeAll, removeId <id>, *any*]") String options
 			
 			) {
 		if ( !isEnableMineBombs() ) {
@@ -138,16 +139,23 @@ public class PrisonUtilsMineBombs
 			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
 					"prison.utils.bomb", "prison.utils.bomb.others" );
 
+			sender.sendMessage( "#### findArmorStands: radius: " + radius );
+
 			boolean list = false;
 			boolean show = false;
 			boolean removeAll = false;
 			boolean removeId = false;
+			boolean any = false;
 			
 			
 			String uuid = null;
 			
 			options = options.toLowerCase().trim();
 			
+			if ( options.contains( "*any*" ) ) {
+				any = true;
+				options = options.replace( "*any*", "" ).trim();
+			}
 			if ( options.contains( "list" ) ) {
 				list = true;
 				options = options.replace( "list", "" ).trim();

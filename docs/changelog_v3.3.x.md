@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **More work on the findArmorStands function.**
+Fixed an issue with getting the entities within an area too.  Found that was not working correctly.
+
+
 * **Spigot compatibility: Expanded some of the compatibility functions so that some other mine bomb code can be simplified.**
 
 
