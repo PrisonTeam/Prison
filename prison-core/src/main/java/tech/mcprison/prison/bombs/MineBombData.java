@@ -243,6 +243,9 @@ public class MineBombData
 	private Block placedBombBlock;
 	
 	
+	private transient int taskId = -1;
+	
+	
 	public MineBombData() {
 		super();
 		
@@ -770,5 +773,12 @@ public class MineBombData
 		this.placedBombBlock = placedBombBlock;
 	}
 
+
+	public int getTask() {
+		return taskId;
+	}
+	public void setTaskId(int taskId ) {
+		this.taskId = taskId;
+	}
 	
 }

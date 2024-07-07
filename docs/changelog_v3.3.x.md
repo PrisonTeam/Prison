@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-07
 
 
+* **Mine bombs: Setup throwing of mine bombs.**
+The mine bombs can now be thrown.  If they don't land within the mine, then they are not removed from the player's inventory.  
+The check for the mine is performed where the block lands.  The throwing velocity can be controlled in the settings of each mine bomb; the higher the value, the farther the player can throw the bomb, which can easily be outside of the mine.
+
+
 * **Mine bomb defaults:  Added a couple of new sample mine bombs to illustrate the new animation sequences.**
 Changed the text on the bombs' tags and lore to include a `%r` at the end; a reset character.  This helps to prevent bleed over when dumping the raw values to the console and logs.
 

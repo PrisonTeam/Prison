@@ -277,8 +277,13 @@ public class MineBombs
 		boolean configExists = configFile.exists();
 		
 		if ( !configExists ) {
+			
+			// The save file does not exist so regenerate the default bombs listing:
+			getConfigData().getBombs().clear();
+			
 			MineBombDefaultConfigSettings defaultConfigs = new MineBombDefaultConfigSettings();
 			defaultConfigs.setupDefaultMineBombData( this );
+			
 			
 		}
 		
