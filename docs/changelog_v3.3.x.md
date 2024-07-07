@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-07-06
+# 3.3.0-alpha.18b 2024-07-07
+
+
+* **Mine bomb defaults:  Added a couple of new sample mine bombs to illustrate the new animation sequences.**
+Changed the text on the bombs' tags and lore to include a `%r` at the end; a reset character.  This helps to prevent bleed over when dumping the raw values to the console and logs.
 
 
 * **Ranks: Fixed some issues with the newer formatting of the player files.**

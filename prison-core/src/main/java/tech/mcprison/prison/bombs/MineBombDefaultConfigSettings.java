@@ -51,18 +51,19 @@ public class MineBombDefaultConfigSettings {
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, "&dSmall &6Mine &eBomb &3(lore line 1)" );
+						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, 
+						"&dSmall &6Mine &eBomb &3(lore line 1)&r" );
 				
-				mbd.setNameTag( "&6&kABC&r&c-= &7{name}&c =-&6&kCBA" );
+				mbd.setNameTag( "&6&kABC&r&c-= &7{name}&c =-&6&kCBA&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
 				
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 0 );
-				mbd.setDescription("A small mine bomb made with some chemicals and a brewing stand.");
+				mbd.setDescription("A small mine bomb made with some chemicals and a brewing stand.&r");
 				
-				mbd.getLore().add( "&4Lore line 2" );
-				mbd.getLore().add( "&aLore line &73" );
+				mbd.getLore().add( "&4Lore line 2&r" );
+				mbd.getLore().add( "&aLore line &73&r" );
 
 				mbd.addSoundEffects( mbeSound01.clone() );
 				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
@@ -85,11 +86,11 @@ public class MineBombDefaultConfigSettings {
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"MediumBomb", "firework_rocket", ExplosionShape.sphere.name(), 5, "Medium Mine Bomb" );
-				mbd.setDescription("A medium mine bomb made from leftover fireworks, " +
-						"but supercharged with a strange green glowing liquid.");
+						"MediumBomb", "firework_rocket", ExplosionShape.sphere.name(), 5, "Medium Mine Bomb&r" );
+				mbd.setDescription("A medium mine bomb made from leftover fireworks, &r" +
+						"but supercharged with a strange green glowing liquid.&r");
 				
-				mbd.setNameTag( "&6&k1 23 456&r&a-=- &7{name}&a -=-&6&k654 32 1" );
+				mbd.setNameTag( "&6&k1 23 456&r&a-=- &7{name}&a -=-&6&k654 32 1&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
@@ -117,12 +118,12 @@ public class MineBombDefaultConfigSettings {
 				MineBombData mbd = new MineBombData( 
 						"LargeBomb", "tnt", ExplosionShape.sphereHollow.name(), 12, "Large Mine Bomb" );
 				
-				mbd.setNameTag( "&a-=- &7{name}&a -=--" );
+				mbd.setNameTag( "&a-=- &7{name}&a -=--&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 
 				mbd.setRadiusInner( 3 );
 				mbd.setDescription("A large mine bomb made from TNT with some strange parts " +
-						"that maybe be described as alien technology.");
+						"that maybe be described as alien technology.&r");
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 3 );
 				
@@ -146,14 +147,14 @@ public class MineBombDefaultConfigSettings {
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"OofBomb", "tnt_minecart", ExplosionShape.sphereHollow.name(), 21, "Oof Mine Bomb" );
+						"OofBomb", "tnt_minecart", ExplosionShape.sphereHollow.name(), 21, "Oof Mine Bomb&r" );
 				mbd.setRadiusInner( 3 );
 				
-				mbd.setNameTag( "&c&k1&6&k23&e&k456&r&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&e&k654&6&k32&c&k1" );
+				mbd.setNameTag( "&c&k1&6&k23&e&k456&r&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&e&k654&6&k32&c&k1&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
 				mbd.setDescription("An oof-ably large mine bomb made with a minecart heaping with TNT.  " +
-						"Unlike the large mine bomb, this one obviously is built with alien technology.");
+						"Unlike the large mine bomb, this one obviously is built with alien technology.&r");
 				
 				mbd.setToolInHandName( "GOLDEN_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 13 );
@@ -205,28 +206,28 @@ public class MineBombDefaultConfigSettings {
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 5, 
-							"A Wimpy Mine Bomb" );
+						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 4, 
+							"A Wimpy Mine Bomb&r" );
 //				mbd.setLoreBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
 				
-				mbd.setNameTag( "&7A &2Wimpy &cBomb" );
+				mbd.setNameTag( "&7A &2Wimpy &cBomb&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
 				mbd.setRadiusInner( 1 );
 				mbd.setDescription("A whimpy bomb made with gunpowder and packs the punch of a " +
-						"dull wooden pickaxe. For some reason, it only has a 40% chance of removing " +
-						"a block.");
+						"dull wooden pickaxe. For some reason, it only has a 30 percent chance " +
+						"of removing a block.&r");
 				
-				mbd.getLore().add( "" );
-				mbd.getLore().add( "A whimpy bomb made with gunpowder and packs the punch " );
-				mbd.getLore().add( "of a dull wooden pickaxe. For some reason, it only " );
-				mbd.getLore().add( "has a 40% chance of removing a block." );
-				mbd.getLore().add( "" );
-				mbd.getLore().add( "Not labeled for retail sale." );
+				mbd.getLore().add( "&r" );
+				mbd.getLore().add( "A whimpy bomb made with gunpowder and packs the punch &r" );
+				mbd.getLore().add( "of a dull wooden pickaxe. For some reason, it only &r" );
+				mbd.getLore().add( "has a 40% chance of removing a block.&r" );
+				mbd.getLore().add( "&r" );
+				mbd.getLore().add( "Not labeled for retail sale.&r" );
 				
 				mbd.setToolInHandName( "WOODEN_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 0 );
-				mbd.setRemovalChance( 40.0d );
+				mbd.setRemovalChance( 30.0d );
 				
 				mbd.getAllowedMines().add( "a" );
 				mbd.getAllowedMines().add( "b" );
@@ -250,14 +251,17 @@ public class MineBombDefaultConfigSettings {
 				mbd.addVisualEffects( mbeExplode11.clone().setOffsetTicks( 05 ) );
 				
 				mbd.setCooldownTicks( 3 * 20 ); // 3 seconds
-				mbd.setFuseDelayTicks( 2 * 20 ); // 2 seconds
+				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds
 
+				mbd.setThrowVelocityLow( 0.25 );
+				mbd.setThrowVelocityHigh( 1.25 );
+				
 				mbd.setGlowing( true );
 				mbd.setGravity( false );
 				
 				mbd.setCooldownTicks( 5 );
 
-				mbd.setAnimationPattern( AnimationPattern.infinity );
+				mbd.setAnimationPattern( AnimationPattern.infinityEight );
 				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -266,11 +270,11 @@ public class MineBombDefaultConfigSettings {
 			{
 				MineBombData mbd = new MineBombData( 
 						"CubeBomb", "SLIME_BLOCK", ExplosionShape.cube.name(), 2, 
-						"A Cubic Bomb" );
+						"A Cubic Bomb&r" );
 				mbd.setDescription("The most anti-round bomb you will ever be able to find. " +
-						"It's totally cubic.");
+						"It's totally cubic.&r");
 				
-				mbd.setNameTag( "&a-=- &7{name}&a -=--" );
+				mbd.setNameTag( "&a-=- &7{name}&a -=--&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
@@ -286,10 +290,49 @@ public class MineBombDefaultConfigSettings {
 				
 				mbd.setGlowing( true );
 				
-				mbd.setCooldownTicks( 60 );
+				mbd.setCooldownTicks( 20 );
+				mbd.setFuseDelayTicks( 10 * 20 ); // 10 seconds
 
-				mbd.setAnimationPattern( AnimationPattern.infinity );
+				mbd.setAnimationPattern( AnimationPattern.orbital );
 
+				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
+			}
+			
+			
+			
+			{
+				MineBombData mbd = new MineBombData( 
+						"DudBomb", "SLIME_BLOCK", ExplosionShape.disk_x.name(), 1, 
+						"This may be a bomb?&r" );
+				mbd.setDescription("The most anti-round bomb you will ever be able to find. " +
+						"It's totally cubic.&r");
+				
+				mbd.setNameTag( "&a-=- &7{name}&a -=--&r" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
+				
+				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
+				mbd.setToolInHandFortuneLevel( 1 );
+				mbd.setRemovalChance( 10.0d );
+				
+				mbd.setHeight( 5 );
+				
+				mbd.addSoundEffects( mbeSound01.clone() );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.addSoundEffects( mbeSound03.clone() );
+				
+				mbd.addVisualEffects( mbeExplode04.clone() );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				
+				mbd.setGlowing( false );
+				
+				mbd.setCooldownTicks( 10 );
+				
+				mbd.setThrowVelocityLow( 0.05 );
+				mbd.setThrowVelocityHigh( 0.5 );
+				
+				
+				mbd.setAnimationPattern( AnimationPattern.none );
+				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
 			
