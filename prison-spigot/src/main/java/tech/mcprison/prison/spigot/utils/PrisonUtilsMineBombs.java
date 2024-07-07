@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -45,6 +46,7 @@ import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.game.entity.SpigotArmorStand;
 import tech.mcprison.prison.spigot.game.entity.SpigotEntity;
 import tech.mcprison.prison.spigot.game.entity.SpigotEntityType;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
@@ -128,7 +130,7 @@ public class PrisonUtilsMineBombs
 							+ "removeAll' will remove all armor stands "
 							+ "within the general cubic-radius. And 'removeId' will remove "
 							+ "only one armor stand that matches the supplied ID. "
-							+ " [list, show <id>, removeAll, removeId <id>, *any*]") String options
+							+ " [list, show <id>, removeAll, removeId <id>, any]") String options
 			
 			) {
 		if ( !isEnableMineBombs() ) {
@@ -153,9 +155,9 @@ public class PrisonUtilsMineBombs
 			
 			options = options.toLowerCase().trim();
 			
-			if ( options.contains( "*any*" ) ) {
+			if ( options.contains( "any" ) ) {
 				any = true;
-				options = options.replace( "*any*", "" ).trim();
+				options = options.replace( "any", "" ).trim();
 			}
 			if ( options.contains( "list" ) ) {
 				list = true;
@@ -191,19 +193,30 @@ public class PrisonUtilsMineBombs
 				DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
 				DecimalFormat dFmt = Prison.getDecimalFormatStatic( "#,##0.0");
 				
+				int count = 0;
 				for (Entity entity : entities) {
 					SpigotEntity sEntity = (SpigotEntity) entity;
+					SpigotArmorStand sArmorStand = new SpigotArmorStand( entity );
+					
+					String bombName = getBombName( sEntity, sArmorStand );
+					
 					boolean hasId = false;
 					
-					String bombName = sEntity.getNbtString( MineBombs.MINE_BOMBS_NBT_KEY );
+//					String bombName = sEntity.getNbtString( MineBombs.MINE_BOMBS_NBT_KEY );
 					if ( bombName != null && bombName.trim().length() > 0 ) {
 						hasId = true;
 					}
 					
-					if ( any && !hasId ) {
+					if ( !any && !hasId ) {
 						// Not a mine bomb armor stand so continue and bypass processing:
 						continue;
 					}
+
+					
+					tech.mcprison.prison.internal.Player owner = getOwner(sEntity, sArmorStand);
+					
+					tech.mcprison.prison.internal.Player thrower = getThrower(sEntity, sArmorStand);
+					
 					
 					Location l = entity.getLocation();
 					
@@ -241,21 +254,35 @@ public class PrisonUtilsMineBombs
 					
 					String msg = String.format(
 							"&3ArmorStand: distance &7%4s  &3id: &7%s  "
-							+ "&3x:%4s y:%4s z: %4s  age: %s %s  %s  bombName: %s",
+							+ "&3x:%4s y:%4s z: %4s  "
+							+ "&3age: &7%5s " // Age
+							+ "&3%-4s  "      // Age unit
+							+ "&3%s  " // sfx
+							+ "&3bombName: &c%s  "
+							+ "&3owner: &a%s  "
+							+ "&3usedBy: &a%s ",
 							iFmt.format( bounds.getDistance3d() ),
 							id,
 							iFmt.format( l.getBlockX() ),
 							iFmt.format( l.getBlockY() ),
 							iFmt.format( l.getBlockZ() ),
-							dFmt.format( times ),
+							dFmt.format( times ), // age
 							sfx, 
 							status,
-							hasId ? bombName : "none"
+							bombName != null && bombName.trim().length() > 0 ? 
+									bombName : "none",
+							owner != null ? owner.getName() : "&dunknown",
+							thrower != null ? thrower.getName() : "&dunknown"
 							);
 					
 					sender.sendMessage( msg );
+					
+					count++;
 				}
 				
+				if ( count == 0 ) {
+					sender.sendMessage( "&3-= No ArmmorStands were located with the selected filters =-");
+				}
 				
 //				 Location EntityArea = new Location(Bukkit.getWorld("world"),125,71,105);
 //	                World world = Bukkit.getServer().getWorld("world");
@@ -275,6 +302,61 @@ public class PrisonUtilsMineBombs
 	}
 	
 	
+	/**
+	 * <p>This tries to get the bomb name from the armor stand, if it cannot get it 
+	 * directly from the armor stand, then it will try to get it from the 
+	 * item that the armor stand is holding.
+	 * </p>
+	 * 
+	 * @param sEntity
+	 * @param sArmorStand
+	 * @return
+	 */
+	private String getBombName(SpigotEntity sEntity, SpigotArmorStand sArmorStand) {
+		String key = MineBombs.MINE_BOMBS_NBT_KEY;
+		return getNBTString( sEntity, sArmorStand, key );
+	}
+	private tech.mcprison.prison.internal.Player getOwner(SpigotEntity sEntity, SpigotArmorStand sArmorStand) {
+		tech.mcprison.prison.internal.Player results = null;
+		String key = MineBombs.MINE_BOMBS_NBT_OWNER_UUID;
+		String uuid = getNBTString( sEntity, sArmorStand, key );
+		if ( uuid != null && uuid.trim().length() > 0 ) {
+			results = Prison.get().getPlatform().getPlayer( UUID.fromString(uuid)).orElse(null);
+		}
+		return results;
+	}
+	private tech.mcprison.prison.internal.Player getThrower(SpigotEntity sEntity, SpigotArmorStand sArmorStand) {
+		tech.mcprison.prison.internal.Player results = null;
+		String key = MineBombs.MINE_BOMBS_NBT_THROWER_UUID;
+		String uuid = getNBTString( sEntity, sArmorStand, key );
+		if ( uuid != null && uuid.trim().length() > 0 ) {
+			results = Prison.get().getPlatform().getPlayer( UUID.fromString(uuid)).orElse(null);
+		}
+		return results;
+	}
+	
+	private String getNBTString(SpigotEntity sEntity, SpigotArmorStand sArmorStand, String key) {
+		String bombName = null;
+		
+		bombName = sEntity.getNbtString( key );
+		if ( bombName == null || bombName.trim().length() == 0 ) {
+			
+			SpigotItemStack iStack = (SpigotItemStack) sArmorStand.getItemInHand();
+			
+			if ( iStack != null && !iStack.isAir() ) {
+				
+				bombName = PrisonNBTUtil.getNBTString( iStack.getBukkitStack(), key );
+				
+				if ( bombName == null || bombName.trim().length() == 0 ) {
+					
+					bombName = PrisonNBTUtil.getNBTString( iStack.getBukkitStack(), key );
+				}
+			}
+		}
+		
+		return bombName;
+	}
+
 	@Command(identifier = "prison utils bombs", 
 			description = "Activates a mine bomb for a given player at a specific location. " +
 					"The attributes of the bomb can be controlled with this command, such " +

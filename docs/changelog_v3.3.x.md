@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Mine bomb findArmorStands: More work to provide more features and to work around issues with NBT data not working correctly with entities.**
+
+
+
 * **Mine bombs: Fix issue with the printing of the error message with the included json data since it contains non-encoded % signs.  Setup regex comments on them by using: `\Q` and `\E`.***
 
 
