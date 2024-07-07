@@ -101,6 +101,175 @@ public class PrisonBombListener
 		}
 		
 	}
+	
+	/**
+	 * <p>Thowing minebombs.
+	 * </p>
+	 * 
+	 * https://www.spigotmc.org/threads/tutorial-how-to-throw-items-like-knives-1-18-2.561482/
+	 * 
+	 * @param event
+	 */
+	@EventHandler( priority = EventPriority.LOW )
+    public void throwMineBomb( PlayerInteractEvent event ) {
+		
+		ItemStack iStack = event.getItem();
+		Action action = event.getAction(); // This is how we tell if it's a right-click
+	
+		
+		if ( iStack != null && action != null &&
+				iStack.getType() != Material.AIR && 
+				action == Action.RIGHT_CLICK_AIR ) {
+			
+
+			String bombName = checkMineBombItemStack( iStack );
+        	
+        	if ( bombName != null ) {
+        		
+        		MineBombData mineBomb = MineBombs.getInstance().findBombByName(bombName);
+
+        		Player player = event.getPlayer();
+        		
+        		PrisonNBTUtil.setNBTString(iStack, 
+			        				MineBombs.MINE_BOMBS_NBT_KEY, 
+			        				bombName );
+        		PrisonNBTUtil.setNBTString(iStack, 
+									MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
+									player.getUniqueId().toString() );
+        		
+        		SpigotLocation loc = new SpigotLocation( 
+        					player.getEyeLocation().add( player.getLocation().getDirection() ));
+        		
+//        		XMaterial xMat = XMaterial.matchXMaterial(iStack);
+        		
+        		
+        		ArmorStand armorStand = player.getWorld().spawn( 
+        				loc.getBukkitLocation(), 
+						ArmorStand.class);
+        		
+        		armorStand.setVisible( false );
+        		
+        		SpigotArmorStand sArmorStand = new SpigotArmorStand(armorStand);
+        		sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, bombName );
+        		sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
+        									player.getUniqueId().toString() );
+        		
+        		
+        		Vector velocity = player.getLocation().getDirection().multiply( 
+        				mineBomb.getThrowVelocity() );
+        		
+        		armorStand.setVelocity( velocity );
+        		
+        		armorStand.setRemoveWhenFarAway(false);
+    			armorStand.setItemInHand( iStack );
+    			
+    			
+    			// Remove the unused armorStand in 120 seconds:
+    			SpigotPrison.getInstance().getScheduler().runTaskLater( new Runnable() {
+    				public void run() {
+    					armorStand.remove();
+    				}
+    			}, 120 * 20);
+
+    			
+    			
+//    			player.launchProjectile( armorStand, velocity );
+    			
+//    			ThrowableProjectile tProj = new Throw
+    			
+    					
+//    			ProjectileSource pSrc = new Projec
+//    			Projectile proj ;
+//    			proj.set
+        		
+        		
+//        		Snowball snowball = player.getWorld().spawn(loc.getBukkitLocation(), Snowball.class);
+//        		snowball.setPassenger( armorStand );
+//        		Snowball snowball = player.getWorld().spawn(loc.getBukkitLocation(), Snowball.class);
+        		
+        		// the '.setItem()' was introduced with Spigot v1.14.x
+                //snowball.setItem(iStack); // uses the exact item clicked
+
+//                snowball.setVelocity(player.getLocation().getDirection().multiply(3));
+                
+                //iStack.setAmount(iStack.getAmount()-1);
+        		
+        		
+        	}
+		}
+    }
+	
+	@EventHandler
+    public void onMineBombHit( ProjectileHitEvent e ) {
+		
+		
+		// e.getEntity() is the projectile which should be an NBT tagged ArmorStand:
+		if ( e.getEntityType() == EntityType.ARMOR_STAND && 
+					e.getEntity() instanceof ArmorStand ) {
+			
+			SpigotArmorStand armorStand = new SpigotArmorStand( (ArmorStand) e.getEntity() );
+			
+			String bombName = armorStand.getNbtString( MineBombs.MINE_BOMBS_NBT_KEY );
+			if ( bombName != null && bombName.trim().length() > 0 ) {
+				
+        		MineBombData mineBomb = MineBombs.getInstance().findBombByName(bombName);
+        		
+				String throwerUUID = armorStand.getNbtString( MineBombs.MINE_BOMBS_NBT_THROWER_UUID );
+				
+				SpigotPlayer player = (SpigotPlayer)
+										Prison.get().getPlatform().getPlayer( throwerUUID ).orElse(null);
+
+				SpigotBlock targetBlock = SpigotBlock.getSpigotBlock( e.getHitBlock() );
+				if ( targetBlock == null ) {
+					Entity entity = e.getHitEntity();
+					Location location = new SpigotLocation( entity.getLocation() );
+					for ( double y = 0d; y <= 4d; y++ ) {
+						SpigotLocation loc = new SpigotLocation( location.getWorld(), 
+									location.getX(), location.getY() - y, location.getZ(),
+									location.getYaw(), location.getPitch() );
+						
+						if ( !loc.getBlockAt().isEmpty() ) {
+							targetBlock = (SpigotBlock) loc.getBlockAt();
+							
+						}
+						
+					}
+				}
+
+				if ( targetBlock != null ) {
+					// Process mine bomb:
+					
+					processBombTriggerEvent( player, mineBomb, targetBlock );
+					
+//					e.getEntity().getShooter().;
+//					
+//					boolean canceled = processBombTriggerEvent( event, player, bombName, 
+//	        				targetBlock, hand );
+					
+				}
+				
+			}
+			
+			
+		}
+		
+//        if(!(e.getHitEntity() instanceof LivingEntity)) {
+//        	return;
+//        }
+//        
+//        LivingEntity ent = (LivingEntity)e.getHitEntity();
+//        Projectile proj = e.getEntity();
+//        
+        
+//
+//        if(proj instanceof Snowball){ // All code for throwing knife will be in here
+//            Snowball snowball = (Snowball)proj; // cast projectile to snowball object
+//            ItemStack item = snowball.getItem(); // This beautiful method returns the itemstack that was put into the snowball
+//            if(item.getType().equals(Material.IRON_SWORD))
+//                ent.damage(6); // 3 hearts of damage
+//        }
+    }
+
 
 
 	/**

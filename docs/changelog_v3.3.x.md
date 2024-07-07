@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Mine bombs: throwing.  Setup the first pass with throwing mine bombs.**
+This is not fully functioning yet, but it's getting closer.
+
+
+
 * **Mine bomb findArmorStands: More work to provide more features and to work around issues with NBT data not working correctly with entities.**
 
 
