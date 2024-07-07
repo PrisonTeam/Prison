@@ -177,9 +177,11 @@ public class PrisonUtilsMineBombsTasks
 								NullPointerException e ) {
 							Output.get().logWarn( 
 									String.format( 
-											"Invalid Sound Effect value in bomb %s: %s  Error: [%s]",
+											"Invalid Sound Effect value in bomb %s: Error: [%s]  [\\Q%s\\E] ",
 											bomb.getName(),
-											effect.toString(), e.getMessage()) );
+											e.getMessage(),
+											effect.toString())
+									);
 						}
 					}
 				}.runTaskLater( SpigotPrison.getInstance(), effect.getOffsetTicks() );
@@ -220,9 +222,11 @@ public class PrisonUtilsMineBombsTasks
 								NullPointerException e ) {
 							Output.get().logWarn( 
 									String.format( 
-											"Invalid Visual Effect value in bomb %s: %s  Error: [%s]",
+											"Invalid Visual Effect value in bomb %s: Error: [%s]  [\\Q%s\\E] ",
 											bomb.getName(),
-											effect.toString(), e.getMessage()) );
+											e.getMessage(),
+											effect.toString())
+							);
 						}
 						
 					}
