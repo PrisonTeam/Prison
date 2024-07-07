@@ -193,6 +193,7 @@ public class PrisonUtilsMineBombsTasks
 				
 				new BukkitRunnable() {
 					
+					@SuppressWarnings("deprecation")
 					@Override
 					public void run() {
 						

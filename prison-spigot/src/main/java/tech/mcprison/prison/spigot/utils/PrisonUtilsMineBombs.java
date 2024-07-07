@@ -704,24 +704,24 @@ public class PrisonUtilsMineBombs
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
-				MineBombData bomb = null;
+				MineBombData bomb = mBombs.findBombByName(bombName);
 				
-				// Remove color codes from bomb's name for matching:
-				bombName = Text.stripColor( bombName );
-				
-				Set<String> keys = mBombs.getConfigData().getBombs().keySet();
-				for ( String key : keys ) {
-					MineBombData mbd = mBombs.getConfigData().getBombs().get( key );
-					String cleanedBombName = Text.stripColor( mbd.getName() );
-					if ( cleanedBombName.equalsIgnoreCase( bombName ) ) {
-						bomb = mbd;
-						break;
-					}
-				}
+//				// Remove color codes from bomb's name for matching:
+//				bombName = Text.stripColor( bombName );
+//				
+//				Set<String> keys = mBombs.getConfigData().getBombs().keySet();
+//				for ( String key : keys ) {
+//					MineBombData mbd = mBombs.getConfigData().getBombs().get( key );
+//					String cleanedBombName = Text.stripColor( mbd.getName() );
+//					if ( cleanedBombName.equalsIgnoreCase( bombName ) ) {
+//						bomb = mbd;
+//						break;
+//					}
+//				}
 				
 				if ( bomb != null ) {
 					
-					ItemStack bombs = getItemStackBomb( bomb );
+					ItemStack bombs = getItemStackBomb( bomb, player );
 					
 					if ( bombs != null ) {
 						
@@ -837,7 +837,7 @@ public class PrisonUtilsMineBombs
 	}
 	
 	
-	public static ItemStack getItemStackBomb( MineBombData bombData ) {
+	public ItemStack getItemStackBomb( MineBombData bombData, SpigotPlayer player ) {
 		ItemStack sItemStack = null;
 		SpigotItemStack bombs = null;
 //		NBTItem nbtItem = null;
@@ -891,7 +891,10 @@ public class PrisonUtilsMineBombs
 			if ( sItemStack != null ) {
 				
 				// Set the NBT String key-value pair:
-				PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+				PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_KEY, bombData.getName() );
+				PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID, player.getUUID().toString() );
+				
+				
 //				nbtItem = new NBTItem( sItemStack, true );
 //				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
 
@@ -942,9 +945,9 @@ public class PrisonUtilsMineBombs
 		
 		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
-		if ( itemInHand != null && itemInHand.hasNBTKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
+		if ( itemInHand != null && itemInHand.hasNBTKey( MineBombs.MINE_BOMBS_NBT_KEY ) ) {
 			
-			String bombName = itemInHand.getNBTString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+			String bombName = itemInHand.getNBTString( MineBombs.MINE_BOMBS_NBT_KEY );
 			
 			bomb = getBombItem( bombName );
 		}
@@ -1035,7 +1038,8 @@ public class PrisonUtilsMineBombs
 					// Set cooldown:
 					addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
 					
-					SpigotItemStack bombs = new SpigotItemStack( PrisonUtilsMineBombs.getItemStackBomb( bomb ));
+					SpigotItemStack bombs = new SpigotItemStack( 
+							getItemStackBomb( bomb, sPlayer ));
 					
 					if ( bombs != null ) {
 						

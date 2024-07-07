@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.game.entity;
 
+import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -26,6 +27,15 @@ public class SpigotArmorStand
 //		
 //		return sArmorStand;
 //	}
+
+	public SpigotArmorStand(Entity entity) {
+		super( ((SpigotEntity) entity).getBukkitEntity() );
+		
+		org.bukkit.entity.Entity bEntity = ((SpigotEntity) entity).getBukkitEntity(); 
+		if ( bEntity instanceof org.bukkit.entity.ArmorStand ) {
+			this.bArmorStand = (org.bukkit.entity.ArmorStand) bEntity;
+		}
+	}
 
 	@Override
 	public boolean isVisible() {

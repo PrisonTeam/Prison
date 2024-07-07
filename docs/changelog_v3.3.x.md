@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Mine bombs: More work on getting the new mine bombs functional and working better.
+Still not perfect and fully working yet, but getting there.**
+
+
+
 * **Rankup: removed dead code.**
 
 
