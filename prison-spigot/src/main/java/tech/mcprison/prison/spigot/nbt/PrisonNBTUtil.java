@@ -99,9 +99,9 @@ public class PrisonNBTUtil {
 				nbt.setString(key, value);
 			});
 				 
-			if ( isEnableDebugLogging() ) {
-				nbtDebugLog( bukkitStack, "setNBTString" );
-			}
+//			if ( isEnableDebugLogging() ) {
+//				nbtDebugLog( bukkitStack, "setNBTString" );
+//			}
 		} 
 		catch (Exception e) {
 			Output.get().logInfo(
@@ -139,9 +139,9 @@ public class PrisonNBTUtil {
 				nbt.setBoolean(key, value);
 			});
 			
-			if ( isEnableDebugLogging() ) {
-				nbtDebugLog( bukkitStack, "setNBTBoolean" );
-			}
+//			if ( isEnableDebugLogging() ) {
+//				nbtDebugLog( bukkitStack, "setNBTBoolean" );
+//			}
 		} 
 		catch (Exception e) {
 			Output.get().logInfo(
