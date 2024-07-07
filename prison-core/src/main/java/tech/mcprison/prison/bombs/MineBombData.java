@@ -166,6 +166,11 @@ public class MineBombData
 	private AnimationPattern animationPattern = AnimationPattern.infinity;
 
 	
+	
+	private double throwVelocityLow = 1.5;
+	private double throwVelocityHigh = 3;
+	
+	
 	/**
 	 * <p>On spigot versions that support it, the bomb, when placed, will glow.
 	 * Was introduced with Minecraft 1.9.  Applies only to Entities, of which
@@ -290,6 +295,11 @@ public class MineBombData
 		this.animationPattern = AnimationPattern.infinity;
 //		setAnimationPattern( AnimationPattern.infinity );
 		
+
+		this.throwVelocityLow = 1.5;
+		this.throwVelocityHigh = 3;
+		
+		
 		this.glowing = false;
 		this.gravity = true;
 		
@@ -332,6 +342,10 @@ public class MineBombData
 		cloned.setGravity( isGravity() );
 		
 		cloned.setAnimationPattern( getAnimationPattern() );
+		
+		cloned.setThrowVelocityLow( getThrowVelocityLow() );
+		cloned.setThrowVelocityHigh( getThrowVelocityHigh() );
+		
 		
 		cloned.setItemRemovalDelayTicks( getItemRemovalDelayTicks() );
 		
@@ -410,6 +424,30 @@ public class MineBombData
 					}
 				}
 			}
+		}
+		
+		return results;
+	}
+	
+	
+	/**
+	 * <p>This function calculates the throw velocity based upon a randomly generated 
+	 * value between the 'throwValueVelocityLow' and 'throwVelocityHeigh'.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public double getThrowVelocity() {
+		double results = getThrowVelocityLow();
+		
+		if ( getThrowVelocityLow() != getThrowVelocityHigh() ) {
+			
+			double range = getThrowVelocityLow() < getThrowVelocityHigh() ?
+						getThrowVelocityHigh() - getThrowVelocityLow() :
+						getThrowVelocityLow() - getThrowVelocityHigh();
+			double rnd = Math.random() * range;
+			
+			results += rnd;
 		}
 		
 		return results;
@@ -604,6 +642,20 @@ public class MineBombData
 					animationPattern == null ? 
 							AnimationPattern.infinity : 
 							animationPattern;
+	}
+
+	public double getThrowVelocityLow() {
+		return throwVelocityLow;
+	}
+	public void setThrowVelocityLow(double throwVelocityLow) {
+		this.throwVelocityLow = throwVelocityLow;
+	}
+
+	public double getThrowVelocityHigh() {
+		return throwVelocityHigh;
+	}
+	public void setThrowVelocityHigh(double throwVelocityHigh) {
+		this.throwVelocityHigh = throwVelocityHigh;
 	}
 
 	public boolean isAutosell() {
