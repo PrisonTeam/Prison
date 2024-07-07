@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Ranks: Fixed some issues with the newer formatting of the player files.**
+Had an issue with using a rank name for a ladder name, which resulted in player's ranks from getting reset since the player had zero ranks due to incorrect mappings to ladders.
+
+
 * **Mine bombs: throwing.  Setup the first pass with throwing mine bombs.**
 This is not fully functioning yet, but it's getting closer.
 

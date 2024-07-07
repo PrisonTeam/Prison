@@ -67,7 +67,7 @@ public class RankPlayerFactory
 	        		String json = rankObj.toString();
 	        		RankPlayerFactoryDataRank rData = jfIO.fromString( json, RankPlayerFactoryDataRank.class );
 	        		if ( rData != null ) {
-	        			rankPlayer.getRanksRefs().put( key, rData.getRankId() );
+	        			rankPlayer.getRanksRefs().put( rData.getLadderName(), rData.getRankId() );
 	        		}
 	        	}
 	        	
@@ -202,7 +202,11 @@ public class RankPlayerFactory
 	        	RankPlayerFactoryDataRank rData = new RankPlayerFactoryDataRank( 
 	        			rank.getRank().getName(), ladder.getName(), rank.getRank().getId() );
 //	        	String json = jfIO.toString( rData );
-	        	playerRanks.put( rData.getRankName(), rData.getJsonObject() );
+	        	
+	        	playerRanks.put( rData.getLadderName(), rData.getJsonObject() );
+
+	        	// The key must be ladder name:
+//	        	playerRanks.put( rData.getRankName(), rData.getJsonObject() );
 			}
 	        
 	        ret.put("ranks", playerRanks );

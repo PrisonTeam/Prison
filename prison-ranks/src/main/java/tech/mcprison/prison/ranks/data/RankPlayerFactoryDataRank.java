@@ -30,6 +30,19 @@ public class RankPlayerFactoryDataRank {
 		return results;
 	}
 	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("Rank: ")
+			.append(getRankName())
+			.append(" ")
+			.append(getRankId())
+			.append(" Ladder: ")
+			.append(getLadderName());
+		
+		return sb.toString();
+	}
+	
 	public String getRankName() {
 		return rankName;
 	}

@@ -479,7 +479,6 @@ public class PlayerManager
     		// Player is auto added if they do not exist when calling getPlayer so don't try to
     		// add them a second time.
     		RankPlayer rPlayer = player.getRankPlayer();
-//    		RankPlayer rPlayer = getPlayer(player.getUUID(), player.getName());
     		
     		rPlayer.doNothing();
     	}
