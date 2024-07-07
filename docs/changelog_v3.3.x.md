@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **NBT library: Some adjustments to make the code more "correct".**
+This does not work with entities, since you can write a value to the entity, but you cannot read it. 
+ItemStacks do work fine.   
+
+
 * **Mine bomb animations:  Throw velocity.**
 Added support for throw velocity by providing a low and high range, which will randomly select a value between those points.  This provides for a variation in throw speed to keep it challenging.
 

@@ -48,7 +48,14 @@ public class PrisonNBTUtil {
 		String results = null;
 		
 		try {
-			Function<ReadableItemNBT, String> gsFnc = nbt -> nbt.getString(key);
+			Function<ReadableItemNBT, String> gsFnc = nbt -> {
+				String value = (String) nbt.getString(key);
+				
+//				if ( Output.get().isDebug() ) {
+//					Output.get().logInfo( "PrisonNBTUtil.getNBTString():ItemStack: %s", nbt.toString() );
+//				}
+				return value;
+			};
 			
 			results = NBT.get(bukkitStack, gsFnc );
 //			results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
@@ -68,7 +75,7 @@ public class PrisonNBTUtil {
 		String results = null;
 		
 		try {
-			Function<ReadableNBT, String> gsFnc = nbt -> nbt.getString(key);
+			Function<ReadableNBT, String> gsFnc = nbt -> (String) nbt.getString(key);
 			
 			BlockState blockState = bukkitBlock.getState();
 			
@@ -158,9 +165,15 @@ public class PrisonNBTUtil {
 		String results = null;
 		
 		try {
-			Function<ReadableNBT, String> gsFnc = nbt -> nbt.getString(key);
+			results = NBT.get(entity, nbt -> { 
+				
+			String value = (String) nbt.getString(key);
+			return value;
+		});
 			
-			results = NBT.get(entity, gsFnc );
+//			Function<ReadableNBT, String> gsFnc = nbt -> (String) nbt.getString(key);
+			
+//			results = NBT.get(entity, gsFnc );
 //			results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
 		}
 		catch (Exception e) {
