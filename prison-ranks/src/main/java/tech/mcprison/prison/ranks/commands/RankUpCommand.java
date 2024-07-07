@@ -874,10 +874,10 @@ public class RankUpCommand
     	Player player = getPlayer( sender, playerName );
     	UUID playerUuid = player.getUUID();
     	
-    	if (player == null) {
-    		ranksPromotePlayerMustBeOnlineMsg( sender );
-    		return;
-    	}
+//    	if (player == null) {
+//    		ranksPromotePlayerMustBeOnlineMsg( sender );
+//    		return;
+//    	}
     	
     	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     	RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );

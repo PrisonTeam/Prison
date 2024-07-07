@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Rankup: removed dead code.**
+
+
 * **NBT library: Some adjustments to make the code more "correct".**
 This does not work with entities, since you can write a value to the entity, but you cannot read it. 
 ItemStacks do work fine.   
