@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-06
 
 
+* **Mine Bomb Animations: More changes to fix more issues with the mine bombs in general, and the animations.**
+These major changes has broke many things, so they are being hooked up little by little as each part is tested.
+
+
 * **RankPlayer: Updated how some classes uses the RankPlayer object**, and how it gets it, to help improve the code by simplifying it, and helping to ensure it's accurate.
 Also updated some of the comments in the PlayerManager.
 

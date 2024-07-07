@@ -3,35 +3,25 @@ package tech.mcprison.prison.bombs.animations;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.internal.ArmorStand;
-import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Location;
 
-public class BombAnimationInfinity
+public class BombAnimationNone
 		extends BombAnimations {
 
-	
-	private double eulerAngleX = 1.0;
-	private double eulerAngleY = 0;
-	private double eulerAngleZ = 0;
-	
-	private double twoPI;
-	
 	private ArmorStand armorStand;
 
 	private float entityYaw;
 	private float entityPitch;
 	
-
 	
-	
-	public BombAnimationInfinity( MineBombData bomb, 
-									PrisonBlock sBombBlock, ItemStack item,
-									BombAnimationsTask task,
-									float entityYaw, float entityPitch ) {
+	public BombAnimationNone( MineBombData bomb, 
+								PrisonBlock sBombBlock, ItemStack item,
+								BombAnimationsTask task,
+								float entityYaw, float entityPitch ) {
 		super( bomb, sBombBlock, item, task );
 			
 		this.entityYaw = entityYaw;
@@ -39,13 +29,8 @@ public class BombAnimationInfinity
 		
 		initialize();
 	}
-
-
 	
 	public void initialize() {
-		
-		this.twoPI = Math.PI * 2;
-		
 		
 		initializeArmorStand();
 	}
@@ -59,13 +44,6 @@ public class BombAnimationInfinity
 		location.setPitch( entityPitch + 90 );
 		
 		
-		double startingAngle = ( 360d / entityYaw ) * twoPI;
-		
-//		eulerAngleX += startingAngle;
-		
-		EulerAngle arm = new EulerAngle( eulerAngleX + startingAngle, eulerAngleY + startingAngle, eulerAngleZ + startingAngle );
-		
-		
 		armorStand = location.spawnArmorStand();
 		
 		armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
@@ -75,10 +53,10 @@ public class BombAnimationInfinity
 			armorStand.setVisible(false);
 			armorStand.setRemoveWhenFarAway(false);
 			armorStand.setItemInHand( getItem() );
-			armorStand.setRightArmPose(arm);
+			//armorStand.setRightArmPose(arm);
 			
 			
-			if ( initializeCustomName() && getId() == 1 ) {
+			if ( initializeCustomName() ) {
 				
 				//updateArmorStandCustomName();
 				armorStand.setCustomName( getTagName() );
@@ -114,29 +92,6 @@ public class BombAnimationInfinity
 	@Override
 	public void step()
 	{
-		
-		double speed = 0.35;
-		
-		eulerAngleX += speed;
-		eulerAngleY += speed / 3;
-		eulerAngleZ += speed / 5;
-		
-		
-		EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
-		
-		armorStand.setRightArmPose(arm);
-		
-		
-		if ( eulerAngleX > twoPI ) {
-			eulerAngleX -= twoPI;
-		}
-		if ( eulerAngleY > twoPI ) {
-			eulerAngleY -= twoPI;
-		}
-		if ( eulerAngleZ > twoPI ) {
-			eulerAngleZ -= twoPI;
-		}
-		
 
 		// Track the time that this has lived:
 		if ( --terminateOnZeroTicks == 0 || !armorStand.isValid() ) {
@@ -149,5 +104,6 @@ public class BombAnimationInfinity
 		updateCustomName();
 		
 	}
+
 
 }

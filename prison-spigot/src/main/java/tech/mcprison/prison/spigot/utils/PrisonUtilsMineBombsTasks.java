@@ -22,7 +22,6 @@ import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionOrientation;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
-import tech.mcprison.prison.bombs.animations.BombAnimationsTask;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
@@ -438,27 +437,43 @@ public class PrisonUtilsMineBombsTasks
 		return results;
 	}
 	
-	public BombAnimationsTask submitPlacedMineBombItemTask( MineBombData bomb, SpigotBlock sBlock, SpigotItemStack item ) {
-		
-		
-		
-		// This setups the animations that are assigned to each bomb type and 
-		// will submit the tasks, unless no animations are chosen.
-		BombAnimationsTask animationsTask = new BombAnimationsTask();
-		
-		animationsTask.animatorFactory( bomb, sBlock, item );
-		
-		return animationsTask;
-		
-//		PlacedMineBombItemTask placedTask = new PlacedMineBombItemTask( bomb, sBlock, item );
+	
+	// NOT USED:
+//	public BombAnimationsTask submitPlacedMineBombItemTask( SpigotPlayer sPlayer,
+//					MineBombData bomb, 
+//					SpigotBlock sBlock, SpigotItemStack item ) {
 //		
-//		BukkitTask task = placedTask.runTaskTimer( 
-//				SpigotPrison.getInstance(), 1, 1 );
 //		
-//		placedTask.setBukkitTask( task );
-		
-//		return placedTask;
-	}
+//		
+//		final SpigotBlock sBombBlock = sBlock;
+//		MineBombDetonateTask detonateBomb = new MineBombDetonateTask() {
+//
+//			@Override
+//			public void runDetonation() {
+//				
+//				// Submit the bomb's task to go off:
+//				setoffBombDelayed( sPlayer, bomb, sBombBlock );
+//			}
+//		};
+//		
+//		
+//		// This setups the animations that are assigned to each bomb type and 
+//		// will submit the tasks, unless no animations are chosen.
+//		BombAnimationsTask animationsTask = new BombAnimationsTask();
+//		
+//		animationsTask.animatorFactory( bomb, sBlock, item, detonateBomb );
+//		
+//		return animationsTask;
+//		
+////		PlacedMineBombItemTask placedTask = new PlacedMineBombItemTask( bomb, sBlock, item );
+////		
+////		BukkitTask task = placedTask.runTaskTimer( 
+////				SpigotPrison.getInstance(), 1, 1 );
+////		
+////		placedTask.setBukkitTask( task );
+//		
+////		return placedTask;
+//	}
 	
 //	public class PlacedMineBombItemTask 
 //		extends BukkitRunnable

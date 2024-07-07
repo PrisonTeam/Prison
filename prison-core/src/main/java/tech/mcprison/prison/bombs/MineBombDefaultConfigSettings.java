@@ -212,7 +212,7 @@ public class MineBombDefaultConfigSettings {
 				mbd.setNameTag( "&7A &2Wimpy &cBomb" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
-				mbd.setRadiusInner( 2 );
+				mbd.setRadiusInner( 1 );
 				mbd.setDescription("A whimpy bomb made with gunpowder and packs the punch of a " +
 						"dull wooden pickaxe. For some reason, it only has a 40% chance of removing " +
 						"a block.");

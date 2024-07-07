@@ -10,6 +10,8 @@ import tech.mcprison.prison.util.Text;
 
 public abstract class BombAnimations {
 	
+	private int id;
+	
 	private BombAnimationsTask task;
 	
 	private MineBombData bomb;
@@ -32,8 +34,10 @@ public abstract class BombAnimations {
 			BombAnimationsTask task ) {
 		super();
 		
-		// Used for "canceling" the task:
+		// Used for "canceling" and detonating the task:
 		this.task = task;
+		
+		setId( getTask().getAnimators().size() );
 		
 		this.bomb = bomb;
 		this.sBlock = sBombBlock;
@@ -114,7 +118,13 @@ public abstract class BombAnimations {
 		}
 	}
 
-
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public BombAnimationsTask getTask() {
 		return task;
 	}

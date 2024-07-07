@@ -22,6 +22,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombDetonateTask;
 import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
 import tech.mcprison.prison.bombs.MineBombs;
@@ -1137,18 +1138,28 @@ public class PrisonUtilsMineBombs
 						}
 
 
-						
-						
 						// Apply updates to the player's inventory:
 						sPlayer.updateInventory();
+						
+						
 					
+						final SpigotBlock sBombBlock = bombBlock;
+						MineBombDetonateTask detonateBomb = new MineBombDetonateTask() {
+
+							@Override
+							public void runDetonation() {
+								
+								// Submit the bomb's task to go off:
+								setoffBombDelayed( sPlayer, bomb, sBombBlock );
+							}
+						};
 						
 						
 						// This setups the animations that are assigned to each bomb type and 
 						// will submit the tasks, unless no animations are chosen.
 						BombAnimationsTask animationsTask = new BombAnimationsTask();
 						
-						animationsTask.animatorFactory( bomb, bombBlock, itemInHand );
+						animationsTask.animatorFactory( bomb, bombBlock, itemInHand, detonateBomb );
 						
 
 						
@@ -1183,7 +1194,7 @@ public class PrisonUtilsMineBombs
 						
 						// Submit the bomb's task to go off:
 						
-						//setoffBombDelayed( sPlayer, bomb, bombBlock );
+//						setoffBombDelayed( sPlayer, bomb, bombBlock );
 						
 						
 						

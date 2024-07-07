@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombDetonateTask;
 import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -18,8 +19,15 @@ public class BombAnimationsTask
 	
 	private List<BombAnimations> animators;
 	
+	private MineBombDetonateTask detonateBomb;
+	
+	private boolean detonated = false;
+	private Object detonationLock;
+	
 	public BombAnimationsTask() {
 		super();
+		
+		this.detonationLock = new Object();
 		
 		this.animators = new ArrayList<>();
 	}
@@ -27,7 +35,11 @@ public class BombAnimationsTask
 	
 	public void animatorFactory( 
 			// AnimationPattern animation, 
-			MineBombData bomb, PrisonBlock pBlock, ItemStack item ) {
+			MineBombData bomb, PrisonBlock pBlock, 
+			ItemStack item, MineBombDetonateTask detonateBomb ) {
+		
+		this.detonateBomb = detonateBomb;
+		
 		
 		AnimationPattern animation = bomb.getAnimationPattern();
 		
@@ -54,11 +66,11 @@ public class BombAnimationsTask
 			float yaw = 0;
 			float pitch = 0;
 			
-			BombAnimationInfinity bai = new BombAnimationInfinity( bomb, 
+			BombAnimationInfinity ba = new BombAnimationInfinity( bomb, 
 					pBlock, item, this, 
 					yaw, pitch );
 			
-			getAnimators().add( bai );
+			getAnimators().add( ba );
 			submitTask();
 		}
 			
@@ -71,11 +83,11 @@ public class BombAnimationsTask
 			float yawStep = 360f / 8f;
 			
 			for ( int i = 0; i < 8; i++ ) {
-				BombAnimationInfinity bai = new BombAnimationInfinity( bomb, 
+				BombAnimationInfinity ba = new BombAnimationInfinity( bomb, 
 						pBlock, item, this, 
 						yaw, pitch );
 				
-				getAnimators().add( bai );
+				getAnimators().add( ba );
 				
 				yaw += yawStep;
 			}
@@ -87,10 +99,25 @@ public class BombAnimationsTask
 			
 			
 		case none:
+		{
+			float yaw = 0;
+			float pitch = 0;
+			
+			BombAnimationNone ba = new BombAnimationNone( bomb, 
+					pBlock, item, this, 
+					yaw, pitch );
+			
+			getAnimators().add( ba );
+			submitTask();
+		}
+		
 		default:
 			// Do nothing... do not submit task to run.
 			break;
 		}
+		
+		
+		detonateBomb();
 	}
 	
 	private void submitTask() {
@@ -101,6 +128,23 @@ public class BombAnimationsTask
 
 	protected void cancel() {
 		PrisonTaskSubmitter.cancelTask( getTaskId() );
+	}
+	
+	private void detonateBomb() {
+		
+		// Need to  use a multi-layered synchronized lock since there may be
+		// many animations ending at the same time, and we only want one to 
+		// trigger the detonation.
+		if ( !detonated ) {
+			synchronized ( detonationLock ) {
+				if ( !detonated ) {
+					detonated = true;
+					
+					// Detonate the bomb using the callback:
+					detonateBomb.runDetonation(); 
+				}
+			}
+		}
 	}
 	
 
