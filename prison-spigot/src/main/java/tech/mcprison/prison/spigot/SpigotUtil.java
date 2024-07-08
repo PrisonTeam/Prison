@@ -1045,9 +1045,16 @@ public class SpigotUtil {
     }
 
     public static org.bukkit.Location prisonLocationToBukkit(Location prisonLocation) {
-        return new org.bukkit.Location(Bukkit.getWorld(prisonLocation.getWorld().getName()),
-            prisonLocation.getX(), prisonLocation.getY(), prisonLocation.getZ(),
-            prisonLocation.getYaw(), prisonLocation.getPitch());
+        org.bukkit.Location loc = new org.bukkit.Location(
+        			Bukkit.getWorld(prisonLocation.getWorld().getName()),
+		            prisonLocation.getX(), prisonLocation.getY(), prisonLocation.getZ(),
+		            prisonLocation.getYaw(), prisonLocation.getPitch() );
+        
+        Vector v = prisonLocation.getDirection();
+        org.bukkit.util.Vector vec = new org.bukkit.util.Vector( v.getX(), v.getY(), v.getZ() );
+        loc.setDirection( vec );
+        
+        return loc;
     }
 
   /*
@@ -1055,7 +1062,7 @@ public class SpigotUtil {
    */
 
     public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack) {
-;    	SpigotItemStack results = null;
+    	SpigotItemStack results = null;
     	
     	if ( bukkitStack != null ) {
     		try {

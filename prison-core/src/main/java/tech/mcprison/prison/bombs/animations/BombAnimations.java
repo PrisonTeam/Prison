@@ -4,8 +4,14 @@ import java.text.DecimalFormat;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombs;
+import tech.mcprison.prison.internal.ArmorStand;
+import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
+import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 public abstract class BombAnimations {
@@ -18,12 +24,23 @@ public abstract class BombAnimations {
 	private PrisonBlock sBlock;
 	private ItemStack item;
 	
-	
+	private String customName;
 	private boolean isDyanmicTag = false;
 	private String tagName;
 
 //	long ageTicks = 0L;
 	long terminateOnZeroTicks = 0L;
+	
+	private ArmorStand armorStand;
+	
+	private double eulerAngleX = 1.0;
+	private double eulerAngleY = 0;
+	private double eulerAngleZ = 0;
+	
+	private double twoPI;
+	
+	private float entityYaw;
+	private float entityPitch;
 	
 	private DecimalFormat dFmt;
 	
@@ -31,7 +48,9 @@ public abstract class BombAnimations {
 	public BombAnimations( MineBombData bomb, 
 			PrisonBlock sBombBlock, 
 			ItemStack item,
-			BombAnimationsTask task ) {
+			BombAnimationsTask task,
+			float entityYaw, 
+			float entityPitch ) {
 		super();
 		
 		// Used for "canceling" and detonating the task:
@@ -46,22 +65,117 @@ public abstract class BombAnimations {
 //		this.ageTicks = 0;
 		this.terminateOnZeroTicks = getTaskLifeSpan();
 
-		this.isDyanmicTag = bomb.getNameTag().contains( "{countdown}" );
+		this.isDyanmicTag = bomb.getNameTag() != null &&
+							bomb.getNameTag().contains( "{countdown}" );
 		this.tagName = "";
 		
-		this.dFmt = Prison.get().getDecimalFormat( "0.0" );
+
+		this.entityYaw = entityYaw;
+		this.entityPitch = entityPitch;
 		
-		// initialize();
+		this.twoPI = Math.PI * 2;
+		
+		this.dFmt = Prison.get().getDecimalFormat( "0.0" );
+
+		initialize();
 	}
 	
 	protected void cancel() {
 		task.cancel();
 	}
 	
-	public abstract void initialize();
+	public void initialize() {
+		
+		Location location = getsBlock().getLocation();
+		location.setY( location.getY() + 3 );
+		
+		location.setYaw( entityYaw );
+		location.setPitch( entityPitch + 90 );
+		
+		
+		double startingAngle = ( 360d / entityYaw ) * twoPI;
+		
+		// eulerAngleX += startingAngle;
+		
+		EulerAngle arm = new EulerAngle( 
+						eulerAngleX + startingAngle, 
+						eulerAngleY + startingAngle, 
+						eulerAngleZ + startingAngle );
+		
+		
+		armorStand = location.spawnArmorStand();
+		
+		if ( armorStand != null ) {
+			
+			armorStand.setVisible(false);
+			
+			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
+			
+			armorStand.setRightArmPose(arm);
+			armorStand.setItemInHand( getItem() );
+			
+			armorStand.setCustomNameVisible( getId() == 0 && initializeCustomName() );
+			armorStand.setRemoveWhenFarAway(false);
+			
+			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+				
+				armorStand.setGlowing( getBomb().isGlowing() );
+				
+				// setGravity is invalid for spigot 1.8.8:
+				armorStand.setGravity( getBomb().isGravity() );
+			}
+		}
+		
+		if ( Output.get().isDebug() ) {
+			String msg = String.format( 
+					"### BombAnimation.initializeArmorStand : id: %s  %s ", 
+					Integer.toString(getId()),
+					bomb.getAnimationPattern().name()
+					);
+			
+			Output.get().logInfo( msg );
+		}
+	}
+
+
+	public abstract void stepAnimation();
 	
-	
-	public abstract void step();
+	public void step() {
+		stepAnimation();
+		
+		if ( eulerAngleX > twoPI ) {
+			eulerAngleX -= twoPI;
+		}
+		else if ( eulerAngleX < -twoPI ) {
+			eulerAngleX += twoPI;
+		}
+		if ( eulerAngleY > twoPI ) {
+			eulerAngleY -= twoPI;
+		}
+		else if ( eulerAngleY < -twoPI ) {
+			eulerAngleY += twoPI;
+		}
+		if ( eulerAngleZ > twoPI ) {
+			eulerAngleZ -= twoPI;
+		}
+		else if ( eulerAngleZ < -twoPI ) {
+			eulerAngleZ += twoPI;
+		}
+		
+		// Track the time that this has lived:
+		if ( --terminateOnZeroTicks == 0 || !armorStand.isValid() ) {
+			
+			armorStand.remove();
+			
+			cancel();
+		}
+		
+		if ( getId() == 0 ) {
+			
+			updateCustomName();
+		}
+		
+	}
 	
 	
 	/**
@@ -93,16 +207,34 @@ public abstract class BombAnimations {
 	protected boolean initializeCustomName() {
 		boolean results = false;
 	
-		if ( getBomb().getNameTag() != null && 
-				!getBomb().getNameTag().trim().isEmpty() ) {
-			
-			String tagName = getBomb().getNameTag();
-			if ( tagName.contains( "{name}" ) ) {
-				tagName = tagName.replace( "{name}", getBomb().getName() );
-			}
-			setTagName( Text.translateAmpColorCodes( tagName ) );
-		}
+		String tName = null;
+		
+		if ( getBomb().getNameTag() == null || 
+				getBomb().getNameTag().trim().isEmpty() ) {
 
+			tName = getBomb().getName();
+		}
+		else {
+			
+			tName = getBomb().getNameTag();
+			if ( tName.contains( "{name}" ) ) {
+				tName = tName.replace( "{name}", getBomb().getName() );
+			}
+		}
+		
+		if ( tName != null ) {
+			
+			tName = Text.translateAmpColorCodes( tName );
+			
+			setTagName( tName );
+			setCustomName( tName );
+			armorStand.setCustomName( tName );
+			
+			updateCustomName();
+
+			results = true;
+		}
+		
 		return results;
 	}
 
@@ -111,9 +243,13 @@ public abstract class BombAnimations {
 		if ( isDyanmicTag ) {
 		
 			double countdown = (terminateOnZeroTicks / 20.0d);
-			String tagName = this.tagName.replace( "{countdown}", dFmt.format( countdown) );
+			String cName = getTagName().replace( "{countdown}", dFmt.format( countdown) );
 			
-			setTagName( tagName );
+			setCustomName( cName );
+			
+			armorStand.setCustomName( cName );
+			
+//			setTagName( tagName );
 //			armorStand.setCustomName( tagName );
 		}
 	}
@@ -160,6 +296,13 @@ public abstract class BombAnimations {
 		this.isDyanmicTag = isDyanmicTag;
 	}
 
+	public String getCustomName() {
+		return customName;
+	}
+	public void setCustomName(String customName) {
+		this.customName = customName;
+	}
+
 	public String getTagName() {
 		return tagName;
 	}
@@ -172,6 +315,55 @@ public abstract class BombAnimations {
 	}
 	public void setTerminateOnZeroTicks(long terminateOnZeroTicks) {
 		this.terminateOnZeroTicks = terminateOnZeroTicks;
+	}
+
+	public ArmorStand getArmorStand() {
+		return armorStand;
+	}
+	public void setArmorStand(ArmorStand armorStand) {
+		this.armorStand = armorStand;
+	}
+
+	public double getEulerAngleX() {
+		return eulerAngleX;
+	}
+	public void setEulerAngleX(double eulerAngleX) {
+		this.eulerAngleX = eulerAngleX;
+	}
+
+	public double getEulerAngleY() {
+		return eulerAngleY;
+	}
+	public void setEulerAngleY(double eulerAngleY) {
+		this.eulerAngleY = eulerAngleY;
+	}
+
+	public double getEulerAngleZ() {
+		return eulerAngleZ;
+	}
+	public void setEulerAngleZ(double eulerAngleZ) {
+		this.eulerAngleZ = eulerAngleZ;
+	}
+
+	public double getTwoPI() {
+		return twoPI;
+	}
+	public void setTwoPI(double twoPI) {
+		this.twoPI = twoPI;
+	}
+
+	public float getEntityYaw() {
+		return entityYaw;
+	}
+	public void setEntityYaw(float entityYaw) {
+		this.entityYaw = entityYaw;
+	}
+
+	public float getEntityPitch() {
+		return entityPitch;
+	}
+	public void setEntityPitch(float entityPitch) {
+		this.entityPitch = entityPitch;
 	}
 	
 }

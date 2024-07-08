@@ -131,6 +131,8 @@ public class PrisonBombListener
         	
         	if ( bombName != null ) {
         		
+        		// We do not know if the bomb will be in a mine, but we know 
+        		// it's a mine bomb so no other listener should handle it.
         		event.setCancelled( true );
         		
         		MineBombData mineBomb = MineBombs.getInstance().findBombByName(bombName);
@@ -175,6 +177,8 @@ public class PrisonBombListener
         		armorStand.setRemoveWhenFarAway(false);
     			
     			
+        		
+        		
     			// Remove the unused armorStand in 120 seconds:
     			final int taskId = SpigotPrison.getInstance().getScheduler()
     					.runTaskLater( 
@@ -411,7 +415,9 @@ public class PrisonBombListener
 
 
 	/**
-	 * <p>This function will initiate the placement of a mine bomb.
+	 * <p>This function will initiate the placement of a mine bomb. 
+	 * This handles the right-clicking on a block.  This will not
+	 * throw it.
 	 * </p>
 	 * @param event
 	 */
@@ -425,9 +431,8 @@ public class PrisonBombListener
         
 		ItemStack iStack = event.getItem();
     	
-        if ( iStack != null && (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || 
-        		event.getAction().equals(Action.RIGHT_CLICK_AIR)) && 
-        		event.getItem() != null && event.getItem().getType() != Material.AIR ) {
+        if ( iStack != null && iStack.getType() != Material.AIR &&
+        		event.getAction().equals(Action.RIGHT_CLICK_BLOCK) ) {
         	
         	// If the player is holding a mine bomb, then get the bomb and decrease the
         	// ItemStack in the player's hand by 1:
@@ -531,6 +536,16 @@ public class PrisonBombListener
 		
 		boolean canceled = false;
 		
+		if ( getPrisonUtilsMineBombs().setBombInHand( sPlayer, mineBomb, sBlock, hand ) ) {
+			
+			// The item was a bomb and it was activated.
+			// Cancel the event so the item will not be placed or processed farther.
+			
+//    		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 Bomb detected - May not have been set. " );
+			canceled = true;
+		}
+		
+		
 		
 //        	// Temp test stuff... remove when NBTs are working:
 //        	{
@@ -581,27 +596,27 @@ public class PrisonBombListener
 		
 //		Mine mine = getMine(sPlayer, mineBomb, sBlock );
 		
-		if ( mine == null ) {
-			canceled = true;
-		}
-		else {
-			
-			
-			// getHand() is not available with bukkit 1.8.8 so use the compatibility functions:
-//		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
-//        	EquipmentSlot hand = event.getHand();
-			
-//        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
-			if ( getPrisonUtilsMineBombs().setBombInHand( sPlayer, mineBomb, sBlock, hand ) ) {
-				
-				// The item was a bomb and it was activated.
-				// Cancel the event so the item will not be placed or processed farther.
-				
-//        		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 Bomb detected - May not have been set. " );
-				canceled = true;
-//			event.setCancelled( true );
-			}
-		}
+//		if ( mine == null ) {
+//			canceled = false;
+//		}
+//		else {
+//			
+//			
+//			// getHand() is not available with bukkit 1.8.8 so use the compatibility functions:
+////		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+////        	EquipmentSlot hand = event.getHand();
+//			
+////        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
+//			if ( getPrisonUtilsMineBombs().setBombInHand( sPlayer, mineBomb, sBlock, hand ) ) {
+//				
+//				// The item was a bomb and it was activated.
+//				// Cancel the event so the item will not be placed or processed farther.
+//				
+////        		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 Bomb detected - May not have been set. " );
+//				canceled = true;
+////			event.setCancelled( true );
+//			}
+//		}
 		
 		return canceled;
 	}
@@ -628,7 +643,9 @@ public class PrisonBombListener
 			// player is not in a mine, so do not allow them to trigger a mine bomb:
 			
 			if ( Output.get().isDebug() ) {
-				Output.get().logInfo( "MineBombs: Cannot use mine bombs use outside of mines." );
+				String msg = "MineBombs: Cannot use mine bombs use outside of mines.";
+				sPlayer.setActionBar( msg );
+//				Output.get().logInfo( msg );
 			}
 			
 		}
@@ -636,8 +653,11 @@ public class PrisonBombListener
 			// Player does not have access to the mine, so don't allow them to trigger a mine bomb:
 			
 			if ( Output.get().isDebug() ) {
-				Output.get().logInfo( "MineBombs: Player %s&r does not have access to Mine %s&r.",
-						sPlayer.getName(), mine.getName());
+				String msg = String.format(
+						"MineBombs: %s&r, you do not have access to mine %s&r.",
+						sPlayer.getName(), mine.getName() );
+				sPlayer.setActionBar( msg );
+//				Output.get().logInfo( msg );
 			}
 			
 			mine = null;
@@ -657,11 +677,13 @@ public class PrisonBombListener
 					
 					// Mine bombs are not allowed to be used in this mine so cancel:
 					
-					sPlayer.sendMessage( String.format(
-							"&3You cannot use that bomb in this mine.  mine: &7%s  &3bomb: &7%s&r",
-							mine.getTag(),
-							mineBomb.getNameTag()
-							) );
+					String msg = String.format(
+							"&3You cannot use the &7%s &3bomb in mine &7%s.&r",
+							mineBomb.getNameTag(),
+							mine.getTag()
+							);
+					sPlayer.setActionBar( msg );
+//					sPlayer.sendMessage( msg );
 					
 					mine = null;
 				}

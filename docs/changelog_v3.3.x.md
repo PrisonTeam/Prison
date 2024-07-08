@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-07
 
 
+* **Mine bombs: Update and fix some issues with the new mine bomb processing and animations.**
+
+
 * **Prison NBT: removed debug code which was generating a lot of entries in the logs.**
 
 

@@ -263,9 +263,9 @@ public class PrisonUtilsMineBombs
 							+ "&3usedBy: &a%s ",
 							iFmt.format( bounds.getDistance3d() ),
 							id,
-							iFmt.format( l.getBlockX() ),
-							iFmt.format( l.getBlockY() ),
-							iFmt.format( l.getBlockZ() ),
+							dFmt.format( l.getX() ),
+							dFmt.format( l.getY() ),
+							dFmt.format( l.getZ() ),
 							dFmt.format( times ), // age
 							sfx, 
 							status,
@@ -986,7 +986,9 @@ public class PrisonUtilsMineBombs
 
 				
 				if ( Output.get().isDebug() ) {
-					Output.get().logInfo( "getItemStackBombs ntb: %s", PrisonNBTUtil.nbtDebugString(sItemStack) );
+					Output.get().logInfo( "getItemStackBombs ntb: %s", 
+							Text.translateAmpColorCodes( PrisonNBTUtil.nbtDebugString(sItemStack) )
+							 );
 				}
 			}
 			

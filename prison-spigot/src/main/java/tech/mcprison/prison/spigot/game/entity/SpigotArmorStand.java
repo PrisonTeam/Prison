@@ -43,8 +43,19 @@ public class SpigotArmorStand
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
-		bArmorStand.setVisible(visible);
+	public void setVisible( boolean visible ) {
+		bArmorStand.setVisible( visible );
+	}
+	
+	@Override
+	public void setCustomNameVisible( boolean visible ) {
+		bArmorStand.setCustomNameVisible( visible );
+	}
+	
+	@Override
+	public void setCustomName( String customName ) {
+		
+		bArmorStand.setCustomName( customName );
 	}
 
 	@Override
