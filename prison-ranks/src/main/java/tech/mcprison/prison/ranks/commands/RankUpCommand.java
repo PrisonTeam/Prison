@@ -474,7 +474,7 @@ public class RankUpCommand
         	submitCmdTasks( player, cmdTasks );
         }
 		else {
-    		Player player = getPlayer( sender, playerName );
+//    		Player player = getPlayer( sender, playerName );
     		Output.get().logDebug( DebugTarget.rankup, 
     				"Rankup: Failed: cmd '/prestige %s%s'  Does not have the permission %s. [%s]", 
     				(playerName.length() == 0 ? "" : " " + playerName ),

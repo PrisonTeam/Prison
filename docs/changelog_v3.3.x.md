@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-08
 
 
+* **Rankup: removed unused code to eliminate a compile warning.**
+This is a trivial change that has no impact.
+
+
+
 * **Rankup messages: externalized another message related to an economy failure.***
 
 
