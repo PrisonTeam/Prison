@@ -1279,10 +1279,10 @@ public class RankUpCommand
 				break;
 				
 			case RANKUP_FAILURE_ECONOMY_FAILED:
-				// TODO externalize message
-				String msg = "Failed to adjust player's balance. Could be an issue with vault or " +
-						"a cache timing issue. Try again.";
-				sender.sendMessage( results.getRankPlayer().convertStringPlaceholders( msg ) );
+				ranksRankupFailureEconomyFailedMsg( sender, results.getRankPlayer() );
+				//String msg = "Failed to adjust player's balance. Could be an issue with vault or " +
+				//		"a cache timing issue. Try again.";
+				//sender.sendMessage( results.getRankPlayer().convertStringPlaceholders( msg ) );
 				
 				break;
 				

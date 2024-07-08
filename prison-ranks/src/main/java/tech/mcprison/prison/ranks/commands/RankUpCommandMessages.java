@@ -557,6 +557,14 @@ public class RankUpCommandMessages
 				.sendTo( sender, rPlayer );
 	}
 	
+	protected void ranksRankupFailureEconomyFailedMsg( CommandSender sender, 
+			RankPlayer rPlayer ) {
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankup__rankup_economy_failed" )
+		.sendTo( sender, rPlayer );
+	}
+	
 	protected void ranksRankupFailureLadderRemovedMsg( CommandSender sender, 
 			String ladder, 
 			RankPlayer rPlayer ) {
