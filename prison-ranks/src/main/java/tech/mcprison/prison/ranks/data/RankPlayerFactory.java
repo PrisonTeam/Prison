@@ -254,10 +254,11 @@ public class RankPlayerFactory
 	        if ( sPlayer != null && sPlayer.isOnline() ) {
 	        	// If the player is online, get a fresh list of perms:
 	        	perms = sPlayer.getPermissions();
+	        	rankPlayer.setPermsSnapShot(perms);
 	        }
 	        else {
 	        	// Otherwise since the player if offline, then save whatever permsSnapShot is already available:
-	        	rankPlayer.getPermsSnapShot();
+	        	perms = rankPlayer.getPermsSnapShot();
 	        }
 	        ret.put( "permsSnapShot", perms );
 	        

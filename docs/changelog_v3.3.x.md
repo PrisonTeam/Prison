@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-08
 
 
+* **RankPlayer files: minor change to how the permission snap shots are handled to fix a problem where it was not working correctly.**
+When a player was online, it would properly populate the permsSnapShot array with the player's current perm list.  But when they logged off, then it would be cleared.
+This fix ensures that the perms updated and saved, so they can be properly loaded when they are not online.
+
+
 * **Rankup: removed unused code to eliminate a compile warning.**
 This is a trivial change that has no impact.
 
