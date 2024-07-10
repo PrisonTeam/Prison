@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.backups.PrisonSystemSettings;
 import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.internal.Player;
@@ -401,19 +400,19 @@ public abstract class FileIO
     }
     
     
-    /**
-     * <p>This function will check two things.  First will be the config settings within 
-     * 'config.yml' to see if the new format is enabled. Secondly, it checks to see if 
-     * the PrisonSystemSettings has recorded if the conversion has taken place.
-     * Both have to be true in order for this function to return a value of true.,
-     * </p>
-     * 
-     * @return
-     */
-    public static boolean useFriendlyUserFileNames() {
-    	
-    	return PrisonSystemSettings.useFriendlyUserFileNames();
-    }
+//    /**
+//     * <p>This function will check two things.  First will be the config settings within 
+//     * 'config.yml' to see if the new format is enabled. Secondly, it checks to see if 
+//     * the PrisonSystemSettings has recorded if the conversion has taken place.
+//     * Both have to be true in order for this function to return a value of true.,
+//     * </p>
+//     * 
+//     * @return
+//     */
+//    public static boolean useFriendlyUserFileNames() {
+//    	
+//    	return PrisonSystemSettings.useFriendlyUserFileNames();
+//    }
     
     /**
      * Do not use.  Use 'filenameCache( player )'.

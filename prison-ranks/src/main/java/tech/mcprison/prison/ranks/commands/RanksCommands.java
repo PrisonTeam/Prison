@@ -15,7 +15,6 @@ import java.util.Set;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.backups.PrisonSystemSettings;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
@@ -2377,19 +2376,24 @@ public class RanksCommands
     
 	
     
-    @Command(identifier = "prison support updates playerFileNameUpdate", 
-    		description = "&3This command will run a task that will check both the " +
-    					"Player Rank files and the Player Cache files to see if " +
-    					"they are using an old naming format.  If they are, then the " +
-    					"files are renamed to the new format. This command can be " +
-    					"ran multiple times, since nothing will be changed if the " +
-    					"file names have already been converted." +
-    					"{br}" +
-    					"&3Inorder to use the new naming formats, the 'config.yml' must " +
-    					"contain the boolean property " +
-    					"'prison-ranks.use-friendly-user-file-name' with a value of " +
-    					"<b>true</b>. Failure to both set that to a value of true, and " +
-    					"to run this updater may lead to possible player data corruption." +
+    @Command(identifier = "prison support fileNameReports", 
+    		description = "&3This command will run one of two reports that will show "
+    					+ "the old file format on the left, and the new format on the "
+    					+ "right.  This can be useful to lookup players under the old "
+    					+ "file name format. The new report is based upon the user's name "
+    					+ "so as to be visually identifiable to a specific player. " +
+//    		description = "&3This command will run a task that will check both the " +
+//    					"Player Rank files and the Player Cache files to see if " +
+//    					"they are using an old naming format.  If they are, then the " +
+//    					"files are renamed to the new format. This command can be " +
+//    					"ran multiple times, since nothing will be changed if the " +
+//    					"file names have already been converted." +
+//    					"{br}" +
+//    					"&3Inorder to use the new naming formats, the 'config.yml' must " +
+//    					"contain the boolean property " +
+//    					"'prison-ranks.use-friendly-user-file-name' with a value of " +
+//    					"<b>true</b>. Failure to both set that to a value of true, and " +
+//    					"to run this updater may lead to possible player data corruption." +
     					"" +
     					"" +
     					"{br}" +
@@ -2401,13 +2405,22 @@ public class RanksCommands
     					"could result in ambiguous file names where all bedrock players " +
     					"would have the same prefix.  The whole point of only using the " +
     					"first eight hex digits was that they would have still be all " +
-    					"unique.{br}", 
+    					"unique.{br} "
+    					+ "Note: This command was intended originally to provide the conversion "
+    					+ "to the newer file names, but prison was modified to be more intelligent "
+    					+ "in being able to identify which format is being used, and then also "
+    					+ "automatically update each file when saved again. Both old nad new file "
+    					+ "name formats can exist at the same time, especially for players, but "
+    					+ "when their status updates, then the file will be upgraded. If the player "
+    					+ "never logs back on to the system, it will never trigger an update.  So "
+    					+ "use this report to identify players that may not be converted.", 
     				onlyPlayers = false, permissions = "prison.debug" )
     public void supportPlayerFileNameUpdateCmd(CommandSender sender,
-			@Arg(name = "action", def = "status", 
-				description = "Only shows the PrisonSystemStatus for the "
-						+ "'PlayerFileNameUpdate' and will not try to run the "
-						+ "update. Default: 'status'. [status, run, cache, player]") 
+			@Arg(name = "action", def = "player", 
+				description = "Run the player report. Default: 'player'. [cache, player]") 
+//			    description = "Only shows the PrisonSystemStatus for the "
+//			    		+ "'PlayerFileNameUpdate' and will not try to run the "
+//			    		+ "update. Default: 'status'. [status, run, cache, player]") 
     					String action,
 			@Arg(name = "page", def = "1",
 					description = "If a report of 'cache' or 'player', then page is used if there " + 
@@ -2419,35 +2432,35 @@ public class RanksCommands
     	
     	// Get the PrisonSystemSettings for the PlayerFileNameUpdate and format the results:
     	PlayerNewFileNameCheckAsyncTask task = new PlayerNewFileNameCheckAsyncTask();
-    	List<String> msg = task.getStatusDetails();
+//    	List<String> msg = task.getStatusDetails();
     	
-    	boolean useNewFormat = Prison.get().getPlatform()
-				.getConfigBooleanFalse( PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
+//    	boolean useNewFormat = Prison.get().getPlatform()
+//				.getConfigBooleanFalse( PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
     	
 //    	msg.add( "" );
 
-    	sender.sendMessage(msg);
+//    	sender.sendMessage(msg);
     	
     	if ( reportMode == ReportMode.cache || reportMode == ReportMode.players ) {
     		
     		task.playerConverterReport( reportMode, page );
     	}
-    	else if ( reportMode == ReportMode.run ) {
-    		
-    		if ( !useNewFormat ) {
-    			Output.get().logInfo( "&cCommand failure: &aBefore the player file names can be " +
-    					"checked, the setting '&c%s&a' " +
-    					"must be set to '&ctrue&a'.  Once enabled, this can not be " +
-    					"reverted because the player files (Player Ranks and Player Caches) " +
-    					"could be corrupted.",
-    					PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES
-    					);
-    		}
-    		else {
-    			long delayTicks = 0;
-    			PlayerNewFileNameCheckAsyncTask.submitTaskSync( delayTicks );
-    		}
-    	}
+//    	else if ( reportMode == ReportMode.run ) {
+//    		
+//    		if ( !useNewFormat ) {
+//    			Output.get().logInfo( "&cCommand failure: &aBefore the player file names can be " +
+//    					"checked, the setting '&c%s&a' " +
+//    					"must be set to '&ctrue&a'.  Once enabled, this can not be " +
+//    					"reverted because the player files (Player Ranks and Player Caches) " +
+//    					"could be corrupted.",
+//    					PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES
+//    					);
+//    		}
+//    		else {
+//    			long delayTicks = 0;
+//    			PlayerNewFileNameCheckAsyncTask.submitTaskSync( delayTicks );
+//    		}
+//    	}
     	
     }
     
