@@ -108,6 +108,14 @@ public class PrisonCommandTaskData {
 				"{syncPlayer} runs the command as the payer in a new sync task."),
 
 		
+		ifPerm(CommandEnvironment.all_commands, 
+				"{ifPerm:<perm>} Continues executing commands in the chain if "
+				+ "the player has the perm '<perm>'."),
+		ifNotPerm(CommandEnvironment.all_commands, 
+				"{ifNotPerm:<perm>} Stops executing commands in the chain if "
+						+ "the player has the perm '<perm>'."),
+		
+		
 		firstJoin(CommandEnvironment.rank_commands, 
 				"{firstJoin} runs the command on first join events for new players"),
 		promote(CommandEnvironment.rank_commands, 
@@ -432,6 +440,28 @@ public class PrisonCommandTaskData {
 				
 				// was failing with leading spaces after spliting after a ";" so trim to fix it:
 				task = task == null ? "" : task.trim();
+
+				
+				// If the task is '{ifPerm:<perm>}' then the player must have the perm to 
+				// continue:
+				if ( task.toLowerCase().startsWith( "{ifperm:" ) ) {
+					String perm = task.substring( 7, task.length() - 1 );
+					
+					boolean hasPerm = player.hasPermission( perm );
+					
+					if ( !hasPerm ) {
+						break;
+					}
+				}
+				if ( task.toLowerCase().startsWith( "{ifnotperm:" ) ) {
+					String perm = task.substring( 10, task.length() - 1 );
+					
+					boolean hasPerm = player.hasPermission( perm );
+					
+					if ( hasPerm ) {
+						break;
+					}
+				}
 				
 				
 				// Apply the custom placeholders:

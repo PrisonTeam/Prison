@@ -17,6 +17,13 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18b 2024-07-08
 
 
+* **Prison commands: Added two new command placeholders that are globally available to allow control of commands based upon player perms.**
+The new placeholders are '{ifPerm:<perm>}' and '{ifNotPerm:<perm>}' and this will control the execution of all commands that follows those placeholders.
+
+
+* **Disabled the system settings component.**  It posed too much risk for something to go wrong, especially if the config file that it was using was eliminated. Now the server is able to more intelligently deal with file names, and how to auto upgrade them.  This makes it easier on the server, and it helps transition over to the new format for the file names.
+
+
 * **RankPlayer files: minor change to how the permission snap shots are handled to fix a problem where it was not working correctly.**
 When a player was online, it would properly populate the permsSnapShot array with the player's current perm list.  But when they logged off, then it would be cleared.
 This fix ensures that the perms updated and saved, so they can be properly loaded when they are not online.
