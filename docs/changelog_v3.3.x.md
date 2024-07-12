@@ -14,7 +14,34 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18b 2024-07-08
+# 3.3.0-beta.18c 2024-07-09
+
+
+* **3.3.0-beta.18c Beta release - Please read!!**
+I usually do not release beta versions because I do not want to expose anything risky
+to any server. 
+
+The reason why this is a beta release: There are changes to two different player file names that older releases of prison cannot correctly read or access.
+
+
+The reason why this is a beta release: There are changes to two different player file names that older releases of prison cannot correctly read or access.
+
+**Since this is a beta release, use at your own risk.**
+**Please backup your files**, although prison automatically updates all of prison's files when a new version is detected, and
+before starting the new prison version.  Those backups can be found in the `plugins/Prison/backups/`
+folder.
+
+**Please wait and do not use this BETA release if you do not want to risk trying this beta, please wait until the next alpha is released, which will be in about a week or two.****Please wait and do not use this BETA release If you do not want to risk trying this beta, please wait until the next alpha is released, which will be in about a week or two.**
+
+The reason why this is a beta version, is because the file name format for RankPlayer files and the player cache files have changed. Everything is working great, but the catch is that
+this is the first time with prison that you cannot easily rollback to an older version.  It's possible, but you have to manually copy or rename files.
+
+The file names have been changed so the player's name is now part of the file name so its easier to identify which file belongs to each player. This also makes Prison more compatible with bedrock platforms.
+
+Prison is using an intelligent method to identify what the file name is, and it's able to use either the new format, or the old.  Prison also automatically updates the file name to the newer format when the file is saved again.  
+
+This release has been tested for about a week plus on my test servers, and it's proving to be very stable.  But I would like to see a few more users to confirm there isn't an odd combination of settings that are causing issues.  If you encounter any issues, please ping me on discord. You can even DM me directly.
+
 
 
 * **Prison commands: Added two new command placeholders that are globally available to allow control of commands based upon player perms.**
@@ -65,7 +92,7 @@ This is not fully functioning yet, but it's getting closer.
 
 
 
-* **Mine bombs: Fix issue with the printing of the error message with the included json data since it contains non-encoded % signs.  Setup regex comments on them by using: `\Q` and `\E`.***
+* **Mine bombs: Fix issue with the printing of the error message with the included json data since it contains non-encoded % signs.  Setup regex comments on them by using: `\Q` and `\E`.**
 
 
 * **Mine bombs: More work on getting the new mine bombs functional and working better.
