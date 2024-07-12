@@ -14,7 +14,15 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-11
+# 3.3.0-beta.18c 2024-07-12
+
+
+* **Prison command placeholders: Updated the new placeholders for "ifPerm:" and "ifNotPerm" are now working properly.**
+
+
+* **Entity ArmorStands: ArmorStands are now able to spawn as invisible.**
+Before this change you could see an armor stand appear for a fraction of a second before the invisibility kicked in.
+Now armor stands are being spawned elsewhere, set to invisible, then teleported to the intended location.  At the point of teleportation, they would be invisible.
 
 
 * **Prison commands: Added support for new global placeholders: '{ifPerm:<perm>}' and '{ifNotPer:<perm>}'.** More adjustments.

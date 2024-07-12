@@ -464,7 +464,7 @@ public class PrisonCommandTaskData {
 				// If the task is '{ifPerm:<perm>}' then the player must have the perm to 
 				// continue:
 				if ( task.toLowerCase().startsWith( "{ifperm:" ) ) {
-					String perm = task.substring( 7, task.length() - 1 );
+					String perm = task.substring( 8, task.length() - 1 );
 					
 					boolean hasPerm = player.hasPermission( perm );
 					
@@ -473,7 +473,7 @@ public class PrisonCommandTaskData {
 					}
 				}
 				if ( task.toLowerCase().startsWith( "{ifnotperm:" ) ) {
-					String perm = task.substring( 10, task.length() - 1 );
+					String perm = task.substring( 11, task.length() - 1 );
 					
 					boolean hasPerm = player.hasPermission( perm );
 					

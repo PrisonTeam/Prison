@@ -44,6 +44,27 @@ public class PrisonDispatchCommandTask
 				
 				long start = System.nanoTime();
 				
+				// If the task is '{ifPerm:<perm>}' then the player must have the perm to 
+				// continue:
+				if ( task.toLowerCase().startsWith( "{ifperm:" ) ) {
+					String perm = task.substring( 8, task.length() - 1 );
+					
+					boolean hasPerm = player.hasPermission( perm );
+					
+					if ( !hasPerm ) {
+						break;
+					}
+				}
+				if ( task.toLowerCase().startsWith( "{ifnotperm:" ) ) {
+					String perm = task.substring( 11, task.length() - 1 );
+					
+					boolean hasPerm = player.hasPermission( perm );
+					
+					if ( hasPerm ) {
+						break;
+					}
+				}
+				
 				// Apply the custom placeholders:
 				for ( PrisonCommandTaskPlaceholderData cPlaceholder : getCustomPlaceholders() ) {
 					if ( cPlaceholder.contains( task ) ) {
@@ -52,6 +73,7 @@ public class PrisonDispatchCommandTask
 				}
 				
 				try {
+					
 					if ( playerTask && player != null ) {
 //						double start = System.currentTimeMillis();
 						
