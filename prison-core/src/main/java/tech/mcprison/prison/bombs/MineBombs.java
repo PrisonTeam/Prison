@@ -7,6 +7,7 @@ import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
@@ -27,6 +28,8 @@ public class MineBombs
 	
 	
 	private static MineBombs instance;
+	
+	
 	
 	private MineBombsConfigData configData;
 	
@@ -161,6 +164,18 @@ public class MineBombs
 		return results;
 	}
 	
+	public static int checkPlayerCooldown( Player player ) {
+		
+		int cooldownTicks = MineBombCooldownTask.checkPlayerCooldown( player );
+		return cooldownTicks;
+	}
+	
+	public static boolean addPlayerCooldown( Player player, int ticks ) {
+		
+		boolean results = MineBombCooldownTask.addPlayerCooldown( player, ticks );
+		return results;
+	}
+	
 	
 //	/**
 //	 * <p>This finds a bomb with the given name, and returns a clone.  The clone is
@@ -201,9 +216,10 @@ public class MineBombs
 	 * @param bombName
 	 * @return
 	 */
-	public MineBombData findBombByName( String bombName )
+	public MineBombData findBombByName( Player player, String bombName )
 	{
 		MineBombData results = null;
+		
 		
 		String cleanedBombName = Text.stripColor( bombName.toLowerCase() );
 		
@@ -227,9 +243,32 @@ public class MineBombs
 			}
 		}
 		
+		if ( results != null ) {
+
+			int ticks = results.getCooldownTicks();
+			int cooldownTicks = MineBombCooldownTask.checkPlayerCooldown( player );
+			
+			if ( cooldownTicks <= 0 ) {
+				// Submit another cooldown:
+				MineBombCooldownTask.addPlayerCooldown( player, ticks );
+			}
+			else {
+				// The player is still in a cooldown using minebombs, so 
+				// return a null instead of the bomb.
+				
+				//String message = "A mine bomb with the name of %s does not exist.";
+				
+//				player.sendMessage( String.format( message, bombName ) );
+				
+				results = null;
+			}
+		}
+		
 		return results == null ? null : results.clone();
 	}
 	
+
+
 	
 	public void saveConfigJson() {
 		

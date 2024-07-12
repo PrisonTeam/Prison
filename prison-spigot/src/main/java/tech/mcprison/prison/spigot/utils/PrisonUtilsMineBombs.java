@@ -786,7 +786,7 @@ public class PrisonUtilsMineBombs
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
-				MineBombData bomb = mBombs.findBombByName(bombName);
+				MineBombData bomb = mBombs.findBombByName( player, bombName);
 				
 //				// Remove color codes from bomb's name for matching:
 //				bombName = Text.stripColor( bombName );
@@ -1033,18 +1033,21 @@ public class PrisonUtilsMineBombs
 			
 			String bombName = itemInHand.getNBTString( MineBombs.MINE_BOMBS_NBT_KEY );
 			
-			bomb = getBombItem( bombName );
+			SpigotPlayer sPlayer = new SpigotPlayer( player );
+			
+			bomb = MineBombs.getInstance().findBombByName( sPlayer, bombName );
+//			bomb = getBombItem( bombName );
 		}
 		
 		return bomb;
 	}
 	
-	public MineBombData getBombItem( String bombName ) {
-		
-		MineBombData bomb = MineBombs.getInstance().findBombByName( bombName );
-		
-		return bomb;
-	}
+//	public MineBombData getBombItem( tech.mcprison.prison.internal.Player player, String bombName ) {
+//		
+//		MineBombData bomb = MineBombs.getInstance().findBombByName( player, bombName );
+//		
+//		return bomb;
+//	}
 	
 	/**
 	 * <p>This takes a player and checks their main hand to see if it contains a bomb.  
@@ -1111,16 +1114,19 @@ public class PrisonUtilsMineBombs
 				
 //				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				
-				String playerUUID = sPlayer.getUniqueId().toString();
+//				String playerUUID = sPlayer.getUniqueId().toString();
 //				String playerUUID = player.getUniqueId().toString();
 
-				int cooldownTicks = checkPlayerCooldown( playerUUID );
+
+//				int cooldownTicks = MineBombs.checkPlayerCooldown( sPlayer );
 				
-				if ( cooldownTicks == 0 ) {
+//				if ( cooldownTicks <= 0 ) 
+				{
 					
 					
+					// NOTE: cooldown is set when using MineBombs.findBombByName();
 					// Set cooldown:
-					addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
+//					MineBombs.addPlayerCooldown( sPlayer, bomb.getCooldownTicks() );
 					
 					SpigotItemStack bombs = new SpigotItemStack( 
 							getItemStackBomb( bomb, sPlayer ));
@@ -1292,19 +1298,11 @@ public class PrisonUtilsMineBombs
 					}
 				}
 				
-				else {
-					
-					mineBombsCoolDownMsg( sPlayer, cooldownTicks );
-					
-//					float cooldownSeconds = cooldownTicks / 20.0f;
-//					DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0" );
+//				else {
 //					
-//					String message = 
-//							String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
-//									dFmt.format( cooldownSeconds ) );
-//					sPlayer.sendMessage( message );
-					
-				}
+//					mineBombsCoolDownMsg( sPlayer, cooldownTicks );
+//					
+//				}
 				
 			}
 		}

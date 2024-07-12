@@ -2,9 +2,7 @@ package tech.mcprison.prison.spigot.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -35,8 +33,6 @@ import tech.mcprison.prison.util.Location;
 public class PrisonUtilsMineBombsTasks
 	extends PrisonUtils
 {
-	public static final Map<String, Integer> playerCooldowns = new TreeMap<>();
-	
 
 	public PrisonUtilsMineBombsTasks() {
 		super();
@@ -85,67 +81,67 @@ public class PrisonUtilsMineBombsTasks
 	// return addPlayerCooldown( playerUUID, MINE_BOMBS_COOLDOWN_TICKS );
 	// }
 
-	/**
-	 * <p>
-	 * If a cooldown is not setup for the player, this will try to add one and
-	 * will return a value of true to indicate the a cooldown was set. If a
-	 * cooldown already exists, then this will return a value of false.
-	 * </p>
-	 * 
-	 * @param playerUUID
-	 * @param ticks
-	 * @return
-	 */
-	public boolean addPlayerCooldown( String playerUUID, int ticks )
-	{
-		boolean results = false;
-
-		if ( !playerCooldowns.containsKey( playerUUID ) || playerCooldowns.get( playerUUID ) <= 0 )
-		{
-
-			playerCooldowns.put( playerUUID, ticks );
-
-			new BukkitRunnable()
-			{
-
-				@Override
-				public void run()
-				{
-					
-					Integer cooldownTicks = playerCooldowns.get( playerUUID );
-
-					int ticksRemaining = cooldownTicks == null ? 0 : cooldownTicks - 10;
-
-					if ( ticksRemaining <= 0 )
-					{
-						playerCooldowns.remove( playerUUID );
-						this.cancel();
-					}
-					else
-					{
-						playerCooldowns.put( playerUUID, ticksRemaining );
-					}
-
-				}
-			}.runTaskTimer( SpigotPrison.getInstance(), 10, 10 );
-
-			results = true;
-		}
-
-		return results;
-	}
-
-	public static int checkPlayerCooldown( String playerUUID )
-	{
-		int results = 0;
-
-		if ( playerCooldowns.containsKey( playerUUID ) )
-		{
-			results = playerCooldowns.get( playerUUID );
-		}
-
-		return results;
-	}
+//	/**
+//	 * <p>
+//	 * If a cooldown is not setup for the player, this will try to add one and
+//	 * will return a value of true to indicate the a cooldown was set. If a
+//	 * cooldown already exists, then this will return a value of false.
+//	 * </p>
+//	 * 
+//	 * @param playerUUID
+//	 * @param ticks
+//	 * @return
+//	 */
+//	public boolean addPlayerCooldown( String playerUUID, int ticks )
+//	{
+//		boolean results = false;
+//
+//		if ( !playerCooldowns.containsKey( playerUUID ) || playerCooldowns.get( playerUUID ) <= 0 )
+//		{
+//
+//			playerCooldowns.put( playerUUID, ticks );
+//
+//			new BukkitRunnable()
+//			{
+//
+//				@Override
+//				public void run()
+//				{
+//					
+//					Integer cooldownTicks = playerCooldowns.get( playerUUID );
+//
+//					int ticksRemaining = cooldownTicks == null ? 0 : cooldownTicks - 10;
+//
+//					if ( ticksRemaining <= 0 )
+//					{
+//						playerCooldowns.remove( playerUUID );
+//						this.cancel();
+//					}
+//					else
+//					{
+//						playerCooldowns.put( playerUUID, ticksRemaining );
+//					}
+//
+//				}
+//			}.runTaskTimer( SpigotPrison.getInstance(), 10, 10 );
+//
+//			results = true;
+//		}
+//
+//		return results;
+//	}
+//
+//	public static int checkPlayerCooldown( String playerUUID )
+//	{
+//		int results = 0;
+//
+//		if ( playerCooldowns.containsKey( playerUUID ) )
+//		{
+//			results = playerCooldowns.get( playerUUID );
+//		}
+//
+//		return results;
+//	}
 
 	
 	public void submitBombEffects( MineBombData bomb, EffectState effectState, Location location ) {
