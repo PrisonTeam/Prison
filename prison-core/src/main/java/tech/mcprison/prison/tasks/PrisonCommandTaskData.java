@@ -110,10 +110,12 @@ public class PrisonCommandTaskData {
 		
 		ifPerm(CommandEnvironment.all_commands, 
 				"{ifPerm:<perm>} Continues executing commands in the chain if "
-				+ "the player has the perm '<perm>'."),
+				+ "the player has the perm '<perm>'.",
+				"ifPerm:<perm>" ),
 		ifNotPerm(CommandEnvironment.all_commands, 
 				"{ifNotPerm:<perm>} Stops executing commands in the chain if "
-						+ "the player has the perm '<perm>'."),
+						+ "the player has the perm '<perm>'.",
+						"ifNotPerm:<perm>" ),
 		
 		
 		firstJoin(CommandEnvironment.rank_commands, 
@@ -211,14 +213,23 @@ public class PrisonCommandTaskData {
 		
 		private final CommandEnvironment environment;
 		private final String description;
+		private final String exampleUsage;
 		
 		private CustomPlaceholders( CommandEnvironment environment ) {
 			this.environment = environment;
 			this.description = null;
+			this.exampleUsage = null;
 		}
 		private CustomPlaceholders( CommandEnvironment environment, String description ) {
 			this.environment = environment;
 			this.description = description;
+			this.exampleUsage = null;
+		}
+		private CustomPlaceholders( CommandEnvironment environment, String description,
+				String exampleUsage ) {
+			this.environment = environment;
+			this.description = description;
+			this.exampleUsage = exampleUsage;
 		}
 
 		public static String listPlaceholders( CommandEnvironment environment ) {
@@ -248,7 +259,11 @@ public class PrisonCommandTaskData {
 		 * @return
 		 */
 		public String getPlaceholder() {
-			return "{" + name() + "}";
+			return "{" + 
+					( getExampleUsage() != null ? 
+							getExampleUsage() : 
+								name() )
+					 + "}";
 		}
 		
 		public CommandEnvironment getEnvironment() {
@@ -257,6 +272,10 @@ public class PrisonCommandTaskData {
 
 		public String getDescription() {
 			return description;
+		}
+		
+		public String getExampleUsage() {
+			return exampleUsage;
 		}
 	}
 	

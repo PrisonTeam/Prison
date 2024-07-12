@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-11
 
 
+* **Prison commands: Added support for new global placeholders: '{ifPerm:<perm>}' and '{ifNotPer:<perm>}'.** More adjustments.
+
+
 * **Prison backups: updated some of the help text.**
 
 
