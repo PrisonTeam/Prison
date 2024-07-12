@@ -95,5 +95,9 @@ public class TestWorld implements World {
 		return null;
 	}
 
+	@Override
+	public int getMaxHeight() {
+		return 125;
+	}
 
 }

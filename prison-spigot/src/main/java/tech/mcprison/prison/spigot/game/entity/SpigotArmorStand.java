@@ -15,6 +15,8 @@ public class SpigotArmorStand
 	public SpigotArmorStand( org.bukkit.entity.ArmorStand bArmorStand ) {
 		super( bArmorStand );
 		
+		bArmorStand.setVisible( false );
+		
 		this.bArmorStand = bArmorStand;
 	}
 
@@ -29,11 +31,12 @@ public class SpigotArmorStand
 //	}
 
 	public SpigotArmorStand(Entity entity) {
-		super( ((SpigotEntity) entity).getBukkitEntity() );
+		this( (org.bukkit.entity.ArmorStand) ((SpigotEntity) entity).getBukkitEntity() );
 		
 		org.bukkit.entity.Entity bEntity = ((SpigotEntity) entity).getBukkitEntity(); 
 		if ( bEntity instanceof org.bukkit.entity.ArmorStand ) {
 			this.bArmorStand = (org.bukkit.entity.ArmorStand) bEntity;
+			this.bArmorStand.setVisible( false );
 		}
 	}
 

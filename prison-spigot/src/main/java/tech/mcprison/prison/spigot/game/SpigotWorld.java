@@ -284,11 +284,20 @@ public class SpigotWorld
 
 	@Override
 	public ArmorStand spawnArmorStand( Location location ) {
-		Entity e = spawnEntity( location, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
+		
+		int maxHight = location.getWorld().getMaxHeight();
+		
+		Location spawnPoint = new Location( location );
+		spawnPoint.setY(maxHight);
+		
+		Entity e = spawnEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
 		SpigotEntity sEntity = (SpigotEntity) e;
 		
 		org.bukkit.entity.ArmorStand armorStand = (org.bukkit.entity.ArmorStand) sEntity.getBukkitEntity();
+		armorStand.setVisible(false);
 		SpigotArmorStand sArmorStand = new SpigotArmorStand( armorStand );
+		
+		sArmorStand.teleport(location);
 		
 		return sArmorStand;
 	}
@@ -309,6 +318,8 @@ public class SpigotWorld
 	}
 
 
-    
+    public int getMaxHeight() {
+    	return getWrapper().getMaxHeight();
+    }
 
 }
