@@ -14,7 +14,15 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-09
+# 3.3.0-beta.18c 2024-07-11
+
+
+* **Prison backups: updated some of the help text.**
+
+
+* **Mine Bombs: cooldowns.**
+Changed the cooldown handling by moving it to the mine bomb's core and created its own task to run to monitor it.
+Fixed issue with the older version of cooldowns not working properly with throwing the mine bombs.
 
 
 * **3.3.0-beta.18c Beta release - Please read!!**

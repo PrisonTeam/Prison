@@ -2107,7 +2107,9 @@ public class PrisonCommand
     		description = "This will make a backup of all Prison settings by creating a new " +
     				"zip file which will be stored in the directory plugins/Prison/backups.  " +
     				"After creating the backup, this will delete all temp files, backup files, etc.. " +
-    				"since they will be included in the backup.", 
+    				"since they will be included in the backup. This command will backup everything "
+    				+ "under 'plugins/Prison/' except for the directory 'plugins/Prison/backups/'. "
+    				+ "The backups will be placed in the directory 'plugins/Prison/backups/'.", 
     				onlyPlayers = false, permissions = "prison.debug" )
     public void supportBackupPrison( CommandSender sender, 
 
@@ -2127,7 +2129,10 @@ public class PrisonCommand
     
     @Command(identifier = "prison support backup logs", 
     		description = "This will list Prison backup  logs that are in the file "
-    				+ "`plugins/Prison/backup/versions.log`", 
+    				+ "`plugins/Prison/backup/versions.log` The contents of the backup "
+    				+ "logs will be displayed in the console if this command is ran in the "
+    				+ "console. This command should not be ran ingame due to the amount of "
+    				+ "data and the width of the data. ", 
     				onlyPlayers = false, permissions = "prison.debug" )
     public void supportBackupList( CommandSender sender  ) {
     	
