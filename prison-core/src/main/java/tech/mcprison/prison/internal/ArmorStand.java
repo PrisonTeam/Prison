@@ -6,9 +6,10 @@ public interface ArmorStand
 	
 	//public ArmorStand spawn(Location location);
 	
+//	public void setupArmorStand(String itemType);
+//	public void setupArmorStand( ItemStack item );
 
 	public boolean isVisible();
-	
 	public void setVisible( boolean visible );
 	
 	public boolean getRemoveWhenFarAway();
@@ -25,6 +26,14 @@ public interface ArmorStand
 	
 	public boolean hasGravity();
 	public void setGravity( boolean gravity );
-	
-	
+
+	public boolean hasArms();
+	public void setArms( boolean arms );
+
+	public boolean hasBasePlate();
+	public void setBasePlate( boolean basePlate );
+
+	public boolean getCanPickupItems();
+	public void setCanPickupItems( boolean canPickupItems );
+
 }

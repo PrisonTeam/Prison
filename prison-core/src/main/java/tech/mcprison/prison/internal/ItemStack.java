@@ -42,6 +42,9 @@ public class ItemStack {
 //    private Map<Integer, Integer> enchantments;
 
     
+    /**
+     * Do not use this constructor, it is for unit testing.
+     */
     protected ItemStack() {
     	super();
     	
@@ -63,6 +66,13 @@ public class ItemStack {
         this.lore = new ArrayList<>(Arrays.asList(lore));
     }
 
+    public ItemStack( ItemStack iStack ) {
+    	this.displayName = iStack.getDisplayName();
+    	this.amount = iStack.getAmount();
+    	this.material = iStack.getMaterial().clone();
+    	this.lore = new ArrayList<>( iStack.getLore() );
+    }
+    
     /**
      * Returns the name of the item stack, derived from its BlockType name.
      */

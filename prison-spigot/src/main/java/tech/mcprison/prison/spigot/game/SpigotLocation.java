@@ -28,24 +28,41 @@ public class SpigotLocation
 	public org.bukkit.Location getBukkitLocation() {
 		
 		if ( bukkitLocation == null ) {
-			bukkitLocation = createBukkitLocation();
+			bukkitLocation = getBukkitLocation( this );
+//			bukkitLocation = createBukkitLocation();
 		}
 		
 		return bukkitLocation;
 	}
 	
-	private org.bukkit.Location createBukkitLocation() {
+	public static org.bukkit.Location getBukkitLocation( Location location ) {
 		
-		org.bukkit.World world = Bukkit.getWorld( getWorld().getName() );
+		org.bukkit.World world = Bukkit.getWorld( location.getWorld().getName() );
 		
-		org.bukkit.Location bLocation = new org.bukkit.Location(world, getBlockX(), getBlockY(), getBlockZ() );
+		org.bukkit.Location bLocation = new org.bukkit.Location(world, 
+				location.getBlockX(), location.getBlockY(), location.getBlockZ() );
 		
-		bLocation.setYaw(getYaw());
+		bLocation.setYaw( location.getYaw() );
 		
-		bLocation.setPitch(getPitch());
+		bLocation.setPitch( location.getPitch() );
+		
+//		bLocation.;
 		
 		return bLocation;
 	}
+	
+//	private org.bukkit.Location createBukkitLocation() {
+//		
+//		org.bukkit.World world = Bukkit.getWorld( getWorld().getName() );
+//		
+//		org.bukkit.Location bLocation = new org.bukkit.Location(world, getBlockX(), getBlockY(), getBlockZ() );
+//		
+//		bLocation.setYaw(getYaw());
+//		
+//		bLocation.setPitch(getPitch());
+//		
+//		return bLocation;
+//	}
 
 //	public void setBukkitLocation(org.bukkit.Location bukkitLocation) {
 //		this.bukkitLocation = bukkitLocation;

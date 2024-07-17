@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 
 import com.cryptomorin.xseries.XEntityType;
+import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.Entity;
@@ -47,6 +48,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.entity.SpigotArmorStand;
 import tech.mcprison.prison.spigot.game.entity.SpigotEntity;
 import tech.mcprison.prison.spigot.game.entity.SpigotEntityType;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -268,38 +270,119 @@ public class SpigotWorld
 	@Override
 	public Entity spawnEntity( Location location, EntityType entityType) {
 		
+		return new SpigotEntity( spawnBukkitEntity( location, entityType ) );
+	}
+	
+	public org.bukkit.entity.Entity spawnBukkitEntity( Location location, EntityType entityType) {
+		
 		SpigotLocation sLocation =
 				( location instanceof SpigotLocation ? 
-							(SpigotLocation) location : 
+						(SpigotLocation) location : 
 							new SpigotLocation( location ));
 		
 		SpigotEntityType sEtityType = SpigotEntityType.getSpigotEntityType( entityType );
 		
 		org.bukkit.entity.Entity bEntity = 
-					((SpigotWorld) sLocation.getWorld()).getWrapper().spawnEntity( 
-							sLocation.getBukkitLocation(), sEtityType.getbEntityType() );
+				((SpigotWorld) sLocation.getWorld()).getWrapper().spawnEntity( 
+						sLocation.getBukkitLocation(), sEtityType.getbEntityType() );
 		
-		return new SpigotEntity( bEntity );
+		return bEntity;
 	}
 
 	@Override
 	public ArmorStand spawnArmorStand( Location location ) {
+		
+		org.bukkit.entity.ArmorStand armorStand = spawnBukkitArmorStand( location );
+				
+		SpigotArmorStand sArmorStand = new SpigotArmorStand( armorStand );
+		
+		return sArmorStand;
+	}
+	
+	public org.bukkit.entity.ArmorStand spawnBukkitArmorStand( Location location ) {
 		
 		int maxHight = location.getWorld().getMaxHeight();
 		
 		Location spawnPoint = new Location( location );
 		spawnPoint.setY(maxHight);
 		
-		Entity e = spawnEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
-		SpigotEntity sEntity = (SpigotEntity) e;
+//		Entity e = spawnEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
+//		SpigotEntity sEntity = (SpigotEntity) e;
 		
-		org.bukkit.entity.ArmorStand armorStand = (org.bukkit.entity.ArmorStand) sEntity.getBukkitEntity();
+		org.bukkit.entity.Entity bEntity = spawnBukkitEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
+		
+		org.bukkit.entity.ArmorStand armorStand = (org.bukkit.entity.ArmorStand) bEntity;
 		armorStand.setVisible(false);
-		SpigotArmorStand sArmorStand = new SpigotArmorStand( armorStand );
 		
-		sArmorStand.teleport(location);
+		armorStand.teleport( new SpigotLocation( location ).getBukkitLocation() );
 		
-		return sArmorStand;
+//		SpigotArmorStand sArmorStand = new SpigotArmorStand( armorStand );
+		
+//		sArmorStand.teleport(location);
+		
+//		testArmorStandPlacement( spawnPoint );
+		
+		return armorStand;
+	}
+	
+	
+	
+	@Override
+	public ArmorStand spawnArmorStand( Location location, String itemType, 
+				String customName, String nbtKey, String nbtValue ) {
+		
+		int maxHight = location.getWorld().getMaxHeight();
+		
+		Location spawnPoint = new Location( location );
+		spawnPoint.setY(maxHight);
+		
+//		Location spawnPoint = new Location( location );
+//		spawnPoint.setX( spawnPoint.getX() + 2 );
+//		spawnPoint.setZ( spawnPoint.getZ() + 2 );
+		
+		
+		org.bukkit.entity.Entity bEntity = spawnBukkitEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
+		org.bukkit.entity.ArmorStand as = (org.bukkit.entity.ArmorStand) bEntity;
+		
+		as.setVisible( false );
+		as.setCustomNameVisible( true );
+		as.setArms( true );
+		as.setBasePlate( false );
+
+		if ( customName != null ) {
+			as.setCustomName( customName );
+		}
+		
+		
+		if ( nbtKey != null && nbtValue != null ) {
+			
+			PrisonNBTUtil.setNBTString( as, nbtKey, nbtValue );
+		}
+		
+		
+		if ( itemType != null && itemType.trim().length() > 0 ) {
+			
+			XMaterial xMat = XMaterial.matchXMaterial( itemType ).orElse( null );
+			org.bukkit.inventory.ItemStack bItemStack = xMat == null ? null : xMat.parseItem();
+			
+			if ( bItemStack == null ) {
+				
+				bItemStack = XMaterial.COBBLESTONE.parseItem();
+			}
+
+			as.setItemInHand(bItemStack);
+		}
+		
+		
+		as.teleport( SpigotLocation.getBukkitLocation(location) );
+		
+		// as.setSmall( true );
+
+		
+		SpigotArmorStand sas = new SpigotArmorStand( as );
+//		sas.teleport( location );
+		
+		return sas;
 	}
 	
 	/**

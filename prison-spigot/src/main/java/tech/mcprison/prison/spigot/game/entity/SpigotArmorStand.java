@@ -12,10 +12,12 @@ public class SpigotArmorStand
 	
 	private org.bukkit.entity.ArmorStand bArmorStand;
 	
+	private SpigotItemStack sItemStack = null;
+	
 	public SpigotArmorStand( org.bukkit.entity.ArmorStand bArmorStand ) {
 		super( bArmorStand );
 		
-		bArmorStand.setVisible( false );
+		// bArmorStand.setVisible( false );
 		
 		this.bArmorStand = bArmorStand;
 	}
@@ -39,6 +41,58 @@ public class SpigotArmorStand
 			this.bArmorStand.setVisible( false );
 		}
 	}
+	
+//	/**
+//	 * Sets visibility:false, arms:true, basePlate:false, canPickupItems:false, 
+//	 * removeWhenFar:false, gravity:false, and itemInHand.
+//	 */
+//	@Override
+//	public void setupArmorStand( ItemStack item ) {
+//		
+//		if ( item != null ) {
+//			
+//			setVisible( false );
+//			
+//			setArms( true );
+//			setBasePlate( false );
+//			setCanPickupItems( false );
+//			
+//			setItemInHand( item );
+//			
+//			setRemoveWhenFarAway(false);
+//			
+//			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+//				
+//				// setGravity is invalid for spigot 1.8.8:
+//				setGravity( false );
+//			}
+//		}
+//	}
+	
+//	@Override
+//	public void setupArmorStand( String itemType ) {
+//		SpigotItemStack item = null;
+//		
+//		XMaterial xBomb = XMaterial.matchXMaterial( itemType ).orElse( null );
+//		
+//		if ( xBomb != null ) {
+//			try {
+//				
+//				// Create the spigot/bukkit ItemStack:
+//				org.bukkit.inventory.ItemStack bItemStack = xBomb.parseItem();
+//				
+//				if ( sItemStack != null ) {
+//					
+//					item = new SpigotItemStack( bItemStack );
+//				}
+//			} 
+//			catch (PrisonItemStackNotSupportedRuntimeException e) {
+//				// Ignore
+//			}
+//		}
+//		
+//		setupArmorStand( item );
+//	}
 
 	@Override
 	public boolean isVisible() {
@@ -73,13 +127,21 @@ public class SpigotArmorStand
 
 	@Override
 	public ItemStack getItemInHand() {
-		return new SpigotItemStack( bArmorStand.getItemInHand() );
+		return sItemStack;
 	}
 
 	@Override
 	public void setItemInHand(ItemStack item) {
-		SpigotItemStack sItemStack = (SpigotItemStack) item;
-		bArmorStand.setItemInHand( sItemStack.getBukkitStack() );
+		SpigotItemStack sItemStack = 
+				( item instanceof SpigotItemStack ?
+						(SpigotItemStack) item :
+							new SpigotItemStack( item ) );
+				
+		this.sItemStack = sItemStack;
+
+		org.bukkit.inventory.ItemStack bas = sItemStack.getBukkitStack();
+		
+		bArmorStand.setItemInHand( bas );
 	}
 
 	@Override
@@ -110,6 +172,33 @@ public class SpigotArmorStand
 	public void setGravity(boolean gravity) {
 		bArmorStand.setGravity(gravity);
 	}
+
 	
+	@Override
+	public boolean hasArms() {
+		return bArmorStand.hasArms();
+	}
+	@Override
+	public void setArms( boolean arms ) {
+		bArmorStand.setArms( arms );
+	}
+
+	@Override
+	public boolean hasBasePlate() {
+		return bArmorStand.hasBasePlate();
+	}
+	@Override
+	public void setBasePlate( boolean basePlate ) {
+		bArmorStand.setBasePlate( basePlate );
+	}
+
+	@Override
+	public boolean getCanPickupItems() {
+		return bArmorStand.getCanPickupItems();
+	}
+	@Override
+	public void setCanPickupItems( boolean canPickupItems ) {
+		bArmorStand.setCanPickupItems( canPickupItems );
+	}
 	
 }

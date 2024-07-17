@@ -147,6 +147,36 @@ public class SpigotItemStack
     }
     
     
+    
+    public SpigotItemStack( ItemStack iStack) {
+    	super( iStack );
+    	
+    	org.bukkit.inventory.ItemStack bStack = 
+    			( iStack instanceof SpigotItemStack ?
+    					((SpigotItemStack) iStack).getBukkitStack() :
+    						null );
+    	
+    	
+    	if ( bStack == null ) {
+    		
+    		XMaterial xMat =  SpigotCompatibility.getInstance().getXMaterial( getMaterial() );
+    		if ( xMat != null ) {
+    			bStack = xMat.parseItem();
+    		}
+    	}
+    	
+    	if ( bStack != null ) {
+    		
+    		this.bukkitStack = bStack.clone();
+    		
+    		if ( bukkitStack != null ) {
+    			setupBukkitStack( bukkitStack );
+    		}
+    	}
+
+    }
+    
+    
     public void setPrisonBlock( PrisonBlock pBlock ) {
     	
     	String displayName = pBlock.getBlockName();
