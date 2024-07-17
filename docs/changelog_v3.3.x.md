@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-17
 
 
+* **Mine Bombs config settings: updated some of the defaults and added a few new bombs to use the newer animations.**
+
+
 * **Mine Bomb Animations: Added two new animations: bounce and orbital.**
 
 

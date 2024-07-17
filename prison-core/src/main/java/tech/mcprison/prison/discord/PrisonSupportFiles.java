@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import tech.mcprison.prison.Prison;
 
@@ -22,6 +24,8 @@ public class PrisonSupportFiles {
 	private File supportFile;
 
 	private boolean colorMapping = true;
+	
+	private PrisonSupportFileLinkage linkage;
 	
 	public enum ColorMaps {
 		black( "&0", "<span class=\"cc0\">", "</span>" ),
@@ -149,6 +153,8 @@ public class PrisonSupportFiles {
 	private void saveSupportDataToFile( StringBuilder text, String supportName ) {
 		File file = getSupportFile();
 		
+		linkage = new PrisonSupportFileLinkage();
+		
 		try ( 
 				BufferedWriter bw = new BufferedWriter( new FileWriter( file, false )); // create file	
 				) {
@@ -208,7 +214,39 @@ public class PrisonSupportFiles {
 			
 		}
 	}
+
 	
+	
+	private List<String> extractAllHyperlinkPlaceholders( StringBuilder text ) {
+		
+		List<String> hlp = new ArrayList<>();
+		
+		try (
+				BufferedReader br = new BufferedReader( new StringReader( text.toString() ));
+			) {
+			
+			String line = br.readLine();
+			
+			while ( line != null ) {
+				
+				
+				if ( line.startsWith( "||`" ) ) {
+					
+					linkage.addLinkage( line );
+					hlp.add( line );
+				}
+				
+				line = br.readLine();
+			}
+			
+		}
+		catch ( Exception e ) {
+			
+		}
+		
+		return hlp;
+	}
+
 
 	protected String convertColorCodes(String line) {
 		StringBuilder sb = new StringBuilder();

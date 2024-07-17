@@ -206,7 +206,7 @@ public class MineBombDefaultConfigSettings {
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 4, 
+						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 2, 
 							"A Wimpy Mine Bomb&r" );
 //				mbd.setLoreBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
 				
@@ -269,7 +269,7 @@ public class MineBombDefaultConfigSettings {
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"CubeBomb", "SLIME_BLOCK", ExplosionShape.cube.name(), 2, 
+						"CubeBomb", "SLIME_BALL", ExplosionShape.cube.name(), 2, 
 						"A Cubic Bomb&r" );
 				mbd.setDescription("The most anti-round bomb you will ever be able to find. " +
 						"It's totally cubic.&r");
@@ -302,19 +302,16 @@ public class MineBombDefaultConfigSettings {
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"DudBomb", "SLIME_BLOCK", ExplosionShape.disk_x.name(), 1, 
-						"This may be a bomb?&r" );
-				mbd.setDescription("The most anti-round bomb you will ever be able to find. " +
-						"It's totally cubic.&r");
+						"DudNoneBomb", "COAL", ExplosionShape.sphere.name(), 1, 
+						"This is a bomb?&r" );
+				mbd.setDescription("This old bomb is a dud.&r");
 				
-				mbd.setNameTag( "&a-=- &7{name}&a -=--&r" );
+				mbd.setNameTag( "&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
-				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
+				mbd.setToolInHandName( "STONE_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 1 );
-				mbd.setRemovalChance( 10.0d );
-				
-				mbd.setHeight( 5 );
+				mbd.setRemovalChance( 25.0d );
 				
 				mbd.addSoundEffects( mbeSound01.clone() );
 				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
@@ -322,8 +319,6 @@ public class MineBombDefaultConfigSettings {
 				
 				mbd.addVisualEffects( mbeExplode04.clone() );
 				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
-				
-				mbd.setGlowing( false );
 				
 				mbd.setCooldownTicks( 10 );
 				
@@ -335,6 +330,107 @@ public class MineBombDefaultConfigSettings {
 				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
+			
+	
+			
+			{
+				MineBombData mbd = new MineBombData( 
+						"DudBounceBomb", "IRON_INGOT", ExplosionShape.sphere.name(), 1, 
+						"This is a bomb?&r" );
+				mbd.setDescription("This old bomb is a dud.&r");
+				
+				mbd.setNameTag( "&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&r" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
+				
+				mbd.setToolInHandName( "STONE_PICKAXE" );
+				mbd.setToolInHandFortuneLevel( 1 );
+				mbd.setRemovalChance( 25.0d );
+				
+				mbd.addSoundEffects( mbeSound01.clone() );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.addSoundEffects( mbeSound03.clone() );
+				
+				mbd.addVisualEffects( mbeExplode04.clone() );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				
+				mbd.setCooldownTicks( 10 );
+				
+				mbd.setThrowVelocityLow( 0.05 );
+				mbd.setThrowVelocityHigh( 0.5 );
+				
+				
+				mbd.setAnimationPattern( AnimationPattern.bounce );
+				
+				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
+			}
+			
+			
+			
+			{
+				MineBombData mbd = new MineBombData( 
+						"DudOrbitalBomb", "GOLD_INGOT", ExplosionShape.sphere.name(), 1, 
+						"This is a bomb?&r" );
+				mbd.setDescription("This old bomb is a dud.&r");
+				
+				mbd.setNameTag( "&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&r" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
+				
+				mbd.setToolInHandName( "STONE_PICKAXE" );
+				mbd.setToolInHandFortuneLevel( 1 );
+				mbd.setRemovalChance( 25.0d );
+				
+				mbd.addSoundEffects( mbeSound01.clone() );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.addSoundEffects( mbeSound03.clone() );
+				
+				mbd.addVisualEffects( mbeExplode04.clone() );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				
+				mbd.setCooldownTicks( 10 );
+				
+				mbd.setThrowVelocityLow( 0.05 );
+				mbd.setThrowVelocityHigh( 0.5 );
+				
+				
+				mbd.setAnimationPattern( AnimationPattern.orbital );
+				
+				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
+			}
+			
+			
+			
+			{
+				MineBombData mbd = new MineBombData( 
+						"DudOrbital8Bomb", "DIAMOND", ExplosionShape.sphere.name(), 1, 
+						"This is a bomb?&r" );
+				mbd.setDescription("This old bomb is a dud.&r");
+				
+				mbd.setNameTag( "&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&r" );
+				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
+				
+				mbd.setToolInHandName( "STONE_PICKAXE" );
+				mbd.setToolInHandFortuneLevel( 1 );
+				mbd.setRemovalChance( 25.0d );
+				
+				mbd.addSoundEffects( mbeSound01.clone() );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.addSoundEffects( mbeSound03.clone() );
+				
+				mbd.addVisualEffects( mbeExplode04.clone() );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				
+				mbd.setCooldownTicks( 10 );
+				
+				mbd.setThrowVelocityLow( 0.05 );
+				mbd.setThrowVelocityHigh( 0.5 );
+				
+				
+				mbd.setAnimationPattern( AnimationPattern.orbitalEight );
+				
+				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
+			}
+			
+			
 			
 			
 			mineBombs.saveConfigJson();
