@@ -1,7 +1,8 @@
-package tech.mcprison.prison.spigot.bombs;
+package tech.mcprison.prison.bombs;
 
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.util.Vector;
 
 /**
  * <p>These functions were basically copied from the following post.  They have 
@@ -231,6 +232,67 @@ public class GeometricShapes
 		}
 	}
 
+	
+//	public class Point {
+//		private double x;
+//		private double y;
+//		private double z;
+//		public Point( double x, double y, double z ) {
+//			this.x = x;
+//			this.y = y;
+//			this.z = z;
+//		}
+//		public double getX() {
+//			return x;
+//		}
+//		public void setX(double x) {
+//			this.x = x;
+//		}
+//		public double getY() {
+//			return y;
+//		}
+//		public void setY(double y) {
+//			this.y = y;
+//		}
+//		public double getZ() {
+//			return z;
+//		}
+//		public void setZ(double z) {
+//			this.z = z;
+//		}
+//	}
+	
+	public static Vector getPointsOnCircleXZ( double degrees, double radius ) {
+		Vector results = null;
+		
+		final double angle = Math.toRadians( degrees );
+
+		double x = (Math.cos(angle) * radius);
+		double y = 0d;
+		double z = (Math.sin(angle) * radius);
+		
+	    results = new Vector( x, y, z );
+	    
+	    return results;
+	    
+		
+//		final int NUM_POINTS = 1000;
+//		final double RADIUS = 100d;
+//
+//		final Point[] points = new Point[NUM_POINTS];
+//
+//		for (int i = 0; i < NUM_POINTS; ++i)
+//		{
+//		    final double angle = Math.toRadians(((double) i / NUM_POINTS) * 360d);
+//
+//		    points[i] = new Point(
+//		        Math.cos(angle) * RADIUS, 
+//		        Math.sin(angle) * RADIUS
+//		    );
+//		}
+		
+	}
+	
 //	public void someMethod()
 //	{
 //		{

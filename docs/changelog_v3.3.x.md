@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-12
+# 3.3.0-beta.18c 2024-07-17
+
+
+
+* **Mine Bombs: Geometric shapes and functions.**
 
 
 * **Prison command placeholders: Updated the new placeholders for "ifPerm:" and "ifNotPerm" are now working properly.**
