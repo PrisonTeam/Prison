@@ -36,10 +36,11 @@ public class BombAnimationsTask
 	public void animatorFactory( 
 			// AnimationPattern animation, 
 			MineBombData bomb, PrisonBlock pBlock, 
-			ItemStack item, MineBombDetonateTask detonateBomb ) {
+			ItemStack sItem, MineBombDetonateTask detonateBomb ) {
 		
 		this.detonateBomb = detonateBomb;
 		
+		ItemStack item = new ItemStack( sItem );
 		
 		AnimationPattern animation = bomb.getAnimationPattern();
 		
@@ -58,8 +59,53 @@ public class BombAnimationsTask
 		switch ( animation ) {
 		
 		case bounce:
+		{
+			float yaw = 0;
+			float pitch = 0;
+			
+			BombAnimationBounce ba = new BombAnimationBounce( bomb, 
+					pBlock, item, this, 
+					yaw, pitch );
+			
+			getAnimators().add( ba );
+			submitTask();
+		}
 			
 			break;
+			
+		case orbital:
+		{
+			float yaw = 0;
+			float pitch = 0;
+			
+			BombAnimationOrbital ba = new BombAnimationOrbital( bomb, 
+					pBlock, item, this, 
+					yaw, pitch );
+			
+			getAnimators().add( ba );
+			submitTask();
+		}
+		
+		break;
+		
+		case orbitalEight:
+		{
+			float yaw = 0;
+			float pitch = 0;
+			float yawStep = 360f / 8f;
+			
+			for ( int i = 0; i < 8; i++ ) {
+				BombAnimationOrbital ba = new BombAnimationOrbital( bomb, 
+						pBlock, item, this, 
+						yaw, pitch );
+				
+				getAnimators().add( ba );
+				
+				yaw += yawStep;
+			}
+			
+			submitTask();
+		}
 			
 		case infinity:
 		{

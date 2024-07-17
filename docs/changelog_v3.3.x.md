@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-17
 
 
+* **Mine Bomb Animations: Added two new animations: bounce and orbital.**
+
+
 * **Mine Bombs: Update to a lot of the core support for ItemStacks, World, Location, and ArmorStand.**
 These enhancements are to help support moving mine bomb animations back to core.
 

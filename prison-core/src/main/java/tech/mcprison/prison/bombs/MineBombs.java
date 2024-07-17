@@ -94,7 +94,8 @@ public class MineBombs
 		infinity,
 		infinityEight,
 		bounce,
-		orbital
+		orbital,
+		orbitalEight
 		
 		;
 		

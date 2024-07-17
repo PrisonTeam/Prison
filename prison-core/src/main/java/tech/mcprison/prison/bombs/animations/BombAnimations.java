@@ -103,19 +103,43 @@ public abstract class BombAnimations {
 						eulerAngleZ + startingAngle );
 		
 		
-		armorStand = location.spawnArmorStand();
+		// Spawn an invisible armor stand:
+		armorStand = location.spawnArmorStand( getBomb().getItemType(),
+						getBomb().getName(), 
+						MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
+//		armorStand = location.spawnArmorStand();
 		
 		if ( armorStand != null ) {
 			
-			armorStand.setVisible(false);
-			
-			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
-			
-			armorStand.setRightArmPose(arm);
-			armorStand.setItemInHand( getItem() );
+			// Sets visibility:false, arms:true, basePlate:false, canPickupItems:false, 
+			// removeWhenFar:false, gravity:false, and itemInHand.
+			// armorStand.setupArmorStand( getBomb().getItemType() );
+//			armorStand.setupArmorStand( getItem() );
 			
 			armorStand.setCustomNameVisible( getId() == 0 && initializeCustomName() );
-			armorStand.setRemoveWhenFarAway(false);
+			
+//			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
+			
+//			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
+//					playerUUID );
+			
+			armorStand.setRightArmPose(arm);
+			
+//			ItemStack itemInHand = armorStand.getItemInHand();
+//			
+//			int iihAmount = itemInHand.getAmount();
+//			int iamount = getItem().getAmount();
+//			
+//			int count = iihAmount + iamount;
+//			
+//			armorStand.setArms( true );
+//			armorStand.setBasePlate( false );
+//			armorStand.setCanPickupItems( false );
+//			
+//			
+//			armorStand.setItemInHand( getItem() );
+			
+//			armorStand.setRemoveWhenFarAway(false);
 			
 			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
 				
