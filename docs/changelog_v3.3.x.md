@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-17
+# 3.3.0-beta.18c 2024-07-18
+
+
+* **Oops... accidentally committed code that has been on the back burner for a long time.  This resulted in a build failure.**
+The code is going to take the `/prison support saveToFile help` output, which is HTML based, and auto generate a table of contents with a lot of cross referenced hyper links.
+The intention is that if you load this document, you can quickly jump to any section of interest to help solve support issues.
+This will be updated and completed in the near future... nearer now that I accidentally committed it. ;) LOL
+
 
 
 * **Mine Bombs config settings: updated some of the defaults and added a few new bombs to use the newer animations.**
