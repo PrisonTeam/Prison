@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredListener;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.vk2gpz.tokenenchant.api.ITokenEnchant;
 import com.vk2gpz.tokenenchant.api.TokenEnchantAPI;
 
 import tech.mcprison.prison.Prison;
@@ -388,18 +389,47 @@ public abstract class AutoManagerFeatures
 				itemInHand != null && 
 				itemInHand.getBukkitStack() != null ) {
 			
+			debugInfo.append( " (useTokenEnchantsFortuneLevel:");
+			
 			try {
+				Class.forName( "com.vk2gpz.tokenenchant.api.TokenEnchantAPI", false, this.getClass().getClassLoader() );
+				
 				if ( TokenEnchantAPI.getInstance() != null ) {
 					
 					 fortLevel = TokenEnchantAPI.getInstance().getEnchantments( itemInHand.getBukkitStack() )
 					 		.get( TokenEnchantAPI.getInstance().getEnchantment("Fortune"));
 					
 					 usedTEFortune = true;
+					 debugInfo.append( "used TokenEnchantAPI: level " ).append( fortLevel );
 				}
 			}
 			catch ( Exception e ) {
-				// ignore: could not use TE.
+				// ignore: could not use TE or TE version before v23.x is not loaded
+				
+				// Test for TE v23 & newer:
+				try {
+					Class.forName( "com.vk2gpz.tokenenchant.api.ITokenEnchant", false, this.getClass().getClassLoader() );
+					
+					if ( ITokenEnchant.getInstance() != null ) {
+						
+						 fortLevel = ITokenEnchant.getInstance().getEnchantments( itemInHand.getBukkitStack() )
+						 		.get( ITokenEnchant.getInstance().getEnchantment("Fortune"));
+						
+						 usedTEFortune = true;
+						 debugInfo.append( "used ITokenEnchant: level " ).append( fortLevel );
+					}
+				}
+				catch ( Exception e2 ) {
+					// Ignore - Cannot use TE
+				}
+				
 			}
+			
+			if ( !usedTEFortune ) {
+				debugInfo.append( " &4WARNING: Feature enabled but TE not found.&3" );
+			}
+			
+			debugInfo.append(")");
 		}
 		
 		try {

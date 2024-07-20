@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-19
 
 
+* **Autofeatures: Use TokenEnchant fortune levels: Added support for the newer TE API "ITokenEnchant". "TokenEnchantAPI" is still supported.**
+
+
+
 * **Mine bombs: Hex color codes:  Setup one mine bomb using hex color codes.**
 Hex color support was added to minecraft with spigot v1.16.  Older versions of spigot will not work.
 No changes were needed to allow the hex support since prison was already handling support for hex colors.
