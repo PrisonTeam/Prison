@@ -520,6 +520,12 @@ public class Text
     	
     	if ( message != null ) {
     		
+    		// NOTE: if '&#' is used, then it will convert the hex codes, but it will also
+    		//       leave the leading '&' there.  So remove the '&' prefix.
+        	if ( message != null && message.contains( "&#" ) ) {
+        		message = message.replace( "&#", "#" );
+	    	}    		
+    		
 //        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
     		
     		Matcher matcher = HEX_PATTERN.matcher(message);
