@@ -66,6 +66,29 @@ public class MineBombsConfigData
 				}
 			}
 			
+			
+//			// Check all lore, and if it contains `&#` then process the hex color codes:
+//			for ( int i = 0; i < bomb.getLore().size(); i++ ) {
+//				String lore = bomb.getLore().get( i );
+//				
+//				if ( lore != null && lore.contains( "&#") ) {
+//					String hex = Text.translateAmpColorCodesAltHex2Code( lore );
+//					bomb.getLore().set( i, hex );
+//				}
+//			}
+//			
+//			// Convert hex colors for bomb names and tags:.
+//			if ( bomb.getName().contains( "&#" ) ) {
+//				String hex = Text.translateAmpColorCodesAltHex2Code( bomb.getName() );
+//				bomb.setName( hex );
+//			}
+//			if ( bomb.getNameTag().contains( "&#" ) ) {
+//				String hex = Text.translateAmpColorCodesAltHex2Code( bomb.getNameTag() );
+//				bomb.setNameTag( hex );
+//			}
+			
+			
+			
 		}
 		
 		return results;

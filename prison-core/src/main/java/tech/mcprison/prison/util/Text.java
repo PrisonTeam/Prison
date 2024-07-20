@@ -432,6 +432,15 @@ public class Text
     public static String translateAmpColorCodesAltHexCode(String text) {
     	return translateColorCodes( text, '&', COLOR_CHAR, '&' );
     }
+    
+    // NOTE: It's not needed to remove the '&'
+//    public static String translateAmpColorCodesAltHex2Code(String text) {
+//    	if ( text != null && text.contains( "&#" ) ) {
+//    		text = text.replace( "&#", "#" );
+//    	}
+//    	return translateColorCodes( text, '&', COLOR_CHAR, '&' );
+//    }
+    
     /**
      * Strips the given message of all color codes
      *

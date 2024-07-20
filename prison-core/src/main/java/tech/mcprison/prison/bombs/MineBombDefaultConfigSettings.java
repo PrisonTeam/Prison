@@ -408,6 +408,9 @@ public class MineBombDefaultConfigSettings {
 				mbd.setNameTag( "&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
 				
+				mbd.getLore().add( "&7Hex Colors: &#e81416Red&#ffa500Orange&#faeb36Yellow"
+						+ "&#79c314Green&#487de7Blue&#4b369dIndigo&#70369dViolet" );
+				
 				mbd.setToolInHandName( "STONE_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 1 );
 				mbd.setRemovalChance( 25.0d );

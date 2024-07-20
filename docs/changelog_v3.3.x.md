@@ -14,7 +14,16 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-18
+# 3.3.0-beta.18c 2024-07-19
+
+
+* **Mine bombs: Hex color codes:  Setup one mine bomb using hex color codes.**
+Hex color support was added to minecraft with spigot v1.16.  Older versions of spigot will not work.
+No changes were needed to allow the hex support since prison was already handling support for hex colors.
+This is triggered with a prefix of '&#' followed by the 6 hex digits, such as '&#a1b2c3'.
+As a result, this simple hex color code will be translated by prison in to the code structure that spigot and paper will recognize:
+'&#a1b2c3' is converted to: '&x&a&1&b&2&c&3'
+
 
 
 * **Oops... accidentally committed code that has been on the back burner for a long time.  This resulted in a build failure.**
