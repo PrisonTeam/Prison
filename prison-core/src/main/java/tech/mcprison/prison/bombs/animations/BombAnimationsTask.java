@@ -75,6 +75,11 @@ public class BombAnimationsTask
 			
 		case orbital:
 		{
+			// Add BombAnimationNone for a stationary name:
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, 
+					pBlock, null, this, 0f, 0f );
+			getAnimators().add( baHolo );
+			
 			float yaw = 0;
 			float pitch = 0;
 			
@@ -90,6 +95,11 @@ public class BombAnimationsTask
 		
 		case orbitalEight:
 		{
+			// Add BombAnimationNone for a stationary name:
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, 
+					pBlock, null, this, 0f, 0f );
+			getAnimators().add( baHolo );
+			
 			float yaw = 0;
 			float pitch = 0;
 			float yawStep = 360f / 8f;
@@ -110,6 +120,11 @@ public class BombAnimationsTask
 			
 		case starburst:
 		{
+			// Add BombAnimationNone for a stationary name:
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, 
+					pBlock, null, this, 0f, 0f );
+			getAnimators().add( baHolo );
+			
 			float yaw = 0;
 			float pitch = 0;
 			float yawStep = 360f / 16f;
