@@ -95,7 +95,8 @@ public class MineBombs
 		infinityEight,
 		bounce,
 		orbital,
-		orbitalEight
+		orbitalEight, 
+		starburst
 		
 		;
 		

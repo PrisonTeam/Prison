@@ -17,8 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-20
 
 
-* **Mine Bombs: Add new settings for animationOffset and animationSpeed.
-Animation speed controls how much the animation angles change by adding this value to the prior value.**
+* **Mine Bombs: added two new AnimationPatterns: orbital8 and starburst.**
+
+
+* **Mine Bombs: Add new settings for animationOffset and animationSpeed.**
+Animation speed controls how much the animation angles change by adding this value to the prior value.
 Smaller is slower, and larger is faster.
 Animation offset is used on animations that move the actual armor stands, such as orbital, orbital8, and starburst.  
 If offset is zero, then it will result in a round orbit.  If it non-zero, then it will rotate around a point outside of the original location.  Multiple ArmorStand animations, like orbital8 and starburst, will offset each placed armorstand around the main Location, therefore creating interesting geometric patterns.

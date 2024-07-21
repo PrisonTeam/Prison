@@ -87,24 +87,42 @@ public abstract class BombAnimations {
 	public void initialize() {
 		
 		Location location = getsBlock().getLocation();
-		location.setY( location.getY() + 3 );
-		
-		location.setYaw( entityYaw );
-		location.setPitch( entityPitch + 90 );
+		location.setY( location.getY() + 2.5 );
 		
 		
-		double startingAngle = ( 360d / entityYaw ) * twoPI;
+		// NOTE: The direction the entity is facing is based upon yaw.  
+		//       When using org.bukkit.Location.setDirection() it's using a vector
+		//       to set yaw and pitch so it's looking at that vector point. 
+		// So... I guess that means an entity cannot turn their head?
+		//       For entities, or at least armorStands, there is an Euler angle 
+		//       based getHeadPose() and setHeadPose() functions.
+		location.setYaw( entityYaw );  
+		
+		
+		// Not sure why 90 was being added.  I suspect 0 is straight up?
+		location.setPitch( entityPitch  + 90 );
+		
+		
+		
+//		double startingAngle = ( 360d / entityYaw ) * twoPI;
+//		location.setDirection( startingAngle );
 		
 		// eulerAngleX += startingAngle;
 		
 		EulerAngle arm = new EulerAngle( 
-						eulerAngleX + startingAngle, 
-						eulerAngleY + startingAngle, 
-						eulerAngleZ + startingAngle );
+						eulerAngleX, 
+						eulerAngleY, 
+						eulerAngleZ );
+		
+//		EulerAngle arm = new EulerAngle( 
+//				eulerAngleX + startingAngle, 
+//				eulerAngleY + startingAngle, 
+//				eulerAngleZ + startingAngle );
 		
 		
 		// Spawn an invisible armor stand:
-		armorStand = location.spawnArmorStand( getBomb().getItemType(),
+		armorStand = location.spawnArmorStand(
+						(getItem() == null ? null : getBomb().getItemType()),
 						getBomb().getName(), 
 						MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
 //		armorStand = location.spawnArmorStand();
