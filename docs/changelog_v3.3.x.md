@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-20
 
 
+* **Mine Bombs: Added the setup for starburst animations.**
+
+
+
 * **Mine Bombs: added two new AnimationPatterns: orbital8 and starburst.**
 
 

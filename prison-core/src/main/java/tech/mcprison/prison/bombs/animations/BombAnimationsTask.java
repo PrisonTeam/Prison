@@ -106,7 +106,30 @@ public class BombAnimationsTask
 			
 			submitTask();
 		}
+		break;
 			
+		case starburst:
+		{
+			float yaw = 0;
+			float pitch = 0;
+			float yawStep = 360f / 16f;
+			
+			for ( int i = 0; i < 16; i++ ) {
+				BombAnimationOrbital ba = new BombAnimationOrbital( bomb, 
+						pBlock, item, this, 
+						yaw, pitch );
+				
+				ba.setAlternateDirections( true );
+				
+				getAnimators().add( ba );
+				
+				yaw += yawStep;
+			}
+			
+			submitTask();
+		}
+		break;
+		
 		case infinity:
 		{
 			float yaw = 0;
