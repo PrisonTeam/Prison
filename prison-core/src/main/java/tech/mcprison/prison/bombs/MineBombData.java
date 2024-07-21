@@ -117,7 +117,7 @@ public class MineBombData
 	 * of the mine too.
 	 * </p>
 	 */
-	private int placementAdjustmentY = -1;
+	private int placementAdjustmentY = 0;
 	
 	/**
 	 * <p>The chance of complete removal.  So if the explosion includes
@@ -165,6 +165,9 @@ public class MineBombData
 	 */
 	private AnimationPattern animationPattern = AnimationPattern.infinity;
 
+	private double animationOffset = 0;
+	
+	private double animationSpeed = 5;
 	
 	
 	private double throwVelocityLow = 1.5;
@@ -365,6 +368,9 @@ public class MineBombData
 		cloned.setGravity( isGravity() );
 		
 		cloned.setAnimationPattern( getAnimationPattern() );
+		cloned.setAnimationOffset( getAnimationOffset() );
+		cloned.setAnimationSpeed( getAnimationSpeed() );
+		
 		
 		cloned.setThrowVelocityLow( getThrowVelocityLow() );
 		cloned.setThrowVelocityHigh( getThrowVelocityHigh() );
@@ -667,6 +673,24 @@ public class MineBombData
 					animationPattern == null ? 
 							AnimationPattern.infinity : 
 							animationPattern;
+	}
+
+	public double getAnimationOffset() {
+		return animationOffset;
+	}
+	public void setAnimationOffset(double animationOffset) {
+		this.animationOffset = animationOffset;
+	}
+
+	public double getAnimationSpeed() {
+		return animationSpeed;
+	}
+	public void setAnimationSpeed(double animationSpeed) {
+		this.animationSpeed = animationSpeed;
+	}
+
+	public int getTaskId() {
+		return taskId;
 	}
 
 	public double getThrowVelocityLow() {
