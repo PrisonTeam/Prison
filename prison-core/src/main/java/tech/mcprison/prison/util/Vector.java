@@ -20,6 +20,7 @@ package tech.mcprison.prison.util;
 
 import tech.mcprison.prison.internal.World;
 
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
@@ -661,7 +662,25 @@ public class Vector implements Cloneable {
      * Returns this vector's components as x,y,z.
      */
     @Override public String toString() {
-        return x + "," + y + "," + z;
+    	
+    	DecimalFormat dFmt = new DecimalFormat( "##0.0000" );
+    	
+    	String msg = String.format(
+    			"x: %8s  y: %8s  z: %8s", 
+    			dFmt.format( getX() ),
+    			dFmt.format( getY() ),
+    			dFmt.format( getZ() )
+    			);
+
+    	return msg;
+    	
+//    	StringBuilder sb = new StringBuilder();
+//    	sb.append( "x: " ).append( dFmt.format( getX() )).append( "  " )
+//    	  .append( "y: " ).append( dFmt.format( getY() )).append( "  " )
+//    	  .append( "z: " ).append( dFmt.format( getZ() ));
+//    	
+//    	return sb.toString();
+//        return x + "," + y + "," + z;
     }
 
     /**

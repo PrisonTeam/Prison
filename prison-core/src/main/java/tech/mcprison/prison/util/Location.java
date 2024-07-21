@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.util;
 
+import java.text.DecimalFormat;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.Entity;
@@ -124,6 +126,13 @@ public class Location {
 		return direction;
 	}
     
+    /**
+     * Sets the {@link #getYaw() yaw} and {@link #getPitch() pitch} to point
+     * in the direction of the vector.
+     * 
+     * @param vector the direction vector
+     * @return the same location
+     */
 	public void setDirection( Vector direction ) {
 		this.direction = direction;
 	}
@@ -174,7 +183,8 @@ public class Location {
 		this.isCorner = isCorner;
 	}
 	
-	@Override public boolean equals(Object o) {
+	@Override 
+	public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -192,7 +202,8 @@ public class Location {
 
     }
 
-    @Override public int hashCode() {
+    @Override 
+    public int hashCode() {
         int result;
         long temp;
         result = world != null ? world.hashCode() : 0;
@@ -207,9 +218,17 @@ public class Location {
         return result;
     }
 
-    @Override public String toString() {
-        return "Location{" + "world=" + world + ", x=" + x + ", y=" + y + ", z=" + z + ", pitch="
-            + pitch + ", yaw=" + yaw + '}';
+    @Override 
+    public String toString() {
+    	
+    	DecimalFormat dFmt = new DecimalFormat( "0.00" );
+    	
+        return "Location{" + "world=" + world.getName() + ", "
+        		+ "x=" + dFmt.format(x) + ", "
+        		+ "y=" + dFmt.format(y) + ", "
+        		+ "z=" + dFmt.format(z) + ", "
+        		+ "pitch=" + dFmt.format(pitch) + ", "
+        		+ "yaw=" + dFmt.format(yaw) + '}';
     }
 
     /**
@@ -244,6 +263,7 @@ public class Location {
     public String toBlockCoordinates() {
         return "(" + Math.round(x) + ", " + Math.round(y) + ", " + Math.round(z) + ")";
     }
+    
 	public Location add( Vector direction )
 	{
 		Location results = new Location( this );
@@ -253,6 +273,19 @@ public class Location {
 		results.setY( results.getY() + direction.getY() );
 		results.setZ( results.getZ() + direction.getZ() );
 
+		return results;
+	}
+	
+	/** 
+	 * This returns a vector based upon the current location.
+	 * 
+	 * Note that this is based upon org.bucket.location.Location.toVector() and
+	 * it does not use yaw.
+	 * 
+	 * @return
+	 */
+	public Vector toVector() {
+		Vector results = new Vector( getX(), getY(), getZ() );
 		return results;
 	}
 	
