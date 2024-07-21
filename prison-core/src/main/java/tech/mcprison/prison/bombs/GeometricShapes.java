@@ -262,6 +262,17 @@ public class GeometricShapes
 //		}
 //	}
 	
+	/**
+	 * This will calculate a new Vector based upon the degrees (angle), and the 
+	 * radius (distance from the center);
+	 * 
+	 * Incrementing the degrees, with keeping the same value for radius, should 
+	 * draw a circle on the plane X-Z.
+	 * 
+	 * @param degrees
+	 * @param radius
+	 * @return
+	 */
 	public static Vector getPointsOnCircleXZ( double degrees, double radius ) {
 		Vector results = null;
 		

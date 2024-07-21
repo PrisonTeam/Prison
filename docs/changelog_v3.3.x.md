@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-19
+# 3.3.0-beta.18c 2024-07-20
+
+
+
+
+* **Mine bombs: Geometric: update descriptions and create unit tests to confirm if the function getPointsOnCircleXZ are producing the intended results.**
+
 
 
 * **Autofeatures: Use TokenEnchant fortune levels: Added support for the newer TE API "ITokenEnchant". "TokenEnchantAPI" is still supported.**
