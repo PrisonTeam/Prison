@@ -336,11 +336,9 @@ public class Location {
 		return getWorld().spawnArmorStand( this );
 	}
 	
-	public ArmorStand spawnArmorStand( String itemName, String name, 
-			String nbtKey,
-			String nbtValue ) {
+	public ArmorStand spawnArmorStand( String itemName, String name ) {
 		
-		return getWorld().spawnArmorStand( this, itemName, name, nbtKey, nbtValue );
+		return getWorld().spawnArmorStand( this, itemName, name );
 	}
 	
 	

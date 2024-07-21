@@ -40,7 +40,7 @@ public class SpigotLocation
 		org.bukkit.World world = Bukkit.getWorld( location.getWorld().getName() );
 		
 		org.bukkit.Location bLocation = new org.bukkit.Location(world, 
-				location.getBlockX(), location.getBlockY(), location.getBlockZ() );
+				location.getX(), location.getY(), location.getZ() );
 		
 		bLocation.setYaw( location.getYaw() );
 		
