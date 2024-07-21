@@ -10,6 +10,7 @@ import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.Location;
 
 public class MineBombData
 		implements Comparable<MineBombData> 
@@ -261,7 +262,20 @@ public class MineBombData
 	
 	private TreeSet<MineBombEffectsData> visualEffects;
 	
-	private Block placedBombBlock;
+	
+	/**
+	 * This is a block that is "closest" to the location where the animation center
+	 * point should be.  But note, since the location is not exact, and there is rounding,
+	 * this block may not be the block that was actually clicked, or where the item
+	 * landed.  For precise location, use placedBombLocation if it is not null.
+	 * this should be used as a back for the location for the animation center point.
+	 */
+	private transient Block placedBombBlock;
+	
+	/**
+	 * If not null, then this should be the animation target's center point.
+	 */
+	private transient Location placedBombLocation;
 	
 	
 	private transient int taskId = -1;
@@ -335,6 +349,9 @@ public class MineBombData
 		
 		this.applyToPlayersBlockCount = true;
 		
+		this.placedBombBlock = null;
+		this.placedBombLocation = null;
+		
 	}
 	
 	
@@ -384,6 +401,9 @@ public class MineBombData
 		cloned.setCustomModelData( getCustomModelData() );
 		
 		cloned.setSmall( isSmall() );
+		
+		cloned.setPlacedBombBlock( getPlacedBombBlock() );
+		cloned.setPlacedBombLocation( getPlacedBombLocation() );
 		
 		
 		for ( String l : getLore() ) {
@@ -823,6 +843,13 @@ public class MineBombData
 	}
 	public void setPlacedBombBlock( Block placedBombBlock ) {
 		this.placedBombBlock = placedBombBlock;
+	}
+
+	public Location getPlacedBombLocation() {
+		return placedBombLocation;
+	}
+	public void setPlacedBombLocation(Location placedBombLocation) {
+		this.placedBombLocation = placedBombLocation;
 	}
 
 

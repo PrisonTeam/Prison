@@ -59,6 +59,7 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Vector;
 
 /**
  * @author Faizaan A. Datoo
@@ -262,6 +263,26 @@ public class SpigotPlayer
     	return results;
     }
 
+    
+    public Location getLineOfSightExactLocation() {
+    	
+    	SpigotLocation eyeLoc = new SpigotLocation( getWrapper().getEyeLocation() );
+    	Vector eyeVec = eyeLoc.getDirection();
+    	
+    	Location loc = eyeLoc.add(eyeVec);
+    	
+    	int i = 0;
+    	while ( i++ <= 50 && loc.getBlockAt().isEmpty() ) {
+    		
+    		loc = loc.add(eyeVec);
+    	}
+    	
+    	if ( loc.getBlockAt().isEmpty() ) {
+    		loc = null;
+    	}
+    	
+    	return loc;
+    }
     
     /**
      * <p>This will return a list of blocks that are in the line of sight of the player.
