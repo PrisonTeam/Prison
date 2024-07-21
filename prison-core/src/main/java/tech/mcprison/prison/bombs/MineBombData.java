@@ -222,9 +222,27 @@ public class MineBombData
 	
 	
 	/**
-	 * 
+	 * This feature will allow the player to add all the exploded blocks to
+	 * their block counts.  If set to false, then this will not add bomb
+	 * related block breaks to the player's block counts, which will help 
+	 * keep the payer's counts focused on actual blocks broken.
 	 */
 	private boolean applyToPlayersBlockCount = true;
+	
+	
+	/**
+	 * If small is set to true, then the armor stand that will be generated
+	 * will be a smaller version of the standard size.  This maybe about 1 
+	 * block high, instead of the normal 2 blocks high.  
+	 * 
+	 * Since the armor stand will be reduced in size by half, so will the item
+	 * that it is holding, it too will be reduced in size.
+	 * 
+	 * This feature is dependent upon how bukkit handles this setting, 
+	 * therefore it may or may not work, or it may behave differently than
+	 * what is described here.
+	 */
+	private boolean small = false;
 	
 	
 	/**
@@ -309,6 +327,8 @@ public class MineBombData
 		this.autosell = false;
 		this.customModelData = 0;
 		
+		this.small = false;
+		
 		
 		this.applyToPlayersBlockCount = true;
 		
@@ -356,6 +376,8 @@ public class MineBombData
 		cloned.setActivated( isActivated() );
 		
 		cloned.setCustomModelData( getCustomModelData() );
+		
+		cloned.setSmall( isSmall() );
 		
 		
 		for ( String l : getLore() ) {
@@ -703,7 +725,13 @@ public class MineBombData
 		this.applyToPlayersBlockCount = applyToPlayersBlockCount;
 	}
 
-	
+	public boolean isSmall() {
+		return small;
+	}
+	public void setSmall(boolean small) {
+		this.small = small;
+	}
+
 	public boolean addSoundEffects( MineBombEffectsData effect ) {
 		boolean results = false;
 		

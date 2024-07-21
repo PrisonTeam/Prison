@@ -123,6 +123,8 @@ public abstract class BombAnimations {
 //			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
 //					playerUUID );
 			
+			armorStand.setSmall( getBomb().isSmall() );
+			
 			armorStand.setRightArmPose(arm);
 			
 //			ItemStack itemInHand = armorStand.getItemInHand();
