@@ -9,7 +9,6 @@ import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -23,6 +22,8 @@ public abstract class BombAnimations {
 	private MineBombData bomb;
 	private PrisonBlock sBlock;
 	private ItemStack item;
+	
+	private Location originalLocation;
 	
 	private String customName;
 	private boolean isDyanmicTag = false;
@@ -62,6 +63,8 @@ public abstract class BombAnimations {
 		this.sBlock = sBombBlock;
 		this.item = item;
 		
+		this.originalLocation = null;
+		
 //		this.ageTicks = 0;
 		this.terminateOnZeroTicks = getTaskLifeSpan();
 
@@ -86,8 +89,14 @@ public abstract class BombAnimations {
 	
 	public void initialize() {
 		
-		Location location = getsBlock().getLocation();
+		Location location =
+				getBomb().getPlacedBombLocation() != null ?
+						getBomb().getPlacedBombLocation() :
+						getsBlock().getLocation();
+				
 		location.setY( location.getY() + 2.5 );
+		
+		setOriginalLocation( location );
 		
 		
 		// NOTE: The direction the entity is facing is based upon yaw.  
@@ -122,13 +131,27 @@ public abstract class BombAnimations {
 		
 		// Spawn an invisible armor stand:
 		armorStand = location.spawnArmorStand(
-						(getItem() == null ? null : getBomb().getItemType()),
-						getBomb().getName(), 
-						MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
+						getBomb().getItemType(),
+//						(getItem() == null ? null : getBomb().getItemType()),
+						getBomb().getName() );
+		
+//						MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
+		
+		
 //		armorStand = location.spawnArmorStand();
 		
 		if ( armorStand != null ) {
 			
+//			Output.get().logInfo( "### init mine bomb 1: id: " + getId() + "  " + 
+//						armorStand.getLocation().toString() );
+			
+			// Need to teleport the armor stand to the actual location where it
+			// landed or was thrown to, otherwise it will look like it's offset.
+			//armorStand.teleport( getOriginalLocation() );
+			
+//			Output.get().logInfo( "### init mine bomb 2: id: " + getId() + "  " + 
+//					armorStand.getLocation().toString() );
+
 			// Sets visibility:false, arms:true, basePlate:false, canPickupItems:false, 
 			// removeWhenFar:false, gravity:false, and itemInHand.
 			// armorStand.setupArmorStand( getBomb().getItemType() );
@@ -136,7 +159,7 @@ public abstract class BombAnimations {
 			
 			armorStand.setCustomNameVisible( getId() == 0 && initializeCustomName() );
 			
-//			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
+			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
 			
 //			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
 //					playerUUID );
@@ -170,15 +193,16 @@ public abstract class BombAnimations {
 			}
 		}
 		
-		if ( Output.get().isDebug() ) {
-			String msg = String.format( 
-					"### BombAnimation.initializeArmorStand : id: %s  %s ", 
-					Integer.toString(getId()),
-					bomb.getAnimationPattern().name()
-					);
-			
-			Output.get().logInfo( msg );
-		}
+//		if ( Output.get().isDebug() ) {
+//			String msg = String.format( 
+//					"### BombAnimation.initializeArmorStand : id: %s  %s  %s", 
+//					Integer.toString(getId()),
+//					bomb.getAnimationPattern().name(),
+//					armorStand.getLocation().toString()
+//					);
+//			
+//			Output.get().logInfo( msg );
+//		}
 	}
 
 
@@ -331,6 +355,13 @@ public abstract class BombAnimations {
 	}
 	public void setItem(ItemStack item) {
 		this.item = item;
+	}
+
+	public Location getOriginalLocation() {
+		return originalLocation;
+	}
+	public void setOriginalLocation(Location originalLocation) {
+		this.originalLocation = originalLocation;
 	}
 
 	public boolean isDyanmicTag() {

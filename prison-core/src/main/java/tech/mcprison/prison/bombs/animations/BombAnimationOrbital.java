@@ -18,10 +18,6 @@ public class BombAnimationOrbital extends BombAnimations {
 	
 	private boolean alternateDirections = false;
 	
-	private Location originalLocation;
-	
-//	private Location oLoc = null;
-
 	public BombAnimationOrbital(MineBombData bomb, PrisonBlock sBombBlock, 
 			ItemStack item, BombAnimationsTask task,
 			float entityYaw, float entityPitch) {
@@ -29,8 +25,10 @@ public class BombAnimationOrbital extends BombAnimations {
 
 		this.angle = entityYaw;
 
-		this.originalLocation = getArmorStand().getLocation();
-		
+		getOriginalLocation().setX( 
+					getOriginalLocation().getX() + bomb.getAnimationOffset());
+		getOriginalLocation().setZ( 
+					getOriginalLocation().getZ() + bomb.getAnimationOffset());
 		
 	}
 	
@@ -58,11 +56,6 @@ public class BombAnimationOrbital extends BombAnimations {
 			angle += 360;
 		}
 		
-//		if ( oLoc == null ) {
-//			oLoc = new Location( getArmorStand().getLocation() );
-//		}
-
-//		Location loc = getArmorStand().getLocation();
 		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radius );
 		
 		// Location.add() creates a new instance of a Location and does not change
@@ -70,20 +63,6 @@ public class BombAnimationOrbital extends BombAnimations {
 		Location newLoc = getOriginalLocation().add(vector);
 		getArmorStand().teleport( newLoc );
 		
-		
-//		oLoc.setYaw( (float) angle );
-//		getArmorStand().teleport( oLoc );
-
-		
-		
-//		Location loc = getArmorStand().getLocation();
-//		loc.setDirection( vector );
-		
-//		float radians = (float) Math.toRadians(angle);
-//		loc.setYaw( radians );
-		
-//		getArmorStand().teleport( loc );
-
 		
 //		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
 //		Output.get().logInfo(
@@ -96,7 +75,6 @@ public class BombAnimationOrbital extends BombAnimations {
 //				)
 //			);
 //		
-		
 		
 		
 		
@@ -115,35 +93,6 @@ public class BombAnimationOrbital extends BombAnimations {
 //					"  z: " + getEulerAngleZ() );
 		
 		
-//		angle += 5;
-
-		//arm.rotateAroundAxisY( angle );
-		
-//		Output.get().logInfo( arm.toString() );
-		
-		//getArmorStand().setRightArmPose( arm );
-		
-		
-//		EulerAngle arm = EulerAngle.rotateAroundAxisY( 
-//					getEulerAngleX(), 
-//					getEulerAngleY(), 
-//					getEulerAngleZ(), 
-//					angle );
-//				
-//		setEulerAngleX( arm.getX() );
-//		setEulerAngleY( arm.getY() );
-//		setEulerAngleZ( arm.getZ() );
-		
-//		double speed = 0.35;
-//
-//		setEulerAngleX( getEulerAngleX() + speed );
-//		setEulerAngleY( getEulerAngleY() + speed );
-////		setEulerAngleZ( getEulerAngleZ() + speed );
-//		
-//		
-//		EulerAngle arm = new EulerAngle( getEulerAngleX(), getEulerAngleY(), getEulerAngleZ() );
-		
-//		getArmorStand().setRightArmPose(arm);
 	}
 
 	public double getAngle() {
@@ -165,13 +114,6 @@ public class BombAnimationOrbital extends BombAnimations {
 	}
 	public void setAlternateDirections(boolean alternateDirections) {
 		this.alternateDirections = alternateDirections;
-	}
-
-	public Location getOriginalLocation() {
-		return originalLocation;
-	}
-	public void setOriginalLocation(Location originalLocation) {
-		this.originalLocation = originalLocation;
 	}
 
 }

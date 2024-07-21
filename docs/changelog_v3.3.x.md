@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-21
 
 
+* **Mine Bombs: More adjustments to the animation objects.**
+Mostly cleaning them up.
+
 
 * **Mine Bombs: removed nbt info that was being passed into the creation of an ArmorStand.**
 This never did work correctly since it was set on the bukkit object, which was not visible when wrapped with a prison object.
