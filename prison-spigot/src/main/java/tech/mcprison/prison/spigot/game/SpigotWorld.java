@@ -329,7 +329,10 @@ public class SpigotWorld
 	
 	@Override
 	public ArmorStand spawnArmorStand( Location location, String itemType, 
-				String customName, String nbtKey, String nbtValue ) {
+				String customName
+//				, 
+//				String nbtKey, String nbtValue 
+				) {
 		
 		int maxHight = location.getWorld().getMaxHeight();
 		
@@ -354,10 +357,10 @@ public class SpigotWorld
 		}
 		
 		
-		if ( nbtKey != null && nbtValue != null ) {
-			
-			PrisonNBTUtil.setNBTString( as, nbtKey, nbtValue );
-		}
+//		if ( nbtKey != null && nbtValue != null ) {
+//			
+//			PrisonNBTUtil.setNBTString( as, nbtKey, nbtValue );
+//		}
 		
 		
 		if ( itemType != null && itemType.trim().length() > 0 ) {

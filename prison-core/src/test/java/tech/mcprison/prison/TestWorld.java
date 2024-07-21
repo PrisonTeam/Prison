@@ -102,8 +102,7 @@ public class TestWorld implements World {
 
 	@Override
 	public ArmorStand spawnArmorStand(Location location, String itemType, 
-			String customName, String nbtKey,
-			String nbtValue) {
+			String customName ) {
 		return null;
 	}
 
