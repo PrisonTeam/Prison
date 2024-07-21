@@ -200,5 +200,14 @@ public class SpigotArmorStand
 	public void setCanPickupItems( boolean canPickupItems ) {
 		bArmorStand.setCanPickupItems( canPickupItems );
 	}
+
+	@Override
+	public boolean isSmall() {
+		return bArmorStand.isSmall();
+	}
+	@Override
+	public void setSmall(boolean small) {
+		bArmorStand.setSmall(small);
+	}
 	
 }

@@ -35,5 +35,8 @@ public interface ArmorStand
 
 	public boolean getCanPickupItems();
 	public void setCanPickupItems( boolean canPickupItems );
+	
+	public boolean isSmall();
+	public void setSmall(boolean small);
 
 }
