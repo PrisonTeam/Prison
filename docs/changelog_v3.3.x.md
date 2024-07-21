@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-20
 
 
+* **Mine Bombs: update the orbital animation to fix a few issues.**
+
+
+
 * **Mine Bombs: Added a first none animation to the animation pattern so the holograph remains in the same spot.**
 Otherwise it would move with the first moving armorstand.  
 Orbital, orbital8, and starburst move armorstands so this allows the name to remain stationary.

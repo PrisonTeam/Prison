@@ -16,30 +16,58 @@ public class BombAnimationOrbital extends BombAnimations {
 	private double angle = 0.0;
 	private double radius = 1.0;
 	
-	private Location oLoc = null;
+	private boolean alternateDirections = false;
+	
+	private Location originalLocation;
+	
+//	private Location oLoc = null;
 
 	public BombAnimationOrbital(MineBombData bomb, PrisonBlock sBombBlock, 
 			ItemStack item, BombAnimationsTask task,
 			float entityYaw, float entityPitch) {
 		super(bomb, sBombBlock, item, task, entityYaw, entityPitch);
 
+		this.angle = entityYaw;
+
+		this.originalLocation = getArmorStand().getLocation();
+		
+		
 	}
 	
 	@Override
 	public void stepAnimation() {
 
-		angle += 25;
+		if ( isAlternateDirections() ) {
+			
+			if ( getId() % 2 == 0 ) {
+				angle += 5;
+			}
+			else {
+				angle -= 5;
+			}
+			
+		}
+		else {
+			angle += 5;
+		}
 		
 		if ( angle > 360 ) {
 			angle -= 360;
 		}
-		
-		if ( oLoc == null ) {
-			oLoc = new Location( getArmorStand().getLocation() );
+		else if ( angle < -360 ) {
+			angle += 360;
 		}
+		
+//		if ( oLoc == null ) {
+//			oLoc = new Location( getArmorStand().getLocation() );
+//		}
 
+//		Location loc = getArmorStand().getLocation();
 		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radius );
-		Location newLoc = new Location( oLoc ).add(vector);
+		
+		// Location.add() creates a new instance of a Location and does not change
+		// the original value:
+		Location newLoc = getOriginalLocation().add(vector);
 		getArmorStand().teleport( newLoc );
 		
 		
@@ -116,6 +144,34 @@ public class BombAnimationOrbital extends BombAnimations {
 //		EulerAngle arm = new EulerAngle( getEulerAngleX(), getEulerAngleY(), getEulerAngleZ() );
 		
 //		getArmorStand().setRightArmPose(arm);
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public boolean isAlternateDirections() {
+		return alternateDirections;
+	}
+	public void setAlternateDirections(boolean alternateDirections) {
+		this.alternateDirections = alternateDirections;
+	}
+
+	public Location getOriginalLocation() {
+		return originalLocation;
+	}
+	public void setOriginalLocation(Location originalLocation) {
+		this.originalLocation = originalLocation;
 	}
 
 }
