@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-23
 
 
+* **XSeries: Upgrade XSeries to v11.2.0.1 from v11.2.0.**
+
+
 * **Mine Bomb: Setup a simplified constructor for animations which will not use an item.**
 The purpose would be for showing only the holographic name, which is needed for animations that are actually moving the armor stand.
 
