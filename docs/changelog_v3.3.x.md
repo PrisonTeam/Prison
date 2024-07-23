@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-21
+# 3.3.0-beta.18c 2024-07-23
+
+
+* **Mine bombs: Update the '/prison utils bomb list' command to include more of the mine bomb's features and options. **
+Added support to show the available Mine Bomb's animation patterns.
 
 
 * **Mine Bombs: More adjustments to the animation objects.**

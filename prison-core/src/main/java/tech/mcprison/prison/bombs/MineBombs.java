@@ -85,7 +85,19 @@ public class MineBombs
 		y_axis,
 		z_axis,
 		
-		full
+		full;
+		
+		public static List<String> asList()
+		{
+			List<String> results = new ArrayList<>();
+			
+			for ( ExplosionOrientation orientation : values() )
+			{
+				results.add( orientation.name() );
+			}
+			
+			return results;
+		}
 	}
 	
 	
@@ -111,6 +123,18 @@ public class MineBombs
 						break;
 					}
 				}
+			}
+			
+			return results;
+		}
+		
+		public static List<String> asList()
+		{
+			List<String> results = new ArrayList<>();
+			
+			for ( AnimationPattern animation : values() )
+			{
+				results.add( animation.name() );
 			}
 			
 			return results;

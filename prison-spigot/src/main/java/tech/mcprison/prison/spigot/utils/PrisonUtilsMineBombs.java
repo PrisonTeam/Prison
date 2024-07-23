@@ -27,6 +27,7 @@ import tech.mcprison.prison.bombs.MineBombDetonateTask;
 import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
 import tech.mcprison.prison.bombs.MineBombs;
+import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
 import tech.mcprison.prison.bombs.animations.BombAnimationsTask;
 import tech.mcprison.prison.commands.Arg;
@@ -491,9 +492,12 @@ public class PrisonUtilsMineBombs
 		onlyPlayers = false, 
 		permissions = "prison.utils.bombs" )
 	public void utilsMineBombsList( CommandSender sender,
-			@Arg(name = "option", description = "Options: Show 'all' bomb details. " +
-					"'shapes', 'sounds', and 'visuals' lists valid settings " +
-					"to be used with the bombs. [all shapes sounds visuals]", def = "" ) String options
+			@Arg(name = "option", description = "Options: By default, the abbreviated list of "
+					+ "mine bombs are shown, with the 'all' options shows a lot mmore of the "
+					+ "bomb details. " +
+					"The options of 'animations', 'shapes', 'sounds', and 'visuals' lists valid settings " +
+					"to be used with the bombs. [all animations shapes sounds visuals]", def = "" ) 
+			String options
 			
 			) {
 		
@@ -507,7 +511,25 @@ public class PrisonUtilsMineBombs
 			
 			List<String> messages = new ArrayList<>();
 			
-			boolean optAll = options != null && options.toLowerCase().contains( "all" );
+			boolean optAll = false;
+			
+			if ( options != null && options.toLowerCase().contains( "all" ) ) {
+				options = options.replace( "all", "" ).trim();
+				optAll = true;
+			}
+			
+			if ( options != null && options.toLowerCase().contains( "animations" ) ) {
+				// exit after showing the list of mine bomb animations:
+				
+				messages.add( "&7Animations Patterns:" );
+				
+				List<String> animations = AnimationPattern.asList();
+				messages.addAll( Text.formatColumnsFromList( animations, 4 ) );
+				
+				sender.sendMessage( messages.toArray( new String[0] ) );
+				return;
+			}
+			
 			
 			if ( options != null && options.toLowerCase().contains( "shapes" ) ) {
 				// exit after showing shapes:
@@ -556,6 +578,9 @@ public class PrisonUtilsMineBombs
 				return;
 			}
 			
+			
+			
+			
 			if ( options != null && options.toLowerCase().contains( "visuals" ) ) {
 				List<String> visuals = new ArrayList<>();
 				
@@ -603,20 +628,34 @@ public class PrisonUtilsMineBombs
 				return;
 			}
 			
+			
+			DecimalFormat dFmt = new DecimalFormat( "#,##0.000" );
+			
+			
 			Set<String> keys = mBombs.getConfigData().getBombs().keySet();
 			for ( String key : keys ) {
 				
 				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
 				
 				String message = String.format( 
-						"&7%-12s    &3Autosell: &7%b   &3FuseDelayTicks: &7%d   &3CooldownTicks: &7%d", 
+						"&7%-12s    &3AnimationPattern & Speed: &7%s %s   &3Throw Speed: &7(%s - %s)", 
 						bomb.getName(), 
-						bomb.isAutosell(),
+						bomb.getAnimationPattern().name(),
+						dFmt.format( bomb.getAnimationSpeed() ),
+						dFmt.format( bomb.getThrowVelocityLow() ),
+						dFmt.format( bomb.getThrowVelocityHigh() )
+						);
+				
+				messages.add( message );
+				
+				
+				String msg2 = String.format( 
+						"      &3FuseDelayTicks: &7%d   &3CooldownTicks: &7%d", 
 						bomb.getFuseDelayTicks(),
 						bomb.getCooldownTicks()
 						);
 				
-				messages.add( message );
+				messages.add( msg2 );
 				
 				
 				
@@ -667,20 +706,24 @@ public class PrisonUtilsMineBombs
 				}
 				
 				
-				String message2 = String.format( 
-						"      &3ToolInHand: &7%s  &3Fortune: &7%d  &3Percent Chance: &7%f",
-						bomb.getToolInHandName(), 
-						bomb.getToolInHandFortuneLevel(),
-						bomb.getRemovalChance() );
-				messages.add( message2 );
-				
-				
-				String message3 = String.format( 
-						"      &3ItemType: &7%s   &3Glowng: &7%b   &3Gravity: &7%b",
-						bomb.getItemType(), 
-						bomb.isGlowing(),
-						bomb.isGravity() );
-				messages.add( message3 );
+				if ( optAll ) {
+					
+					String message2 = String.format( 
+							"      &3ToolInHand: &7%s  &3Fortune: &7%d  &3Percent Chance: &7%f",
+							bomb.getToolInHandName(), 
+							bomb.getToolInHandFortuneLevel(),
+							bomb.getRemovalChance() );
+					messages.add( message2 );
+					
+					
+					String message3 = String.format( 
+							"      &3ItemType: &7%s  &3Autosell: &7%b  &3Glowng: &7%b   &3Gravity: &7%b",
+							bomb.getItemType(), 
+							bomb.isAutosell(),
+							bomb.isGlowing(),
+							bomb.isGravity() );
+					messages.add( message3 );
+				}
 				
 				
 				messages.add( "      " + bomb.getDescription() );
@@ -1059,12 +1102,15 @@ public class PrisonUtilsMineBombs
 	 * bomb cannot be activated.
 	 * </p>
 	 * 
-	 * @param player
+	 * @param sPlayer
 	 * @param bomb 
+	 * @param sBlock 
+	 * @param hand
 	 * @return
 	 */
 	public boolean setBombInHand( SpigotPlayer sPlayer, 
-					MineBombData bomb, SpigotBlock sBlock, 
+					MineBombData bomb, 
+					SpigotBlock sBlock, 
 					tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot hand ) {
 		boolean isABomb = false;
 		
