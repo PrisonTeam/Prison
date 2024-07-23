@@ -46,6 +46,17 @@ public abstract class BombAnimations {
 	private DecimalFormat dFmt;
 	
 	
+	/*
+	 * For none animations that will now hold an item.
+	 * This is good for a non-animated animation that is used only as an
+	 * holographic display of the name.
+	 */
+	public BombAnimations( MineBombData bomb, 
+			PrisonBlock sBombBlock, 
+			BombAnimationsTask task ) {
+		this( bomb, sBombBlock, null, task, 0f, 0f );
+	}
+	
 	public BombAnimations( MineBombData bomb, 
 			PrisonBlock sBombBlock, 
 			ItemStack item,
