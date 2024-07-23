@@ -21,7 +21,7 @@ public class BombAnimationInfinity
 	public void stepAnimation()
 	{
 	
-		double speed = 0.35;
+		double speed = getBomb().getAnimationSpeed() / 16d;
 		
 		setEulerAngleX( getEulerAngleX() + speed );
 		setEulerAngleY( getEulerAngleY() + speed / 3);

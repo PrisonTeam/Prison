@@ -25,10 +25,15 @@ public class BombAnimationOrbital extends BombAnimations {
 
 		this.angle = entityYaw;
 
-		getOriginalLocation().setX( 
-					getOriginalLocation().getX() + bomb.getAnimationOffset());
-		getOriginalLocation().setZ( 
-					getOriginalLocation().getZ() + bomb.getAnimationOffset());
+		
+		Vector vec = new Vector( 
+						bomb.getAnimationOffset(), 0d, bomb.getAnimationOffset());
+		getOriginalLocation().add( vec );
+		
+//		getOriginalLocation().setX( 
+//					getOriginalLocation().getX() + bomb.getAnimationOffset());
+//		getOriginalLocation().setZ( 
+//					getOriginalLocation().getZ() + bomb.getAnimationOffset());
 		
 	}
 	
@@ -38,15 +43,15 @@ public class BombAnimationOrbital extends BombAnimations {
 		if ( isAlternateDirections() ) {
 			
 			if ( getId() % 2 == 0 ) {
-				angle += 5;
+				angle += getBomb().getAnimationSpeed();
 			}
 			else {
-				angle -= 5;
+				angle -= getBomb().getAnimationSpeed();
 			}
 			
 		}
 		else {
-			angle += 5;
+			angle += getBomb().getAnimationSpeed();
 		}
 		
 		if ( angle > 360 ) {

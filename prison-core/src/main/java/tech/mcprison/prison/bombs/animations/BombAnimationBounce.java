@@ -22,7 +22,7 @@ public class BombAnimationBounce
 	@Override
 	public void stepAnimation() {
 
-		double speed = 0.35;
+		double speed = getBomb().getAnimationSpeed() / 16d;
 
 		counter += speed;
 		

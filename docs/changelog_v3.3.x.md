@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-23
 
 
+* **Mine bombs: Hooked up the animationSpeed mine bomb setting to the bounce, infinity, and orbital animations.**
+Since bounce and infinity are radians based, the speed is divided by 16 to help slow it down, otherwise it would be way too fast.
+Normally, for these two animations, it was using an internal speed of 0.35, so now a comparable speed can be achieved with a value of 5.6.  The other animations appear to be more ideal with an animation speed around 5.0, so this is a good common ratio to use.
+
+
 * **Mine bombs: Update the '/prison utils bomb list' command to include more of the mine bomb's features and options. **
 Added support to show the available Mine Bomb's animation patterns.
 
