@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-23
 
 
+* **Mine bombs: Various updates to the general mine bomb defaults to include more of the newer features.**
+
+
 * **XSeries: Upgrade XSeries to v11.2.0.1 from v11.2.0.**
 
 
