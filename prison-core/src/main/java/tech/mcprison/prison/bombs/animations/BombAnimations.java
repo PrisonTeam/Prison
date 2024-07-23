@@ -9,6 +9,7 @@ import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -73,8 +74,30 @@ public abstract class BombAnimations {
 		this.bomb = bomb;
 		this.sBlock = sBombBlock;
 		this.item = item;
+
 		
-		this.originalLocation = null;
+		Location location =
+				getBomb().getPlacedBombLocation() != null ?
+						getBomb().getPlacedBombLocation() :
+						getsBlock().getLocation();
+		location.setY( location.getY() + 2.5 );
+		
+		// NOTE: The direction the entity is facing is based upon yaw.  
+		//       When using org.bukkit.Location.setDirection() it's using a vector
+		//       to set yaw and pitch so it's looking at that vector point. 
+		// So... I guess that means an entity cannot turn their head?
+		//       For entities, or at least armorStands, there is an Euler angle 
+		//       based getHeadPose() and setHeadPose() functions.
+		location.setYaw( entityYaw );  
+		
+		
+		// Not sure why 90 was being added.  I suspect 0 is straight up?
+		location.setPitch( entityPitch  + 90 );
+		
+		this.originalLocation = location;
+		
+		
+		
 		
 //		this.ageTicks = 0;
 		this.terminateOnZeroTicks = getTaskLifeSpan();
@@ -100,39 +123,39 @@ public abstract class BombAnimations {
 	
 	public void initialize() {
 		
-		Location location =
-				getBomb().getPlacedBombLocation() != null ?
-						getBomb().getPlacedBombLocation() :
-						getsBlock().getLocation();
-				
-		location.setY( location.getY() + 2.5 );
+//		Location location =
+//				getBomb().getPlacedBombLocation() != null ?
+//						getBomb().getPlacedBombLocation() :
+//						getsBlock().getLocation();
+//				
+//		location.setY( location.getY() + 2.5 );
+//		
+//		setOriginalLocation( location );
+//		
 		
-		setOriginalLocation( location );
-		
-		
-		// NOTE: The direction the entity is facing is based upon yaw.  
-		//       When using org.bukkit.Location.setDirection() it's using a vector
-		//       to set yaw and pitch so it's looking at that vector point. 
-		// So... I guess that means an entity cannot turn their head?
-		//       For entities, or at least armorStands, there is an Euler angle 
-		//       based getHeadPose() and setHeadPose() functions.
-		location.setYaw( entityYaw );  
-		
-		
-		// Not sure why 90 was being added.  I suspect 0 is straight up?
-		location.setPitch( entityPitch  + 90 );
-		
-		
+//		// NOTE: The direction the entity is facing is based upon yaw.  
+//		//       When using org.bukkit.Location.setDirection() it's using a vector
+//		//       to set yaw and pitch so it's looking at that vector point. 
+//		// So... I guess that means an entity cannot turn their head?
+//		//       For entities, or at least armorStands, there is an Euler angle 
+//		//       based getHeadPose() and setHeadPose() functions.
+//		getOriginalLocation().setYaw( entityYaw );  
+//		
+//		
+//		// Not sure why 90 was being added.  I suspect 0 is straight up?
+//		getOriginalLocation().setPitch( entityPitch  + 90 );
+//		
+//		
 		
 //		double startingAngle = ( 360d / entityYaw ) * twoPI;
 //		location.setDirection( startingAngle );
 		
 		// eulerAngleX += startingAngle;
 		
-		EulerAngle arm = new EulerAngle( 
-						eulerAngleX, 
-						eulerAngleY, 
-						eulerAngleZ );
+//		EulerAngle arm = new EulerAngle( 
+//						eulerAngleX, 
+//						eulerAngleY, 
+//						eulerAngleZ );
 		
 //		EulerAngle arm = new EulerAngle( 
 //				eulerAngleX + startingAngle, 
@@ -141,10 +164,11 @@ public abstract class BombAnimations {
 		
 		
 		// Spawn an invisible armor stand:
-		armorStand = location.spawnArmorStand(
-						getBomb().getItemType(),
-//						(getItem() == null ? null : getBomb().getItemType()),
-						getBomb().getName() );
+		// If item is null, then armorstand will not spawn with an item
+		// and no arms.
+		armorStand = getOriginalLocation().spawnArmorStand(
+						(getItem() == null ? null : getBomb().getItemType()),
+						(getId() == 0 ? getBomb().getName() : null) );
 		
 //						MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
 		
@@ -177,7 +201,17 @@ public abstract class BombAnimations {
 			
 			armorStand.setSmall( getBomb().isSmall() );
 			
-			armorStand.setRightArmPose(arm);
+			
+			if ( getItem() != null ) {
+				
+				EulerAngle arm = new EulerAngle( 
+						eulerAngleX, 
+						eulerAngleY, 
+						eulerAngleZ );
+				
+				armorStand.setArms( true );
+				armorStand.setRightArmPose(arm);
+			}
 			
 //			ItemStack itemInHand = armorStand.getItemInHand();
 //			
@@ -204,16 +238,20 @@ public abstract class BombAnimations {
 			}
 		}
 		
-//		if ( Output.get().isDebug() ) {
-//			String msg = String.format( 
-//					"### BombAnimation.initializeArmorStand : id: %s  %s  %s", 
-//					Integer.toString(getId()),
-//					bomb.getAnimationPattern().name(),
-//					armorStand.getLocation().toString()
-//					);
-//			
-//			Output.get().logInfo( msg );
-//		}
+		if ( Output.get().isDebug() ) {
+			String msg = String.format( 
+					"### BombAnimation.initializeArmorStand : id: %s  %s  %s %s%s", 
+					Integer.toString(getId()),
+					bomb.getAnimationPattern().name(),
+					armorStand.getLocation().toString(),
+					(getArmorStand().isCustomNameVisible() ? " CustomName" : ""),
+					(getArmorStand().hasArms() ? " hasArms" : "" ),
+					(getArmorStand().getItemInHand() != null ? 
+							" " + getArmorStand().getItemInHand().getName() : "" )
+					);
+			
+			Output.get().logInfo( msg );
+		}
 	}
 
 

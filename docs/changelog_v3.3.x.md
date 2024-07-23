@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-23
 
 
+* **Mind bombs: Minor updates to the BombAnimations class to realign a few of the settings. **
+
+
 * **Mine bombs: Various updates to the general mine bomb defaults to include more of the newer features.**
 
 
