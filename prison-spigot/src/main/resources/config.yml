@@ -158,7 +158,7 @@ prison-ranks:
 # so enabling this setting could be dangerous. 
 # Where it can be useful, is if prison cannot communicate through vault, 
 # but is able to successfully communicate directly with the 
-# EssentialsEconomy, SaneEconomy, or GemsEconomy.  Enabling this setting
+# EssentialsEconomy, SaneEconomy, TheNewEconomy, or GemsEconomy.  Enabling this setting
 # will NOT work for any other plugins.
 # To test vault, run the following commands when vault economy has been
 # succesfully loaded.  Run these command in the console:
