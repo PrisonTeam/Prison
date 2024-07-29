@@ -46,6 +46,7 @@ repositories {
 //    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
     	content {
     		includeGroup 'de.tr7zw'
+            includeGroup 'net.tnemc'
     	}
     }
   
@@ -83,6 +84,8 @@ dependencies {
     compileOnly( libs.luckperms.v5 )
     
     compileOnly( libs.papi )
+
+    compileOnly( libs.theneweconomy )
     
     compileOnly( libs.vault )
 	implementation( libs.xseries )

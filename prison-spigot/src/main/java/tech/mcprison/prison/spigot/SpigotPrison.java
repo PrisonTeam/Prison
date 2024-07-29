@@ -84,6 +84,7 @@ import tech.mcprison.prison.spigot.economies.EdPrisonEconomy;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
+import tech.mcprison.prison.spigot.economies.TheNewEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
@@ -959,6 +960,7 @@ public class SpigotPrison
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
         registerIntegration(new GemsEconomy());
+        registerIntegration(new TheNewEconomy());
         registerIntegration(new CoinsEngineEconomy());
         registerIntegration(new EdPrisonEconomy());
         
