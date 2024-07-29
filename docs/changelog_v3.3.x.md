@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-23
+# 3.3.0-beta.18c 2024-07-29
+
+
+* **Add support for new economy: The New Economy:  Created dummy stubs to allow prison to build the new classes for the integration.**
+Cannot use maven because those jars are built with Java 17 when prison can only be built with java 1.8.
 
 
 * **Mind bombs: Minor updates to the BombAnimations class to realign a few of the settings. **
