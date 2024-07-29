@@ -511,9 +511,12 @@ public abstract class FileIO
     	
     	
     	File[] collectionFiles = path.listFiles( fFilter );
-    	for (File file : collectionFiles ) {
-			results.add(file);
-		}
+    	if ( collectionFiles != null ) {
+    		
+    		for (File file : collectionFiles ) {
+    			results.add(file);
+    		}
+    	}
 
     	return results;
 	}
