@@ -1,10 +1,11 @@
 package net.tnemc.core.api;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class TNEAPI {
 
-	public boolean hasPlayerAccount( String playerUUID ) {
+	public boolean hasPlayerAccount( UUID playerUUID ) {
 		return true;
 	}
 	

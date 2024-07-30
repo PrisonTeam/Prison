@@ -25,7 +25,7 @@ public class TheNewEconomyWrapper {
   }
 
   public boolean hasAccount(final Player player) {
-    return economy.hasPlayerAccount(player.getUUID().toString());
+    return economy.hasPlayerAccount(player.getUUID());
   }
 
   public boolean hasBalance(final Player player, final String currency, final BigDecimal amount) {

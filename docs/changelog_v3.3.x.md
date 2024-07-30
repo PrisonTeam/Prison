@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-29
 
 
+* **TheNewEconomy support:  I had a wrong method signature for one of the mock functions.  This should correct it.**
+The jar was regenerated for java 1.8.
+
 
 * **Mine Bombs: Updated text on the mine bomb list help details.**
 
