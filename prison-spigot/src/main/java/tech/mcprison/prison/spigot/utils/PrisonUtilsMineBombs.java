@@ -488,7 +488,8 @@ public class PrisonUtilsMineBombs
 
 	@Command(identifier = "prison utils bomb list", 
 			description = "A list of all available bombs, including their full details.  " +
-					"This command also shows a list of settings for shapes, sounds, and visual effects.",
+					"This command also shows a list of settings for the animation patterns, "
+					+ "shapes, sounds, and visual effects. This command is best ran in the console.",
 		onlyPlayers = false, 
 		permissions = "prison.utils.bombs" )
 	public void utilsMineBombsList( CommandSender sender,

@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-29
 
 
+
+* **Mine Bombs: Updated text on the mine bomb list help details.**
+
+
+
 * **PrisonJarReporter: Update support for java 22.**
 
 
