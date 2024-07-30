@@ -59,6 +59,7 @@ public class PrisonJarReporter {
 		JavaSE_19("3f"),
 		JavaSE_20("40"),
 		JavaSE_21("41"),
+		JavaSE_22("42"),
 		
 		JavaSE_UnknownVersion("UnknownJavaVersion")
 		;

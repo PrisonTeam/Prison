@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-07-29
 
 
+* **PrisonJarReporter: Update support for java 22.**
+
+
+
 * **Update the TNE API jar: TheNewEconomy_prisonBuild_v0.1.3.0.jar  It was accidentally built with Java 21 instead of Java 1.8.**
 
 
