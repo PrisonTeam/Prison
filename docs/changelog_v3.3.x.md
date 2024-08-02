@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-07-29
+# 3.3.0-beta.18c 2024-08-02
+
+
+* **Bug Fix: BlockBreakEvent ACCESS Priority.  This event was not being handled in the correct place, so other fast-fail checks were intercepting this ACCESS check.**
+This now has three different results.... If outside of a mine, it will fail and cancel the event.  If in a mine and the player does not have access, then it will cancel the event.
+If its in a mine and the player has access, then it will let the other events handle the event without it being canceled.
 
 
 * **TheNewEconomy support:  I had a wrong method signature for one of the mock functions.  This should correct it.**

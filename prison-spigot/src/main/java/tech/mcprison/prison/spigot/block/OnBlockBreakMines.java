@@ -47,7 +47,11 @@ public class OnBlockBreakMines
 		cancel_event__block_already_counted, 
 		ignore_event__monitor_priority_but_not_AIR, 
 		cancel_event__player_has_no_access, 
-		cancel_event__block_is_not_mappable_to_target_block
+		cancel_event__block_is_not_mappable_to_target_block, 
+		
+		results_passed__access_priority__player_has_access,
+		cancel_event__access_priority__block_is_not_in_a_mine,
+		cancel_event__access_priority__player_has_no_access
 		;
 		
 	}
@@ -301,6 +305,53 @@ public class OnBlockBreakMines
 			results.setCancelEvent( true );
 			results.setIgnoreEvent( true );
 		}
+		else if ( bbPriority.isAccess() ) {
+			
+			Mine mine = findMine( player, sBlock,  null, null ); 
+			results.setMine( mine );
+			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				results.setResultsReason( EventResultsReasons
+								.cancel_event__access_priority__block_is_not_in_a_mine );
+				
+				results.setCancelEvent( true );
+				results.setIgnoreEvent( true );
+			}
+			else if ( !mine.hasMiningAccess(sPlayer) ) {
+				
+				results.setResultsReason( EventResultsReasons
+								.cancel_event__access_priority__player_has_no_access );
+				results.setIgnoreEvent( true );
+				results.setCancelEvent( true );
+				
+	    		if ( sPlayer != null &&
+	    				AutoFeaturesWrapper.getInstance()
+	    					.isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+	    			// run the `/mines tp` command for the player which will TP them to a 
+	    			// mine they can access:
+	    			
+					String debugInfo = String.format(
+									"ACCESS failed: teleport %s to valid mine.", 
+									sPlayer.getName() );
+					
+					PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
+									"mines tp", 0 );
+					cmdTask.setTaskMode( TaskMode.syncPlayer );
+
+	    			PrisonCommandTasks.submitTasks( sPlayer, cmdTask );
+	    			
+	    		}
+
+			}
+			else {
+				results.setResultsReason( EventResultsReasons
+								.results_passed__access_priority__player_has_access );
+				
+				results.setIgnoreEvent( true );
+			}
+		
+		}
 		else if ( bbPriority.isMonitor() && !sBlock.isEmpty() && 
 				AutoFeaturesWrapper.getInstance().isBoolean( 
 						AutoFeatures.processMonitorEventsOnlyIfPrimaryBlockIsAIR ) ) {
@@ -331,31 +382,31 @@ public class OnBlockBreakMines
 					results.setCancelEvent( true );
 					
 				}
-				else if ( bbPriority.isAccess() && !mine.hasMiningAccess(sPlayer) ) {
-					
-					results.setResultsReason( EventResultsReasons.cancel_event__player_has_no_access );
-					results.setIgnoreEvent( true );
-					results.setCancelEvent( true );
-					
-		    		if ( sPlayer != null &&
-		    				AutoFeaturesWrapper.getInstance()
-		    					.isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
-		    			// run the `/mines tp` command for the player which will TP them to a 
-		    			// mine they can access:
-		    			
-						String debugInfo = String.format(
-										"ACCESS failed: teleport %s to valid mine.", 
-										sPlayer.getName() );
-						
-						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
-										"mines tp", 0 );
-						cmdTask.setTaskMode( TaskMode.syncPlayer );
-
-		    			PrisonCommandTasks.submitTasks( sPlayer, cmdTask );
-		    			
-		    		}
-
-				}
+//				else if ( bbPriority.isAccess() && !mine.hasMiningAccess(sPlayer) ) {
+//					
+//					results.setResultsReason( EventResultsReasons.cancel_event__player_has_no_access );
+//					results.setIgnoreEvent( true );
+//					results.setCancelEvent( true );
+//					
+//		    		if ( sPlayer != null &&
+//		    				AutoFeaturesWrapper.getInstance()
+//		    					.isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+//		    			// run the `/mines tp` command for the player which will TP them to a 
+//		    			// mine they can access:
+//		    			
+//						String debugInfo = String.format(
+//										"ACCESS failed: teleport %s to valid mine.", 
+//										sPlayer.getName() );
+//						
+//						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
+//										"mines tp", 0 );
+//						cmdTask.setTaskMode( TaskMode.syncPlayer );
+//
+//		    			PrisonCommandTasks.submitTasks( sPlayer, cmdTask );
+//		    			
+//		    		}
+//
+//				}
 				else {
 					
 					MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
