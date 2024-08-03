@@ -597,23 +597,25 @@ public abstract class AutoManagerFeatures
 				pmEvent.getDebugInfo().append(" isAutoFeaturesEnabled=false (");
 				
 				pmEvent.getDebugInfo().append( Output.get().getColorCodeError() );
-				pmEvent.getDebugInfo().append("disabled");
+				pmEvent.getDebugInfo().append(" disabled");
 				pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug() );
 				pmEvent.getDebugInfo().append(")");
 			}
 			else {
 				
 				pmEvent.getDebugInfo()
-				.append( " Pickup [")
-				.append( isAutoPickup ? "enabled: " : "disabled:" )
+				.append( " &7Pickup&3 [")
+				.append( isAutoPickup ? "enabled: " : 
+						Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 				.append( lorePickup ? "lore " : "" )
 				.append( permPickup ? "perm " : "" )
 				.append( configPickup ? "config " : "" )
 				.append( limit2minesPickup ? "mines" : "noLimit" )
 				.append( "] ")
 				
-				.append( " Smelt [")
-				.append( isAutoSmelt ? "enabled: " : "disabled:" )
+				.append( " &7Smelt&3 [")
+				.append( isAutoSmelt ? "enabled: " : 
+						Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 				.append( loreSmelt ? "lore " : "" )
 				.append( permSmelt ? "perm " : "" )
 				.append( configSmelt ? "config " : "" )
@@ -621,8 +623,9 @@ public abstract class AutoManagerFeatures
 				.append( includePlayerInventoryWhenSmelting ? " includePlayerInventory" : "" )
 				.append( "] ")
 				
-				.append( " Block [")
-				.append( isAutoBlock ? "enabled: " : "disabled:" )
+				.append( " &7Block&3 [")
+				.append( isAutoBlock ? "enabled: " : 
+						Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 				.append( loreBlock ? "lore " : "" )
 				.append( permBlock ? "perm " : "" )
 				.append( configBlock ? "config " : "" )
@@ -656,18 +659,22 @@ public abstract class AutoManagerFeatures
 				
 				if ( configNormalDrop ) {
 					pmEvent.getDebugInfo()
-						.append( "{br}||  (NormalDrop handling enabled: " )
-						.append( "normalDropSmelt[" )
-						.append( configNormalDropSmelt ? "enabled" : "disabled" )
+//						.append( "{br}||")
+						.append( "(&7NormalDrop handling enabled&3: " )
+						.append( "&7normalDropSmelt&3[" )
+						.append( configNormalDropSmelt ? "enabled" : 
+								Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 						.append( configNormalDropSmelt && includePlayerInventoryWhenSmelting ? " includePlayerInventory" : "" )
 						.append( "] " )
-						.append( "normalDropBlock[" )
-						.append( configNormalDropBlock ? "enabled" : "disabled" )
+						.append( "&7normalDropBlock&3[" )
+						.append( configNormalDropBlock ? "enabled" : 
+								Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 						.append( configNormalDropBlock && includePlayerInventoryWhenBlocking ? " includePlayerInventory" : "" )
 						.append( "] " )
 						
-						.append( "normalDropCheckForFullInventory[" )
-						.append( configNormalDropCheckForFullInventory ? "enabled" : "disabled" )
+						.append( "&7normalDropCheckForFullInventory&3[" )
+						.append( configNormalDropCheckForFullInventory ? "enabled" : 
+								Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 						.append( "] " )
 						.append( ")" );
 					
@@ -677,7 +684,10 @@ public abstract class AutoManagerFeatures
 
 				}
 				else {
-					pmEvent.getDebugInfo().append(" [Warning: normalDrop handling is disabled] " );
+					pmEvent.getDebugInfo().append( 
+							Output.get().getColorCodeError() +
+							" [Warning: normalDrop handling is disabled] "
+									+ Output.get().getColorCodeDebug() );
 				}
 				
 			}
@@ -863,7 +873,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			debugInfo.append( " [autoPickupDrops:beforeFortune:: " ).append( sb ).append( "] ");
+			debugInfo.append( " [&7autoPickupDrops&3:beforeFortune:: " ).append( sb ).append( "] ");
 			
 			
 			
@@ -895,7 +905,7 @@ public abstract class AutoManagerFeatures
 						.append( ":" )
 						.append( itemStack.getAmount() );
 				}
-				debugInfo.append( " [totalDrops:afterFortune:: " ).append( sb ).append( "] ");
+				debugInfo.append( " [&7totalDrops&3:afterFortune:: " ).append( sb ).append( "] ");
 			}
 			
 			
@@ -906,17 +916,21 @@ public abstract class AutoManagerFeatures
 			
 			// Smelt
 			if ( isAutoSmelt ) {
-				debugInfo.append( "(autoSmelting: drops)" );
+				debugInfo.append( "(&7autoSmelting&3: " );
 				
-				normalDropSmelt( pmEvent.getPlayer(), drops );
+				normalDropSmelt( pmEvent.getPlayer(), drops, debugInfo );
+
+				debugInfo.append( " )" );
 			}
 			
 			
 			// Block
 			if ( isAutoBlock ) {
-				debugInfo.append( "(autoBlocking: drops)" );
+				debugInfo.append( "(&7autoBlocking&3: " );
 				
-				normalDropBlock( pmEvent.getPlayer(), drops );
+				normalDropBlock( pmEvent.getPlayer(), drops, debugInfo );
+
+				debugInfo.append( " ) " );
 			}
 			
 			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
@@ -1021,7 +1035,7 @@ public abstract class AutoManagerFeatures
 							amount, mineName );
 
 					if ( amount != 0 ) {
-						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + 
+						debugInfo.append( "(&7sold&3: " + itemStack.getName() + " qty: " + itemStack.getAmount() + 
 								" value: " + dFmt.format( amount ) + ") ");
 						
 						// Set to zero quantity since they have all been sold.
@@ -1031,7 +1045,7 @@ public abstract class AutoManagerFeatures
 						
 						// Unable to sell since amount was zero.  Not configured to be sold.
 						pmEvent.setDebugColorCodeWarning();
-						debugInfo.append( "(unsellable: " + itemStack.getName() + " qty: " + itemStack.getAmount() + ") ");
+						debugInfo.append( "(&7unsellable&3: " + itemStack.getName() + " qty: " + itemStack.getAmount() + ") ");
 						pmEvent.setDebugColorCodeDebug();
 						autosellUnsellableCount += itemStack.getAmount();
 					}
@@ -1063,7 +1077,8 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 
-						debugInfo.append( "{br}||  (WARNING: autosell leftovers: " + itemStack.getName() + 
+//						debugInfo.append( "{br}|| " );
+						debugInfo.append( " (&7WARNING: autosell leftovers&3: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + 
 								" - " + 
 								( amount == 0 ? " Items NOT in sellall shop!" : " CouldNotSell?") +
@@ -1077,7 +1092,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 						
-						debugInfo.append( " (Debug-unsold-value-check: " + itemStack.getName() + 
+						debugInfo.append( " (&7Debug-unsold-value-check&3: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + ") ");
 					}
 					
@@ -1113,7 +1128,8 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "{br}||  [autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
+//				debugInfo.append( "{br}|| " );
+				debugInfo.append( "  [&7autoPickupDrops total&3: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
 						"  unsellableCount: " + autosellUnsellableCount );
 				
 				if ( nanoTime > 0 ) {
@@ -1224,16 +1240,20 @@ public abstract class AutoManagerFeatures
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
-				pmEvent.getDebugInfo().append( "(normSmelting: drops)" );
+				pmEvent.getDebugInfo().append( "(normSmelting: " );
 				
-				normalDropSmelt( pmEvent.getPlayer(), drops );
+				normalDropSmelt( pmEvent.getPlayer(), drops, pmEvent.getDebugInfo() );
+
+				pmEvent.getDebugInfo().append( " ) " );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
-				pmEvent.getDebugInfo().append( "(normBlocking: drops)" );
+				pmEvent.getDebugInfo().append( "(normBlocking: " );
 
-				normalDropBlock( pmEvent.getPlayer(), drops );
+				normalDropBlock( pmEvent.getPlayer(), drops, pmEvent.getDebugInfo() );
+
+				pmEvent.getDebugInfo().append( " ) " );
 			}
 			
 			
@@ -2268,7 +2288,7 @@ public abstract class AutoManagerFeatures
 	 * 
 	 * @param drops
 	 */
-	protected void normalDropSmelt( Player player, List<SpigotItemStack> drops ) {
+	protected void normalDropSmelt( Player player, List<SpigotItemStack> drops, StringBuilder debugInfo ) {
 		
 		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
 		
@@ -2374,7 +2394,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.STONE, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.STONE, 1, debugInfo );
 					}
 					break;
 					
@@ -2389,7 +2409,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1, debugInfo );
 					}
 					break;
 					
@@ -2402,7 +2422,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1, debugInfo );
 					}
 					break;
 					
@@ -2414,7 +2434,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL, 1, debugInfo );
 					}
 					break;
 					
@@ -2426,7 +2446,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1, debugInfo );
 					}
 					break;
 					
@@ -2438,7 +2458,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1, debugInfo );
 					}
 					break;
 					
@@ -2450,7 +2470,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1, debugInfo );
 					}
 					break;
 					
@@ -2462,7 +2482,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1, debugInfo );
 					}
 					break;
 					
@@ -2473,7 +2493,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1, debugInfo );
 					}
 					break;
 					
@@ -2484,7 +2504,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1, debugInfo );
 					}
 					break;
 
@@ -2498,7 +2518,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1, debugInfo);
 					}
 					break;
 					
@@ -2517,7 +2537,7 @@ public abstract class AutoManagerFeatures
 	 * 
 	 * @param drops
 	 */
-	protected void normalDropBlock( Player player, List<SpigotItemStack> drops ) {
+	protected void normalDropBlock( Player player, List<SpigotItemStack> drops, StringBuilder debugInfo ) {
 		
 		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
 		
@@ -2555,7 +2575,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_GOLD_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_GOLD_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2566,7 +2586,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2577,7 +2597,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_IRON_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_IRON_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2588,7 +2608,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_BLOCK, 9, debugInfo );
 					}
 					break;
 
@@ -2599,7 +2619,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2610,7 +2630,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2621,7 +2641,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source,XMaterial.REDSTONE_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source,XMaterial.REDSTONE_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2632,7 +2652,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2643,7 +2663,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ_BLOCK, 4 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ_BLOCK, 4, debugInfo );
 					}
 					break;
 					
@@ -2654,7 +2674,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.PRISMARINE, 4 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.PRISMARINE, 4, debugInfo );
 					}
 					break;
 					
@@ -2665,7 +2685,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4, debugInfo );
 					}
 					break;
 					
@@ -2676,7 +2696,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GLOWSTONE, 4 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GLOWSTONE, 4, debugInfo );
 					}
 					break;
 					
@@ -2687,7 +2707,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2698,7 +2718,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_COPPER_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.RAW_COPPER_BLOCK, 9, debugInfo );
 					}
 					break;
 					
@@ -2709,7 +2729,7 @@ public abstract class AutoManagerFeatures
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
 						}
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_BLOCK, 9 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_BLOCK, 9, debugInfo );
 					}
 					break;
 					

@@ -201,7 +201,7 @@ public class SpigotUtil {
 	}
 	
 	public static void getSpigotBlock( ItemStack iStack ) {
-		XMaterial xmat = XMaterial.matchXMaterial( iStack );
+		//XMaterial xmat = XMaterial.matchXMaterial( iStack );
 		
 //		SpigotCompatibility.getInstance().
 	}
@@ -472,6 +472,17 @@ public class SpigotUtil {
 	}
 
 	
+	/**
+	 * <p>This function will take a given XMaterial and remove all occurrences of it
+	 * from a player's inventory, and add the quantity removed, to the ItemStack drop
+	 * amount. This basically moves an item from the player's inventory, to the drop
+	 * ItemStack.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param xMat
+	 * @param drop
+	 */
 	public static void getAllDroppedItemTypesFromPlayerInventory( 
 			Player player, XMaterial xMat, SpigotItemStack drop ) {
 
@@ -541,7 +552,8 @@ public class SpigotUtil {
 	 * @param ratio
 	 */
 	public static void itemStackReplaceItems( List<SpigotItemStack> stacks,
-											XMaterial source, XMaterial target, int ratio ) {
+											XMaterial source, XMaterial target, int ratio,
+											StringBuilder debugInfo ) {
 		// Removes all of the specified source types from all inventories:
 		int sourceRemoved = itemStackRemoveAll( source, stacks );
 		
@@ -560,6 +572,9 @@ public class SpigotUtil {
 			itemStackAddAll( stacks, target, targetCount );
 		}
 		
+		debugInfo.append( "&d[&b" ).append( source.name() ).append( "&c:&b" ).append( sourceRemoved )
+					.append( " &7->&b " )
+					.append( target.name() ).append( "&c:&b" ).append( targetCount ).append( "&d]&3" );
 	}
 	
 	

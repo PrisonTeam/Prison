@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-02
+# 3.3.0-beta.18c 2024-08-03
+
+
+* **Debugging info: Expanded the debugging info for the smelting and blocking to show the progressions.**
+This is important for tracking and understanding how and if they are working.
+Changed some of the coloring so it's easier to read and for various headers to standout.
 
 
 * **Bug Fix: BlockBreakEvent ACCESS Priority.  This event was not being handled in the correct place, so other fast-fail checks were intercepting this ACCESS check.**
