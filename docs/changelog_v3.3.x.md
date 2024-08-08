@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-03
+# 3.3.0-beta.18c 2024-08-08
+
+
+
+* **Placeholders: Fixed a bug when the player is at the last possible rank on both the default and prestiges ladder.**
+The fact that there isn't a next rank was causing problem when trying to get the next ranks ladder base multiplier, which does not exist.
 
 
 * **Debugging info: Expanded the debugging info for the smelting and blocking to show the progressions.**

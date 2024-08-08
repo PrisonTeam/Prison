@@ -1215,7 +1215,12 @@ public class RankManager
 //					RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 //					PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
 					
-					results = Double.toString( pRank.getLadderBasedRankMultiplier() );
+					if ( pRank == null ) {
+						results = "";
+					}
+					else {						
+						results = Double.toString( pRank.getLadderBasedRankMultiplier() );
+					}
 					break;
 					
 					
