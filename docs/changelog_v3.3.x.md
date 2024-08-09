@@ -14,8 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-08
+# 3.3.0-beta.18c 2024-08-09
 
+
+* **Economy: CoinsEngine: fixed a problem with using the wrong plugin signature.**
+This now works as expected.  This was tested with gemsEconommy such that some currencies from both were actively being used.
 
 
 * **Placeholders: Fixed a bug when the player is at the last possible rank on both the default and prestiges ladder.**

@@ -43,7 +43,7 @@ public class CoinsEngineEconomyWrapper {
 	
 	public double getBalance(Player player) {
 
-		Output.get().logWarn( "CoinsEngineEconomy getBalance() - Fail: MUST include a currencyName.");
+		Output.get().logWarn( "CoinsEngine getBalance() - Fail: MUST include a currencyName.");
         return getBalance(player, null, false);
     }
 
@@ -64,7 +64,7 @@ public class CoinsEngineEconomyWrapper {
 	
 	public void addBalance(Player player, double amount) {
 
-		Output.get().logWarn( "CoinsEngineEconomy addBalance() - Fail: MUST include a currencyName.");
+		Output.get().logWarn( "CoinsEngine addBalance() - Fail: MUST include a currencyName.");
 		addBalance(player, amount, null);
 	}
 	
@@ -85,7 +85,7 @@ public class CoinsEngineEconomyWrapper {
 	
 	public void withdraw(Player player, double amount) {
 
-		Output.get().logWarn( "CoinsEngineEconomy withdraw() - Fail: MUST include a currencyName.");
+		Output.get().logWarn( "CoinsEngine withdraw() - Fail: MUST include a currencyName.");
 		withdraw(player, amount, null);
 	}
 	

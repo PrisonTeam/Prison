@@ -11,7 +11,7 @@ public class CoinsEngineEconomy
 	private boolean availableAsAnAlternative = false;
 
     public CoinsEngineEconomy() {
-    	super( "CoinsEngineEconomy", "CoinsEngineEconomy" );
+    	super( "CoinsEngine", "CoinsEngine" );
     }
 	
     /**
