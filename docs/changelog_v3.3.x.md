@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-13
 
 
+* **Sellall: Enchantments: Prevent items with enchantments from being sold.**
+Unlike lore, there is no way to bypass this.  Sellall cannot sell anything that is enchanted.
+There was an issue that would "sell" enchanted items, but would not remove them from the inventory unless the player was holding it in their hands, which would allow the item to be sold multiple times.
+
+
 * **Integrations: Backpacks and prison versions reporting of integrations.**
 Fixed an issue with backpacks not being included in the sellall activity when they are enabled in the sellall settings.
 Added BACKPACKs to the IntegrationType and made changes to include the listings of all backpacks and their status in the startup information and prison versions.

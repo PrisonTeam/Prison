@@ -922,13 +922,25 @@ public class SellAllUtil
     		
     		if ( pBlockSellAll != null ) {
     			
-    			if ( !pBlockSellAll.isLoreAllowed() && iStack.getLore().size() > 0 ) {
-    				String msg = String.format(
-    						"Sellall: Cannot sell item '%s' (qty %s) because it has lore which is not allowed. ",
-    						iStack.getDisplayName(), 
-    						Integer.toString( iStack.getAmount() )
-    						);
+    			if ( iStack != null && iStack.getEnchantments() != null && iStack.getEnchantments().size() > 0 ) {
+    				// Cannot sell enchanted items:
     				if ( Output.get().isDebug() ) {
+    					String msg = String.format(
+    							"Sellall: Cannot sell item '%s' (qty %s) because it has enchantments which is not allowed. ",
+    							(iStack.getDisplayName() != null ? iStack.getDisplayName() : iStack.getName() ), 
+    							Integer.toString( iStack.getAmount() )
+    							);
+    					Output.get().logInfo( msg );
+    				}
+    			}
+    			
+    			else if ( !pBlockSellAll.isLoreAllowed() && iStack.getLore().size() > 0 ) {
+    				if ( Output.get().isDebug() ) {
+    					String msg = String.format(
+    							"Sellall: Cannot sell item '%s' (qty %s) because it has lore which is not allowed. ",
+    							(iStack.getDisplayName() != null ? iStack.getDisplayName() : iStack.getName() ), 
+    							Integer.toString( iStack.getAmount() )
+    							);
     					Output.get().logInfo( msg );
     				}
     				
