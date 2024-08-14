@@ -3424,7 +3424,8 @@ public class SpigotPlatform
 							getPlayer( player.getName() ).orElse(null);
 				
 		
-		if ( sPlayer != null && getConfigBooleanFalse( "backpacks" ) && BackpacksUtil.isEnabled() ) {
+		if ( sPlayer != null && getConfigBooleanFalse( "backpacks" ) && 
+					BackpacksUtil.getInstance().isEnabled() ) {
 			
 			BackpacksUtil backpackUtil = BackpacksUtil.get();
 			

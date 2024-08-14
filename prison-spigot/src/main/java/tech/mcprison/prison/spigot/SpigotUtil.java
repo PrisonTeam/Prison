@@ -258,7 +258,7 @@ public class SpigotUtil {
 			player.updateInventory();
 			
 			// Insert overflow in to Prison's backpack:
-			if ( BackpacksUtil.isEnabled() ) {
+			if ( BackpacksUtil.getInstance().isEnabled() ) {
 				
 				BackpacksUtil bpUtil = BackpacksUtil.get();
 				if (overflow.size() > 0 && 

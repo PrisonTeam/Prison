@@ -22,7 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.backpacks.PrisonCoreBackpackMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -41,6 +40,8 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 public class BackpacksUtil 
 	extends PrisonCoreBackpackMessages {
 
+	private boolean enabled = false;
+	
     private static BackpacksUtil instance;
     private Configuration backpacksConfig = SpigotPrison.getInstance().getBackpacksConfig();
     private File backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksData.yml");
@@ -54,18 +55,42 @@ public class BackpacksUtil
     private BackpacksUtil() {
     	super();
     	
+    	
+    	String backpackConfig = SpigotPrison.getInstance().getConfig().getString("backpacks");
+    	
+    	this.enabled = backpackConfig != null && 
+    			backpackConfig.equalsIgnoreCase("true");
+    	
     }
     
 
-    private static BackpacksUtil getInstance() {
-        if (instance == null && SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
+    public static BackpacksUtil getInstance() {
+        if (instance == null ){
             instance = new BackpacksUtil();
         }
 
         return instance;
     }
     
-    @Override
+    
+//    /**
+//     * Check if Backpacks's enabled.
+//     * */
+//    public static boolean isPrisonBackpacksEnabled(){
+//
+//        return getInstance().isEnabled();
+//    }
+
+    
+    public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+
+	@Override
     public boolean hasIntegrated() {
     	return isEnabled();
     }
@@ -90,16 +115,6 @@ public class BackpacksUtil
 	public String getPluginSourceURL() {
 		return "These backpacks are a part of prison.";
 	}
-    
-    /**
-     * Check if Backpacks's enabled.
-     * */
-    public static boolean isEnabled(){
-        if (SpigotPrison.getInstance().getConfig().getString("backpacks") != null){
-            return SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true");
-        }
-        return false;
-    }
 
     /**
      * Get Backpacks DATA config.

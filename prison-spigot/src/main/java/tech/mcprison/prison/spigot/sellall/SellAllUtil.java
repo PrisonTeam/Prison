@@ -776,7 +776,7 @@ public class SellAllUtil
 
     	List<SellAllData> soldData = sellInventoryItems( spInventory, multiplier );
     	
-    	if ( isSellAllBackpackItemsEnabled && BackpacksUtil.isEnabled() ) {
+    	if ( isSellAllBackpackItemsEnabled && BackpacksUtil.getInstance().isEnabled() ) {
     		BackpacksUtil bpUtil = BackpacksUtil.get();
 			
 			soldData.addAll( bpUtil.sellInventoryItems( p, multiplier ) );
