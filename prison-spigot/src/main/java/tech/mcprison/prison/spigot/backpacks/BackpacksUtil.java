@@ -22,20 +22,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.gui.PrisonCoreGuiMessages;
+import tech.mcprison.prison.backpacks.PrisonCoreBackpackMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.inventory.SpigotInventory;
+import tech.mcprison.prison.spigot.sellall.SellAllData;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 /**
  * @author GABRYCA
  * */
 public class BackpacksUtil 
-	extends PrisonCoreGuiMessages {
+	extends PrisonCoreBackpackMessages {
 
     private static BackpacksUtil instance;
     private Configuration backpacksConfig = SpigotPrison.getInstance().getBackpacksConfig();
@@ -46,6 +50,47 @@ public class BackpacksUtil
     private final Compatibility compat = SpigotCompatibility.getInstance();
     private final int backpackDefaultSize = Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size"));
 
+    
+    private BackpacksUtil() {
+    	super();
+    	
+    }
+    
+
+    private static BackpacksUtil getInstance() {
+        if (instance == null && SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
+            instance = new BackpacksUtil();
+        }
+
+        return instance;
+    }
+    
+    @Override
+    public boolean hasIntegrated() {
+    	return isEnabled();
+    }
+    
+    /**
+     * Remove reference to Prison backpacks and then get a new instance, which will basically 
+     * be similar to reloading the integration.
+     */
+    @Override
+    public void disableIntegration() {
+    	
+   
+    }
+    
+    @Override
+    public String getDisplayName()
+    {
+    	return super.getDisplayName();
+    }
+    
+	@Override
+	public String getPluginSourceURL() {
+		return "These backpacks are a part of prison.";
+	}
+    
     /**
      * Check if Backpacks's enabled.
      * */
@@ -94,7 +139,7 @@ public class BackpacksUtil
     }
 
     /**
-     * Get SellAll instance.
+     * Get Backpack instance.
      * */
     public static BackpacksUtil get() {
         return getInstance();
@@ -754,13 +799,15 @@ public class BackpacksUtil
 //        backpacksConfig = bpTemp.getFileBackpacksConfig();
 //    }
 
-    private static BackpacksUtil getInstance() {
-        if (instance == null && SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
-            instance = new BackpacksUtil();
-        }
-
-        return instance;
-    }
+    
+    // This NEEDS to be at the top of the class... it's that important.
+//    private static BackpacksUtil getInstance() {
+//        if (instance == null && SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
+//            instance = new BackpacksUtil();
+//        }
+//
+//        return instance;
+//    }
 
     private boolean checkOwnBackpack(Player p) {
         updateCachedBackpack();
@@ -1587,4 +1634,28 @@ public class BackpacksUtil
         }
         return null;
     }
+    
+    public List<SellAllData> sellInventoryItems( Player player, double multiplier ) {
+		List<SellAllData> soldItems = new ArrayList<>();
+		
+	   	
+    	if ( isEnabled()  ) {
+    		
+    		// WARNING!  This is WRONG! There is no way to tell what are valid IDs.  
+    		//           So just using null for auto sell.  Players may not want
+    		//           some backpacks to be used by autosell.  And some players may
+    		//           want more than one backpack to autosell?
+    		String id = null;
+    		
+    		Inventory inv = getBackpackOwn( player, id );
+    		
+    		SpigotInventory sInventory = new SpigotInventory( inv );
+    		
+    		soldItems.addAll( SellAllUtil.get().sellInventoryItems( sInventory, multiplier ) );
+    		
+    		saveInventory(player, inv, id);
+    	}
+		
+		return soldItems;
+	}
 }

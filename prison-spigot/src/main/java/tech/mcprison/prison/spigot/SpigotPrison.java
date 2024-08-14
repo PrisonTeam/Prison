@@ -62,6 +62,7 @@ import tech.mcprison.prison.sellall.commands.SellallCommands;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.bstats.PrisonBStats;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
@@ -87,6 +88,7 @@ import tech.mcprison.prison.spigot.economies.SaneEconomy;
 import tech.mcprison.prison.spigot.economies.TheNewEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -975,6 +977,11 @@ public class SpigotPrison
         
         registerIntegration(new CustomItems());
 
+        
+        registerIntegration( IntegrationMinepacksPlugin.getInstance() );
+        registerIntegration( BackpacksUtil.get() );
+        
+        
 //        registerIntegration(new WorldGuard6Integration());
 //        registerIntegration(new WorldGuard7Integration());
     }

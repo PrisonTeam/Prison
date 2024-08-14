@@ -34,12 +34,14 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 //import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
+import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.util.Text;
 
@@ -772,7 +774,19 @@ public class SellAllUtil
     	
     	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
 
-    	return sellInventoryItems( spInventory, multiplier );
+    	List<SellAllData> soldData = sellInventoryItems( spInventory, multiplier );
+    	
+    	if ( isSellAllBackpackItemsEnabled && BackpacksUtil.isEnabled() ) {
+    		BackpacksUtil bpUtil = BackpacksUtil.get();
+			
+			soldData.addAll( bpUtil.sellInventoryItems( p, multiplier ) );
+    	}
+    	
+		if ( isSellAllMinesBackpacksPluginEnabled && IntegrationMinepacksPlugin.getInstance().isEnabled()  ) {
+			soldData.addAll( IntegrationMinepacksPlugin.getInstance().sellInventoryItems( p, multiplier ) );						
+		}
+    	
+    	return soldData;
 	}
 
     /**
@@ -828,7 +842,7 @@ public class SellAllUtil
     }
     
     
-    private List<SellAllData> sellInventoryItems( tech.mcprison.prison.internal.inventory.Inventory inventory, 
+    public List<SellAllData> sellInventoryItems( tech.mcprison.prison.internal.inventory.Inventory inventory, 
     					double multiplier ) {
     	List<SellAllData> soldItems = new ArrayList<>();
 
@@ -2642,7 +2656,8 @@ public class SellAllUtil
         	
         	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
         		
-        		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+        		RankPlayer rankPlayer = sPlayer.getRankPlayer();
+//        		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
         		
         		
         		rankPlayer.addBalance(sellAllCurrency, money);

@@ -1,6 +1,8 @@
 package tech.mcprison.prison.spigot.integrations;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,29 +14,40 @@ import com.cryptomorin.xseries.XMaterial;
 
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
+import tech.mcprison.prison.integration.IntegrationCore;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.inventory.SpigotInventory;
+import tech.mcprison.prison.spigot.sellall.SellAllData;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 public class IntegrationMinepacksPlugin
+	extends IntegrationCore
 {
 	private static IntegrationMinepacksPlugin instance = null;
 	
 	private MinepacksPlugin minepacks = null;
 	
 	
+	/**
+	 * Register as a BACKPACK integration.
+	 */
 	private IntegrationMinepacksPlugin() {
-		super();
+		super( "Minepacks", "Minepacks", IntegrationType.BACKPACK );
 		
 		try {
 			Plugin bukkitPlugin = Bukkit.getPluginManager().getPlugin("Minepacks");
 
 			 if( bukkitPlugin instanceof MinepacksPlugin ) {
 			    this.minepacks = (MinepacksPlugin) bukkitPlugin;
+
+			    Output.get().logInfo( "&6Enabled Minepacks integration." );
 			 }
 		}
 		catch ( Exception e ) {
-			Output.get().logWarn( "Unable to Minepacks integration.", e );
+			Output.get().logWarn( "&dUnable to enable Minepacks integration.", e );
 		}
 		
 	}
@@ -50,6 +63,7 @@ public class IntegrationMinepacksPlugin
 		return instance;
 	}
 	
+	
 	public boolean isEnabled() {
 		return minepacks != null;
 	}
@@ -58,6 +72,33 @@ public class IntegrationMinepacksPlugin
     	
     	return minepacks;
     }
+
+    @Override
+    public boolean hasIntegrated() {
+    	return isEnabled();
+    }
+    
+    /**
+     * Remove reference to Minepacks and then get a new instance, which will basically 
+     * be similar to reloading the integration to Minepacks.
+     */
+    @Override
+    public void disableIntegration() {
+    	minepacks = null;
+    }
+    
+    @Override
+    public String getDisplayName()
+    {
+    	return super.getDisplayName();
+    }
+    
+	@Override
+	public String getPluginSourceURL() {
+		return "https://www.spigotmc.org/resources/minepacks-backpack-plugin-mc-1-7-1-21.19286/";
+	}
+
+	
     
     public HashMap<Integer, SpigotItemStack> addItems( Player player, HashMap<Integer, SpigotItemStack> items ) {
     	
@@ -205,6 +246,32 @@ public class IntegrationMinepacksPlugin
 			}
 		}
 		return removed;
+	}
+
+	
+    public List<SellAllData> sellInventoryItems( Player player, double multiplier ) {
+		List<SellAllData> soldItems = new ArrayList<>();
+		
+	   	
+    	if ( isEnabled()  ) {
+    		Backpack bp = getMinepacks().getBackpackCachedOnly( player );
+    		
+    		if ( bp != null ) {
+    			
+    			Inventory inv = bp.getInventory();
+    			
+    			SpigotInventory sInventory = new SpigotInventory( inv );
+    			
+    			soldItems.addAll( SellAllUtil.get().sellInventoryItems( sInventory, multiplier ) );
+
+    			if ( soldItems.size() > 0 ) {
+    				bp.setChanged();
+					bp.save();
+    			}
+    		}
+    	}
+		
+		return soldItems;
 	}
     
 //	private int itemCount(XMaterial source, Inventory inv ) {

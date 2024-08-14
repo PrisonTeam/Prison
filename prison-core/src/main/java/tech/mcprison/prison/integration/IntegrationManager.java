@@ -237,9 +237,10 @@ public class IntegrationManager {
     	
         for ( IntegrationType integrationType : IntegrationType.values() )
 		{
-			if ( integrationType == IntegrationType.WORLDGUARD ) {
+
+        	if ( integrationType == IntegrationType.WORLDGUARD ) {
 				// Skip this integration type:
-				break;
+				continue;
 			} 
 			
 			boolean activeIntegration = false;

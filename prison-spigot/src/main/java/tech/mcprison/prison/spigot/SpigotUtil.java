@@ -404,7 +404,7 @@ public class SpigotUtil {
 		removed += itemStackRemoveAll( xMat, player.getInventory() );
 
 		
-		// Insert overflow in to Prison's backpack:
+		// Then remove from Prison's backpack:
 		if ( SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
 		
 			String id = null;
@@ -414,7 +414,7 @@ public class SpigotUtil {
 		}
 		
 		
-		// Insert overflow in to Minepacks backpack:
+		// Then remove from Minepacks backpack:
 		if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
 			removed += IntegrationMinepacksPlugin.getInstance().itemStackRemoveAll(player, xMat);
 		}

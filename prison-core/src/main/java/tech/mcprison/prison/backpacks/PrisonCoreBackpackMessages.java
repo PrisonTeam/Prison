@@ -1,13 +1,16 @@
-package tech.mcprison.prison.gui;
+package tech.mcprison.prison.backpacks;
 
 import java.text.DecimalFormat;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.integration.IntegrationCore;
+import tech.mcprison.prison.integration.IntegrationType;
 
-public class PrisonCoreGuiMessages {
+public class PrisonCoreBackpackMessages
+	extends IntegrationCore {
 	
-	public PrisonCoreGuiMessages() {
-		super();
+	public PrisonCoreBackpackMessages() {
+		super( "PrisonBackpacks", "Prison", IntegrationType.BACKPACK );
 	}
 
 	protected String guiClickToDecreaseMsg() {
