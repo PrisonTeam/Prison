@@ -153,6 +153,40 @@ public class PrisonNBTUtil {
 	}
 
 	
+	public static boolean hasNBTInt( ItemStack bukkitStack, String key ) {
+		int results = -1;
+		
+		results = getNBTInt( bukkitStack, key );
+		
+		return results != -1;
+	}
+	
+	
+	public static int getNBTInt( ItemStack bukkitStack, String key ) {
+		int results = -1;
+		
+		try {
+			Function<ReadableItemNBT, Integer> gsFnc = nbt -> {
+				Integer value = nbt.getInteger(key);
+				
+//				if ( Output.get().isDebug() ) {
+//					Output.get().logInfo( "PrisonNBTUtil.getNBTString():ItemStack: %s", nbt.toString() );
+//				}
+				return value;
+			};
+			
+			results = NBT.get(bukkitStack, gsFnc );
+		}
+		catch (Exception e) {
+			Output.get().logInfo(
+					"PrisonNBTUtil.getNBTInt(): Failure trying to use NBTs. "
+					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+					e.getMessage()
+					);
+		}
+		
+		return results;
+	}
 	
 	public static boolean hasNBTString( Entity entity, String key ) {
 		String results = null;

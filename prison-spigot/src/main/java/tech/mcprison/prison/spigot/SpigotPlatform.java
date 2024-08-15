@@ -2458,6 +2458,11 @@ public class SpigotPlatform
     				(isUseTEFortuneLevel ? "" : "+"), 
     				isUseTEFortuneLevel) );
     		
+    		boolean isUseRevFortuneLevel = afw.isBoolean( AutoFeatures.isUseRevEnchantsFortuneLevel );
+    		results.add( String.format("%s.  .  Use RevEnchants Fortune Level:&b %b", 
+    				(isUseRevFortuneLevel ? "" : "+"), 
+    				isUseRevFortuneLevel) );
+    		
     		results.add( String.format("+.  .  Fortune Multiplier Global:&b %s", 
     				afw.getInteger( AutoFeatures.fortuneMultiplierGlobal )) );
     		results.add( String.format("+.  .  Max Fortune Level:&b %s  &3(0 = no max Level)", 

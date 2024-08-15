@@ -323,6 +323,8 @@ public class AutoFeaturesFileConfig {
 
 	    		isUseTokenEnchantsFortuneLevel(fortuneFeature, false ),
 	    		
+	    		isUseRevEnchantsFortuneLevel(fortuneFeature, false ),
+	    		
 	    		
 	    		fortuneMultiplierGlobal(fortuneFeature, 1.0 ),
 	    		fortuneMultiplierMax(fortuneFeature, 0 ),

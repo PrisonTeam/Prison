@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-15
 
 
+* **AutoFeatures: Add support for using RevEnchant's fortune enchantment level using NBT data.**
+Not 100% this works because I cannot test it since I do not own the RevEnchants plugin.
+
+
+
 * **BlockBreak: RevEnchants was firing one of their multi-block break events with NO blocks include. **
 Had to handle a null condition and cancel the event.
 

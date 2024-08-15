@@ -28,6 +28,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.vk2gpz.tokenenchant.api.ITokenEnchant;
 import com.vk2gpz.tokenenchant.api.TokenEnchantAPI;
 
+import me.revils.revenchants.api.RevEnchantsApi;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
@@ -50,6 +51,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
@@ -384,6 +386,7 @@ public abstract class AutoManagerFeatures
 	protected int getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
 		int fortLevel = 0;
 		boolean usedTEFortune = false;
+		boolean usedRevEnchantsFortune = false;
 		
 		if ( isBoolean( AutoFeatures.isUseTokenEnchantsFortuneLevel ) && 
 				itemInHand != null && 
@@ -421,16 +424,61 @@ public abstract class AutoManagerFeatures
 				}
 				catch ( Exception e2 ) {
 					// Ignore - Cannot use TE
+
+					debugInfo.append( " &4WARNING: Feature enabled but TokenEnchants is not found.&3" );
 				}
 				
 			}
 			
-			if ( !usedTEFortune ) {
-				debugInfo.append( " &4WARNING: Feature enabled but TE not found.&3" );
+			debugInfo.append(")");
+		}
+		
+		
+		if ( isBoolean( AutoFeatures.isUseRevEnchantsFortuneLevel ) && 
+				itemInHand != null && 
+				itemInHand.getBukkitStack() != null ) {
+			
+			debugInfo.append( " (useRevEnchantsFortuneLevel:");
+			
+			try {
+				Class.forName( "me.revils.revenchants.api.RevEnchantApi", false, this.getClass().getClassLoader() );
+				
+				boolean has1 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag");
+				boolean has2 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants");
+				boolean has3 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants.Fortune");
+
+				if ( RevEnchantsApi.isTool( itemInHand.getBukkitStack() ) && 
+									PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants.Fortune") ) {
+					
+					int fortRevEnchants = PrisonNBTUtil.getNBTInt( itemInHand.getBukkitStack(), "tag.Enchants.Fortune");
+					
+					if ( fortRevEnchants > -1 ) {
+						
+						fortLevel = fortRevEnchants;
+						
+						debugInfo.append( "used RevEnchant NBT: level " ).append( fortLevel );
+					}
+					else {
+						
+						debugInfo.append( "RevEnchantAPI returned -1 (no fortune) " ).append( fortLevel );
+					}
+					
+					
+					usedRevEnchantsFortune = true;
+				}
+			}
+			catch ( Exception e ) {
+				// ignore: could not use RevEnchants
+				
+				debugInfo.append( " &4WARNING: Feature enabled but RevEnchants is not found.&3" );
+				
 			}
 			
 			debugInfo.append(")");
 		}
+		
+		
+		
 		
 		try {
 			if ( !usedTEFortune &&
