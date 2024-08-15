@@ -39,6 +39,7 @@ public class OnBlockBreakMines
 	enum EventResultsReasons {
 		result_reason_not_yet_set,
 		results_passed,
+		cancel_event__block_is_null,
 		cancel_event__block_is_locked, 
 		ignore_event__block_is_not_in_a_mine, 
 		cancel_event__mine_mutex__mine_resetting, 
@@ -299,7 +300,15 @@ public class OnBlockBreakMines
 		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
 		results.setSpigotBlock( sBlock );
 		
-		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+		if ( block == null ) {
+			
+			results.setResultsReason( EventResultsReasons.cancel_event__block_is_null);
+			
+			results.setCancelEvent( true );
+			results.setIgnoreEvent( true );
+		}
+		
+		else if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
 			results.setResultsReason( EventResultsReasons.cancel_event__block_is_locked );
 			
 			results.setCancelEvent( true );

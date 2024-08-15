@@ -283,8 +283,11 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
+		
+		Block bBlock = e.getBlocks().size() >= 0 ? e.getBlocks().get( 0 ) : null;
+		
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-								e.getPlayer(), e.getBlocks().get( 0 ),
+								e.getPlayer(), bBlock,
 								bbPriority, true );
     	
     	if ( eventResults.isIgnoreEvent() ) {

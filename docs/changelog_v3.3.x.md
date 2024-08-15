@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-13
+# 3.3.0-beta.18c 2024-08-15
+
+
+* **BlockBreak: RevEnchants was firing one of their multi-block break events with NO blocks include. **
+Had to handle a null condition and cancel the event.
 
 
 * **Prison backpacks:  On the last commit for setting up the integrations for backpacks, I overlooked an issue when prison backpacks were disabled.**
