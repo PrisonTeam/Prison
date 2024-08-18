@@ -13,7 +13,7 @@
 # https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 # https://mvnrepository.com/artifact/com.google.guava/guava
 #
-## NOTE: mavenrepository.com is not the offical repo.
+## NOTE: mavenrepository.com is not the official repo.
 ## NOTE: This item-nbt MUST use the API and not the plugin version!
 ## Good: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api/
 ## Bad?: https://repo.codemc.io/service/rest/repository/browse/maven-public/de/tr7zw/item-nbt-api-plugin/2.11.3/
@@ -78,6 +78,11 @@ spigotApi = { module = "org.spigotmc:spigot-api", version.ref = "spigotApi" }
 
 
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
+
+
+## VaultUnlocked does not stand by itself.. it's using the vault signatures, but has a vault2 package name:
+##vaultUnlocked = { module = "com.github.MilkBowl:VaultUnlockedAPI", version.ref = "vaultUnlocked" }
+
 xseries = { module = "com.github.cryptomorin:XSeries", version.ref = "xseries" }
 
 

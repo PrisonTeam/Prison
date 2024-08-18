@@ -21,6 +21,24 @@ group 'tech.mcprison'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
 
+
+ext.targetArchiveClassifier = 'Java1.8'
+//ext.targetArchiveClassifier = 'Java16'
+
+// Lists all versions of java that are available to the toolchain
+// $ ./gradlew -q javaToolchains
+
+// Specify the java version's location as found in the javaToolchains.
+// $ ./gradlew build -Dorg.gradle.java.home="C:\Program Files\Java\jdk1.8.0_291"
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+//    languageVersion.set(JavaLanguageVersion.of(16))
+  }
+}
+
+
 repositories {
 
 	maven {

@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-15
+# 3.3.0-beta.18c 2024-08-17
+
+
+* **Gradle: Modified the gradle configs to "force" it to compile with java 1.8, which is what it needs to be for it to work with spigot 1.8 through 1.15 or so.**
 
 
 * **AutoFeatures: Add support for using RevEnchant's fortune enchantment level using NBT data.**
