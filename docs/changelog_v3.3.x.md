@@ -16,6 +16,11 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-beta.18c 2024-08-17
 
+* **PrisonEnchants update: Updated support for Pulsi's PrisonEnchants plugin.**
+The structure of the API changed with v2.0.  Another change happened with v2.2.1.
+Prison now supports all versions from v1.0.0, v2.x, and v2.2.1 and newer.
+Created a pseudo API class in the prison-misc project to be able to compile for all three versions of support.
+
 
 * **Gradle: Modified the gradle configs to "force" it to compile with java 1.8, which is what it needs to be for it to work with spigot 1.8 through 1.15 or so.**
 
