@@ -157,6 +157,11 @@ public class RankPlayerFactory
 	        	rankPlayer.setPermsSnapShot( perms );
 	        }
 
+
+	        if ( document.get("sellallMultiplier") != null ) {
+	        	double multValue = (Double) document.get("sellallMultiplier");
+	        	rankPlayer.setSellallMultiplierValue( multValue );
+	        }
 	        
 	        if ( document.get("sellallMultipliers") != null ) {
 	        	List<String> mults = (List<String>) document.get("sellallMultipliers");
@@ -262,6 +267,16 @@ public class RankPlayerFactory
 	        }
 	        ret.put( "permsSnapShot", perms );
 	        
+	        
+	        double multValue = 1d;
+	        if ( sPlayer != null && sPlayer.isOnline() ) {
+	        	multValue = sPlayer.getSellAllMultiplier();
+	        }
+	        else {
+	        	// Otherwise since offline, save the existing list of multipliers:
+	        	multValue = rankPlayer.getSellallMultiplierValue();
+	        }
+	        ret.put( "sellallMultiplier", multValue );
 
 	        List<String> multipliers = new ArrayList<>();
 	        if ( sPlayer != null && sPlayer.isOnline() ) {

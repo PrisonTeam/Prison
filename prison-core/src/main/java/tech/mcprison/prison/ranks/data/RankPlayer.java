@@ -140,6 +140,7 @@ public class RankPlayer
 
 	private List<String> permsSnapShot;
 	
+	private double sellallMultiplierValue;
 	private List<String> sellallMultipliers;
 
 	
@@ -158,6 +159,8 @@ public class RankPlayer
         
         this.permsSnapShot = new ArrayList<>();
         
+        
+        this.sellallMultiplierValue = 1d;
         this.sellallMultipliers = new ArrayList<>();
         
         
@@ -1241,7 +1244,15 @@ public class RankPlayer
      * multipliers that exists in the SpigotPlayer object.
      * </p>
      * 
-     * <p>If the player is offline, then just set to a value of 1.0 so as 
+     * <p>If the player is offline, then it will try to use the 
+     * getSellallMultiplierValue() which may not be their current 
+     * sellallMulitiplier, but it's the value when they were last 
+     * online and when it was updated and saved within their 
+     * RankPlayer object.
+     * </p>
+     * 
+     * <p>Otherwise, if the player is offline, then 
+     * just set to a value of 1.0 so as 
      * not to change any other value that may be used with this function.
      * If the player is offline, then there will be no inventory that can be
      * accessed and hence, none to sell, so a value of 1.0 should be fine.
@@ -1255,6 +1266,15 @@ public class RankPlayer
     	Player player = getPlatformPlayer();
     	if ( player != null ) {
     		results = player.getSellAllMultiplier();
+    		
+    		if ( results != getSellallMultiplierValue() ) {
+    			
+    			setSellallMultiplierValue( results );
+    			setDirty( true );
+    		}
+    	}
+    	else {
+    		results = getSellallMultiplierValue();
     	}
 //    	
 //    	Optional<Player> player = Prison.get().getPlatform().getPlayer( uid );
@@ -2083,12 +2103,26 @@ public class RankPlayer
 		this.rankScorePenalty = rankScorePenalty;
 	}
 
+	/**
+	 * <p>Returns the player's current sellallMultipliers listing if they are
+	 * online.  If they are not online, then this returns their last saved 
+	 * listing, which will not be their current listing since they could have
+	 * changed since the player was last online.
+	 * </p>
+	 * 
+	 */
 	@Override
 	public List<String> getSellAllMultiplierListings() {
 		
 		Player player = Prison.get().getPlatform().getPlayer(getUUID()).orElse(null);
 		
-		return player == null ? new ArrayList<>() : player.getSellAllMultiplierListings();
+		return player == null ? 
+				
+				// NOTE: player is offline, so use the saved sellall multiplier list:
+				getSellallMultipliers() : 
+					
+				// Online player: The actual live multiplier listings:
+				player.getSellAllMultiplierListings();
 	}
 
 
@@ -2244,6 +2278,27 @@ public class RankPlayer
 	}
 	public void setPermsSnapShot(List<String> permsSnapShot) {
 		this.permsSnapShot = permsSnapShot;
+	}
+
+	
+	/**
+	 * DO NOT USE!
+	 * 
+	 * This is just a temporary and unofficial storage of the multiplier.
+	 * This is not the current multiplier. And as such, should never be
+	 * used as the current multiplier. 
+	 * 
+	 * This could be used in the same way that the 
+	 * getSellallMultipliers() listing is used... for references only
+	 * when the player is offline.
+	 * 
+	 * @return
+	 */
+	public double getSellallMultiplierValue() {
+		return sellallMultiplierValue;
+	}
+	public void setSellallMultiplierValue(double sellallMultiplierValue) {
+		this.sellallMultiplierValue = sellallMultiplierValue;
 	}
 
 	/**

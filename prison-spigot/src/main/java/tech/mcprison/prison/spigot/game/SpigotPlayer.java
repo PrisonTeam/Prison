@@ -975,7 +975,7 @@ public class SpigotPlayer
 				SellAllUtil.get().isAutoSellEnabled ) {
 			
 			if ( SellAllUtil.get().isAutoSellPerUserToggleable ) {
-				debugInfo.append( "(sellallEnabled:userToggleable)" );
+				debugInfo.append( "(&7sellallEnabled:userToggleable&3)" );
 				
 //			boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
 				
@@ -983,9 +983,10 @@ public class SpigotPlayer
 						SellAllUtil.get().isSellallPlayerUserToggleEnabled( getWrapper() );
 				
 				if ( debugInfo != null ) {
-					debugInfo.append( "(autosellPlayerToggled: " )
+					debugInfo.append( "(&7autosellPlayerToggled&3: " )
 							 .append( Output.get().getColorCodeWarning() )
-							 .append( isPlayerAutoSellTurnedOn ? "enabled" : "disabled" )
+							 .append( isPlayerAutoSellTurnedOn ? "enabled" : 
+									Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 							 .append( Output.get().getColorCodeDebug() )
 							 .append( ")");
 				}
@@ -1003,7 +1004,7 @@ public class SpigotPlayer
 				
 			}
 			else {
-				debugInfo.append( "(autosell" )
+				debugInfo.append( "(autosell " )
 	  					 .append( Output.get().getColorCodeWarning() )
 						 .append( "Enabled" )
 						 .append( Output.get().getColorCodeDebug() )
@@ -1013,7 +1014,7 @@ public class SpigotPlayer
 			
 		}
 		else {
-			debugInfo.append( "(autosell" )
+			debugInfo.append( "(autosell " )
 						.append( Output.get().getColorCodeWarning() )
 						.append( "Disabled" )
 						.append( Output.get().getColorCodeDebug() )
@@ -1066,12 +1067,14 @@ public class SpigotPlayer
 			if ( !"disable".equalsIgnoreCase( perm ) &&
 					!"false".equalsIgnoreCase( perm ) ) {
 				
-				debugInfo.append( "(autosellAutoFeaturesByPerm: " )
+				debugInfo.append( "(&7autosellAutoFeaturesByPerm&3: " )
 				.append( Output.get().getColorCodeWarning() )
 				;
 				
 				if ( isOp() ) {
-					debugInfo.append( "Op-Disabled" );
+					debugInfo.append( 
+							Output.get().getColorCodeError() + "Op-Disabled" + Output.get().getColorCodeDebug()
+							);
 					autoSellByPerm = false;
 				}
 				else {
@@ -1125,7 +1128,7 @@ public class SpigotPlayer
 		
 		if ( SellAllUtil.get().isAutoSellPerUserToggleablePermEnabled ) {
 			
-			debugInfo.append( "(autosellToggleByPerm: " )
+			debugInfo.append( "(&7autosellToggleByPerm&3: " )
 				.append( Output.get().getColorCodeWarning() )
 				;
 			
@@ -1135,7 +1138,9 @@ public class SpigotPlayer
 					!"false".equalsIgnoreCase( perm ) ) {
 				if ( isOp() ) {
 					
-					debugInfo.append( "Op-Disabled" );
+					debugInfo.append( 
+							Output.get().getColorCodeError() + "Op-Disabled:" + Output.get().getColorCodeDebug()
+							 );
 					
 					results = false;
 				}
@@ -1143,7 +1148,8 @@ public class SpigotPlayer
 					
 					results = hasPermission( perm );
 					
-					debugInfo.append( results ? "hasPerm" : "noPerm" );
+					debugInfo.append( results ? "hasPerm" : 
+						Output.get().getColorCodeError() + "noPerm" + Output.get().getColorCodeDebug() );
 				}
 			}
 			

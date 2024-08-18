@@ -48,7 +48,6 @@ import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.LadderManager;
-import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
 import tech.mcprison.prison.ranks.tasks.PlayerNewFileNameCheckAsyncTask;
@@ -1632,7 +1631,7 @@ public class RanksCommands
 		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
     	
     	
-    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    	//PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     	RankPlayer rankPlayer = player.getRankPlayer();
 //		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
 
@@ -1759,7 +1758,8 @@ public class RanksCommands
 //				sendToPlayerAndConsole( sender, msgOffline );
 			}
 			
-			double sellallMultiplier = player.getSellAllMultiplier();
+			
+			double sellallMultiplier = rankPlayer.getSellAllMultiplier();
 			String messageNotAccurrate = ranksPlayerNotAccurateMsg();
 			String messageSellallMultiplier = ranksPlayerSellallMultiplierMsg( 
 					pFmt.format( sellallMultiplier ), 
@@ -1767,9 +1767,19 @@ public class RanksCommands
 			msgs.add( messageSellallMultiplier );
 //			sendToPlayerAndConsole( sender, messageSellallMultiplier );
 
-			List<String> sellallDetails = player.getSellAllMultiplierListings();
+			
+			// Warning, if the player is offline, then the list of multiplier details
+			//          will come from their saved listings from when they were last
+			//          on the server, and they may not be their current listings.
+			List<String> sellallDetails = 
+					isOnline ?
+							player.getSellAllMultiplierListings() :
+							rankPlayer.getSellallMultipliers();
+
+			
 			for (String sellallDetail : sellallDetails) {
-				msgs.add( "    " + sellallDetail );
+				msgs.add( "    " + sellallDetail + (!isOnline ? "  " + 
+									messageNotAccurrate : "") );
 			}
 			
 			
@@ -1924,7 +1934,8 @@ public class RanksCommands
 //								player.hasPermission( "prison.mines.a" ) );
 					
 					
-					List<Integration> permissionIntegrations = PrisonAPI.getIntegrationManager().getAllForType( IntegrationType.PERMISSION );
+					List<Integration> permissionIntegrations = 
+									PrisonAPI.getIntegrationManager().getAllForType( IntegrationType.PERMISSION );
 
 					for ( Integration pIntegration : permissionIntegrations ) {
 						if ( pIntegration instanceof PermissionIntegration ) {

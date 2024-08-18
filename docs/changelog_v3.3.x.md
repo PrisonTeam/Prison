@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-17
+# 3.3.0-beta.18c 2024-08-18
+
+
+* **Ranks player: Added the capture and storage of the player's rank multiplier and changed the command '/ranks player' display these stored values for the multipliers when the player is offline.**
+
+
 
 * **PrisonEnchants update: Updated support for Pulsi's PrisonEnchants plugin.**
 The structure of the API changed with v2.0.  Another change happened with v2.2.1.
