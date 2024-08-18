@@ -1,6 +1,11 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,8 +18,8 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import me.pulsi_.prisonenchants.events.PEExplosionEvent;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -22,11 +27,34 @@ import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 
+/**
+ * <p>This supports Pulsi's plugin, PrisonEnchants.  There are three different versions
+ * and prison supports them all.
+ * </p>
+ * 
+ * <ul>
+ * 		<li>v1.x - Older versions of PEExplosionEvent. 
+ * 				Uses functions: getBlockBroken() and getExplodedBlocks().</li>
+ * 		<li>v2.0.0 through v2.2.0 - Uses functions: getBlocks().  Does not 
+ * 				have the original broken block.</li>
+ * 		<li>v2.2.1 + - Uses functions: getBlocks() and 
+ * 
+ * </ul>
+ */
 public class AutoManagerPrisonEnchants
 	extends AutoManagerFeatures 
 	implements PrisonEventManager {
 	
+	private PEExplosionEventVersion peApiVersion;
+	
 	private BlockBreakPriority bbPriority;
+	
+	public enum PEExplosionEventVersion {
+		undefined,
+		pev1_0_0,
+		pev2_0_0,
+		pev2_2_1;
+	}
 	
 	public AutoManagerPrisonEnchants() {
 		super();
@@ -34,6 +62,8 @@ public class AutoManagerPrisonEnchants
 	
 	public AutoManagerPrisonEnchants( BlockBreakPriority bbPriority ) {
 		super();
+		
+		this.peApiVersion = PEExplosionEventVersion.undefined;
 		
 		this.bbPriority = bbPriority;
 	}
@@ -70,7 +100,9 @@ public class AutoManagerPrisonEnchants
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonEnchantsExplosiveEvent( PEExplosionEvent e, BlockBreakPriority bbPriority ) {
 			
-			if ( isDisabled( e.getBlockBroken().getLocation().getWorld().getName() ) ||
+			Block block = getBlock( e );
+			
+			if ( isDisabled( block.getLocation().getWorld().getName() ) ||
 					bbPriority.isDisabled() ) {
 				return;
 			}
@@ -85,6 +117,7 @@ public class AutoManagerPrisonEnchants
 	}
 	
 
+	@SuppressWarnings("unused")
 	@Override
 	public void initialize() {
 
@@ -107,6 +140,86 @@ public class AutoManagerPrisonEnchants
 					this.getClass().getClassLoader() );
 			
 			Output.get().logInfo( "AutoManager: Trying to register Pulsi_'s PrisonEnchants" );
+			
+//			{
+//				// PrisonEnchants-API-v1.0.0:
+//				//me.pulsi_.prisonenchants.events.PEExplosionEvent
+//		
+//				PEExplosionEvent peEE = new PEExplosionEvent();
+//				Block block = peEE.getBlockBroken();
+//				String eventName = peEE.getEventName();
+//				List<Block> explodedBlocks = peEE.getExplodedBlocks();
+//				HandlerList handlers = peEE.getHandlers();
+//				HandlerList handlerList = peEE.getHandlerList();
+//				Player player = peEE.getPlayer();
+//				boolean async = peEE.isAsynchronous();
+//				boolean canceled = peEE.isCancelled();
+//				peEE.setCancelled(false);
+//				
+//			}
+//			{
+//				// PrisonEnchants-API-v2.2.0:
+//				//me.pulsi_.prisonenchants.events.PEExplosionEvent
+//		
+//				PEExplosionEvent peEE = new PEExplosionEvent();
+//				List<Block> blocks = peEE.getBlocks();
+//				PEEnchant enchantSource = peEE.getEnchantSource(); // not needed
+//				String eventName = peEE.getEventName();
+//				HandlerList handlers = peEE.getHandlers();
+//				HandlerList handlerList = peEE.getHandlerList();
+//				Player player = peEE.getPlayer();
+//				boolean async = peEE.isAsynchronous();
+//				boolean canceled = peEE.isCancelled();
+//				peEE.setBlocks( blocks );
+//				peEE.setCancelled(false);
+//			}
+//			{
+//				// PrisonEnchants-API-v2.2.1:
+//				//me.pulsi_.prisonenchants.events.PEExplosionEvent
+//				NOTE: v2.2.1 adds the function getOrigin();
+//				
+//				Location locationOfOriginalBlock = peEE.getOrigin();
+//			}
+			
+			
+			
+			
+			Class<?> klass = PEExplosionEvent.class;
+			if ( hasMethod( "getBlockBroken", klass ) &&
+				 hasMethod( "getExplodedBlocks", klass ) ) {
+				
+					 setPeApiVersion( PEExplosionEventVersion.pev1_0_0 );
+			}
+			else if ( hasMethod( "getBlocks", klass ) &&
+					  !hasMethod( "getOrigin", klass ) ) {
+				
+				setPeApiVersion( PEExplosionEventVersion.pev2_0_0 );
+			}
+			else if ( hasMethod( "getBlocks", klass ) &&
+					hasMethod( "getOrigin", klass ) ) {
+				
+				setPeApiVersion( PEExplosionEventVersion.pev2_2_1 );
+			}
+
+			
+			String msg = "";
+			if ( getPeApiVersion() == PEExplosionEventVersion.undefined ) {
+				msg = "&cWarning: AutoFeatures has been configured to use Pulsi's "
+						+ "PrisonEnchant's PEExplosionEvent but the plugin is not "
+						+ "loaded or active.";
+			}
+			else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
+				msg = "&6PEExplosionEvent API based on v2.2.1 or newer has been found and registered.";
+			}
+			else {
+				msg = "&6PEExplosionEvent API has been found and registered, but it is "
+						+ "out of date.  &cPlease upgrade PrisonEnchants to the lastest release "
+						+ "for best results. &66https://polymart.org/resource/prisonenchants.1434";
+			}
+
+			Output.get().logWarn( msg );
+			
+			
 			
 			
     		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
@@ -134,6 +247,71 @@ public class AutoManagerPrisonEnchants
 		}
 	}
 
+	/**
+	 * <p>Checks a Class to see if the given function exists. 
+	 * Based upon our own specific needs with this, we are just checking
+	 * setters so no parameters need to be specified.
+	 * </p>
+	 * 
+	 * @param methodName
+	 * @param klass
+	 * @return
+	 */
+	private boolean hasMethod( String methodName, Class<?> klass ) {
+		boolean results = false;
+		
+		try {
+			Method method = klass.getMethod( methodName, (Class<?>[]) null);
+			
+			results = ( method != null );
+		} 
+		catch (NoSuchMethodException | SecurityException e) {
+		  // Ignore exceptions... 
+		}
+		
+		return results;
+	}
+	
+	private Block getBlock( PEExplosionEvent event ) {
+		Block results = null;
+		
+		if ( getPeApiVersion() == PEExplosionEventVersion.pev1_0_0 ) {
+			
+			results = event.getBlockBroken();
+		}
+		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_0_0 ) {
+			
+			results = event.getBlocks().size() > 0 ? 
+					event.getBlocks().get(0) : null;
+		}
+		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
+
+			Location bLocation = event.getOrigin();
+			results = bLocation.getWorld().getBlockAt(bLocation);
+		}
+		
+		return results;
+	}
+	
+	private List<Block> getBlocks( PEExplosionEvent event ) {
+		List<Block> results = new ArrayList<>();
+		
+		if ( getPeApiVersion() == PEExplosionEventVersion.pev1_0_0 ) {
+			
+			results.addAll( event.getExplodedBlocks() );
+		}
+		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_0_0 ) {
+			
+			results.addAll( event.getBlocks().subList(1, event.getBlocks().size()));
+		}
+		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
+			
+			results.addAll( event.getBlocks() );
+		}
+		
+		return results;
+	}
+	
 	private void createListener(BlockBreakPriority bbPriority) {
 		
 		SpigotPrison prison = SpigotPrison.getInstance();
@@ -273,8 +451,12 @@ public class AutoManagerPrisonEnchants
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
+		
+		// NOTE: support for v1.0, v2.2, and v2.2.1 has different block structures:
+		Block bBlock = getBlock( e );
+		
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    			e.getPlayer(), e.getBlockBroken(),
+    			e.getPlayer(), bBlock,
     			bbPriority, true );
     	
     	if ( eventResults.isIgnoreEvent() ) {
@@ -327,12 +509,14 @@ public class AutoManagerPrisonEnchants
         		return;
         	}
         	
-    		pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
+        	List<Block> blocks = getBlocks( e );
+        	
+    		pmEvent.setUnprocessedRawBlocks( blocks );
     		
     		
     		// Check to see if the blockConverter's EventTrigger should have
     		// it's blocks suppressed from explosion events.  If they should be
-    		// removed, then it's removed within this funciton.
+    		// removed, then it's removed within this function.
     		removeEventTriggerBlocksFromExplosions( pmEvent );
     		
   
@@ -417,5 +601,13 @@ public class AutoManagerPrisonEnchants
 		
 		return bonusXp;
 	}
-	
+
+	public PEExplosionEventVersion getPeApiVersion() {
+		return peApiVersion;
+	}
+	public void setPeApiVersion(PEExplosionEventVersion peApiVersion) {
+		this.peApiVersion = peApiVersion;
+	}
+
+
 }
