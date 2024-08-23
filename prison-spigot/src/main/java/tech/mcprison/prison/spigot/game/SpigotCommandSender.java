@@ -175,16 +175,35 @@ public class SpigotCommandSender
     
     @Override
     public List<String> getPermissions( String prefix ) {
+    	
+    	return getPermissions( prefix, getPermissions() );
+    }
+    
+    @Override
+    public List<String> getPermissions( String prefix, List<String> perms ) {
     	List<String> results = new ArrayList<>();
     	
-    	for ( String perm : getPermissions() ) {
-			if ( perm.startsWith( prefix ) ) {
-				results.add( perm );
-			}
-		}
+    	for ( String perm : perms ) {
+    		if ( perm.startsWith( prefix ) ) {
+    			results.add( perm );
+    		}
+    	}
     	
     	return results;
     }
+    
+//    @Override
+//    public List<String> getPermissions( String prefix ) {
+//    	List<String> results = new ArrayList<>();
+//    	
+//    	for ( String perm : getPermissions() ) {
+//			if ( perm.startsWith( prefix ) ) {
+//				results.add( perm );
+//			}
+//		}
+//    	
+//    	return results;
+//    }
 
     
     @Override
@@ -209,6 +228,25 @@ public class SpigotCommandSender
 //    	}
 //    	
 //    	return results;
+    }
+    
+    @Override
+    public double getSellAllMultiplierDebug() {
+    	double results = 1.0;
+    	
+    	if ( isPlayer() ) {
+    		
+    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+    		
+    		if ( sellall != null && getWrapper() != null ) {
+    			
+    			Player player = getPlatformPlayer();
+    			
+    			results = sellall.getPlayerMultiplierDebug( player );
+    		}
+    	}
+    	
+    	return results;
     }
     
     @Override

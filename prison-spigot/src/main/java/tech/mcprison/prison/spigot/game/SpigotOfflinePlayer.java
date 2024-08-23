@@ -294,13 +294,19 @@ public class SpigotOfflinePlayer
     
     @Override
     public List<String> getPermissions( String prefix ) {
+    	
+    	return getPermissions( prefix, getPermissions() );
+    }
+    
+    @Override
+    public List<String> getPermissions( String prefix, List<String> perms ) {
     	List<String> results = new ArrayList<>();
     	
-    	for ( String perm : getPermissions() ) {
-			if ( perm.startsWith( prefix ) ) {
-				results.add( perm );
-			}
-		}
+    	for ( String perm : perms ) {
+    		if ( perm.startsWith( prefix ) ) {
+    			results.add( perm );
+    		}
+    	}
     	
     	return results;
     }
@@ -376,6 +382,26 @@ public class SpigotOfflinePlayer
     	return results;
     }
     
+    @Override
+    public double getSellAllMultiplierDebug() {
+    	double results = 1.0;
+    	
+    	// NOTE: isPlayer() is a check to see if it's tied to the bukkit Player object, of 
+    	//       which offline player is not.  But the sellall multiplier can still be called.
+//    	if ( isPlayer() ) {
+    		
+    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+    		
+    		if ( sellall != null && getWrapper() != null ) {
+    			
+//    			SpigotPlayer sPlayer = new SpigotPlayer( getWrapper() );
+    			
+    			results = sellall.getPlayerMultiplierDebug( this );
+    		}
+//    	}
+    	
+    	return results;
+    }
     
     public List<String> getSellAllMultiplierListings() {
     	List<String> results = new ArrayList<>();

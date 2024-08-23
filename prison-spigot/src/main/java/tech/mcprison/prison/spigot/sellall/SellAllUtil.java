@@ -402,19 +402,25 @@ public class SellAllUtil
      *
      * @return double.
      * */
-    public double getPlayerMultiplier(Player p){
+    public double getPlayerMultiplier(Player p) {
+    	
 
-        if (!isSellAllMultiplierEnabled){
+        if (!isSellAllMultiplierEnabled) {
+        	
             return 1d;
         }
-
+        
+        
 //        long tPoint1 = System.nanoTime();
         
         SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         double multiplier = 0d;
+        double rankMultiplers = 0;
+        
         
         if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+        	
         	
         	RankPlayer rPlayer = sPlayer.getRankPlayer();
         	
@@ -424,15 +430,23 @@ public class SellAllUtil
         		String rankName = pRank.getRank().getName();
         		
         		String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+        		
         		if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
-        			multiplier += sellAllPrestigeMultipliers.get( rankName );
+        		
+        			double rankMult = sellAllPrestigeMultipliers.get( rankName );
+        			rankMultiplers += rankMult;
+        			
         		}
 			}
         }
         
-        if ( multiplier == 0 ) {
+        if ( rankMultiplers == 0 ) {
         	multiplier = defaultMultiplier;
         }
+        else {
+        	multiplier  = rankMultiplers;
+        }
+        
         
         
         
@@ -467,22 +481,39 @@ public class SellAllUtil
 //        }
 
         // Get Multiplier from multipliers permission's if there's any.
-        List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
+        String permPattern = "prison.sellall.multiplier.";
+        List<String> perms = sPlayer.getPermissions( permPattern );
+        
         double multiplierExtraByPerms = 0;
         for (String multByPerm : perms) {
         	
-            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
+        	String multStr = multByPerm.replace(permPattern, "");
+        	if ( multStr.contains( "_" ) ) {
+        		multStr = multStr.substring( 0, multStr.indexOf("_") );
+        	}
+        	
+            double multByPermDouble = Double.parseDouble( multStr );
+            
+            boolean highest = multByPermDouble > multiplierExtraByPerms;
             
             if ( !isSellAllPermissionMultiplierOnlyHigherEnabled ) {
                 multiplierExtraByPerms += multByPermDouble;
+                
             } 
-            else if (multByPermDouble > multiplierExtraByPerms) {
-                multiplierExtraByPerms = multByPermDouble;
+            else {
+            	
+            	if ( highest ) {
+            		multiplierExtraByPerms = multByPermDouble;
+            	}
             }
+            	
         }
         
+        
+        
         multiplier += multiplierExtraByPerms;
-
+        
+        
 //        long tPoint3 = System.nanoTime();
 //        DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0000" );
 //        String debugMsg = "{sellallMult::" + dFmt.format( multiplier ) + ":t1=" + 
@@ -491,6 +522,208 @@ public class SellAllUtil
 //        Output.get().logDebug( debugMsg );
         
         return multiplier;
+    }
+    
+    public double getPlayerMultiplierDebug( tech.mcprison.prison.internal.Player sPlayer ) {
+    	
+    	StringBuilder sb = new StringBuilder();
+
+    	long tPoint1 = System.nanoTime();
+    	
+    	sb.append( "&dCalculate Sellall Player Multipliers: &6" )
+    	  .append( sPlayer.getName() );
+    	
+    	if (!isSellAllMultiplierEnabled) {
+    		
+    		sb.append( " &cSellall Multipliers are disabled." );
+    		if ( Output.get().isDebug() ) {
+    			Output.get().logInfo( sb.toString() );
+    		}
+    		
+    		return 1d;
+    	}
+    	
+    	
+    	sb.append( " &aEnabled &6DefaultMult: &c" )
+    	  .append( defaultMultiplier );
+    	
+    	if ( isSellAllPermissionMultiplierOnlyHigherEnabled ) {
+    		sb.append( " &a(Use only the highest perm multiplier) " );
+    	}
+    	
+    	
+    	
+    	
+//    	SpigotPlayer sPlayer = new SpigotPlayer(p);
+    	
+    	double multiplier = 0d;
+    	double rankMultiplers = 0;
+    	
+    	sb.append( "&6RankMulipliers: &a[ &6" );
+    	
+    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		
+    		
+    		RankPlayer rPlayer = sPlayer.getRankPlayer();
+    		
+    		Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
+    		for (RankLadder ladderKey : keys) {
+    			PlayerRank pRank = rPlayer.getLadderRanks().get(ladderKey);
+    			String rankName = pRank.getRank().getName();
+    			
+    			String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+    			
+    			if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
+    				
+    				double rankMult = sellAllPrestigeMultipliers.get( rankName );
+    				rankMultiplers += rankMult;
+    				
+    				sb.append( rankMult ).append( " " );
+    			}
+    		}
+    	}
+    	
+    	if ( rankMultiplers == 0 ) {
+    		multiplier = defaultMultiplier;
+    		sb.append( "&cnone " );
+    	}
+    	else {
+    		multiplier  = rankMultiplers;
+    	}
+    	
+    	sb.append( "&a] " );
+    	
+    	
+    	sb.append( "&6Base multiplier: &c" )
+    	  .append( multiplier ).append( " " );
+    	
+    	
+    	
+       long tPoint2 = System.nanoTime();
+    	
+    	// Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
+    	// the actual default multiplier.
+//        if (module != null) {
+//            PrisonRanks rankPlugin = (PrisonRanks) module;
+//            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
+//                String playerRankName;
+//                try {
+//                	
+//                	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//                	
+//                    RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
+//                    PlayerRank pRank = rankPlayer == null ? null : rankPlayerFactory.getRank( rankPlayer, "prestiges");
+//                    Rank rank = pRank == null ? null : pRank.getRank();
+//
+//                    playerRankName = rank == null ? null : rank.getName();
+//                } catch (NullPointerException ex) {
+//                    playerRankName = null;
+//                }
+//                if (playerRankName != null) {
+//                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
+//                    if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey(playerRankName)){
+//                        multiplier = sellAllPrestigeMultipliers.get(playerRankName);
+//                    }
+//                }
+//            }
+//        }
+    	
+    	// Get Multiplier from multipliers permission's if there's any.
+    	String permPattern = "prison.sellall.multiplier.";
+    	List<String> perms = sPlayer.getPermissions( permPattern );
+    	List<String> debugRejected = new ArrayList<>();
+    	String debugHighest = null;
+    	
+    	if ( perms.size() == 0 && sPlayer.getRankPlayer() != null ) {
+    		sb.append( "&cNoBukkkitPerms " );
+    		
+    		perms.addAll( sPlayer.getPermissions( permPattern, sPlayer.getRankPlayer().getPermsSnapShot() ));
+    		
+    		if ( perms.size() > 0 ) {
+    			
+    			sb.append( "&c(Using &6" );
+    			sb.append( perms.size() );
+    			sb.append( " &csnapshotPerms) " );
+    		}
+    	}
+    	
+    	sb.append( "&6PermissionMulipliers: &a[ &6" );
+    	
+    	
+    	double multiplierExtraByPerms = 0;
+    	for (String multByPerm : perms) {
+    		
+    		String multStr = multByPerm.replace(permPattern, "");
+    		if ( multStr.contains( "_" ) ) {
+    			multStr = multStr.substring( 0, multStr.indexOf("_") );
+    		}
+    		
+    		double multByPermDouble = Double.parseDouble( multStr );
+    		
+    		boolean highest = multByPermDouble > multiplierExtraByPerms;
+    		
+    		String debugMult = multByPermDouble + ":" + multByPerm + "&r ";
+    		
+    		if ( !isSellAllPermissionMultiplierOnlyHigherEnabled ) {
+    			multiplierExtraByPerms += multByPermDouble;
+    			
+    			sb.append( "&6" )
+    			  .append( debugMult );
+    		} 
+    		else {
+    			
+    			if ( highest ) {
+    				multiplierExtraByPerms = multByPermDouble;
+    				
+    				if ( debugHighest != null ) {
+    					debugRejected.add( debugHighest );
+    				}
+    				debugHighest = debugMult;
+    			}
+    			else {
+    				debugRejected.add( debugMult );
+    			}
+    			
+    		}
+    		
+    	}
+    	
+    	if ( debugHighest != null ) {
+    		sb.append( "&6" ) // Green
+    		  .append( debugHighest );
+    	}
+    	
+    	for (String rejected : debugRejected) {
+    		sb.append( "&m&c" ) // Strike through & red
+    		  .append( rejected );
+    	}
+    	
+    	sb.append( " &a] " );
+    	
+    	
+    	multiplier += multiplierExtraByPerms;
+    	
+    	sb.append( "&6PermissionTotal: &a[ &6" )
+    	  .append( multiplierExtraByPerms )
+    	  .append( " &a] " );
+    	
+    	sb.append( "&6TotalMultiplier: &a[ &6" )
+    	  .append( multiplier )
+    	  .append( " &a] " );
+    	
+        long tPoint3 = System.nanoTime();
+        DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0000" );
+        String debugMsg = " :t1=" + 
+        				dFmt.format( (tPoint2 - tPoint1)/1000000d ) +
+        				" :t2=" + 
+        				dFmt.format( (tPoint3 - tPoint2)/1000000 ) + "}";
+    	
+        sb.append( debugMsg );
+        
+       
+    	Output.get().logInfo( sb.toString() );
+    	
+    	return multiplier;
     }
 
     
@@ -679,7 +912,7 @@ public class SellAllUtil
     public double getPlayerInventoryValue( SpigotPlayer sPlayer ) {
     	double value = 0;
     	
-    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
+    	double multiplier = sPlayer.getSellAllMultiplier();
 
     	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
 
@@ -693,7 +926,7 @@ public class SellAllUtil
     
     public String getPlayerInventoryValueReport( SpigotPlayer sPlayer ) {
     	
-    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
+    	double multiplier = sPlayer.getSellAllMultiplier();
     	
     	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
     	
@@ -706,7 +939,8 @@ public class SellAllUtil
     
     public List<SellAllData> getPlayerInventoryValueTransactions( SpigotPlayer sPlayer ) {
     	
-    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
+    	double multiplier = sPlayer.getSellAllMultiplier();
+//    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
     	
     	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
     	
@@ -717,9 +951,9 @@ public class SellAllUtil
     
     
     
-    public double getItemStackValue( SpigotPlayer player, SpigotItemStack itemStack ) {
+    public double getItemStackValue( SpigotPlayer sPlayer, SpigotItemStack itemStack ) {
     	
-    	double multiplier = getPlayerMultiplier(player.getWrapper());
+    	double multiplier = sPlayer.getSellAllMultiplier();
     	
     	SellAllData sad = sellItemStack( itemStack, multiplier );
     	
@@ -728,7 +962,7 @@ public class SellAllUtil
     
     public String getItemStackValueReport( SpigotPlayer sPlayer, SpigotItemStack itemStack ) {
     	
-    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
+    	double multiplier = sPlayer.getSellAllMultiplier();
     	
     	List<SellAllData> soldItems = new ArrayList<>();
     	
@@ -745,7 +979,7 @@ public class SellAllUtil
     
     public List<SellAllData> getItemStackValueTransactions( SpigotPlayer sPlayer, SpigotItemStack itemStack ) {
     	
-    	double multiplier = getPlayerMultiplier(sPlayer.getWrapper());
+    	double multiplier = sPlayer.getSellAllMultiplier();
     	
     	List<SellAllData> soldItems = new ArrayList<>();
     	
@@ -768,9 +1002,9 @@ public class SellAllUtil
      */
     public List<SellAllData> sellPlayerItems(Player p) {
     	
-    	double multiplier = getPlayerMultiplier(p);
-    	
     	SpigotPlayer sPlayer = new SpigotPlayer( p );
+    	
+    	double multiplier = sPlayer.getSellAllMultiplier();
     	
     	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
 

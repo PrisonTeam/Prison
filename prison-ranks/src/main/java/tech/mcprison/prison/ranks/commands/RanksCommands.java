@@ -1664,8 +1664,15 @@ public class RanksCommands
 		
 		
 		
-		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
-						fFmt.format( rankPlayer.getSellAllMultiplier() ));
+		String msg2 = String.format( "  &7Ranks with (Rank Cost Multiplier):");
+//		double rankCostMultiplier = 0d;
+//		Set<RankLadder> rpKeys = rankPlayer.getLadderRanks().keySet();
+//		for ( RankLadder rpKey : rpKeys ) {
+//			PlayerRank pRank = rankPlayer.getLadderRanks().get( rpKey );
+//			rankCostMultiplier += pRank.getRankMultiplier();
+//		}
+//		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
+//						fFmt.format( rankCostMultiplier ));
 		msgs.add( msg2 );
 
 		
@@ -1706,9 +1713,14 @@ public class RanksCommands
 //				PlayerRank nextPRank = nextRank == null ? null :
 //									new PlayerRank( nextRank, pRank.getRankMultiplier() );
 				
+				double rankCostMultiplier = pRank.getRankMultiplier();
+				
 				String messageRank = ranksPlayerLadderInfoMsg( 
 						rankLadder.getName(),
 						rank.getName() );
+
+				messageRank += " (" + fFmt.format( rankCostMultiplier ) + ") ";
+				
 				
 				if ( nextRank == null ) {
 					messageRank += ranksPlayerLadderHighestRankMsg();
@@ -1722,6 +1734,7 @@ public class RanksCommands
 						messageRank += ranksPlayerLadderNextRankCurrencyMsg( nextRank.getCurrency() );
 					}
 				}
+				
 				
 				msgs.add( messageRank );
 //				sendToPlayerAndConsole( sender, messageRank );
@@ -1759,7 +1772,8 @@ public class RanksCommands
 			}
 			
 			
-			double sellallMultiplier = rankPlayer.getSellAllMultiplier();
+			double sellallMultiplier = rankPlayer.getSellAllMultiplierDebug();
+			
 			String messageNotAccurrate = ranksPlayerNotAccurateMsg();
 			String messageSellallMultiplier = ranksPlayerSellallMultiplierMsg( 
 					pFmt.format( sellallMultiplier ), 

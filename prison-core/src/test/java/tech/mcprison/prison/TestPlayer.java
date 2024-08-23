@@ -187,15 +187,22 @@ public class TestPlayer
     	return results;
     }
     
+    
     @Override
     public List<String> getPermissions( String prefix ) {
+    	
+    	return getPermissions( prefix, getPermissions() );
+    }
+    
+    @Override
+    public List<String> getPermissions( String prefix, List<String> perms ) {
     	List<String> results = new ArrayList<>();
     	
-    	for ( String perm : getPermissions() ) {
-			if ( perm.startsWith( prefix ) ) {
-				results.add( perm );
-			}
-		}
+    	for ( String perm : perms ) {
+    		if ( perm.startsWith( prefix ) ) {
+    			results.add( perm );
+    		}
+    	}
     	
     	return results;
     }
@@ -213,6 +220,16 @@ public class TestPlayer
     	return 1.0;
     }
     
+    @Override
+    public double getSellAllMultiplierDebug() {
+    	return 1.0;
+    }
+
+	@Override
+	public List<String> getSellAllMultiplierListings() {
+		return new ArrayList<>();
+	}    
+	
 	@Override
 	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
 	}
@@ -254,10 +271,6 @@ public class TestPlayer
 		
 	}
 
-	@Override
-	public List<String> getSellAllMultiplierListings() {
-		return new ArrayList<>();
-	}
 
 
 	@Override

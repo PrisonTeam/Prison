@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-18
+# 3.3.0-beta.18c 2024-08-23
+
+
+* **Sellall multipliers: Fixes some of the problems with sellall multipliers so they can work better when the player is offline.**
+This will now use the snapshot of the player's perms as they were when they were last online.  This helps to ensure better accuracy when bukkit will not provide perms when the player is not online.
 
 
 * **Ranks player: Added the capture and storage of the player's rank multiplier and changed the command '/ranks player' display these stored values for the multipliers when the player is offline.**

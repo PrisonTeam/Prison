@@ -1206,6 +1206,13 @@ public class RankPlayer
 		if ( oPlayer.isPresent() ) {
 			player = oPlayer.get();
 		}
+		else {
+			oPlayer = Prison.get().getPlatform().getOfflinePlayer( uid );
+			
+			if ( oPlayer.isPresent() ) {
+				player = oPlayer.get();
+			}
+		}
 		
 		return player;
 	}
@@ -1232,12 +1239,17 @@ public class RankPlayer
     
     @Override
     public List<String> getPermissions( String prefix ) {
-    	Player player = getPlatformPlayer();
-    	return (player == null ? new ArrayList<>() : player.getPermissions( prefix ) );
+    	
+    	return getPermissions( prefix, getPermissions() );
     }
     
-
-
+    @Override
+    public List<String> getPermissions( String prefix, List<String> perms ) {
+    	Player player = getPlatformPlayer();
+    	return (player == null ? new ArrayList<>() : 
+    		player.getPermissions( prefix, perms ) );
+ 
+    }
 	
 	/**
      * <p>This will called by the placeholders, so need to get the actual
@@ -1282,6 +1294,19 @@ public class RankPlayer
 //    	if ( player.isPresent() ) {
 //    		results = player.get().getSellAllMultiplier();
 //    	}
+    	
+    	return results;
+    }
+    
+    @Override
+    public double getSellAllMultiplierDebug() {
+    	double results = 1.0;
+    	
+    	Player player = getPlatformPlayer();
+    	if ( player != null ) {
+    		results = player.getSellAllMultiplierDebug();
+
+    	}
     	
     	return results;
     }

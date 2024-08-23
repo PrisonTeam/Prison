@@ -28,8 +28,12 @@ public interface PlayerPermissions {
     
     public List<String> getPermissions( String prefix );
     
+    public List<String> getPermissions( String prefix, List<String> perms );
+    
     
     public double getSellAllMultiplier();
+    
+    public double getSellAllMultiplierDebug();
     
     
     public List<String> getPermissionsIntegrations( boolean detailed );
