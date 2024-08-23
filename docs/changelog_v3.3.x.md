@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-23
 
 
+* **Upgrade XSeries to v11.2.1 from v11.2.0.1. **
+This may help with a few issues with spigot v1.21.1 blocks.
+
+
+
 * **Sellall multipliers: Fixes some of the problems with sellall multipliers so they can work better when the player is offline.**
 This will now use the snapshot of the player's perms as they were when they were last online.  This helps to ensure better accuracy when bukkit will not provide perms when the player is not online.
 
