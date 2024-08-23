@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-23
 
 
+* **Placeholders: Sellall multiplier:  Fixed a few issues related to being offline and even OP'd.  
+When offline, it was not able to get an active player object so it was bypassing the sellall multiplier calculations.**
+Now it can work with bukkit's offline players.  And its also able to fallback to using snapshot perms so the sellall calculations at least reflects what it was the last time the player was online.
+
+
 * **Upgrade XSeries to v11.2.1 from v11.2.0.1. **
 This may help with a few issues with spigot v1.21.1 blocks.
 

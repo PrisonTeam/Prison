@@ -371,13 +371,22 @@ public class SpigotOfflinePlayer
     public double getSellAllMultiplier() {
     	double results = 1.0;
     	
-    	SpigotPlayer sPlayer = null;
-    	
-    	if ( getWrapper().getPlayer() != null ) {
-    		sPlayer = new SpigotPlayer( getWrapper().getPlayer() );
-
-    		results = sPlayer.getSellAllMultiplier();
-    	}
+		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+		
+		if ( sellall != null && getWrapper() != null ) {
+			
+//			SpigotPlayer sPlayer = new SpigotPlayer( getWrapper() );
+			
+			results = sellall.getPlayerMultiplier( this );
+		}
+		
+//    	SpigotPlayer sPlayer = null;
+//    	
+//    	if ( getWrapper() != null ) {
+//    		sPlayer = new SpigotPlayer( getWrapper() );
+//
+//    		results = sPlayer.getSellAllMultiplier();
+//    	}
     	
     	return results;
     }

@@ -1525,15 +1525,28 @@ public class PlayerManager
     
 
 	private String getPlayerSellallMultiplier( RankPlayer rankPlayer, PlaceholderAttributeNumberFormat attributeNFormat ) {
-		String results;
-		double multiplier = rankPlayer.getSellAllMultiplier();
-		if ( attributeNFormat != null ) {
+		String results = "";
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+		UUID pUuid = rankPlayer.getUUID();
+		
+		Player player = 
+				Prison.get().getPlatform().getPlayer( pUuid ).orElse( 
+						Prison.get().getPlatform().getOfflinePlayer( pUuid ).orElse(null)
+						);
+		
+		if ( player != null ) {
+			
+			double multiplier = player.getSellAllMultiplier();
+			
+			if ( attributeNFormat != null ) {
+				
+				results = attributeNFormat.format( multiplier );
+			}
+			else {
+				results = Double.toString( multiplier );
+			}
+		}
 
-			results = attributeNFormat.format( multiplier );
-		}
-		else {
-			results = Double.toString( multiplier );
-		}
 		return results;
 	}
 	

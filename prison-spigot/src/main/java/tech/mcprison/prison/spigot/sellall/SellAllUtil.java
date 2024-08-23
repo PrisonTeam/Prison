@@ -402,8 +402,12 @@ public class SellAllUtil
      *
      * @return double.
      * */
-    public double getPlayerMultiplier(Player p) {
+    public double getPlayerMultiplier( Player player ) {
+    	return getPlayerMultiplier( new SpigotPlayer( player ));
+    }
     	
+    public double getPlayerMultiplier( tech.mcprison.prison.internal.Player sPlayer ) {
+    		
 
         if (!isSellAllMultiplierEnabled) {
         	
@@ -413,7 +417,7 @@ public class SellAllUtil
         
 //        long tPoint1 = System.nanoTime();
         
-        SpigotPlayer sPlayer = new SpigotPlayer(p);
+//        SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         double multiplier = 0d;
         double rankMultiplers = 0;
@@ -484,6 +488,13 @@ public class SellAllUtil
         String permPattern = "prison.sellall.multiplier.";
         List<String> perms = sPlayer.getPermissions( permPattern );
         
+        
+        // If the player is off line, then try to use the snapshot of the last group of perms:
+    	if ( perms.size() == 0 && sPlayer.getRankPlayer() != null ) {
+    		perms.addAll( sPlayer.getPermissions( permPattern, sPlayer.getRankPlayer().getPermsSnapShot() ));
+    	}
+        
+    	
         double multiplierExtraByPerms = 0;
         for (String multByPerm : perms) {
         	
