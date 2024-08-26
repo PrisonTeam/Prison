@@ -11,6 +11,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
+import tech.mcprison.prison.util.Location;
 
 public class BombAnimationsTask
 		implements PrisonRunnable {
@@ -45,6 +46,22 @@ public class BombAnimationsTask
 		AnimationPattern animation = bomb.getAnimationPattern();
 		
 		
+		Location location =
+				bomb.getPlacedBombLocation() != null ?
+						bomb.getPlacedBombLocation() :
+						pBlock.getLocation();
+		
+		// The current y adjustment is +2.5 blocks.  Still using this so 
+		// existing bomb configs are not messed up.
+		location.setY( Math.floor( location.getY() + 2 ) );
+		
+		// The bomb y adjustments should have been made in this function:
+		// tech.mcprison.prison.spigot.utils.PrisonUtilsMineBombs.setBombInHand()
+//		if ( bomb.getPlacementAdjustmentY() != 0 ) {
+//			
+//			location.setY( location.getY() + bomb.getPlacementAdjustmentY() );
+//		}
+		
 		
 		if ( Output.get().isDebug() ) {
 			String msg = String.format( 
@@ -61,13 +78,14 @@ public class BombAnimationsTask
 		case bounce:
 		{
 			// Add BombAnimationNone for a stationary name:
-			BombAnimationNone baHolo = new BombAnimationNone( bomb, pBlock, this );
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, location, pBlock, this );
 			getAnimators().add( baHolo );
 			
 			float yaw = 0;
 			float pitch = 0;
 			
 			BombAnimationBounce ba = new BombAnimationBounce( bomb, 
+					location,
 					pBlock, item, this, 
 					yaw, pitch );
 			
@@ -80,13 +98,14 @@ public class BombAnimationsTask
 		case orbital:
 		{
 			// Add BombAnimationNone for a stationary name:
-			BombAnimationNone baHolo = new BombAnimationNone( bomb, pBlock, this );
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, location, pBlock, this );
 			getAnimators().add( baHolo );
 			
 			float yaw = 0;
 			float pitch = 0;
 			
 			BombAnimationOrbital ba = new BombAnimationOrbital( bomb, 
+					location,
 					pBlock, item, this, 
 					yaw, pitch );
 			
@@ -99,7 +118,7 @@ public class BombAnimationsTask
 		case orbitalEight:
 		{
 			// Add BombAnimationNone for a stationary name:
-			BombAnimationNone baHolo = new BombAnimationNone( bomb, pBlock, this );
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, location, pBlock, this );
 			getAnimators().add( baHolo );
 			
 			float yaw = 0;
@@ -108,6 +127,7 @@ public class BombAnimationsTask
 			
 			for ( int i = 0; i < 8; i++ ) {
 				BombAnimationOrbital ba = new BombAnimationOrbital( bomb, 
+						location,
 						pBlock, item, this, 
 						yaw, pitch );
 				
@@ -123,7 +143,7 @@ public class BombAnimationsTask
 		case starburst:
 		{
 			// Add BombAnimationNone for a stationary name:
-			BombAnimationNone baHolo = new BombAnimationNone( bomb, pBlock, this );
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, location, pBlock, this );
 			getAnimators().add( baHolo );
 			
 			float yaw = 0;
@@ -132,10 +152,12 @@ public class BombAnimationsTask
 			
 			for ( int i = 0; i < 16; i++ ) {
 				BombAnimationOrbital ba = new BombAnimationOrbital( bomb, 
+						location,
 						pBlock, item, this, 
 						yaw, pitch );
 				
 				ba.setAlternateDirections( true );
+				ba.setRadiusDelta( 1.0 );
 				
 				getAnimators().add( ba );
 				
@@ -152,6 +174,7 @@ public class BombAnimationsTask
 			float pitch = 0;
 			
 			BombAnimationInfinity ba = new BombAnimationInfinity( bomb, 
+					location,
 					pBlock, item, this, 
 					yaw, pitch );
 			
@@ -164,7 +187,7 @@ public class BombAnimationsTask
 		case infinityEight:
 		{
 			// Add BombAnimationNone for a stationary name:
-			BombAnimationNone baHolo = new BombAnimationNone( bomb, pBlock, this );
+			BombAnimationNone baHolo = new BombAnimationNone( bomb, location, pBlock, this );
 			getAnimators().add( baHolo );
 			
 			float yaw = 0;
@@ -172,7 +195,7 @@ public class BombAnimationsTask
 			float yawStep = 360f / 8f;
 			
 			for ( int i = 0; i < 8; i++ ) {
-				BombAnimationInfinity ba = new BombAnimationInfinity( bomb, 
+				BombAnimationInfinity ba = new BombAnimationInfinity( bomb, location,
 						pBlock, item, this, 
 						yaw, pitch );
 				
@@ -192,7 +215,7 @@ public class BombAnimationsTask
 			float yaw = 0;
 			float pitch = 0;
 			
-			BombAnimationNone ba = new BombAnimationNone( bomb, 
+			BombAnimationNone ba = new BombAnimationNone( bomb, location,
 					pBlock, item, this, 
 					yaw, pitch );
 			

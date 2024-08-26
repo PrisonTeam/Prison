@@ -89,8 +89,7 @@ public interface World {
 	public ArmorStand spawnArmorStand( Location location );
 
 	
-	public ArmorStand spawnArmorStand(Location location, String itemType, 
-			String customName );
+	public ArmorStand spawnArmorStand(Location location, String itemType );
 
 	public int getMaxHeight();
 

@@ -38,5 +38,7 @@ public interface ArmorStand
 	
 	public boolean isSmall();
 	public void setSmall(boolean small);
+	
+	public void setInvulnerable(boolean b);
 
 }

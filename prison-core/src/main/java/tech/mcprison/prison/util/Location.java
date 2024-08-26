@@ -74,6 +74,10 @@ public class Location {
     public Location() {
     }
 
+    public Location clone() {
+    	return new Location( this );
+    }
+    
     public World getWorld() {
         return world;
     }
@@ -336,9 +340,9 @@ public class Location {
 		return getWorld().spawnArmorStand( this );
 	}
 	
-	public ArmorStand spawnArmorStand( String itemName, String name ) {
+	public ArmorStand spawnArmorStand( String itemName ) {
 		
-		return getWorld().spawnArmorStand( this, itemName, name );
+		return getWorld().spawnArmorStand( this, itemName );
 	}
 	
 	

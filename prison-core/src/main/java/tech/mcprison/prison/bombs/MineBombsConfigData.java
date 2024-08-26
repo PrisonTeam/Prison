@@ -43,7 +43,7 @@ public class MineBombsConfigData
 		this.dataFormatVersion = dataFormatVersion;
 	}
 
-	public boolean validateMineBombEffects() {
+	protected boolean validateMineBombEffects( boolean showWarnings ) {
 		boolean results = false;
 		
 		Set<String> keys = getBombs().keySet();
@@ -53,7 +53,7 @@ public class MineBombsConfigData
 			TreeSet<MineBombEffectsData> sounds = new TreeSet<>( bomb.getSoundEffects() );
 			bomb.getSoundEffects().clear();
 			for ( MineBombEffectsData sound : sounds ) {
-				if ( bomb.addSoundEffects( sound ) && !results ) {
+				if ( bomb.addSoundEffects( sound, showWarnings ) && !results ) {
 					results = true;
 				}
 			}
@@ -61,7 +61,7 @@ public class MineBombsConfigData
 			TreeSet<MineBombEffectsData> visuals = new TreeSet<>( bomb.getVisualEffects() );
 			bomb.getVisualEffects().clear();
 			for ( MineBombEffectsData visual : visuals ) {
-				if ( bomb.addVisualEffects( visual ) && !results ) {
+				if ( bomb.addVisualEffects( visual, showWarnings ) && !results ) {
 					results = true;
 				}
 			}

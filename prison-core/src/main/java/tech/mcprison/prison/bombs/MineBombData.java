@@ -333,9 +333,11 @@ public class MineBombData
 		this.animationPattern = AnimationPattern.infinity;
 //		setAnimationPattern( AnimationPattern.infinity );
 		
-
+		
 		this.throwVelocityLow = 1.5;
 		this.throwVelocityHigh = 3;
+		
+		this.animationSpeed = 10.0;
 		
 		
 		this.glowing = false;
@@ -777,6 +779,9 @@ public class MineBombData
 	}
 
 	public boolean addSoundEffects( MineBombEffectsData effect ) {
+		return addSoundEffects( effect, true );
+	}
+	public boolean addSoundEffects( MineBombEffectsData effect, boolean showWarnings ) {
 		boolean results = false;
 		
 		effect.setEffectType( EffectType.sounds );
@@ -786,7 +791,7 @@ public class MineBombData
 		if ( effect.isValid() ) {
 			getSoundEffects().add(effect);
 		}
-		else {
+		else if ( showWarnings ) {
 			String msg = String.format(
 					"MineBombData.addSoundEffects: Invalid effect. "
 					+ "This effect is not valid for the version of Spigot that you're "
@@ -808,6 +813,9 @@ public class MineBombData
 	}
 
 	public boolean addVisualEffects( MineBombEffectsData effect ) {
+		return addVisualEffects( effect, true );
+	}
+	public boolean addVisualEffects( MineBombEffectsData effect, boolean showWarnings ) {
 		boolean results = false;
 		
 		effect.setEffectType( EffectType.visuals );
@@ -817,7 +825,7 @@ public class MineBombData
 		if ( effect.isValid() ) {
 			getVisualEffects().add(effect);
 		}
-		else {
+		else if ( showWarnings ) {
 			String msg = String.format(
 					"MineBombData.addVisualEffects: Invalid effect. "
 					+ "This effect is not valid for the version of Spigot that you're "

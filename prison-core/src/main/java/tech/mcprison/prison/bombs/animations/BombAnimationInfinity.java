@@ -4,15 +4,17 @@ import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.util.Location;
 
 public class BombAnimationInfinity
 		extends BombAnimations {
 
 	public BombAnimationInfinity( MineBombData bomb, 
+									Location location,
 									PrisonBlock sBombBlock, ItemStack item,
 									BombAnimationsTask task,
 									float entityYaw, float entityPitch ) {
-		super( bomb, sBombBlock, item, task, entityYaw, entityPitch );
+		super( bomb, location, sBombBlock, item, task, entityYaw, entityPitch );
 			
 	}
 

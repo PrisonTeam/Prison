@@ -11,10 +11,12 @@ public class BombAnimationBounce
 	private double yOriginal = 0;
 	private double counter = 0;
 	
-	public BombAnimationBounce(MineBombData bomb, PrisonBlock sBombBlock, 
+	public BombAnimationBounce(MineBombData bomb, 
+			Location location,
+			PrisonBlock sBombBlock,
 			ItemStack item, BombAnimationsTask task,
 			float entityYaw, float entityPitch) {
-		super(bomb, sBombBlock, item, task, entityYaw, entityPitch);
+		super(bomb, location, sBombBlock, item, task, entityYaw, entityPitch);
 
 		this.yOriginal = getArmorStand().getLocation().getY();
 	}
@@ -32,10 +34,19 @@ public class BombAnimationBounce
 		
 		double bounce = 1.25 * Math.sin( counter );
 		
-		Location loc = new Location( getArmorStand().getLocation() );
+		Location loc = new Location( getOriginalLocation() );
+		
+		// NOTICE!!!  Have to subtract 1 from the original location so the armorstand is 
+		//            always TP'd to the same y value.  Otherwise it will bounce when it
+		//            hits the ground.  This probably only affects spigot 1.8.x.
+		//            This has something to do with the fact that the armorstand is being
+		//            teleported.
+		loc.setY( loc.getY() - 1 );
+		
 		loc.setY( yOriginal + bounce );
 		
 		getArmorStand().teleport( loc );
+		
 		
 //		getArmorStand().getLocation().setY( yOriginal + bounce );
 	}

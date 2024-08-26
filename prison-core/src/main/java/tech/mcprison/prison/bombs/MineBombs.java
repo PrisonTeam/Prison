@@ -347,6 +347,7 @@ public class MineBombs
 			getConfigData().getBombs().clear();
 			
 			MineBombDefaultConfigSettings defaultConfigs = new MineBombDefaultConfigSettings();
+			
 			defaultConfigs.setupDefaultMineBombData( this );
 			
 			
@@ -359,7 +360,7 @@ public class MineBombs
 
 			if ( configs != null ) {
 				
-				boolean dirty = configs.validateMineBombEffects();
+				boolean dirty = configs.validateMineBombEffects( true );
 				
 				setConfigData( configs );
 				

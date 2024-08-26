@@ -8,7 +8,6 @@ import tech.mcprison.prison.output.Output;
 public class MineBombDefaultConfigSettings {
 
 	
-	@SuppressWarnings( "unused" )
 	public void setupDefaultMineBombData(MineBombs mineBombs)
 	{
 		if ( mineBombs.getConfigData().getBombs().size() == 0 ) {

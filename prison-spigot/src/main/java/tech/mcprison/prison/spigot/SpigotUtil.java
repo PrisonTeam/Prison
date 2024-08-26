@@ -55,7 +55,6 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
-import tech.mcprison.prison.util.Vector;
 
 /**
  * Utilities for converting Prison-Core types to Spigot types.
@@ -1050,13 +1049,18 @@ public class SpigotUtil {
    */
 
     public static Location bukkitLocationToPrison(org.bukkit.Location bukkitLocation) {
-    	org.bukkit.util.Vector v = bukkitLocation.getDirection();
-    	Vector direction = new Vector( v.getX(), v.getY(), v.getZ() );
     	
-        return new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
-            bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
-            bukkitLocation.getYaw(), 
-            direction );
+    	return new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
+    			bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
+    			bukkitLocation.getYaw() );
+    	
+//    	org.bukkit.util.Vector v = bukkitLocation.getDirection();
+//    	Vector direction = new Vector( v.getX(), v.getY(), v.getZ() );
+//    	
+//        return new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
+//            bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
+//            bukkitLocation.getYaw(), 
+//            direction );
     }
 
     public static org.bukkit.Location prisonLocationToBukkit(Location prisonLocation) {
@@ -1065,9 +1069,9 @@ public class SpigotUtil {
 		            prisonLocation.getX(), prisonLocation.getY(), prisonLocation.getZ(),
 		            prisonLocation.getYaw(), prisonLocation.getPitch() );
         
-        Vector v = prisonLocation.getDirection();
-        org.bukkit.util.Vector vec = new org.bukkit.util.Vector( v.getX(), v.getY(), v.getZ() );
-        loc.setDirection( vec );
+//        Vector v = prisonLocation.getDirection();
+//        org.bukkit.util.Vector vec = new org.bukkit.util.Vector( v.getX(), v.getY(), v.getZ() );
+//        loc.setDirection( vec );
         
         return loc;
     }

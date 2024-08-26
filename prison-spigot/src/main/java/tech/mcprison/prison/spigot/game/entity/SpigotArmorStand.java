@@ -132,16 +132,23 @@ public class SpigotArmorStand
 
 	@Override
 	public void setItemInHand(ItemStack item) {
-		SpigotItemStack sItemStack = 
-				( item instanceof SpigotItemStack ?
-						(SpigotItemStack) item :
-							new SpigotItemStack( item ) );
-				
-		this.sItemStack = sItemStack;
-
-		org.bukkit.inventory.ItemStack bas = sItemStack.getBukkitStack();
-		
-		bArmorStand.setItemInHand( bas );
+		if ( item == null ) {
+			bArmorStand.setItemInHand( null );
+			bArmorStand.setArms( false );
+		}
+		else {
+			SpigotItemStack sItemStack = 
+					( item instanceof SpigotItemStack ?
+							(SpigotItemStack) item :
+								new SpigotItemStack( item ) );
+			
+			this.sItemStack = sItemStack;
+			
+			org.bukkit.inventory.ItemStack bas = sItemStack.getBukkitStack();
+			
+			bArmorStand.setArms( true );
+			bArmorStand.setItemInHand( bas );
+		}
 	}
 
 	@Override
@@ -208,6 +215,11 @@ public class SpigotArmorStand
 	@Override
 	public void setSmall(boolean small) {
 		bArmorStand.setSmall(small);
+	}
+
+	@Override
+	public void setInvulnerable(boolean invulnerable) {
+		bArmorStand.setInvulnerable(invulnerable);
 	}
 	
 }

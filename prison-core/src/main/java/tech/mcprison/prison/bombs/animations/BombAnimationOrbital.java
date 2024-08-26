@@ -15,13 +15,15 @@ public class BombAnimationOrbital extends BombAnimations {
 
 	private double angle = 0.0;
 	private double radius = 1.0;
+	private double radiusDelta = 0;
 	
 	private boolean alternateDirections = false;
 	
-	public BombAnimationOrbital(MineBombData bomb, PrisonBlock sBombBlock, 
+	public BombAnimationOrbital(MineBombData bomb, Location location,
+			PrisonBlock sBombBlock, 
 			ItemStack item, BombAnimationsTask task,
 			float entityYaw, float entityPitch) {
-		super(bomb, sBombBlock, item, task, entityYaw, entityPitch);
+		super(bomb, location, sBombBlock, item, task, entityYaw, entityPitch);
 
 		this.angle = entityYaw;
 
@@ -29,11 +31,6 @@ public class BombAnimationOrbital extends BombAnimations {
 		Vector vec = new Vector( 
 						bomb.getAnimationOffset(), 0d, bomb.getAnimationOffset());
 		getOriginalLocation().add( vec );
-		
-//		getOriginalLocation().setX( 
-//					getOriginalLocation().getX() + bomb.getAnimationOffset());
-//		getOriginalLocation().setZ( 
-//					getOriginalLocation().getZ() + bomb.getAnimationOffset());
 		
 	}
 	
@@ -61,41 +58,33 @@ public class BombAnimationOrbital extends BombAnimations {
 			angle += 360;
 		}
 		
-		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radius );
+		double radi = radius + 
+				(radiusDelta == 0 ? 0 :
+					radiusDelta * Math.sin( angle / 2d ));
+		
+		double spinVal = angle * -7d;
+//		Vector spin = new Vector( spinVal, 0, 0 );
+		
+		
+		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radi );
+//		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radius );
 		
 		// Location.add() creates a new instance of a Location and does not change
 		// the original value:
 		Location newLoc = getOriginalLocation().add(vector);
+		
+		// NOTICE!!!  Have to subtract 1 from the original location so the armorstand is 
+		//            always TP'd to the same y value.  Otherwise it will bounce when it
+		//            hits the ground.  This probably only affects spigot 1.8.x.
+		//            This has something to do with the fact that the armorstand is being
+		//            teleported.
+		newLoc.setY( newLoc.getY() - 1 );
+		
+		// Spin the held item?
+		newLoc.setYaw( (float) spinVal );
+//		newLoc.setDirection( spin );
+
 		getArmorStand().teleport( newLoc );
-		
-		
-//		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
-//		Output.get().logInfo(
-//				String.format(
-//						"Orbital direction:  angle: %8s  x: %8s  y: %8s  z: %8s",
-//						dFmt.format(angle),
-//						dFmt.format( vector.getX() ),
-//						dFmt.format( vector.getY() ),
-//						dFmt.format( vector.getY() )
-//				)
-//			);
-//		
-		
-		
-		
-//		double angle = 0.05;
-//		Vector direction = getArmorStand().getLocation().getDirection();
-//
-//		setEulerAngleX( direction.getX() + angle);
-//		
-//		direction.setX( getEulerAngleX() );
-//		
-//		getArmorStand().getLocation().setDirection(direction);
-//		
-//		
-//		Output.get().logInfo( "Orbital direction:  x: " + getEulerAngleX() + 
-//					"  y: " + getEulerAngleY() +
-//					"  z: " + getEulerAngleZ() );
 		
 		
 	}
@@ -112,6 +101,13 @@ public class BombAnimationOrbital extends BombAnimations {
 	}
 	public void setRadius(double radius) {
 		this.radius = radius;
+	}
+
+	public double getRadiusDelta() {
+		return radiusDelta;
+	}
+	public void setRadiusDelta(double radiusDelta) {
+		this.radiusDelta = radiusDelta;
 	}
 
 	public boolean isAlternateDirections() {

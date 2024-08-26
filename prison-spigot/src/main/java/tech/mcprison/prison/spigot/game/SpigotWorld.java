@@ -48,7 +48,6 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.entity.SpigotArmorStand;
 import tech.mcprison.prison.spigot.game.entity.SpigotEntity;
 import tech.mcprison.prison.spigot.game.entity.SpigotEntityType;
-import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -328,62 +327,84 @@ public class SpigotWorld
 	
 	
 	@Override
-	public ArmorStand spawnArmorStand( Location location, String itemType, 
-				String customName
-//				, 
-//				String nbtKey, String nbtValue 
-				) {
+	public ArmorStand spawnArmorStand( Location location, String itemType ) {
 		
-		int maxHight = location.getWorld().getMaxHeight();
 		
-		Location spawnPoint = new Location( location );
-		spawnPoint.setY(maxHight);
+		// NOTE: Once spawned, the armor stand is not being teleported back to the
+		//       intended location.  It was being spawned at a different location
+		//       because it was "flashing" as visible.
+//		int maxHight = location.getWorld().getMaxHeight();
+		
+//		Location spawnPoint = new Location( location );
+//		spawnPoint.setY(maxHight);
+
+		
+		
+		org.bukkit.inventory.ItemStack bItemStack = null;
 		
 //		Location spawnPoint = new Location( location );
 //		spawnPoint.setX( spawnPoint.getX() + 2 );
 //		spawnPoint.setZ( spawnPoint.getZ() + 2 );
 		
 		
-		org.bukkit.entity.Entity bEntity = spawnBukkitEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
+		org.bukkit.entity.Entity bEntity = spawnBukkitEntity( location, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
 		org.bukkit.entity.ArmorStand as = (org.bukkit.entity.ArmorStand) bEntity;
 		
 		as.setVisible( false );
-		as.setCustomNameVisible( true );
-		as.setArms( true );
 		as.setBasePlate( false );
-
-		if ( customName != null ) {
-			as.setCustomName( customName );
-		}
+		as.setCanPickupItems( false );
+//		as.setInvulnerable( true );
+//		as.setGravity( false );
 		
 		
-//		if ( nbtKey != null && nbtValue != null ) {
-//			
-//			PrisonNBTUtil.setNBTString( as, nbtKey, nbtValue );
+//		if ( customName == null ) {
+//			as.setCustomNameVisible( false );
 //		}
+//		else {
+//			as.setCustomNameVisible( true );
+//			as.setCustomName( customName );
+//		}
+	
 		
-		
-		if ( itemType != null && itemType.trim().length() > 0 ) {
+		if ( itemType == null || itemType.trim().length() == 0 ) {
+			as.setArms( false );
+			
+		}
+		else {
+			as.setArms( true );
+			
+//			XMaterial.ARMOR_STAND.
 			
 			XMaterial xMat = XMaterial.matchXMaterial( itemType ).orElse( null );
-			org.bukkit.inventory.ItemStack bItemStack = xMat == null ? null : xMat.parseItem();
+			bItemStack = xMat == null ? null : xMat.parseItem();
 			
 			if ( bItemStack == null ) {
 				
 				bItemStack = XMaterial.COBBLESTONE.parseItem();
 			}
+			
 
 			as.setItemInHand(bItemStack);
+//			as.setItem( EquipmentSlot.HAND, bItemStack);
+			
 		}
 		
+//		String msg = "SpigotWorld.spawnArmorStand: itemInHand: " +
+//				( as.getItemInHand() == null ? "null" : as.getItemInHand().toString()) +  
+//				"  hasArmms: " + as.hasArms() +
+//				"  itemStack( " + 
+//						(bItemStack == null ? "null" : 
+//							bItemStack.toString() + " " + bItemStack.getAmount()) + ") " +
+//						" name: " + (customName == null ? "noCustomName" : customName);
+//		
+//		Output.get().logInfo( msg );
 		
-		as.teleport( SpigotLocation.getBukkitLocation(location) );
+//		as.teleport( SpigotLocation.getBukkitLocation(location) );
 		
-		// as.setSmall( true );
-
 		
+		// wrap in a SpigotArmorStand:
 		SpigotArmorStand sas = new SpigotArmorStand( as );
-//		sas.teleport( location );
+		//sas.teleport( location );
 		
 		return sas;
 	}

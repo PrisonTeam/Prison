@@ -9,7 +9,6 @@ import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.EulerAngle;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -53,12 +52,14 @@ public abstract class BombAnimations {
 	 * holographic display of the name.
 	 */
 	public BombAnimations( MineBombData bomb, 
+			Location location,
 			PrisonBlock sBombBlock, 
 			BombAnimationsTask task ) {
-		this( bomb, sBombBlock, null, task, 0f, 0f );
+		this( bomb, location, sBombBlock, null, task, 0f, 0f );
 	}
 	
 	public BombAnimations( MineBombData bomb, 
+			Location location,
 			PrisonBlock sBombBlock, 
 			ItemStack item,
 			BombAnimationsTask task,
@@ -75,12 +76,11 @@ public abstract class BombAnimations {
 		this.sBlock = sBombBlock;
 		this.item = item;
 
-		
-		Location location =
-				getBomb().getPlacedBombLocation() != null ?
-						getBomb().getPlacedBombLocation() :
-						getsBlock().getLocation();
-		location.setY( location.getY() + 2.5 );
+//		Location location =
+//				getBomb().getPlacedBombLocation() != null ?
+//						getBomb().getPlacedBombLocation() :
+//						getsBlock().getLocation();
+//		location.setY( location.getY() + 2.5 );
 		
 		// NOTE: The direction the entity is facing is based upon yaw.  
 		//       When using org.bukkit.Location.setDirection() it's using a vector
@@ -167,10 +167,11 @@ public abstract class BombAnimations {
 		// If item is null, then armorstand will not spawn with an item
 		// and no arms.
 		armorStand = getOriginalLocation().spawnArmorStand(
-						(getItem() == null ? null : getBomb().getItemType()),
-						(getId() == 0 ? getBomb().getName() : null) );
+				(getItem() == null ? null : getBomb().getItemType()) );
+//		armorStand = getOriginalLocation().spawnArmorStand(
+//						null,
+//						(getId() == 0 ? getBomb().getName() : null) );
 		
-//						MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
 		
 		
 //		armorStand = location.spawnArmorStand();
@@ -192,7 +193,20 @@ public abstract class BombAnimations {
 			// armorStand.setupArmorStand( getBomb().getItemType() );
 //			armorStand.setupArmorStand( getItem() );
 			
+//			if ( getItem() != null ) {
+//				armorStand.setVisible( true );
+//				
+//				armorStand.setArms( true );
+//				
+//				armorStand.setItemInHand( getItem() );
+//			}
+			
+			
+			
+			// Sets up the custom name on the armorstand and also configures the 
+			// processing if it's a dynamic name:
 			armorStand.setCustomNameVisible( getId() == 0 && initializeCustomName() );
+			
 			
 			armorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, getBomb().getName() );
 			
@@ -231,27 +245,33 @@ public abstract class BombAnimations {
 			
 			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
 				
+				armorStand.setInvulnerable( true );
+				
 				armorStand.setGlowing( getBomb().isGlowing() );
 				
 				// setGravity is invalid for spigot 1.8.8:
 				armorStand.setGravity( getBomb().isGravity() );
+				
+				armorStand.setInvulnerable( true );
 			}
 		}
 		
-		if ( Output.get().isDebug() ) {
-			String msg = String.format( 
-					"### BombAnimation.initializeArmorStand : id: %s  %s  %s %s%s", 
-					Integer.toString(getId()),
-					bomb.getAnimationPattern().name(),
-					armorStand.getLocation().toString(),
-					(getArmorStand().isCustomNameVisible() ? " CustomName" : ""),
-					(getArmorStand().hasArms() ? " hasArms" : "" ),
-					(getArmorStand().getItemInHand() != null ? 
-							" " + getArmorStand().getItemInHand().getName() : "" )
-					);
-			
-			Output.get().logInfo( msg );
-		}
+//		if ( Output.get().isDebug() ) {
+//			String msg = String.format( 
+//					"### BombAnimation.initializeArmorStand : id: %s  %s %s %s%s%s%s", 
+//					Integer.toString(getId()),
+//					bomb.getAnimationPattern().name(),
+//					armorStand.getLocation().toWorldCoordinates(),
+//					
+//					(getArmorStand().isCustomNameVisible() ? " CustomName" : " -noName- "),
+//					(getArmorStand().hasArms() ? " hasArms" : " -noArms- " ),
+//					(getArmorStand().getItemInHand() != null ? 
+//							" " + getArmorStand().getItemInHand().getName() : " -noItemInHand- " ),
+//					(getArmorStand().isVisible() ? " visible " : " notVisible ")
+//					);
+//			
+//			Output.get().logInfo( msg );
+//		}
 	}
 
 

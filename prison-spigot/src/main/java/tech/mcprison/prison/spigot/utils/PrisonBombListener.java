@@ -95,6 +95,13 @@ public class PrisonBombListener
         		
         		Block targetBlock = event.getBlockAgainst();
         		
+        		SpigotBlock lsBlock = sPlayer.getLineOfSightBlock();
+        		
+        		Output.get().logInfo( 
+        				"### Place mine bomb: mineBombPlacementEvent: block: %s  sight: %s", 
+        				targetBlock.getLocation().toString(),
+        				lsBlock.getLocation().toString() );
+        		
         		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
         		
         		boolean canceled = processBombTriggerEvent( player, mineBomb, 
@@ -220,6 +227,8 @@ public class PrisonBombListener
         												locs.get(2).equals(locs.get(3))
         												) {
         											
+        											// Set the mine bomb's location where the item has landed:
+        											mineBomb.setPlacedBombLocation( loc );
         											
         											// Cancel this task:
         											SpigotPrison.getInstance().getScheduler().cancelTask( mineBomb.getTask() );
@@ -232,7 +241,7 @@ public class PrisonBombListener
         											aStnd.remove();
         											
         											// Start mine bomb animation:
-        											loc.setY( loc.getY() - 1);
+//        											loc.setY( loc.getY() );
         											SpigotBlock targetBlock = (SpigotBlock) loc.getBlockAt();
         											
         											Mine mine = getMine(sPlayer, mineBomb, targetBlock );
@@ -337,6 +346,29 @@ public class PrisonBombListener
         			
         			Block targetBlock = event.getClickedBlock();
         			
+            		
+            		SpigotBlock lsBlock = sPlayer.getLineOfSightBlock();
+            		
+            		Location losLoc = sPlayer.getLineOfSightExactLocation();
+            		
+            		// The placedBombLocation will be used as the center point of the animation:
+            		mineBomb.setPlacedBombLocation( losLoc );
+            		
+            		Output.get().logInfo( 
+            				"### Place mine bomb: bombPlacementEvent: block: %s  "
+            								+ "sight: %s  LineOfSight: %s ", 
+            				new SpigotLocation( targetBlock.getLocation()).toString(),
+            				lsBlock.getLocation().toString(),
+            				(losLoc == null ? "null" : losLoc.toString()) );
+
+            		if ( losLoc != null ) {
+            			lsBlock = (SpigotBlock) losLoc.getBlockAt();
+            			
+            			targetBlock = lsBlock.getWrapper();
+            		}
+            		
+            		
+        			
         			EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
         			
         			processBombTriggerEvent( player, mineBomb, targetBlock, hand );
@@ -419,7 +451,8 @@ public class PrisonBombListener
 	private boolean processBombTriggerEvent( SpigotPlayer sPlayer, 
 				Mine mine,
 				MineBombData mineBomb, 
-				SpigotBlock sBlock, EquipmentSlot hand ) {
+				SpigotBlock sBlock, 
+				EquipmentSlot hand ) {
 		
 		boolean canceled = false;
 		

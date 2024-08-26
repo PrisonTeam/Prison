@@ -169,13 +169,12 @@ public class PrisonUtilsMineBombsTasks
 								xSound.play( bLocation, effect.getVolumne(), effect.getPitch() );
 							}
 						}
-						catch ( IllegalArgumentException |
-								NullPointerException e ) {
+						catch ( Exception e ) {
 							Output.get().logWarn( 
 									String.format( 
 											"Invalid Sound Effect value in bomb %s: Error: [%s]  [\\Q%s\\E] ",
 											bomb.getName(),
-											e.getMessage(),
+											( e == null ? "-noErrorMessage-" : e.getMessage()),
 											effect.toString())
 									);
 						}
@@ -214,13 +213,12 @@ public class PrisonUtilsMineBombsTasks
 								}
 							}
 						}
-						catch ( IllegalArgumentException |
-								NullPointerException e ) {
+						catch ( Exception e ) {
 							Output.get().logWarn( 
 									String.format( 
 											"Invalid Visual Effect value in bomb %s: Error: [%s]  [\\Q%s\\E] ",
 											bomb.getName(),
-											e.getMessage(),
+											( e == null ? "-noErrorMessage-" : e.getMessage()),
 											effect.toString())
 							);
 						}
