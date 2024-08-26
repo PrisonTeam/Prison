@@ -117,6 +117,7 @@ import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerEntityExplodeEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsExplosiveEvent;
@@ -2846,6 +2847,12 @@ public class SpigotPlatform
 		// Prison's Explosion event.  Used by mine bombs.
 		AutoManagerPrisonsExplosiveBlockBreakEvents prisonExplosiveEnchants = new AutoManagerPrisonsExplosiveBlockBreakEvents();
 		prisonExplosiveEnchants.dumpEventListeners( sb );
+		
+		
+		// Bukkit's EntityExplodeEvent... used by creepers and enchantment plugins like ExcellentEnchants.
+		AutoManagerEntityExplodeEvents bukkitEntityExplodeEvent = new AutoManagerEntityExplodeEvents();
+		bukkitEntityExplodeEvent.dumpEventListeners( sb );
+		
 		
 		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
 		crazyEnchants.dumpEventListeners( sb );

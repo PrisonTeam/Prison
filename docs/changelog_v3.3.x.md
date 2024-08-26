@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-26
 
 
+
+* **New Feature:  Support for Bukkit's EntityExplodeEvent which is what the ExcellentEnchantments plugin uses.**
+
+
 * **Mine bombs:  A lot of various changes and fixes to get them to work better.**
 This new animation and mine bombs code needs more refinement and adjustments, but it's working far better than what it was.
 

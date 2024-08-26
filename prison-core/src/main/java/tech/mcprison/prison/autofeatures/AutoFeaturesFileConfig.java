@@ -109,6 +109,9 @@ public class AutoFeaturesFileConfig {
 
 	    		
 	    		blockBreakEventPriority(blockBreakEvents, "LOW"),
+	    		entityExplodeEventPriority(blockBreakEvents, "DISABLED"),
+	    		
+	    		
 	    		
 	    		ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "LOW"),
 
