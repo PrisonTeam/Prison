@@ -15,6 +15,7 @@ import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.Location;
@@ -341,21 +342,48 @@ public abstract class Spigot_1_13_Blocks
 		
 		stats.setMaterialSize( Material.values().length );
 		
+		StringBuilder sb = new StringBuilder();
+		
 		// go through all available materials:
 		for ( Material mat : Material.values() ) {
 			
-			// Must create an item stack:
-			ItemStack iStack = new ItemStack( mat, 1 );
-			
-			if ( iStack != null ) {
+			try {
+				// Must create an item stack:
+				ItemStack iStack = new ItemStack( mat, 1 );
 				
-				if ( mat.isBlock() ) {
-					stats.addCountBlocks();
-				}
-				else if ( mat.isItem() ) {
-					stats.addCountItems();
+				if ( iStack != null ) {
+					
+					if ( mat.isBlock() ) {
+						stats.addCountBlocks();
+					}
+					else if ( mat.isItem() ) {
+						stats.addCountItems();
+					}
 				}
 			} 
+			catch (Exception e) {
+
+				// NOTE: Wall hangings, water, and potted plants can be placed as blocks, but cannot
+				//       created as ItemStacks:
+				if ( SpigotUtil.canItemStackMaterial( mat ) ) {
+					
+					sb.append( mat.name() ).append( " " );
+				}
+				
+//				Output.get().logInfo( 
+//						"Notice: The org.bukkit.Material %s could not create an ItemStack. This is not an error, just a notice.",
+//						mat.name()
+//						);
+			} 
+		}
+		
+		if ( sb.length() > 0 ) {
+			
+			Output.get().logInfo( "### Spigot_1_13_Blocks.testCountAllBlockTypes: "
+					+ "The following XMaterial items could not generate an ItemStack. "
+					+ "This is not an error. "
+					+ "Igoring '*water*', '*wall*', and '*potted*' [%s] ",
+					sb.toString() );
 		}
 		
 		return stats;
