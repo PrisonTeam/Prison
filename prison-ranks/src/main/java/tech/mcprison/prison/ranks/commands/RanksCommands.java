@@ -972,9 +972,11 @@ public class RanksCommands
         // Here's the deal... With color codes, Java's String.format() cannot detect the correct
         // length of a tag. So go through all tags, strip the colors, and see how long they are.
         // We need to know the max length so we can pad the others with periods to align all costs.
-        int maxRankNameSize = 0;
-        int maxRankTagNoColorSize = 0;
-        int maxRankCostSize = 0;
+        // Note: Use a value of 1 as a default since '%-0s' would be a failure. This could happen
+        //       if not tags are defined for any ranks.
+        int maxRankNameSize = 1;
+        int maxRankTagNoColorSize = 1;
+        int maxRankCostSize = 1;
         
         for (Rank rank : ladder.getRanks()) {
         	String nameNoColor = Text.stripColor( rank.getName() );

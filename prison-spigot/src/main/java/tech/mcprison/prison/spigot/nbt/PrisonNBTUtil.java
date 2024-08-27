@@ -49,7 +49,17 @@ public class PrisonNBTUtil {
 		
 		try {
 			Function<ReadableItemNBT, String> gsFnc = nbt -> {
-				String value = (String) nbt.getString(key);
+				String value = null;
+				
+				try {
+					Object vObj = nbt.getString(key);
+					
+					if ( vObj != null ) {
+						value = (String) vObj;
+					}
+				} 
+				catch (Exception e) {
+				}
 				
 //				if ( Output.get().isDebug() ) {
 //					Output.get().logInfo( "PrisonNBTUtil.getNBTString():ItemStack: %s", nbt.toString() );
@@ -61,11 +71,13 @@ public class PrisonNBTUtil {
 //			results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
 		}
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.getNBTString(): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+			// ignore exception... these are very common if there are no NBTs on the ItemStack
+			
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.getNBTString(): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 		
 		return results;
@@ -77,16 +89,24 @@ public class PrisonNBTUtil {
 		try {
 			Function<ReadableNBT, String> gsFnc = nbt -> (String) nbt.getString(key);
 			
-			BlockState blockState = bukkitBlock.getState();
+			BlockState blockState = null;
+
+			try {
+				blockState = bukkitBlock.getState();
+			} 
+			catch (Exception e) {
+			}
 			
 			results = NBT.get(blockState, gsFnc );
 		} 
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.getNBTString(block): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+			// ignore exception... these are very common if there are no NBTs on the ItemStack
+			
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.getNBTString(block): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 		
 		return results;
@@ -104,11 +124,11 @@ public class PrisonNBTUtil {
 //			}
 		} 
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.setNBTString(): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.setNBTString(): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 	}
 	
@@ -122,11 +142,13 @@ public class PrisonNBTUtil {
 //		results = NBT.get(bukkitStack, nbt -> nbt.getBoolean(key));
 		} 
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.getNBTBoolean(): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+			// ignore exception... these are very common if there are no NBTs on the ItemStack
+			
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.getNBTBoolean(): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 		
 		return results;
@@ -144,11 +166,11 @@ public class PrisonNBTUtil {
 //			}
 		} 
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.setNBTBoolean(): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.setNBTBoolean(): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 	}
 
@@ -167,7 +189,13 @@ public class PrisonNBTUtil {
 		
 		try {
 			Function<ReadableItemNBT, Integer> gsFnc = nbt -> {
-				Integer value = nbt.getInteger(key);
+				Integer value = null;
+				
+				try {
+					value = nbt.getInteger(key);
+				} 
+				catch (Exception e) {
+				}
 				
 //				if ( Output.get().isDebug() ) {
 //					Output.get().logInfo( "PrisonNBTUtil.getNBTString():ItemStack: %s", nbt.toString() );
@@ -178,11 +206,13 @@ public class PrisonNBTUtil {
 			results = NBT.get(bukkitStack, gsFnc );
 		}
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.getNBTInt(): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+			// ignore exception... these are very common if there are no NBTs on the ItemStack
+			
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.getNBTInt(): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 		
 		return results;
@@ -201,7 +231,15 @@ public class PrisonNBTUtil {
 		try {
 			results = NBT.get(entity, nbt -> { 
 				
-			String value = (String) nbt.getString(key);
+			String value = null;
+			
+			try {
+				Object vObj = nbt.getString(key);
+				value = (String) vObj;
+			} 
+			catch (Exception e) {
+			}
+			
 			return value;
 		});
 			
@@ -211,11 +249,13 @@ public class PrisonNBTUtil {
 //			results = NBT.get(bukkitStack, nbt -> nbt.getString(key));
 		}
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.getNBTString(): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+			// ignore exception... these are very common if there are no NBTs on the ItemStack
+			
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.getNBTString(): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 		
 		return results;
@@ -232,11 +272,11 @@ public class PrisonNBTUtil {
 			}
 		} 
 		catch (Exception e) {
-			Output.get().logInfo(
-					"PrisonNBTUtil.setNBTString(): Failure trying to use NBTs. "
-					+ "Contact prison support. The NBT library may need to be updated. [%s]",
-					e.getMessage()
-					);
+//			Output.get().logInfo(
+//					"PrisonNBTUtil.setNBTString(): Failure trying to use NBTs. "
+//					+ "Contact prison support. The NBT library may need to be updated. [%s]",
+//					e.getMessage()
+//					);
 		}
 	}
 	

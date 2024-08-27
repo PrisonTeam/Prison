@@ -350,6 +350,7 @@ public class Output
      * @param message The informational message. May include color codes, but the default is white.
      */
     public void logInfo(String message, Object... args) {
+  	
         log(message, LogLevel.INFO, args);
     }
 
@@ -361,8 +362,15 @@ public class Output
      * @param throwable The exceptions thrown, if any.
      */
     public void logWarn(String message, Throwable... throwable) {
-        log(message, LogLevel.WARNING);
 
+        try {
+        	log(message, LogLevel.WARNING);
+		} 
+        catch (Exception e) {
+			log( "Failure: Output.logWarn: failed to log an error message. Retrying without formatting.", LogLevel.ERROR );
+			logRaw( message );
+        }
+        
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
         }
@@ -376,7 +384,14 @@ public class Output
      * @param throwable The exceptions thrown, if any.
      */
     public void logError(String message, Throwable... throwable) {
-        log(message, LogLevel.ERROR);
+    	
+        try {
+			log(message, LogLevel.ERROR);
+		} 
+        catch (Exception e) {
+			log( "Failure: Output.logError: failed to log an error message. Retrying without formatting.", LogLevel.ERROR );
+			logRaw( message );
+        }
 
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);

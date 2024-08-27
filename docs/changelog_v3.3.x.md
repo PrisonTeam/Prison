@@ -14,12 +14,21 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-beta.18c 2024-08-26
+# 3.3.0-beta.18c 2024-08-27
 
+
+* **Bug fixes: With spigot/paper 1.21.1 and the NBT lib that we are using, there were issue that were suddenly occurring that worked fine before.**
+Basically, eliminated a lot of generation of stack traces, especially when dealing with NBTs.
+Upgraded NBT-lib to v2.13.2 from v2.13.1.  
+When formatting the rank list, the defaults were set to a value of zero.  But if there are no tags on any ranks within a ladder, then the width was being used with a value of zero.  This was causing a failure since it cannot left-position anything with a zero width. It was trying to format '%-0s'.  With a default of 1, it would  always use 1 as the minimum value, which works perfectly fine.
+
+
+* **Fixed a potential problem with null ranks being loaded within the ladder loaders.**
+I cannot find a reason why this was happening, or what data was triggering it, but this fixed the issue by skipping null ranks.
 
 
 * **New Feature:  Support for Bukkit's EntityExplodeEvent which is what the ExcellentEnchantments plugin uses.**
-
+owo
 
 * **Mine bombs:  A lot of various changes and fixes to get them to work better.**
 This new animation and mine bombs code needs more refinement and adjustments, but it's working far better than what it was.
