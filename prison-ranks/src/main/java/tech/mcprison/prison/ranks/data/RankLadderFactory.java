@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.store.Document;
@@ -55,6 +56,19 @@ public class RankLadderFactory
 //	        rankLadder.ranks = new ArrayList<>(); // already initialized
 	        for (LinkedTreeMap<String, Object> rank : ranksLocal) {
 	        	
+	        	if ( rank == null ) {
+	        		
+	        		// Force a resave to "fix" the problem?
+	        		isDirty = true;
+	        		
+	        		Output.get().logInfo( "RankLadderFactory.createRankLadder: "
+	        				+ "A loaded rank was null, and is skipping it.  Since it"
+	        				+ "was null, there is no way to identify what it was. "
+	        				+ "This notice is to inform you and to prevent Prison from "
+	        				+ "failing to load.");
+	        		
+	        		continue;
+	        	}
 	        	
 	        	// The only real field that is important here is rankId to tie the 
 	        	// rank back to this ladder.  Name helps clarify the contents of the 
