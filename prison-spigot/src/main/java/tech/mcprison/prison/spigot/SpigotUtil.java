@@ -674,21 +674,20 @@ public class SpigotUtil {
 	public static List<PrisonBlock> getAllPlatformBlockTypes() {
 		List<PrisonBlock> blockTypes = new ArrayList<>();
 		
+		StringBuilder sb = new StringBuilder();
+		
 		for ( XMaterial xMat : XMaterial.values() ) {
 			if ( xMat.isSupported() ) {
 				
 				ItemStack itemStack = null;
+
+				boolean itemStackFailed = false;
 				
 				try {
 					itemStack = xMat.parseItem();
 				} 
 				catch (Exception e) {
-					Output.get().logInfo(
-							"Notice: invalid XMaterial type encountered when trying to use 'parseItem()'. %s " +
-							"Contact prison support. XSeries may need to be updated to support " +
-							"the current version of spigot. ",
-							xMat.name()
-							);
+					itemStackFailed = true;
 				}
 				
 				if ( xMat.name().toLowerCase().contains( "_wood" ) ) {
@@ -731,16 +730,62 @@ public class SpigotUtil {
 //					}
 //				}
 				else {
-					Output.get().logWarn( "### SpigotUtil.testAllPrisonBlockTypes: " +
-							"Possible XMaterial FAIL: XMaterial " + xMat.name() +
-							" is supported for this version, but the XMaterial cannot " +
-							"be mapped to an actual Material.");
+					
+					// NOTE: Wall hangings, water, and potted plants can be placed as blocks, but cannot
+					//       created as ItemStacks:
+					if ( canItemStackMaterial( xMat ) ) {
+						
+						sb.append( xMat.name() ).append( " " );
+					}
+					
+					
+//					Output.get().logInfo(
+//							"Notice: invalid XMaterial type encountered when trying to use 'parseItem()'. %s " +
+//							"Contact prison support. XSeries may need to be updated to support " +
+//							"the current version of spigot. ",
+//							xMat.name()
+//							);
+					
 				}
 			}
 		}
 		
+		if ( sb.length() > 0 ) {
+			
+			Output.get().logInfo( "### SpigotUtil.testAllPrisonBlockTypes: "
+					+ "The following XMaterial items could not generate an ItemStack. "
+					+ "This is not an error. This list could be beneficial if there are any "
+					+ "issues with XMaterial and new versions of Spigot/Paper. "
+					+ "Igoring '*water*', '*wall*', and '*potted*' [%s] ",
+					sb.toString() );
+		}
+		
 		return blockTypes;
 	}
+	
+	
+	public static boolean canItemStackMaterial( Material max ) {
+		return canItemStackMaterial( max.name() );
+	}
+	
+	public static boolean canItemStackMaterial( XMaterial max ) {
+		return canItemStackMaterial( max.name() );
+	}
+	
+	public static boolean canItemStackMaterial( String name ) {
+		boolean results = true;
+		
+		name = name.toLowerCase();
+		
+		if ( name.contains( "wall") || name.contains( "potted" ) || name.contains( "water" ) || 
+				name.contains("") ) {
+			
+			results = false;
+		}
+		
+		return results;
+	}
+	
 	
 	public static List<PrisonBlock> getAllCustomBlockTypes() {
 		List<PrisonBlock> blockTypes = new ArrayList<>();

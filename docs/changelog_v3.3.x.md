@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-27
 
 
+* **Material validations: The validation process was generating a ton of warnings for all items and blocks that exist in minecraft, but yet cannot exist in an item stack.**  Such as wall hangings, water, etc... since they are fixed in the world, and when in itemstacks, they are represented by something else, such as an ItemFrame or a Bucket of Water.
+I eliminated most errors, but reduced it down to a list of items.  Also starting to suppress items that are known not to be ItemStack-able so the list is greatly reduced.  Still need to work on suppressing others too.
+
+
+
 * **Bug fixes: With spigot/paper 1.21.1 and the NBT lib that we are using, there were issue that were suddenly occurring that worked fine before.**
 Basically, eliminated a lot of generation of stack traces, especially when dealing with NBTs.
 Upgraded NBT-lib to v2.13.2 from v2.13.1.  
