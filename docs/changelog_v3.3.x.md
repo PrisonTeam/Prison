@@ -17,6 +17,13 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-27
 
 
+* **Mine bombs: Minor adjustments.**
+There still are changes that are needed, but I'm needing to post a new alpha release before I proceed to wrap up the mine bombs.  
+They are getting very close to working as intended, and I'm wanting to add more features to the bombs, along with changing a few other things too.
+But for now, a new alpha needs to be pushed out because other issues have been addressed and fixed.
+
+
+
 * **Material validations: The validation process was generating a ton of warnings for all items and blocks that exist in minecraft, but yet cannot exist in an item stack.**  Such as wall hangings, water, etc... since they are fixed in the world, and when in itemstacks, they are represented by something else, such as an ItemFrame or a Bucket of Water.
 I eliminated most errors, but reduced it down to a list of items.  Also starting to suppress items that are known not to be ItemStack-able so the list is greatly reduced.  Still need to work on suppressing others too.
 

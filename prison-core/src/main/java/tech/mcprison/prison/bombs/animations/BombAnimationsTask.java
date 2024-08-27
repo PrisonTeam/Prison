@@ -157,7 +157,7 @@ public class BombAnimationsTask
 						yaw, pitch );
 				
 				ba.setAlternateDirections( true );
-				ba.setRadiusDelta( 1.0 );
+				ba.setRadiusDelta( 2.0 );
 				
 				getAnimators().add( ba );
 				

@@ -76,6 +76,8 @@ public class ExplosiveBlockBreakEvent
 		
 		this.explodedBlocks = explodedBlocks;
 		this.triggeredBy = triggeredBy;
+		
+		this.setCancelled( false );
 	}
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player,
 						List<Block> explodedBlocks ) {

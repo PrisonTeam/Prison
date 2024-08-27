@@ -390,22 +390,29 @@ public class PrisonBombListener
 		// NOTE: Because we're just checking, do not auto update the itemstack.
 //        	NBTItem nbtItem = new NBTItem( event.getItem() );
 		
-		String bombName = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_KEY );
-//		String ownerUUID = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID );
+		String bombName = null;
 		
-		if ( bombName != null && bombName.trim().length() == 0 ) {
-			bombName = null;
-		}
-		else if ( bombName != null ){
+		try {
+			bombName = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_KEY );
+//			String ownerUUID = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID );
 			
-//			if ( Output.get().isDebug() ) {
-//				Output.get().logInfo( "PrisonBombListener.onInteract (item) "
-//						+ "bombName: &7%s&r &3::  nbt: &r\\Q%s\\E", 
-//						bombName, 
-//						PrisonNBTUtil.nbtDebugString( iStack ).replace("%", "_")
-////        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
-//						);
+			if ( bombName != null && bombName.trim().length() == 0 ) {
+				bombName = null;
+			}
+//			else if ( bombName != null ) {
+//				
+//	//			if ( Output.get().isDebug() ) {
+//	//				Output.get().logInfo( "PrisonBombListener.onInteract (item) "
+//	//						+ "bombName: &7%s&r &3::  nbt: &r\\Q%s\\E", 
+//	//						bombName, 
+//	//						PrisonNBTUtil.nbtDebugString( iStack ).replace("%", "_")
+//	////        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) 
+//	//						);
+//	//			}
 //			}
+		} 
+		catch (Exception e) {
+			// Ignore... not a mine bomb.
 		}
 		
 
