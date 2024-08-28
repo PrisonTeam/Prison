@@ -280,12 +280,24 @@ public class AutoManagerEntityExplodeEvents
 		Entity bEntity = e.getEntity();
 		Player bPlayer = bEntity instanceof Player ? (Player) bEntity : null;
 		
-		if ( bPlayer == null ) {
+		Block eBlock = e.blockList() != null && e.blockList().size() > 0 ? 
+					e.blockList().get(0) : null;
+		
+		if ( bPlayer == null || eBlock == null ) {
+			
+			if ( bPlayer != null ) {
+				String msg = String.format(
+						"&dEntityExplodeEvent: player [&b%s&d] or eventBlock [&b%s&d] is null. " +
+								"&2Cannot process event without a player or at least one block. ",
+								( bPlayer == null ? "&cnull" : bPlayer.getName() ),
+								( eBlock == null ? "&cnull" : eBlock.getType().name() ) );
+				Output.get().logInfo( msg );
+			}
 			return; // Ignore the event... it's not a player.
 		}
 		
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    							bPlayer, e.blockList().get( 0 ),
+    							bPlayer, eBlock,
     							bbPriority, true );
     	
     	if ( eventResults.isIgnoreEvent() ) {

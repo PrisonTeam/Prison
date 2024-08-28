@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-08-28
 
 
+* **AutoFeatures: EntityExplodeEvent: Fixed a few issues with how it was setup. **
+Apparently the event can be fired with zero blocks!  This now handles that situation and will bypass handling of that event, but it will log a warning in the console.
+
+
 * **AutoFeatures: Changed the debug logging on block break events and explosions, to better encode them with color so important items stand out better.**
 Plus added logging on features that were not covered before: If a mine reset was triggered, how many block events were submitted.
 If the blockbreak task is submitted with how many blocks it's changing.
