@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.commands;
 
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +36,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayerUtil;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -998,7 +998,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     				chatDisplay.addText( "Lore:"   );
     				
     				for (String l : lore) {
-    					chatDisplay.addText( "  %s", l  );
+    					String loreEscaped = l.replace(Text.COLOR_CHAR, '&');
+    					
+    					chatDisplay.addText( "  %s :: [\\Q%s\\E]", l, loreEscaped  );
     				}
     			}
     			
@@ -1068,7 +1070,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     			}
 //    			chatDisplay.addText( " ",   );
     			
-    			chatDisplay.send( sender );;
+    			chatDisplay.send( sender );
+    			
+    			// Send to the console too:
+    			chatDisplay.sendtoOutputLogInfo();
     		}
     		
     	}

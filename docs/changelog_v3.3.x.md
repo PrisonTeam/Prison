@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-08-27
+# 3.3.0-alpha.18d 2024-08-28
+
+
+* **Sellall: Changed '/sellall items inspect' to print everything to the console, and to decode the lore so it shows all of the color codes.**
+This is critical for understanding how lore is setup so you can use the auto features lore settings.
 
 
 * **3.3.0-alpha.18d  2024-08-27**
