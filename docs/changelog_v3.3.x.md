@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-08-28
 
 
+* **Blocks: Update the list of blocks that can be effected by gravity (fall when disturbed).**
+Added falling_sand, falling_block, suspicious_sand, suspecicious_gravel
+
+
 * **AutoFeatures: EntityExplodeEvent: Fixed a few issues with how it was setup. **
 Apparently the event can be fired with zero blocks!  This now handles that situation and will bypass handling of that event, but it will log a warning in the console.
 

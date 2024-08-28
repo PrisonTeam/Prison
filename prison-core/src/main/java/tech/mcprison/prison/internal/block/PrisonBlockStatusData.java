@@ -405,6 +405,11 @@ public abstract class PrisonBlockStatusData {
 			{
 				case "sand":
 				case "red_sand":
+				case "falling_sand":
+				case "falling_block":
+				case "suspicious_sand":
+				case "suspicious_gravel":
+					
 				case "gravel":
 					
 				case "white_concrete_powder":
