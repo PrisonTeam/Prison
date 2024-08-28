@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-beta.18c 2024-08-27
 
 
+
+* **ExcellentEnchants: Added support for org.bukkit.event.entity.EntityExplodeEvent.**
+This fixes some issues where the initial changes were not fully finished.
+
+
+
 * **Mine bombs: Minor adjustments.**
 There still are changes that are needed, but I'm needing to post a new alpha release before I proceed to wrap up the mine bombs.  
 They are getting very close to working as intended, and I'm wanting to add more features to the bombs, along with changing a few other things too.
@@ -46,7 +52,7 @@ owo
 This new animation and mine bombs code needs more refinement and adjustments, but it's working far better than what it was.
 
 
-* **Placeholders: Sellall multiplier:  Fixed a few issues related to being offline and even OP'd.  
+* **Placeholders: Sellall multiplier:  Fixed a few issues related to being offline and even OP'd.**
 When offline, it was not able to get an active player object so it was bypassing the sellall multiplier calculations.**
 Now it can work with bukkit's offline players.  And its also able to fallback to using snapshot perms so the sellall calculations at least reflects what it was the last time the player was online.
 

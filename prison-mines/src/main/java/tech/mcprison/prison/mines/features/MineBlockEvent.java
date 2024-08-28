@@ -33,6 +33,13 @@ public class MineBlockEvent {
 		
 		all,
 		blockBreak,
+		
+		/**
+		 * The EntityExplodeEvent is a bukkit event, but other plugins, such as ExcellentEnchants
+		 * will use it too.
+		 */
+		EntityExplodeEvent, 
+		
 		TEXplosion,
 		CEXplosion,
 		PEExplosive, // PrisonEnchant: Pulsi_'s plugin

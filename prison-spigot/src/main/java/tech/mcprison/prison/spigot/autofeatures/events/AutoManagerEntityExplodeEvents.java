@@ -88,7 +88,7 @@ public class AutoManagerEntityExplodeEvents
 	@Override
 	public void initialize() {
 
-		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		String eP = getMessage( AutoFeatures.entityExplodeEventPriority );
 		
 		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 		setBbPriority( bbPriority );
@@ -99,17 +99,17 @@ public class AutoManagerEntityExplodeEvents
 			return;
 		}
 		
-		// Check to see if the class BlastUseEvent even exists:
 		try {
-			Output.get().logInfo( "AutoManager: checking if loaded: CrazyEnchants" );
+			Output.get().logInfo( "AutoManager: checking if loaded: EntityExplodeEvents (ExcellentEnchants, and others)" );
 			
-			Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
-					this.getClass().getClassLoader() );
+			// This class should always exist, since it's part of core bukkit:
+			Class.forName( "org.bukkit.event.entity.EntityExplodeEvent", false, 
+															this.getClass().getClassLoader() );
 			
-			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
+			Output.get().logInfo( "AutoManager: Trying to register EntityExplodeEvents (ExcellentEnchants, and others)" );
 			
 			
-			if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
+			if ( bbPriority != BlockBreakPriority.DISABLED ) {
     			if ( bbPriority.isComponentCompound() ) {
     				
     				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
@@ -127,11 +127,11 @@ public class AutoManagerEntityExplodeEvents
 			
 		}
 		catch ( ClassNotFoundException e ) {
-			// CrazyEnchants is not loaded... so ignore.
-			Output.get().logInfo( "AutoManager: CrazyEnchants is not loaded" );
+			// EntityExplodeEvents (ExcellentEnchants, and others) is not loaded... so ignore.
+			Output.get().logInfo( "AutoManager: EntityExplodeEvents (ExcellentEnchants, and others) is not loaded" );
 		}
 		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: CrazyEnchants failed to load. [%s]", e.getMessage() );
+			Output.get().logInfo( "AutoManager: EntityExplodeEvents (ExcellentEnchants, and others) failed to load. [%s]", e.getMessage() );
 		}
 	}
 
@@ -294,8 +294,8 @@ public class AutoManagerEntityExplodeEvents
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleBlastUseEvent ** ### " +
-				"(event: BlastUseEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "### ** handleEntityExplodeEvent ** ### " +
+				"(event: EntityExplodeEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")
@@ -315,7 +315,7 @@ public class AutoManagerEntityExplodeEvents
     		
 //    		Block bukkitBlock = e.getBlockList().get( 0 );
     		
-    		BlockEventType eventType = BlockEventType.CEXplosion;
+    		BlockEventType eventType = BlockEventType.EntityExplodeEvent;
     		String triggered = null;
     		
 
