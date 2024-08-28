@@ -137,6 +137,8 @@ public class PrisonMinesBlockBreakEvent
 	
 	private List<SpigotItemStack> bukkitDrops;
 	
+	private int preventedDrops;
+	
 	private List<Block> unprocessedRawBlocks;
 	
 	
@@ -191,6 +193,8 @@ public class PrisonMinesBlockBreakEvent
 		
 		this.bukkitDrops = new ArrayList<>();
 		
+		this.preventedDrops = 0;
+		
 		this.debugInfo = new StringBuilder();
 		setDebugColorCodeDebug();
 		this.debugInfo.append( debugInfo );
@@ -226,6 +230,8 @@ public class PrisonMinesBlockBreakEvent
 		this.triggered = triggered;
 		
 		this.bukkitDrops = new ArrayList<>();
+		
+		this.preventedDrops = 0;
 		
 		this.debugInfo = debugInfo;
 		
@@ -428,6 +434,13 @@ public class PrisonMinesBlockBreakEvent
 	}
 	public void setBukkitDrops( List<SpigotItemStack> drops ) {
 		this.bukkitDrops = drops;
+	}
+
+	public int getPreventedDrops() {
+		return preventedDrops;
+	}
+	public void setPreventedDrops(int preventedDrops) {
+		this.preventedDrops = preventedDrops;
 	}
 
 	public BlockEventType getBlockEventType() {

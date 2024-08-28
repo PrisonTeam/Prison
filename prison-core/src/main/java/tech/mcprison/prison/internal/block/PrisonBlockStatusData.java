@@ -42,6 +42,10 @@ public abstract class PrisonBlockStatusData {
 	
 	private boolean gravity = false;
 	
+	
+	private boolean preventDrops = false;
+	
+	
 //	private transient boolean includeInLayerCalculations;
 	
 	
@@ -89,6 +93,9 @@ public abstract class PrisonBlockStatusData {
 		this.rangeBlockCountHighLimit = -1;
 		
 		this.gravity = checkGravityAffects( blockName );
+		
+		this.preventDrops = false;
+		
 		
 //		this.includeInLayerCalculations = true;
 	}
@@ -144,9 +151,14 @@ public abstract class PrisonBlockStatusData {
 	}
 	
 	public String toSaveFileFormat() {
-		return getBlockName() + "-" + getChance() + "-" + getBlockCountTotal() + "-" + 
-					getConstraintMin() + "-" + getConstraintMax() + "-" + 
-					getConstraintExcludeTopLayers() + "-" + getConstraintExcludeBottomLayers();
+		return getBlockName() + "-" + 
+				getChance() + "-" + 
+				getBlockCountTotal() + "-" + 
+				getConstraintMin() + "-" + 
+				getConstraintMax() + "-" + 
+				getConstraintExcludeTopLayers() + "-" + 
+				getConstraintExcludeBottomLayers() + "-" +
+				Boolean.toString( isPreventDrops() );
 	}
 	
 	
@@ -201,6 +213,7 @@ public abstract class PrisonBlockStatusData {
 				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
 				int constraintExcludeTopLayers = split.length > 5 ? Integer.parseInt(split[5]) : 0;
 				int constraintExcludeBottomLayers = split.length > 6 ? Integer.parseInt(split[6]) : 0;
+				boolean preventDrops = split.length > 7 ? Boolean.parseBoolean(split[7]) : false;
 				
 				setChance( chance );
 				setBlockCountTotal( blockCount );
@@ -208,6 +221,7 @@ public abstract class PrisonBlockStatusData {
 				setConstraintMax( constraintMax );
 				setConstraintExcludeTopLayers( constraintExcludeTopLayers );
 				setConstraintExcludeBottomLayers( constraintExcludeBottomLayers );
+				setPreventDrops(preventDrops);
 				
 //				if ( blockTypeName.equalsIgnoreCase( "gold_ore" ) ) {
 //					Output.get().logInfo( "### parseFromSaveFile: [" + 
@@ -256,6 +270,10 @@ public abstract class PrisonBlockStatusData {
 			.append( "  r: " ).append( remaining )
 			.append( "  T: " ) .append( total )
 			;
+		
+		if ( isPreventDrops() ) {
+			sb.append( "  NoDrops!" );
+		}
 		
 		return sb.toString();
 	}
@@ -552,6 +570,13 @@ public abstract class PrisonBlockStatusData {
 	}
 	public void setGravity( boolean gravity ) {
 		this.gravity = gravity;
+	}
+
+	public boolean isPreventDrops() {
+		return preventDrops;
+	}
+	public void setPreventDrops(boolean preventDrops) {
+		this.preventDrops = preventDrops;
 	}
 
 

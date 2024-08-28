@@ -3456,25 +3456,52 @@ public abstract class AutoManagerFeatures
 
 			List<SpigotItemStack> stacks = new ArrayList<>();
 			
+			Mine mine = pmEvent.getMine();
+			
+			int preventedDrops = 0;
+			
 			SpigotBlock sBlock = pmEvent.getSpigotBlock();
+			PrisonBlockStatusData statsBlock =  mine.getBlockStats(sBlock);
 			
 			String lore = null;
-			stacks.add( new SpigotItemStack( 1, sBlock, lore) );
+
+			if ( statsBlock == null || !statsBlock.isPreventDrops() ) {
+				
+				stacks.add( new SpigotItemStack( 1, sBlock, lore) );
+			}
+			else {
+				preventedDrops++;
+			}
 			
 			for ( SpigotBlock spBlock : pmEvent.getExplodedBlocks() ) {
 				
-				stacks.add( new SpigotItemStack( 1, spBlock, lore) );
+				PrisonBlockStatusData exStatsBlock =  mine.getBlockStats(sBlock);
+				if ( exStatsBlock == null || !exStatsBlock.isPreventDrops() ) {
+					
+					stacks.add( new SpigotItemStack( 1, spBlock, lore) );
+				}
+				else {
+					preventedDrops++;
+				}
 			}
 			
 			// Merge all of the single quantity item stacks together, then 
 			// set as the new drops:
 			pmEvent.setBukkitDrops( mergeDrops( stacks ) );
 			
+			if ( preventedDrops > 0 ) {
+				
+				pmEvent.setPreventedDrops( pmEvent.getPreventedDrops() + preventedDrops );
+			}
+			
 			int count = 0;
 			for ( SpigotItemStack sItemStack : pmEvent.getBukkitDrops() ) {
 				count += sItemStack.getAmount();
 			}
-			String msg = String.format( "(SilkDrops: %d) " , count );
+			String msg = String.format( "(SilkDrops: %d%s) " , 
+					count,
+					(preventedDrops == 0 ? "" : "  preventedSilkDrops: " + preventedDrops)
+					);
 			
 			pmEvent.getDebugInfo().append( msg );
 		}

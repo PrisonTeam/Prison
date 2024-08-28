@@ -255,7 +255,7 @@ public class MinesCommands
 							+ "read as 'excludeBottom from layers 15 and lower'.")
 	public void constraintsBlockCommand(CommandSender sender,
 			@Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
-			@Arg(name = "blockNme", description = "The block's name") String blockName,
+			@Arg(name = "blockName", description = "The block's name") String blockName,
 			@Arg(name = "contraint", description = "Constraint to apply " +
 						"[min max excludeTop excludeBottom]",
 					def = "max") String constraint,
@@ -266,6 +266,24 @@ public class MinesCommands
     }
     
 
+    
+    @Override
+    @Command(identifier = "mines block preventDrops", permissions = "mines.block", 
+    description = "The specified block will not drop anything.  It can be mined, but it will "
+    		+ "not result in giving the player anything for mining it. Not even money. "
+    		+ "This can be used in combination with block commands to create effects "
+    		+ "such as Lucky Blocks.")
+    public void preventDropsBlockCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
+    		@Arg(name = "blockName", description = "The block's name") String blockName,
+    		@Arg(name = "preventDrops", description = "Prevent the block from dropping anything " +
+    				"[true false]",
+    				def = "false") String preventDrops ) {
+    	
+    	super.preventDropsBlockCommand( sender, mineName, blockName, preventDrops );
+    }
+    
+    
     
     
     

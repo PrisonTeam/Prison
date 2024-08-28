@@ -266,6 +266,13 @@ public class MinesBlockCommands
 				PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ) ) )
 						.tooltip( "&3T&7otal blocks of this type that have been mined." );
 		row.addFancy( msg3 );
+		
+		
+		if ( block.isPreventDrops() ) {
+			FancyMessage msg4 = new FancyMessage( "  &dNoDrops!" )
+					.tooltip( "&9This block will not drop anything. &3BlockEvents can be used to reward player.");
+			row.addFancy( msg4 );
+		}
 
 //		FancyMessage msg4 = new FancyMessage( String.format( (totals ? "&b%-9s" : "  &3S: &7%-9s"),
 //				PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ) ) )
@@ -853,6 +860,81 @@ public class MinesBlockCommands
         
     }
 	
+    
+
+
+	public void preventDropsBlockCommand(CommandSender sender, String mineName, String blockName,
+			String preventDrops) {
+
+
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine m = pMines.getMine(mineName);
+        
+        boolean isPreventDrops = false;
+
+        if ( m == null ) {
+        	sender.sendMessage( 
+        			String.format( "&7The specified mine named &3%s &7 does not exist. " +
+        					"Please try again.", 
+        					(mineName == null ? "null" : mineName) ));
+        	return;
+        }
+
+        if ( blockName == null || !m.hasBlock( blockName ) ) {
+        	sender.sendMessage( 
+        			String.format( "&7The block name &3%s &7 does not exist in the specified mine. " +
+        					"Please try again.", 
+        					(blockName == null ? "null" : blockName) ));
+        	listBlockCommand(sender, m.getTag() );
+        	return;
+        }
+        
+        if ( preventDrops == null || 
+        			!preventDrops.equalsIgnoreCase("true") && !preventDrops.equalsIgnoreCase("false") ) {
+        	sender.sendMessage( 
+        			String.format( "&7The parameter 'preventDrops' must be boolean: 'true' or 'false'. "
+        					+ "Found: [%s]", 
+        					(preventDrops == null ? "null" : preventDrops) ));
+        	listBlockCommand(sender, m.getTag() );
+        	return;
+        }
+
+        
+        isPreventDrops = Boolean.parseBoolean( preventDrops );
+        
+        
+     	PrisonBlockStatusData block = null;
+     	
+     	block = m.getPrisonBlock( blockName );
+
+
+     	if ( block.isPreventDrops() == isPreventDrops ) {
+     		sender.sendMessage( 
+ 					String.format( "&7The specified value prevent drops has not changed.  " +
+ 							"Please try again."
+ 							));
+ 			listBlockCommand(sender, m.getTag() );
+ 			return;
+     	}
+     	
+     	block.setPreventDrops( isPreventDrops );
+
+         
+         
+         pMines.getMineManager().saveMine( m );
+         
+         
+         String message = String.format( "&7Mine &3%s&7's setting for prevent drops for block &3%s &7has been "
+         		+ "set to &3%s.", 
+         		m.getTag(), block.getBlockName(),
+         		Boolean.toString(isPreventDrops) );
+         
+         
+         sender.sendMessage( message );
+		
+	}
 
     public void listBlockLayerStatsCommand( CommandSender sender, String mineName ) {
     	
@@ -865,12 +947,13 @@ public class MinesBlockCommands
         	
         	Output.get().logInfo( "Mine %s Block Layer Stats:", m.getName() );
         	
-        	List<String> layers = m.getTargetBlockStatsPerLevel();
-        	for ( String layer : layers ) {
+        	List<String> layers = m.getTargetBlockStatsPerLevel();        	for ( String layer : layers ) {
 				Output.get().logInfo( "  " + layer );
 			}
         	
         }
     }
+
+
 	
 }

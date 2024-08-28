@@ -17,6 +17,13 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-08-28
 
 
+* **New feature: Mines:  Prevent a block from dropping drops!**
+This can be used to setup something like lucky blocks, of which the player does not get paid for this block, nor do they get the block or whatever bukkit would normally drop.
+The new command is:  `/mines block preventDrops help`.
+This saves the new feature with the mine data, and works with normal pickaxes, explosions, and also with silktouch to prevent the drops.
+The debug information for block breaks has been updated to properly report on how this is working within handling the events.
+
+
 * **Sellall: Changed '/sellall items inspect' to print everything to the console, and to decode the lore so it shows all of the color codes.**
 This is critical for understanding how lore is setup so you can use the auto features lore settings.
 

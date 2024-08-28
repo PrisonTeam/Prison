@@ -491,9 +491,19 @@ public abstract class OnBlockBreakEventCore
 					if ( pbBlockHit != null && 
 							(matchedBlocks ||
 							 !matchedBlocks && bypassMatchedBlocks )) {
-						
-						// Confirmed the block is correct... so get the drops...
-						collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit, pmEvent.getSpigotPlayer() );
+
+						if ( pbTargetBlock != null && pbTargetBlock.isPreventDrops() ) {
+
+							debugInfo.append( " &dPreventDrops:&b" )
+										.append( pbTargetBlock.getBlockName() )
+										.append( " " );
+							preventedDrops++;
+						}
+						else {
+							
+							// Confirmed the block is correct... so get the drops...
+							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit, pmEvent.getSpigotPlayer() );
+						}
 						
 						// If a chain reaction on explosions, this will prevent the same block from
 						// being processed more than once:
@@ -652,8 +662,19 @@ public abstract class OnBlockBreakEventCore
 											( matchedExplodedBlocks  ||
 											 !matchedExplodedBlocks && bypassMatchedBlocks ) ) {
 
-										// Confirmed the block is correct... so get the drops...
-										collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined, pmEvent.getSpigotPlayer() );
+										if ( pBlockMined != null && pBlockMined.isPreventDrops() ) {
+
+											debugInfo.append( " &dPreventDrops:&b" )
+														.append( pBlockMined.getBlockName() )
+														.append( " " );
+											preventedDrops++;
+										}
+										else {
+											
+											// Confirmed the block is correct... so get the drops...
+											collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined, pmEvent.getSpigotPlayer() );
+										}
+										
 										
 										// If a chain reaction on explosions, this will prevent the same block from
 										// being processed more than once:
@@ -746,6 +767,15 @@ public abstract class OnBlockBreakEventCore
 				debugInfo.append( "BLOCK_TYPE_NOT_EXPECTED__CANNOT_PROCESS (" + blockTypeNotExpected + 
 						" ) " );
 				pmEvent.setDebugColorCodeDebug();
+			}
+			
+			if ( preventedDrops > 0 ) {
+				
+				// The prevented drops will be added to total drops later in the processing to 
+				// confirm if the whole event was successful or not.
+				pmEvent.setPreventedDrops( preventedDrops );
+				
+				debugInfo.append( "TOTAL_PreventedDrops (" + preventedDrops + " ) " );
 			}
 			
 			
