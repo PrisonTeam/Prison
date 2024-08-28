@@ -466,8 +466,8 @@ public class AutoManagerPrisonEnchants
 		StringBuilder debugInfo = new StringBuilder();
 		
 		
-		debugInfo.append( String.format( "### ** handlePEEExplosionEvent (Pulsi) ** ### " +
-				"(event: PEExplosionEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handlePEEExplosionEvent (Pulsi) ** ###&3 " +
+				"(event: &6PEExplosionEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

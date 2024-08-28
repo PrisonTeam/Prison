@@ -284,8 +284,8 @@ public class AutoManagerZenchantments
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleZenchantmentsBlockBreakEvent ** ### " +
-				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleZenchantmentsBlockBreakEvent ** ###&3 " +
+				"(event: &6BlockBreakEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

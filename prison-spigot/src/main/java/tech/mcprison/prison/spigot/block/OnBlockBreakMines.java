@@ -121,7 +121,7 @@ public class OnBlockBreakMines
 						getSpigotBlock().getLocation().toWorldCoordinates();
 			
 			return String.format( 
-					"{br}||  EventInfo: %s %s Mine: %s %s %s ", 
+					"  EventInfo: %s %s Mine: %s %s %s ", 
 					getResultsReason().name(),
 //					getBbPriority().name(),
 					getSpigotPlayer().getName(),
@@ -520,37 +520,37 @@ public class OnBlockBreakMines
 //		return processEvent;
 //	}
 	
-	/**
-	 * <p>If mine is not null, then it will check for a zero-block reset (reset-threshold).
-	 * </p>
-	 * 
-	 * @param mine
-	 */
-	public void checkZeroBlockReset( Mine mine ) {
-		if ( mine != null ) {
-			
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			mine.checkZeroBlockReset();
-		}
-	}
+//	/**
+//	 * <p>If mine is not null, then it will check for a zero-block reset (reset-threshold).
+//	 * </p>
+//	 * 
+//	 * @param mine
+//	 */
+//	public void checkZeroBlockReset( Mine mine ) {
+//		if ( mine != null ) {
+//			
+//			// Checks to see if the mine ran out of blocks, and if it did, then
+//			// it will reset the mine:
+//			mine.checkZeroBlockReset();
+//		}
+//	}
 	
 	
-	/**
-	 * <p>If mine is not null, then it will perform a mine sweeper 
-	 * for the mine, if it is enabled.
-	 * </p>
-	 * 
-	 * @param mine
-	 */
-	public void checkMineSweeper( Mine mine ) {
-		if ( mine != null ) {
-			
-			// submit a mine sweeper task.  It will only run if it is enabled and another 
-			// mine sweeper task has not been submitted.
-			mine.submitMineSweeperTask();
-		}
-	}
+//	/**
+//	 * <p>If mine is not null, then it will perform a mine sweeper 
+//	 * for the mine, if it is enabled.
+//	 * </p>
+//	 * 
+//	 * @param mine
+//	 */
+//	public void checkMineSweeper( Mine mine ) {
+//		if ( mine != null ) {
+//			
+//			// submit a mine sweeper task.  It will only run if it is enabled and another 
+//			// mine sweeper task has not been submitted.
+//			mine.submitMineSweeperTask();
+//		}
+//	}
 	
 	
 	

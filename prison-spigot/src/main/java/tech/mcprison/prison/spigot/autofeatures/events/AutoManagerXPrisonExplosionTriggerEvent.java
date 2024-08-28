@@ -295,8 +295,8 @@ public class AutoManagerXPrisonExplosionTriggerEvent
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleXPrisonExplosionTriggerEvent ** ### " +
-				"(event: ExplosionTriggerEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleXPrisonExplosionTriggerEvent ** ###&3 " +
+				"(event: &6ExplosionTriggerEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

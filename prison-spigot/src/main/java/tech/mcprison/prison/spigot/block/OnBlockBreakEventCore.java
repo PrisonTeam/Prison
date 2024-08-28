@@ -237,11 +237,14 @@ public abstract class OnBlockBreakEventCore
 
 		if ( pmEvent.getMine() != null ) {
 			
+			int blockEventsRan = 0;
+			
 			// Count the blocks that were mined:
 			countBlocksMined( pmEvent, pmEvent.getTargetBlock() );
 			
 			// process the prison blockEvents commands:
-			processPrisonBlockEventCommands( pmEvent, pmEvent.getTargetBlock() );
+			blockEventsRan += 
+					processPrisonBlockEventCommands( pmEvent, pmEvent.getTargetBlock() );
 
 			
 			for ( MineTargetPrisonBlock teBlock : pmEvent.getTargetExplodedBlocks() ) {
@@ -250,13 +253,27 @@ public abstract class OnBlockBreakEventCore
 				countBlocksMined( pmEvent, teBlock );
 				
 				// process the prison blockEvents commands:
-				processPrisonBlockEventCommands( pmEvent, teBlock );
+				blockEventsRan += 
+						processPrisonBlockEventCommands( pmEvent, teBlock );
 			}
 			
-			checkZeroBlockReset( pmEvent.getMine() );
+			if ( blockEventsRan > 0 ) {
+				pmEvent.getDebugInfo().append( " (&bBlockEvents&3:" )
+						.append( blockEventsRan )
+						.append( ")" );
+			}
+			
+			
+			if ( pmEvent.getMine().checkZeroBlockReset() ) {
+
+				pmEvent.getDebugInfo().append( " (&dMine Reset was triggered&3)");
+			}
 			
 			// Check Mine Sweeper:
-			checkMineSweeper( pmEvent.getMine() );
+			if ( pmEvent.getMine().submitMineSweeperTask() ) {
+				
+				pmEvent.getDebugInfo().append( " (&dMineSweeper was submitted&3)");
+			}
 		}
 	}
 
@@ -267,6 +284,10 @@ public abstract class OnBlockBreakEventCore
 		if ( isBoolean( AutoFeatures.applyBlockBreaksThroughSyncTask ) ) {
 			
 			AutoManagerBreakBlockTask.submitTask( blocks, pmEvent.getMine() );
+			
+			pmEvent.getDebugInfo().append( " (&bbreakBlocks&3:submitTask:" )
+						.append( blocks.size() )
+						.append( ")" );
 		}
 		else {
 			
@@ -283,6 +304,9 @@ public abstract class OnBlockBreakEventCore
 				
 				spigotBlock.setPrisonBlock( PrisonBlock.AIR );
 			}
+			pmEvent.getDebugInfo().append( " (&bbreakBlocks&3:" )
+			.append( count )
+			.append( ":finished)" );
 		}
 				
 	}
@@ -371,7 +395,7 @@ public abstract class OnBlockBreakEventCore
 		
 		StringBuilder debugInfo = pmEvent.getDebugInfo();
 
-		debugInfo.append( "{br}||  validateEvent:: " );
+		debugInfo.append( "{br}||    validateEvent:: " );
 		
 		SpigotBlock sBlockHit = pmEvent.getSpigotBlock();
 
@@ -399,7 +423,10 @@ public abstract class OnBlockBreakEventCore
 		boolean hasOriginalBLockIncluded = 
 						pmEvent.getBlockEventType() == BlockEventType.CEXplosion ||
 						pmEvent.getBlockEventType() == BlockEventType.RevEnExplosion ||
-						pmEvent.getBlockEventType() == BlockEventType.RevEnJackHammer;
+						pmEvent.getBlockEventType() == BlockEventType.RevEnJackHammer ||
+						pmEvent.getBlockEventType() == BlockEventType.EntityExplodeEvent ||
+						pmEvent.getBlockEventType() == BlockEventType.PEExplosive
+						;
 		boolean isExplosionEvent = pmEvent.getUnprocessedRawBlocks().size() > 
 					(hasOriginalBLockIncluded ? 0 : 1);
 		
@@ -411,6 +438,7 @@ public abstract class OnBlockBreakEventCore
 			int monitorNotAir = 0;
 			int noTargetBlock = 0;
 			int blockTypeNotExpected = 0;
+			int preventedDrops = 0;
 			
 			boolean targetBlockAlreadyMined = false;
 			
@@ -1073,7 +1101,7 @@ public abstract class OnBlockBreakEventCore
 		}
 
 		
-//		debugInfo.append( "{br}||  " );
+//		debugInfo.append( "{br}||    " );
 		
 		return results;
 	}
@@ -1216,21 +1244,30 @@ public abstract class OnBlockBreakEventCore
 		
 		if ( pmEvent.getMine() != null && spigotBlock != null ) {
 			
+			int blockEventsRan = 0;
+
 			Mine mine = pmEvent.getMine();
 
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
 			
 			if ( targetBlock != null ) {
 				
-				processPrisonBlockEventCommands( pmEvent, targetBlock );
+				blockEventsRan += 
+						processPrisonBlockEventCommands( pmEvent, targetBlock );
 				
 			}
+			
+			pmEvent.getDebugInfo().append( " (blockEventsRan:" )
+					.append( blockEventsRan ) 
+					.append( ")" );
 		}
 	}
 	
-	private void processPrisonBlockEventCommands( PrisonMinesBlockBreakEvent pmEvent, 
+	private int processPrisonBlockEventCommands( PrisonMinesBlockBreakEvent pmEvent, 
 					MineTargetPrisonBlock targetBlock ) {
 
+		int blockEventsRan = 0;
+		
 		// Do not allow MONITOR or ACCESSMONITOR to process the block events:
 		if ( targetBlock != null && pmEvent.getMine() != null &&
 				pmEvent.getBbPriority() != BlockBreakPriority.MONITOR &&
@@ -1241,7 +1278,7 @@ public abstract class OnBlockBreakEventCore
 			SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
 			PrisonBlock pBlock = sBlock == null ? null : sBlock.getPrisonBlock();
 			
-			mine.processBlockBreakEventCommands( pBlock,
+			blockEventsRan = mine.processBlockBreakEventCommands( pBlock,
 					targetBlock, 
 					pmEvent.getSpigotPlayer(), 
 					pmEvent.getBlockEventType(), 
@@ -1249,6 +1286,7 @@ public abstract class OnBlockBreakEventCore
 			
 		}
 		
+		return blockEventsRan;
 	}
 	
 	
@@ -1335,7 +1373,11 @@ public abstract class OnBlockBreakEventCore
 //			checkZeroBlockReset( pmEvent.getMine() );
 //		}
 		
-		if ( totalDrops > 0 ) {
+		
+		// NOTE: totalDrops must be greater than zero to have been a success.
+		//       But if there were prevented drops, then they should be included
+		//       in the count since the player was successful in breaking that block.
+		if ( (totalDrops + pmEvent.getPreventedDrops()) > 0 ) {
 			success = true;
 		}
 		else {

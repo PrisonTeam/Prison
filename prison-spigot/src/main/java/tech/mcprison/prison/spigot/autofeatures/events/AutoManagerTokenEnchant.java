@@ -343,8 +343,8 @@ public class AutoManagerTokenEnchant
     	
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericBlockExplodeEvent ** ### " +
-				"(event: TEBlockExplodeEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** genericBlockExplodeEvent ** ###&3 " +
+				"(event: &6TEBlockExplodeEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

@@ -295,8 +295,8 @@ public void handleXPrisonNukeTriggerEvent( NukeTriggerEvent e, BlockBreakPriorit
 			
 	StringBuilder debugInfo = new StringBuilder();
 	
-	debugInfo.append( String.format( "### ** handleXPrisonNukeTriggerEvent ** ### " +
-			"(event: NukeTriggerEvent, config: %s, priority: %s, canceled: %s) ",
+	debugInfo.append( String.format( "&6### ** handleXPrisonNukeTriggerEvent ** ###&3 " +
+			"(event: &6NukeTriggerEvent&3, config: %s, priority: %s, canceled: %s) ",
 			bbPriority.name(),
 			bbPriority.getBukkitEventPriority().name(),
 			(e.isCancelled() ? "TRUE " : "FALSE")

@@ -289,8 +289,8 @@ public class AutoManagerRevEnchantsExplosiveEvent
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleRevEnchantsExplosiveEvent ** ### " +
-				"(event: ExplosiveEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleRevEnchantsExplosiveEvent ** ###&3 " +
+				"(event: &6ExplosiveEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

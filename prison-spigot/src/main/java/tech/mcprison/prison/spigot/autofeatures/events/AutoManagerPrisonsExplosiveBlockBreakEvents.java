@@ -254,8 +254,8 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleExplosiveBlockBreakEvent (Prisons's bombs) ** ### " +
-				"(event: ExplosiveBlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleExplosiveBlockBreakEvent (Prisons's bombs) ** ###&3 " +
+				"(event: &6ExplosiveBlockBreakEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

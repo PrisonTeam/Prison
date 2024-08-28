@@ -297,8 +297,8 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleRevEnchantsJackHammerEvent ** ### " +
-				"(event: JackHammerEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleRevEnchantsJackHammerEvent ** ###&3 " +
+				"(event: &6JackHammerEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

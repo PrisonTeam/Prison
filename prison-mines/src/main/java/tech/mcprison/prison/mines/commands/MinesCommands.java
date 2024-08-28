@@ -971,7 +971,7 @@ public class MinesCommands
 		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
-        ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
+        ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getTag());
         
         chatDisplay.addSupportHyperLinkData( "Mine %s", m.getName() );
 
@@ -1379,7 +1379,7 @@ public class MinesCommands
         	
         	
         	// Include all the blockEvent commands:
-            ChatDisplay blockEventDisplay = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            ChatDisplay blockEventDisplay = new ChatDisplay("BlockEvent Commands for Mine " + m.getTag());
             blockEventDisplay.addText("&8Hover over values for more information and clickable actions.");
 
             generateBlockEventListing( m, blockEventDisplay, false );
@@ -5155,7 +5155,7 @@ public class MinesCommands
 
 private ChatDisplay minesCommandList( Mine m )
 {
-	ChatDisplay display = new ChatDisplay("ResetCommand for " + m.getName());
+	ChatDisplay display = new ChatDisplay("Mine Reset Commands for Mine " + m.getTag());
 	display.addText("&8Click a command to remove it.");
 	BulletedListComponent.BulletedListBuilder builder =
 	    new BulletedListComponent.BulletedListBuilder();

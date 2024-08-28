@@ -36,6 +36,7 @@ import tech.mcprison.prison.autofeatures.BlockConverterOptionEventTrigger;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
@@ -160,7 +161,7 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent != null && pmEvent.getDebugInfo().length() > 0 ) {
 			
 			long stop = System.nanoTime();
-			pmEvent.getDebugInfo().append( "{br}|| ### ** End Event Debug Info ** ### [" )
+			pmEvent.getDebugInfo().append( "{br}|| &6### ** End Event Debug Info ** ###&3 [" )
 					.append( (stop - start) / 1000000d )
 					.append( " ms]" );
 			
@@ -255,7 +256,7 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
 				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
 			
-			pmEvent.getDebugInfo().append( "(Fire pmEvent) " );
+			pmEvent.getDebugInfo().append( "&2(Fire pmEvent &6*start*&2) &b" );
 			
 			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
 			// Needed since processing of the block will lose track of which mine it came from.
@@ -278,7 +279,7 @@ public abstract class AutoManagerFeatures
 				
 				pmEvent.setDebugColorCodeWarning();
 				pmEvent.getDebugInfo().append( 
-						"(Fire pmEvent: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+						"&2(Fire pmEvent: &dPrisonMinesBlockBreakEvent was canceled by another plugin!&2)&b " );
 				pmEvent.setDebugColorCodeDebug();
 			}
 			else {
@@ -310,18 +311,18 @@ public abstract class AutoManagerFeatures
 				else {
 					
 					pmEvent.setDebugColorCodeWarning();
-					pmEvent.getDebugInfo().append( "(fire pmEvent:doAction failed without details) " );
+					pmEvent.getDebugInfo().append( "&2(fire pmEvent: &7doAction failed without details&2) &b" );
 					pmEvent.setDebugColorCodeDebug();
 				}
 				
 			}
 			
 			
-			pmEvent.getDebugInfo().append( "(Fire pmEvent completed) " );
+			pmEvent.getDebugInfo().append( "&2(Fire pmEvent &6*completed*&2) &b" );
 		}
 		else {
 			
-			pmEvent.getDebugInfo().append( "(Fire pmEvent bypassed) " );
+			pmEvent.getDebugInfo().append( "&2(Fire pmEvent &6*bypassed*&2) &b" );
 		}
 		return cancelBy;
 	}
@@ -638,7 +639,7 @@ public abstract class AutoManagerFeatures
 		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
-			pmEvent.getDebugInfo().append( "{br}||  (applyAutoEvents: " )
+			pmEvent.getDebugInfo().append( "{br}||    (applyAutoEvents: " )
 				.append( pmEvent.getSpigotBlock().getBlockName() );
 			
 			if ( !isAutoFeaturesEnabled ) {
@@ -707,7 +708,7 @@ public abstract class AutoManagerFeatures
 				
 				if ( configNormalDrop ) {
 					pmEvent.getDebugInfo()
-//						.append( "{br}||")
+//						.append( "{br}||    ")
 						.append( "(&7NormalDrop handling enabled&3: " )
 						.append( "&7normalDropSmelt&3[" )
 						.append( configNormalDropSmelt ? "enabled" : 
@@ -1125,7 +1126,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().getItemStackValue( pmEvent.getSpigotPlayer(), itemStack );
 						autosellTotal += amount;
 
-//						debugInfo.append( "{br}|| " );
+//						debugInfo.append( "{br}||    " );
 						debugInfo.append( " (&7WARNING: autosell leftovers&3: " + itemStack.getName() + 
 								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + 
 								" - " + 
@@ -1176,7 +1177,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-//				debugInfo.append( "{br}|| " );
+//				debugInfo.append( "{br}||    " );
 				debugInfo.append( "  [&7autoPickupDrops total&3: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
 						"  unsellableCount: " + autosellUnsellableCount );
 				
@@ -1260,7 +1261,7 @@ public abstract class AutoManagerFeatures
 				sb.insert( 0, "bukkitDropMult=" );
 			}
 			
-			pmEvent.getDebugInfo().append( "{br}||  [normalDrops:: " ).append( sb ).append( "] ");
+			pmEvent.getDebugInfo().append( "{br}||    [normalDrops:: " ).append( sb ).append( "] ");
 			
 
 			// Need better drop calculation that is not using the getDrops function.
@@ -1317,7 +1318,7 @@ public abstract class AutoManagerFeatures
 //			}
 			
 			
-//			pmEvent.getDebugInfo().append( "{br}||  " );
+//			pmEvent.getDebugInfo().append( "{br}||    " );
 			
 			double autosellTotal = 0;
 			
@@ -1370,7 +1371,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				pmEvent.getDebugInfo().append( "{br}||  [normalDrops total: qty: " + count + " value: " + autosellTotal + "] ");
+				pmEvent.getDebugInfo().append( "{br}||    [normalDrops total: qty: " + count + " value: " + autosellTotal + "] ");
 				
 			}
 			

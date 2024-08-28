@@ -555,10 +555,11 @@ public abstract class MineScheduler
 	 * @param blockCount
 	 * @param player 
 	 */
-	public void processBlockBreakEventCommands( PrisonBlock prisonBlock,
+	public int processBlockBreakEventCommands( PrisonBlock prisonBlock,
 						MineTargetPrisonBlock targetBlock,
 						Player player, 
 							BlockEventType eventType, String triggered ) {
+		int blockEventsRan = 0;
 		
 		// Only one block is processed here:
 		if ( getBlockEvents().size() > 0 ) {
@@ -571,14 +572,17 @@ public abstract class MineScheduler
 			for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 				double chance = random.nextDouble() * 100;
 				
-				processBlockEventDetails( player, prisonBlock,
-						targetBlock, eventType, chance, blockEvent, triggered,
-						cmdTasks, ++row );
+				blockEventsRan +=
+						processBlockEventDetails( player, prisonBlock,
+								targetBlock, eventType, chance, blockEvent, triggered,
+								cmdTasks, ++row );
 			}
 			
 			
 			PrisonCommandTasks.submitTasks( player, cmdTasks );
 		}
+		
+		return blockEventsRan;
 	}
 
 	
@@ -610,13 +614,14 @@ public abstract class MineScheduler
 //		}
 //	}
 
-	private void processBlockEventDetails( Player player, PrisonBlock prisonBlock,
+	private int processBlockEventDetails( Player player, PrisonBlock prisonBlock,
 							MineTargetPrisonBlock targetBlock, BlockEventType eventType, 
 				double chance, 
 					MineBlockEvent blockEvent, String triggered, 
 					List<PrisonCommandTaskData> cmdTasks, int row )
 	{
-
+		int blockEventsRan = 0;
+		
 		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, 
 							targetBlock, triggered );
 		
@@ -629,6 +634,8 @@ public abstract class MineScheduler
 					perms == null || 
 					perms.trim().length() == 0
 					) {
+
+				blockEventsRan++;
 				
 				DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
 				
@@ -743,6 +750,8 @@ public abstract class MineScheduler
 //				}
 			}
 		}
+		
+		return blockEventsRan;
 	}
 	
 	@Override

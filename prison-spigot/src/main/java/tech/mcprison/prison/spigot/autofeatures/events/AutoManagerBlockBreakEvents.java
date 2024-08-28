@@ -287,8 +287,8 @@ public class AutoManagerBlockBreakEvents
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleBlockBreakEvent ** ### " +
-				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleBlockBreakEvent ** ###&3 " +
+				"(event: &6BlockBreakEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

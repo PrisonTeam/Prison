@@ -295,8 +295,8 @@ public void handleXPrisonLayerTriggerEvent( LayerTriggerEvent e, BlockBreakPrior
 			
 	StringBuilder debugInfo = new StringBuilder();
 	
-	debugInfo.append( String.format( "### ** handleXPrisonLayerTriggerEvent ** ### " +
-			"(event: LayerTriggerEvent, config: %s, priority: %s, canceled: %s) ",
+	debugInfo.append( String.format( "&6### ** handleXPrisonLayerTriggerEvent ** ###&3 " +
+			"(event: &6LayerTriggerEvent&3, config: %s, priority: %s, canceled: %s) ",
 			bbPriority.name(),
 			bbPriority.getBukkitEventPriority().name(),
 			(e.isCancelled() ? "TRUE " : "FALSE")

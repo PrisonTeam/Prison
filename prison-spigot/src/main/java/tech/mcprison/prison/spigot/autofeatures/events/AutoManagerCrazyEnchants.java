@@ -287,8 +287,8 @@ public class AutoManagerCrazyEnchants
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleBlastUseEvent ** ### " +
-				"(event: BlastUseEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleBlastUseEvent ** ###&3 " +
+				"(event: &6BlastUseEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")

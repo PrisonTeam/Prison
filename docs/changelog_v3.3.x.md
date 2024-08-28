@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-08-28
 
 
+* **AutoFeatures: Changed the debug logging on block break events and explosions, to better encode them with color so important items stand out better.**
+Plus added logging on features that were not covered before: If a mine reset was triggered, how many block events were submitted.
+If the blockbreak task is submitted with how many blocks it's changing.
+If minesweeper was submitted.
+
+
 * **New feature: Mines:  Prevent a block from dropping drops!**
 This can be used to setup something like lucky blocks, of which the player does not get paid for this block, nor do they get the block or whatever bukkit would normally drop.
 The new command is:  `/mines block preventDrops help`.
