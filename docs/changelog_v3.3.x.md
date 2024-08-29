@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-08-29
 
 
+* **Added a new feature to the prison versions information: Directory path checks.**
+If a specified directory is missing, it will be created to prevent possible errors in other parts of prison.  See last commit.
+This reports the path, number of directories and files, with the file's total size in that directory.
+
+
 * **Bug fix: If someone deletes the playerCache folder, it was causing failures in trying to create new player cache files.**
 Fixed by using '.mkDirs()' to ensure the path fully exists before creating the temp files.
 Also eliminated the stack trace and replaced it with a one line entry in the console.
