@@ -21,6 +21,7 @@ package tech.mcprison.prison;
 import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.EntityType;
@@ -91,7 +92,7 @@ public class TestWorld implements World {
 	}
 
 	@Override
-	public ArmorStand spawnArmorStand(Location location) {
+	public ArmorStand spawnArmorStand( Location location ) {
 		return null;
 	}
 
@@ -101,7 +102,8 @@ public class TestWorld implements World {
 	}
 
 	@Override
-	public ArmorStand spawnArmorStand(Location location, String itemType ) {
+	public ArmorStand spawnArmorStand( Location location, String itemType, 
+						AnimationArmorStandItemLocation asLocation ) {
 		return null;
 	}
 

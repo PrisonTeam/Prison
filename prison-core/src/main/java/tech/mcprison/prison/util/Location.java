@@ -21,6 +21,7 @@ package tech.mcprison.prison.util;
 import java.text.DecimalFormat;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.EntityType;
@@ -340,9 +341,9 @@ public class Location {
 		return getWorld().spawnArmorStand( this );
 	}
 	
-	public ArmorStand spawnArmorStand( String itemName ) {
+	public ArmorStand spawnArmorStand( String itemName, AnimationArmorStandItemLocation asLocation ) {
 		
-		return getWorld().spawnArmorStand( this, itemName );
+		return getWorld().spawnArmorStand( this, itemName, asLocation );
 	}
 	
 	

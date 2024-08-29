@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -170,6 +171,13 @@ public class MineBombData
 	
 	private double animationSpeed = 5;
 	
+	private double animationRadius = 1.0;
+	private double animationRadiusDelta = 0.0;
+	private boolean animationAlternateDirections = false;
+	private float animationSpinSpeed = -35;
+	
+	private AnimationArmorStandItemLocation animationArmorStandItemLocation;
+	
 	
 	private double throwVelocityLow = 1.5;
 	private double throwVelocityHigh = 3;
@@ -333,6 +341,17 @@ public class MineBombData
 		this.animationPattern = AnimationPattern.infinity;
 //		setAnimationPattern( AnimationPattern.infinity );
 		
+		this.animationSpeed = 5.0;
+		
+		this.animationOffset = 0.0;
+		
+		this.animationRadius = 1.0;
+		this.animationRadiusDelta = 0.0;
+		this.animationAlternateDirections = false;
+		this.animationSpinSpeed = -35;
+		
+		this.animationArmorStandItemLocation = AnimationArmorStandItemLocation.hand;
+		
 		
 		this.throwVelocityLow = 1.5;
 		this.throwVelocityHigh = 3;
@@ -389,6 +408,11 @@ public class MineBombData
 		cloned.setAnimationPattern( getAnimationPattern() );
 		cloned.setAnimationOffset( getAnimationOffset() );
 		cloned.setAnimationSpeed( getAnimationSpeed() );
+		cloned.setAnimationRadius( getAnimationRadius() );
+		cloned.setAnimationRadiusDelta( getAnimationRadiusDelta() );
+		cloned.setAnimationAlternateDirections( isAnimationAlternateDirections() );
+		cloned.setAnimationSpinSpeed( getAnimationSpinSpeed() );
+		cloned.setAnimationArmorStandItemLocation( getAnimationArmorStandItemLocation() );
 		
 		
 		cloned.setThrowVelocityLow( getThrowVelocityLow() );
@@ -709,6 +733,45 @@ public class MineBombData
 	}
 	public void setAnimationSpeed(double animationSpeed) {
 		this.animationSpeed = animationSpeed;
+	}
+	
+	public double getAnimationRadius() {
+		return animationRadius;
+	}
+	public void setAnimationRadius(double animationRadius) {
+		this.animationRadius = animationRadius;
+	}
+
+	public double getAnimationRadiusDelta() {
+		return animationRadiusDelta;
+	}
+	public void setAnimationRadiusDelta(double animationRadiusDelta) {
+		this.animationRadiusDelta = animationRadiusDelta;
+	}
+
+	public boolean isAnimationAlternateDirections() {
+		return animationAlternateDirections;
+	}
+	public void setAnimationAlternateDirections(boolean animationAlternateDirections) {
+		this.animationAlternateDirections = animationAlternateDirections;
+	}
+
+	public float getAnimationSpinSpeed() {
+		return animationSpinSpeed;
+	}
+	public void setAnimationSpinSpeed(float animationSpinSpeed) {
+		this.animationSpinSpeed = animationSpinSpeed;
+	}
+
+	public AnimationArmorStandItemLocation getAnimationArmorStandItemLocation() {
+		if ( animationArmorStandItemLocation == null ) {
+			animationArmorStandItemLocation = AnimationArmorStandItemLocation.hand;
+		}
+		return animationArmorStandItemLocation;
+	}
+	public void setAnimationArmorStandItemLocation(AnimationArmorStandItemLocation animationItemLocation) {
+		this.animationArmorStandItemLocation = animationItemLocation == null ?
+					AnimationArmorStandItemLocation.hand : animationItemLocation;
 	}
 
 	public int getTaskId() {

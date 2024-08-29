@@ -16,6 +16,7 @@ public class BombAnimationOrbital extends BombAnimations {
 	private double angle = 0.0;
 	private double radius = 1.0;
 	private double radiusDelta = 0;
+	private float spinValue = 0;
 	
 	private boolean alternateDirections = false;
 	
@@ -27,6 +28,10 @@ public class BombAnimationOrbital extends BombAnimations {
 
 		this.angle = entityYaw;
 
+		this.radius = bomb.getAnimationRadius();
+		this.radiusDelta = bomb.getAnimationRadiusDelta();
+		
+		this.alternateDirections = bomb.isAnimationAlternateDirections();
 		
 		Vector vec = new Vector( 
 						bomb.getAnimationOffset(), 0d, bomb.getAnimationOffset());
@@ -62,8 +67,19 @@ public class BombAnimationOrbital extends BombAnimations {
 				(radiusDelta == 0 ? 0 :
 					radiusDelta * Math.sin( angle / 2d ));
 		
-		double spinVal = angle * -7d;
-//		Vector spin = new Vector( spinVal, 0, 0 );
+		
+		spinValue += getBomb().getAnimationSpinSpeed();
+		if ( spinValue > 360 ) {
+			spinValue -= 360;
+		}
+		else if ( spinValue < -360 ) {
+			spinValue += 360;
+		}
+		
+		
+		
+//		getArmorStand().get
+		
 		
 		
 		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radi );
@@ -81,7 +97,7 @@ public class BombAnimationOrbital extends BombAnimations {
 		newLoc.setY( newLoc.getY() - 1 );
 		
 		// Spin the held item?
-		newLoc.setYaw( (float) spinVal );
+		newLoc.setYaw( (float) spinValue );
 //		newLoc.setDirection( spin );
 
 		getArmorStand().teleport( newLoc );

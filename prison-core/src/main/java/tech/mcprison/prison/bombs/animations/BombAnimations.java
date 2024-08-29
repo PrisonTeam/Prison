@@ -167,7 +167,8 @@ public abstract class BombAnimations {
 		// If item is null, then armorstand will not spawn with an item
 		// and no arms.
 		armorStand = getOriginalLocation().spawnArmorStand(
-				(getItem() == null ? null : getBomb().getItemType()) );
+				(getItem() == null ? null : getBomb().getItemType()), 
+					getBomb().getAnimationArmorStandItemLocation() );
 //		armorStand = getOriginalLocation().spawnArmorStand(
 //						null,
 //						(getId() == 0 ? getBomb().getName() : null) );

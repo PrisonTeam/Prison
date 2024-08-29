@@ -3,6 +3,7 @@ package tech.mcprison.prison.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
@@ -61,7 +62,7 @@ public class WorldTest implements World {
 	}
 
 	@Override
-	public ArmorStand spawnArmorStand(Location location, String itemType ) {
+	public ArmorStand spawnArmorStand(Location location, String itemType, AnimationArmorStandItemLocation asLocation ) {
 		return null;
 	}
 

@@ -28,6 +28,7 @@ import org.bukkit.Bukkit;
 import com.cryptomorin.xseries.XEntityType;
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.internal.ArmorStand;
 import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.EntityType;
@@ -289,7 +290,7 @@ public class SpigotWorld
 	}
 
 	@Override
-	public ArmorStand spawnArmorStand( Location location ) {
+	public ArmorStand spawnArmorStand(Location location) {
 		
 		org.bukkit.entity.ArmorStand armorStand = spawnBukkitArmorStand( location );
 				
@@ -327,7 +328,8 @@ public class SpigotWorld
 	
 	
 	@Override
-	public ArmorStand spawnArmorStand( Location location, String itemType ) {
+	public ArmorStand spawnArmorStand( Location location, String itemType, 
+						AnimationArmorStandItemLocation asLocation ) {
 		
 		
 		// NOTE: Once spawned, the armor stand is not being teleported back to the
@@ -371,9 +373,6 @@ public class SpigotWorld
 			
 		}
 		else {
-			as.setArms( true );
-			
-//			XMaterial.ARMOR_STAND.
 			
 			XMaterial xMat = XMaterial.matchXMaterial( itemType ).orElse( null );
 			bItemStack = xMat == null ? null : xMat.parseItem();
@@ -383,11 +382,24 @@ public class SpigotWorld
 				bItemStack = XMaterial.COBBLESTONE.parseItem();
 			}
 			
+			
+			if ( asLocation == AnimationArmorStandItemLocation.hand ) {
+				
+				as.setItemInHand(bItemStack);
+				as.setArms( true );
+				
+//				as.setItem( EquipmentSlot.HAND, bItemStack);
+			}
+			else {
+				as.setHelmet(bItemStack);
+				
+			}
 
-			as.setItemInHand(bItemStack);
-//			as.setItem( EquipmentSlot.HAND, bItemStack);
 			
 		}
+		
+		as.getHelmet();
+		as.setHelmet(bItemStack);
 		
 //		String msg = "SpigotWorld.spawnArmorStand: itemInHand: " +
 //				( as.getItemInHand() == null ? "null" : as.getItemInHand().toString()) +  

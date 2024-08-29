@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-08-29
 
 
+* **Mine bomb: Added more features for control of the animations: **
+radius, radiusDelta, alterateDirections, animation speed, and spin speed, and armorstand item location.
+This is working pretty good overall, but still needs to do some work on the related spin.
+
+
+
 * **Added a new feature to the prison versions information: Directory path checks.**
 If a specified directory is missing, it will be created to prevent possible errors in other parts of prison.  See last commit.
 This reports the path, number of directories and files, with the file's total size in that directory.

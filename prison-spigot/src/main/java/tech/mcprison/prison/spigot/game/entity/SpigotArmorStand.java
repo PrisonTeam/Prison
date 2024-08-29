@@ -12,7 +12,8 @@ public class SpigotArmorStand
 	
 	private org.bukkit.entity.ArmorStand bArmorStand;
 	
-	private SpigotItemStack sItemStack = null;
+	private SpigotItemStack sHandItemStack = null;
+	private SpigotItemStack sHelmetItemStack = null;
 	
 	public SpigotArmorStand( org.bukkit.entity.ArmorStand bArmorStand ) {
 		super( bArmorStand );
@@ -127,7 +128,7 @@ public class SpigotArmorStand
 
 	@Override
 	public ItemStack getItemInHand() {
-		return sItemStack;
+		return sHandItemStack;
 	}
 
 	@Override
@@ -135,6 +136,7 @@ public class SpigotArmorStand
 		if ( item == null ) {
 			bArmorStand.setItemInHand( null );
 			bArmorStand.setArms( false );
+			this.sHandItemStack = null;
 		}
 		else {
 			SpigotItemStack sItemStack = 
@@ -142,7 +144,7 @@ public class SpigotArmorStand
 							(SpigotItemStack) item :
 								new SpigotItemStack( item ) );
 			
-			this.sItemStack = sItemStack;
+			this.sHandItemStack = sItemStack;
 			
 			org.bukkit.inventory.ItemStack bas = sItemStack.getBukkitStack();
 			
@@ -150,6 +152,34 @@ public class SpigotArmorStand
 			bArmorStand.setItemInHand( bas );
 		}
 	}
+	
+	
+	@Override
+	public ItemStack getHelmet() {
+		return sHelmetItemStack;
+	}
+	
+	@Override
+	public void setHelmet(ItemStack item) {
+		if ( item == null ) {
+			bArmorStand.setHelmet( null );
+			this.sHelmetItemStack = null;
+		}
+		else {
+			SpigotItemStack sItemStack = 
+					( item instanceof SpigotItemStack ?
+							(SpigotItemStack) item :
+								new SpigotItemStack( item ) );
+			
+			this.sHelmetItemStack = sItemStack;
+			
+			org.bukkit.inventory.ItemStack bas = sItemStack.getBukkitStack();
+			
+			bArmorStand.setItemInHand( bas );
+		}
+	}
+	
+	
 
 	@Override
 	public void setRightArmPose(EulerAngle arm) {

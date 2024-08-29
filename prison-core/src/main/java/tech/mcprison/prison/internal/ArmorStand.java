@@ -19,6 +19,10 @@ public interface ArmorStand
 	public void setItemInHand( ItemStack itemm );
 	
 	
+	public ItemStack getHelmet();
+	public void setHelmet( ItemStack item );
+	
+	
 	public void setRightArmPose( EulerAngle arm );
 	
 	public boolean isGlowing();

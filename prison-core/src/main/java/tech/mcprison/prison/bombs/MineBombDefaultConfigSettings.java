@@ -1,6 +1,7 @@
 package tech.mcprison.prison.bombs;
 
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
 import tech.mcprison.prison.output.Output;
@@ -293,6 +294,7 @@ public class MineBombDefaultConfigSettings {
 				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds
 
 				mbd.setAnimationPattern( AnimationPattern.orbital );
+				mbd.setAnimationArmorStandItemLocation( AnimationArmorStandItemLocation.head );
 
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -395,6 +397,7 @@ public class MineBombDefaultConfigSettings {
 				
 				
 				mbd.setAnimationPattern( AnimationPattern.orbital );
+				mbd.setAnimationArmorStandItemLocation( AnimationArmorStandItemLocation.head );
 				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -432,6 +435,7 @@ public class MineBombDefaultConfigSettings {
 				
 				
 				mbd.setAnimationPattern( AnimationPattern.orbitalEight );
+				mbd.setAnimationArmorStandItemLocation( AnimationArmorStandItemLocation.head );
 				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -442,7 +446,7 @@ public class MineBombDefaultConfigSettings {
 				MineBombData mbd = new MineBombData( 
 						"starburstBomb", "WHEAT", ExplosionShape.sphere.name(), 2, 
 						"This is a bomb?&r" );
-				mbd.setDescription("This old bomb is a dud.&r");
+				mbd.setDescription("This old bomb is a star!r");
 				
 				mbd.setNameTag( "&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&r" );
 				mbd.setItemName( MineBombData.MINE_BOMB_DEFAULT_ITEM_NAME );
@@ -469,6 +473,11 @@ public class MineBombDefaultConfigSettings {
 				
 				
 				mbd.setAnimationPattern( AnimationPattern.starburst );
+				mbd.setAnimationRadius( 1.5 );
+				mbd.setAnimationRadiusDelta( .75 );
+				mbd.setAnimationAlternateDirections( true );
+				mbd.setAnimationSpeed( 9.0 );
+				
 				
 				mineBombs.getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}

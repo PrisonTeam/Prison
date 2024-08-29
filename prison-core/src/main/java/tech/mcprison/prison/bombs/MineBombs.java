@@ -141,6 +141,29 @@ public class MineBombs
 		}
 	}
 	
+	public enum AnimationArmorStandItemLocation {
+		hand,
+		head;
+		
+		public static final AnimationArmorStandItemLocation fromString( String animationItemLocation ) {
+			AnimationArmorStandItemLocation results = AnimationArmorStandItemLocation.hand;
+			
+			if ( animationItemLocation != null ) {
+				
+				for (AnimationArmorStandItemLocation ail : values() ) {
+					if ( ail.name().equalsIgnoreCase( animationItemLocation) ) {
+						results = ail;
+						break;
+					}
+				}
+			}
+			
+			return results;
+		}
+		
+	}
+	
+	
 	/**
 	 * DO NOT USE!
 	 * This has been set to protected only to be used by
