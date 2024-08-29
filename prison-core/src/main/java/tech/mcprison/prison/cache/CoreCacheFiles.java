@@ -228,6 +228,11 @@ public abstract class CoreCacheFiles {
 //				getPlayerFiles().put( playerFile.getName(), playerFile );
 //			}
 			
+			if ( outTemp.mkdirs() ) {
+				Output.get().logInfo( "CoreCacheFiles.toJsonFile(): Created missing directories: %s",
+						 outTemp.getParentFile().getAbsolutePath() );
+			}
+			
 			boolean success = false;
 			
 			try (
@@ -238,39 +243,53 @@ public abstract class CoreCacheFiles {
 				success = true;
 			}
 			catch ( JsonIOException | IOException e ) {
-				e.printStackTrace();
+
+				String msg = String.format(
+						"&3CoreCacheFiles.toJsonFile: &6Failure to write to temp file. &3This is probably an " +
+						"issue with the underlying OS and file system. Did you run out of file storage space? " +
+						"Please confirm. Tempfile: &6%s&3  OriginalFile: %s  Error message: [&6%s&3]",
+						outTemp.getAbsolutePath(),
+						playerFile.getAbsolutePath(),
+						e.getMessage()
+						);
+						
+				Output.get().logInfo( msg );
 			}
 			
-			// If there is a significant change in file size, or the new file is smaller than the
-			// old, then rename it to a backup and keep it.  If it is smaller, then something went wrong
-			// because player cache data should always increase, with the only exception being 
-			// the player cache.
-			if ( playerFile.exists() ) {
-				long pfSize = playerFile.length();
-				long tmpSize = outTemp.length();
+			if ( success ) {
 				
-				if ( tmpSize < pfSize ) {
-					 
-					renamePlayerFileToBU( playerFile );
+				// If there is a significant change in file size, or the new file is smaller than the
+				// old, then rename it to a backup and keep it.  If it is smaller, then something went wrong
+				// because player cache data should always increase, with the only exception being 
+				// the player cache.
+				if ( playerFile.exists() ) {
+					long pfSize = playerFile.length();
+					long tmpSize = outTemp.length();
+					
+					if ( tmpSize < pfSize ) {
+						
+						renamePlayerFileToBU( playerFile );
+					}
+				}
+				
+				if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
+					outTemp.renameTo( playerFile );
+				}
+				else {
+					
+					boolean removed = false;
+					if ( outTemp.exists() ) {
+						removed = outTemp.delete();
+					}
+					
+					String message = String.format( 
+							"Unable to rename PlayerCache temp file. It was %sremoved: %s", 
+							(removed ? "" : "not "), outTemp.getAbsolutePath() );
+					
+					Output.get().logWarn( message );
 				}
 			}
 			
-			if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
-				outTemp.renameTo( playerFile );
-			}
-			else {
-				
-				boolean removed = false;
-				if ( outTemp.exists() ) {
-					removed = outTemp.delete();
-				}
-				
-				String message = String.format( 
-						"Unable to rename PlayerCache temp file. It was %sremoved: %s", 
-						(removed ? "" : "not "), outTemp.getAbsolutePath() );
-				
-				Output.get().logWarn( message );
-			}
 		}
 	}
 

@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-08-28
+# 3.3.0-alpha.18d 2024-08-29
+
+
+* **Bug fix: If someone deletes the playerCache folder, it was causing failures in trying to create new player cache files.**
+Fixed by using '.mkDirs()' to ensure the path fully exists before creating the temp files.
+Also eliminated the stack trace and replaced it with a one line entry in the console.
 
 
 * **Blocks: Update the list of blocks that can be effected by gravity (fall when disturbed).**
