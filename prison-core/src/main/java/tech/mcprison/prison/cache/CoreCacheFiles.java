@@ -228,7 +228,7 @@ public abstract class CoreCacheFiles {
 //				getPlayerFiles().put( playerFile.getName(), playerFile );
 //			}
 			
-			if ( outTemp.mkdirs() ) {
+			if ( outTemp.getParentFile().mkdirs() ) {
 				Output.get().logInfo( "CoreCacheFiles.toJsonFile(): Created missing directories: %s",
 						 outTemp.getParentFile().getAbsolutePath() );
 			}

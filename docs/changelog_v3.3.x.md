@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-08-29
+# 3.3.0-alpha.18d 2024-08-30
+
+
+* **Player Cache: Fixed a problem with creating missing directories.... forgot to use the parent of the file, which is the current directory for the player cache files.**
 
 
 * **Mine bomb: Added more features for control of the animations: **
