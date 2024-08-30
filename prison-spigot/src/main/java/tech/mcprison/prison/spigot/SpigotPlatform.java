@@ -2793,93 +2793,11 @@ public class SpigotPlatform
 //        new WorldGuardSettings();
         
         
-		// check directory structures:
-		checkDirectoryStructures( display );
-		
+
 	    
 	}
 	
 	
-	private void checkDirectoryStructures(ChatDisplay display) {
-
-	       
-        display.addText(".");
-        display.addText("&7Prison File System Check:");
-
-        display.addText( checkDirectory( "/" ) );
-        display.addText( checkDirectory( "backpacks" ) );
-        display.addText( checkDirectory( "backups" ) );
-        display.addText( checkDirectory( "data_storage" ) );
-        display.addText( checkDirectory( "data_storage/mines" ) );
-        display.addText( checkDirectory( "data_storage/playerCache" ) );
-        display.addText( checkDirectory( "data_storage/ranksDb" ) );
-        display.addText( checkDirectory( "data_storage/ranksDb/ladders" ) );
-        display.addText( checkDirectory( "data_storage/ranksDb/players" ) );
-        display.addText( checkDirectory( "data_storage/ranksDb/ranks" ) );
-        display.addText( checkDirectory( "module_conf" ) );
-		
-	}
-
-	private String checkDirectory( String dirPath ) {
-		
-		String pathMask = Prison.get().getDataFolder().getParentFile().getAbsolutePath();
-		
-		File path = new File( Prison.get().getDataFolder(), dirPath );
-		boolean pathCreated = path.mkdirs();
-		
-		int countDirs = 0;
-		int countFiles = 0;
-		double fileSize = 0;
-		String fileSizeUnit = "";
-		
-		File[] files = path.listFiles();
-		for (File f : files) {
-			
-			if ( f.isDirectory() ) {
-				countDirs++;
-			}
-			else if ( f.isFile() ) {
-				countFiles++;
-				fileSize += f.length();
-			}
-		}
-		
-		if ( fileSize > 0 ) {
-			fileSizeUnit = "bytes";
-			
-			if ( fileSize >= 1024 ) {
-				fileSize /= 1024.0;
-				fileSizeUnit = "KB";
-				
-				if ( fileSize >= 1024 ) {
-					fileSize /= 1024.0;
-					fileSizeUnit = "MB";
-					
-					if ( fileSize >= 1024 ) {
-						fileSize /= 1024.0;
-						fileSizeUnit = "GB";
-						
-					}
-				}
-			}
-		}
-		
-		
-		
-		DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
-		DecimalFormat dFmt = Prison.getDecimalFormatStaticDouble();
-		String msg = String.format(
-				"  plugins&b%-40s  &2dirs: &b%3s  &2files: &b%3s  &2totalFileSize: &b%7s &3%s %s",
-				path.getAbsolutePath().replace(pathMask, ""),
-				iFmt.format( countDirs ),
-				iFmt.format( countFiles ),
-				dFmt.format( fileSize ),
-				fileSizeUnit, 
-				( pathCreated ? " &6DirCreated!" : "" )
-				);
-		
-		return msg;
-	}
 	
 	@Override
 	public PlayerUtil getPlayerUtil( UUID playerUuid ) {
@@ -2905,14 +2823,12 @@ public class SpigotPlatform
 		// NOTE: the use of '..==..' prevents these packages from being shortened. See end of this function.
 		
 		sb.append( "\n" );
-		sb.append( "&2NOTE: Prison Block Event Listeners:\n" );
+		sb.append( "&2NOTE: Prison's Block-Event Listeners:\n" );
 		
-		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
+		sb.append( "&2. . Prison Internal BlockBreakEvents (non-auto features): " +
 									"tmps.SpigotListener\n" );
 		sb.append( "&2. . Auto Features: " +
-									"tmps.ae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
-		sb.append( "&2. . Prison's multi-block explosions (bombs): " +
-				"tmpsae.AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
+									"tmps.ae.AutoManagerBlockBreakEvents$*]\n" );
 		sb.append( "&2. . Prison Abbrv: '&3tmps.&2' = '&3tech..==..mcprison.prison.spigot.&2' & " +
 				"'&3tmps.ae.&2' = '&3tmps..==..autofeatures.events.&2'\n" );
 

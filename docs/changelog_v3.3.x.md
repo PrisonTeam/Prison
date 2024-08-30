@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-08-30
 
 
+* **Moved the Prison File System Check to the PrisonStatsUtil class and got it out of the SpigotPlatform.**
+
+
+
 * **Player Cache: Fixed a problem with creating missing directories.... forgot to use the parent of the file, which is the current directory for the player cache files.**
 
 
