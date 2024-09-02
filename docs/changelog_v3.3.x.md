@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-08-30
+# 3.3.0-alpha.18d 2024-09-02
+
+
+
+* **Auto Features: Can now trigger auto pickup, auto smelt, and auto block with the use of enchantments.***  
+This adds to the ability to trigger them with Lore and permissions for greater flexibility in working with other plugins.
+The enchantment names must be the full qualified name as found in the blockbreak debug messages that shows the details for that tool, or you can use `/sellall items inspect` while holding a tool with the enchantment you're interested in using.
+For example, enable auto features, but keep the globals turned off, then enabled the custom enchantments and add 'minecraft:smelter' to both the auto pickup and auto smelt enchantments.  This enchantment is from another enchantment plugin and is not standard, but this is how it's listed. Note that you can also use the same enchantment in more than one option too.
 
 
 * **Moved the Prison File System Check to the PrisonStatsUtil class and got it out of the SpigotPlatform.**

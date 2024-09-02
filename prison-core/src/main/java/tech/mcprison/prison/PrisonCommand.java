@@ -1070,6 +1070,31 @@ public class PrisonCommand
     		
     		
     		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.lore.isLoreEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isLoreEnabled ));
+    		display.addText( "&b   options.lore.lorePickupValue %s", 
+    				afw.isBoolean( AutoFeatures.lorePickupValue ));
+    		display.addText( "&b   options.lore.loreSmeltValue %s", 
+    				afw.isBoolean( AutoFeatures.loreSmeltValue ));
+    		display.addText( "&b   options.lore.loreBlockValue %s", 
+    				afw.isBoolean( AutoFeatures.loreBlockValue ));
+
+    		
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.customEnchants.isCustomEnchantsEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCustomEnchantsEnabled ));
+    		display.addText( "&b   options.customEnchants.customEnchantsAutoPickup %s", 
+    				afw.isBoolean( AutoFeatures.customEnchantsAutoPickup ));
+    		display.addText( "&b   options.customEnchants.customEnchantsAutoSmelt %s", 
+    				afw.isBoolean( AutoFeatures.customEnchantsAutoSmelt ));
+    		display.addText( "&b   options.customEnchants.customEnchantsAutoBlock %s", 
+    				afw.isBoolean( AutoFeatures.customEnchantsAutoBlock ));
+    		
+    		
+    		
     		
     		display.addText( "&b " );
     		display.addText( "&b   options.inventory.includePlayerInventoryWhenSmelting %s", 

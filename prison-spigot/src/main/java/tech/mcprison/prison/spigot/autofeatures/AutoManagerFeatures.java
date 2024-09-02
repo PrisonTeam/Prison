@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
@@ -590,6 +591,19 @@ public abstract class AutoManagerFeatures
 		boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
 		boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
 		
+		boolean isCustomEnchantEnabled = isBoolean( AutoFeatures.isCustomEnchantsEnabled );
+		
+		boolean enchantsPickup = isCustomEnchantEnabled && checkEnchant( itemInHand, getMessage( AutoFeatures.customEnchantsAutoPickup ) );
+		boolean enchantsSmelt = isCustomEnchantEnabled && checkEnchant( itemInHand, getMessage( AutoFeatures.customEnchantsAutoSmelt) );
+		boolean enchantsBlock = isCustomEnchantEnabled && checkEnchant( itemInHand, getMessage( AutoFeatures.customEnchantsAutoBlock ) );
+		
+		int enchantsPickupLevel = isCustomEnchantEnabled && enchantsPickup ?
+					getEnchantLevel( itemInHand, getMessage( AutoFeatures.customEnchantsAutoPickup ) ) : -1;
+		int enchantsSmeltLevel = isCustomEnchantEnabled && enchantsSmelt ?
+					getEnchantLevel( itemInHand, getMessage( AutoFeatures.customEnchantsAutoSmelt) ) : -1;
+		int enchantsBlockLevel = isCustomEnchantEnabled && enchantsBlock ?
+					getEnchantLevel( itemInHand, getMessage( AutoFeatures.customEnchantsAutoBlock ) ) : -1;
+		
 		boolean isAutoFeaturesEnabled = isBoolean( AutoFeatures.isAutoFeaturesEnabled );
 		
 		String permAutoPickup = getMessage( AutoFeatures.permissionAutoPickup );
@@ -622,15 +636,15 @@ public abstract class AutoManagerFeatures
 		boolean limit2minesSmelt = isBoolean( AutoFeatures.smeltLimitToMines );
 		boolean limit2minesBlock = isBoolean( AutoFeatures.blockLimitToMines );
 		
-		boolean isAutoPickup = lorePickup || configPickup || permPickup;
+		boolean isAutoPickup = lorePickup || enchantsPickup || configPickup || permPickup;
 		
 		isAutoPickup = (mine != null || mine == null && !limit2minesPickup) && isAutoPickup;
 		
-		boolean isAutoSmelt = loreSmelt || configSmelt || permSmelt;
+		boolean isAutoSmelt = loreSmelt || enchantsSmelt || configSmelt || permSmelt;
 		
 		isAutoSmelt = (mine != null || mine == null && !limit2minesSmelt) && isAutoSmelt;
 		
-		boolean isAutoBlock = loreBlock || configBlock || permBlock;
+		boolean isAutoBlock = loreBlock || enchantsPickup || configBlock || permBlock;
 		
 		isAutoBlock = (mine != null || mine == null && !limit2minesBlock) && isAutoBlock;
 		
@@ -657,6 +671,7 @@ public abstract class AutoManagerFeatures
 				.append( isAutoPickup ? "enabled: " : 
 						Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 				.append( lorePickup ? "lore " : "" )
+				.append( enchantsPickup ? "enchant " + enchantsPickupLevel + " " : "" )
 				.append( permPickup ? "perm " : "" )
 				.append( configPickup ? "config " : "" )
 				.append( limit2minesPickup ? "mines" : "noLimit" )
@@ -666,6 +681,7 @@ public abstract class AutoManagerFeatures
 				.append( isAutoSmelt ? "enabled: " : 
 						Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 				.append( loreSmelt ? "lore " : "" )
+				.append( enchantsSmelt ? "enchant " + enchantsSmeltLevel + " " : "" )
 				.append( permSmelt ? "perm " : "" )
 				.append( configSmelt ? "config " : "" )
 				.append( limit2minesSmelt ? "mines" : "noLimit" )
@@ -676,6 +692,7 @@ public abstract class AutoManagerFeatures
 				.append( isAutoBlock ? "enabled: " : 
 						Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
 				.append( loreBlock ? "lore " : "" )
+				.append( enchantsBlock ? "enchant " + enchantsBlockLevel + " " : "" )
 				.append( permBlock ? "perm " : "" )
 				.append( configBlock ? "config " : "" )
 				.append( limit2minesBlock ? "mines" : "noLimit" )
@@ -790,6 +807,44 @@ public abstract class AutoManagerFeatures
 		return totalDrops;
 	}
 
+
+	private boolean checkEnchant(SpigotItemStack itemInHand, String enchantmentName) {
+		boolean results = false;
+		
+		Map<Enchantment, Integer> enchants = itemInHand.getEnchantments();
+		
+		Set<Enchantment> enchs = enchants.keySet();
+		for (Enchantment enchant : enchs) {
+			if ( enchant.getKey().toString().equalsIgnoreCase(enchantmentName) ) {
+				results = true;
+				break;
+			}
+		}
+		
+		return results;
+	}
+
+	
+	private int getEnchantLevel(SpigotItemStack itemInHand, String enchantmentName) {
+		int enchantLevel = -1;
+		
+		Map<Enchantment, Integer> enchants = itemInHand.getEnchantments();
+		
+		Set<Enchantment> enchs = enchants.keySet();
+		for (Enchantment enchant : enchs) {
+			if ( enchant.getKey().toString().equalsIgnoreCase(enchantmentName) ) {
+				Integer eLevel = enchants.get(enchant);
+				if ( eLevel != null ) {
+					
+					enchantLevel = eLevel;
+				}
+				break;
+			}
+		}
+		
+		return enchantLevel;
+	}
+	
 
 	/**
 	 * <p>This function gets called for EACH block that is impacted by the

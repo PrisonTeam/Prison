@@ -267,13 +267,31 @@ public class AutoFeaturesFileConfig {
 				permissionAutoSmelt(permissions, "prison.automanager.smelt"),
 				permissionAutoBlock(permissions, "prison.automanager.block"),
 			
-				permissionAuto__readme(permissions, "If permmissions are enabled, of which they are by default, " + 
+				permissionAuto__readme(permissions, "If permissions are enabled, of which they are enabled by default, " + 
 										"and 'isAutoFeaturesEnabled' is enabled, then all OPs will automatically " +
 										"enable auto pickup, auto smelt, and auto block because bukkit will always " +
 										"test 'true' for any permmission when OP'd. There is no way around this, " +
 										"other than just turning off these perms, which is not advisable because " +
 										"players should not be playing as OP'd. To disable these perms, then " +
 										"use a value of 'disable'."),
+				
+				
+			customEnchants(options),
+			
+				isCustomEnchantsEnabled(customEnchants, false),
+				
+				customEnchantsAutoPickup(customEnchants, "disable"),
+				customEnchantsAutoSmelt(customEnchants, "disable"),
+				customEnchantsAutoBlock(customEnchants, "disable"),
+				
+				customEnchants__readme(customEnchants, "If customEnchants are enabled, of which they " +
+						"are disabled by default, " + 
+						"and 'isCustomEnchantsEnabled' is enabled, then Prison can use custom " +
+						"enchantments to trigger auto pickup, auto smelt, and auto blocking. " +
+						"Use '/sellall item inspect' to find out what the actual enchantment name " +
+						"is for easier setup of these features. A value of 'disable' will also prevent " + 
+						"the individual enchantments from being used."),
+				
 				
 			lore(options),
 			
@@ -1216,8 +1234,22 @@ public class AutoFeaturesFileConfig {
 			bStatsDetailBoolean( AutoFeatures.isLoreEnabled, tm );
 			if ( isFeatureBoolean( AutoFeatures.isLoreEnabled )) {
 				
+				bStatsDetailBoolean( AutoFeatures.lorePickupValue, tm );
+				bStatsDetailBoolean( AutoFeatures.loreSmeltValue, tm );
+				bStatsDetailBoolean( AutoFeatures.loreBlockValue, tm );
+
 				bStatsDetailBoolean( AutoFeatures.loreTrackBlockBreakCount, tm );
 				bStatsDetailBoolean( AutoFeatures.loreDurabiltyResistance, tm );
+			}
+			
+			
+			
+			bStatsDetailBoolean( AutoFeatures.isCustomEnchantsEnabled, tm );
+			if ( isFeatureBoolean( AutoFeatures.isCustomEnchantsEnabled )) {
+				
+				bStatsDetailBoolean( AutoFeatures.customEnchantsAutoPickup, tm );
+				bStatsDetailBoolean( AutoFeatures.customEnchantsAutoSmelt, tm );
+				bStatsDetailBoolean( AutoFeatures.customEnchantsAutoBlock, tm );
 			}
 			
 			
