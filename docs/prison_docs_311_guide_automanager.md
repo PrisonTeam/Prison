@@ -12,23 +12,60 @@ See below for information on:
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-# Auto Manager
+# Auto Manager, Auto Features
 
-AutoManager is Prison's block handler.  It provides support for breaking blocks within mines, auto pickup, normal drops, fortune, mine access, block events, auto-sell, and many other features.  Auto Manager has been one of the most enhanced features of Prison, and what it is capable of doing is probably more that what has been documented in this document due to the complexities involved, and the number of new features added that have not made it to this document.
+AutoManager is Prison's block handler.  It's also referred to as Auto Features, mostly because of the name of the config file.  It provides support for breaking blocks within mines, auto pickup, normal drops, fortune, mine access, block events, auto-sell, and many other features.  Auto Manager has been one of the most enhanced features of Prison, and what it is capable of doing is probably more that what has been documented in this document due to the complexities involved, and the number of new features added that have not made it to this document.
 
 Extensive work has been done with auto manager to improve the performance, and to extend the compatibility with other plugins.  Many plugins have direct support (Auto Manager has event listeners for their custom events), but prison has been modified to work with many plugins that do not provide custom events too.
 
+The configuration file for the auto features is: `plugins/Prison/autoFeaturesConfig.yml`.
 
-*Documented updated: 2023-02-28*
+
+*Documented updated: 2024-09-02*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Canceling by Event or by Drops
+
+Perhaps one of the most important items to setup correctly is how prison should cancel the events or cancel the drops.
+
+These two settings are:
+
+`options.blockBreakEvents.cancelAllBlockBreakEvents: false`
+`options.blockBreakEvents.cancelAllBlockEventBlockDrops: true`
+	
+
+For spigot versions 1.8.x through v1.11.x it's a moot point, since the only option is cancel by event. If you try to cancel by drops it will mess up your server, so don't do it. 
+
+If you are using spigot v1.12.x or higher (paper and other flavors included), then you should almost always use cancel by drops.  There may be a few situations where you may need to cancel the events, but that maybe due to other plugins not being written correctly to handle canceled drops.  This would be more of an issue for plugins that have been written for spigot versions less than 1.12 or around 1.12's release.  Modern plugins properly handle the cancel by drops.
+
+
+Canceling by drops is where prison will change the drops on an event so the drops are empty.  No drops.  That way other plugins can properly handle the event, and get access to which block (or blocks) are part of the event, but using bukkit's `getDrop()` function will result in zero items.  This will prevent double or triple drops for each block being broken.  Some of the older plugins would ignore the `getDrops()` function and would generate their own drops incorrectly.
+
+
+By using Canceling by drops, this can allow prison to be one of the lowest priority listeners on the event, and handle the block breakage and the drops, but then allow all the other plugins to properly handle the event too.  If they honor the zero drops, then those other plugins can behave as if prison was not even there.  Hence prison can seamlessly work with almost any plugin.  But as you can imagine, not all plugins are created equally, and not all handles the events in the same way either. It's not to say they are wrong in how they handle the event, it's just that they have different requirements and expectations, and it's those perspectives that gives their plugins a unique appeal for everyone wanting to use them.
+
+
+In general, there isn't much variation in how to setup this setting.  It's either cancel by event for older versions of bukkit(paper), or by drops for all the newer versions.  But once in a while this can be a significantly important setting to get correct for your environment.
+
+
+Prison currently allows both of these settings to be set with the same value.  It may give warnings in the console, but it will allow it happen.  And if it does, then things will never work correctly.  So never, ever, set them to the same values.  I've been tempted to create a new setting that will replace these two settings, and the values would be something more obvious and clear, such as `CANCEL_BY_EVENT` or `CANCEL_BY_DROPS`.  This could eliminate the rare situation where both settings are set to the same value.
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Auto Manager Event Listener Priorities
 
 Prison listens to a number of block break event types, and each one can be enabled or disabled.  By enabling these listeners, any combination of priorities can be applied to any of the listeners.  These priorities cover the standard Bukkit priorities (LOWEST to HIGHEST, plus MONITOR), but also has custom Prison priorities to extend the behaviors.
  
-At this time, these event listeners only apply within mines.  In the near future they may be extended to work outside of mines and in other worlds too, but for now, they are only Prison mine specfic.
+At this time, these event listeners only apply within mines.  In the near future they may be extended to work outside of mines and in other worlds too, but for now, they are only Prison mine specific.
+
+These priorities are tied to the parameters that are under the path of:
+`options.blockBreakEvents.`
 
 
 Valid values for the priorities are:
@@ -50,21 +87,73 @@ Valid values for the priorities are:
 - `ACCESSBLOCKEVENTS` - Same as `ACCESS` but adds a second listener to the stack for a `BLOCKEVENTS` priority too.  So this generates two listeners; see both `ACCESS` and `BLOCKEVENTS`.
 
 
+NOTE that the standard bukkit priorities are: LOWEST, LOW, NORMAL, HIGH, HIGHEST, and MONITOR.  Prison extends those basic priorities to provide variations in how it will respond. Some of the custom priorities will actually enable two monitors, such as the ACCESSMONITOR where it uses LOWEST for prison access features, and then MONITOR to record block breakage.
 
-Valid event listeners are as follows, including their default values.  Any of the above Prison priorities can be used with the following:
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-- `blockBreakEventPriority: LOW` - This applies to the org.bukkit.BlockBreakEvent and is the primary way Prison deals with standard block events. There may be some situations where prison would need to DISABLE this listener.  
+
+# Event Processor Handling - Sync Tasks for Breaking Blocks
+
+Prison is capable handling the processing of breaking the blocks in two different ways. It can handle it "inline" or by running it in another sync task which could speed up reactions times.
+
+Also see the section **Sync Tasks for Breaking Blocks** below for more information.
+
+
+The config setting is in the same block as the other event listeners:
+`options.blockBreakEvents.applyBlockBreaksThroughSyncTask: true`
+
+The value of `true` is the default value.
+
+The concept of this feature is to take an expensive part of the block break handling, the actual breaking of the blocks, and run it in another sync task thread so the original event can be freed up and continue to allow other plugins to process it.  The reason why it can be expensive is because the block breakage must run in the synch task (only one sych task thread on a server, and it's the primary thread at that). And it will make changes to the world, which will in turn trigger chunk saving.  If it crosses the boundaries of multiple chunks, then it could add more delays.  The chunks should be preloaded because the player is already in the area, unlike a mine reset which may have no players in the region.
+
+This setting is very important.  It saves some time, but what makes it important is that on some servers, with higher loads with less resources to process them (cores, cpu, clock frequencies, etc) it can appear like it is causing lag.  It actually does not cause lag, but because there could be a slight delay from when the processing of the event happens, and when the blocks are actually broken, that delay could be more obvious.  If this is the situation, then just set this value to `false` and force the block breakage to happen while the thread is still processing the event.
+
+
+
+
+# Event Listeners and Event Priorities
+
+
+The event listeners, and their related event priorities are under the path of:
+`options.blockBreakEvents.`
+
+
+Valid event listeners are as follows, including their default values.  Any of the above Prison priorities can be used with the following. Pay careful attention to the parameter name and which enchantment plugin it supports since some of the parameter names have become confusing since they are similar to each other (it's too late to change them now, since it will break existing configs).
+
+
+
+
+
+- `blockBreakEventPriority: LOW` - This applies to the 'org.bukkit.BlockBreakEvent' and is the primary way Prison deals with standard block events. There may be some situations where prison would need to DISABLE this listener.  All other enchantment plugins MUST also listen to this event too, so it can become complicated on how to properly configure.
+- `entityExplodeEventPriority: LOW` - This applies to the 'org.bukkit.event.entity.EntityExplodeEvent'.  This is the multi-block explosion event that bukkit has always used for creepers and probably TNT too.  But this is also used by the enchantment plugin ExcellentEnchants, and probably others too. 
+
+  The only problem with this event, and a few others listed here, is that it does not identify what the initial block was that triggered this event. Prison uses the first block to identify which mine the explosion is in, and if the player has access. This potentially becomes a problem if the player break a block on the edge of the mine, but the first block in this list of blocks is outside the mine; prison will reject the whole explosion event.
+
 - `ProcessPrisons_ExplosiveBlockBreakEventsPriority: LOW` - This is the event that must be enabled for Prison Mine Bombs to work.  Other plugins may also use this Prison multi-block explosion event too.
+
 - `TokenEnchantBlockExplodeEventPriority: DISABLED` - For TokenEnchant (premium)
+
 - `CrazyEnchantsBlastUseEventPriority: DISABLED` - For CrazyEnchant (open source)
+
 - `RevEnchantsExplosiveEventPriority: DISABLED` - For RevEnchants ExplosiveEvent (premium)
 - `RevEnchantsJackHammerEventPriority: DISABLED` - For RevEnchants JackHammerEvent (premium)
 
 - `ZenchantmentsBlockShredEventPriority: DISABLED` - For ZenChantments (open source)
-- `PrisonEnchantsExplosiveEventPriority: DISABLED` - Pulsi's Plugin - (Premium and free... not currently in active development for at this time)
+
+- `PrisonEnchantsExplosiveEventPriority: DISABLED` - Pulsi's Plugin - (Premium and free)  Prison supports all version of Pulsi's plugin.
+
+    
+- `XPrisonExplosionTriggerEventPriority: DISABLED` (discontinued premium)
+- `XPrisonLayerTriggerEventPriority: DISABLED`
+- `XPrisonNukeTriggerEventPriority: DISABLED`
+
+  Prison supports XPrison's enchantments.  So if you were using XPrison, and you move over to prison, you can continue to use XPrison's enchantment tools.  If you have them setup and they are still working well for you, you might as well keep using them since it can be very difficult to reconfigure enchantments in another plugin.
+  
+  
+NOTE: Prison currently supports importing mine configurations from JetPrisonMines.  Visit our discord server and talk to Blue if you would like prison to import from other plugins; it may not be possible, but it also could be.
 
 
-Do not enable any event listener if you are not using that plugin.  Doing so will not contribute to lag, but it will try to setup a useless event listener that could delay startup, and consume a little more memory.
+Do not enable an event listener if you are not using that plugin.  Doing so will not contribute to any lag, but it will try to setup a useless event listener that could slightly delay startup while trying to detect that plugin.  Overall, if you try to enable a plugin event that you do not have setup on your server, it's not a big deal and prison will ignore them.
 
 
 
@@ -73,6 +162,12 @@ Do not enable any event listener if you are not using that plugin.  Doing so wil
 
 
 # Sync Tasks for Breaking Blocks
+
+NOTE: This is additional information on the following setting.  See the section above titled **Event Processor Handling - Sync Tasks for Breaking Blocks**:
+`options.blockBreakEvents.applyBlockBreaksThroughSyncTask: true`
+
+The value of `true` is the default value.
+
 
 Prison is trying its best to optimize performance so your server will have the best experience with no lag.  In order to provide the best performance, some features do not always work the best on all servers due to memory limitations, processor performance, huge number of plugins, or almost any other variable which is outside of the control of Prison.  Therefore, there are some performance features that work really well on some servers, but not on others.  This is not a "problem" with any specific plugin, or server, but it's an expected behavior because all servers are different and they can perform in very different ways based upon configurations.
 
@@ -86,6 +181,7 @@ This feature can be turned off with a simple setting change.  The following is t
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Auto Manager's Canceling the Event vs. Canceling the Drops
@@ -156,7 +252,7 @@ options:
 # Prison's Auto Manager - Setting Up and Enabling Other Plugins
 
 
-Prison's Auto Manger deals with the whole block breaking events.  It's able to provide advanced features such as auto pickup, auto smelt, and auto block, along with providing the player with XP, applying OP fortune, plus many other features.  All with maintaining full compatibility from Spigot v1.8 through Spigot v1.16.
+Prison's Auto Manger deals with the whole block breaking events.  It's able to provide advanced features such as auto pickup, auto smelt, and auto block, along with providing the player with XP, applying OP fortune, plus many other features.  All with maintaining full compatibility from Spigot v1.8 through Spigot v1.21.x
 
 
 Auto Manager is a very complex "process" and as a result, there are many features that can be configured, and many possible interactions with other plugins.  Needless to say, there are many things that can go wrong, especially when it may not be configured correctly.
