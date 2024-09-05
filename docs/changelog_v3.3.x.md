@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-09-04
 
 
+* **Auto Manager: Bug Fix!  I realized by chance that the whole normal drop config was setup incorrectly!  This was fixed.**
+What was wrong, was that the normal drops for smelting and blocking were not tied to the perms, lore, and enchantment activators!
+Also I found that if auto features (auto pickup, auto smelt, and auto blocking) is disabled, then it was bypassing normal drop processing too.
+So these fixes have normal drops correctly get used if auto pickup is not used.  For example, if auto smelt is enabled, but auto pickup is off, and auto pickup does not get triggered by lore, perms, or enchantments, then it will fall back to normal drops and will enable the smelting for that.
+
+
 * **Mine reset: Not sure if this was a problem but found that the wrong value was being used as a key to access a set of blocks.**
 
 

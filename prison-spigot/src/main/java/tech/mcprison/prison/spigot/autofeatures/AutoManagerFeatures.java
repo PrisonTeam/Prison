@@ -648,6 +648,14 @@ public abstract class AutoManagerFeatures
 		
 		isAutoBlock = (mine != null || mine == null && !limit2minesBlock) && isAutoBlock;
 		
+		
+		boolean isNormalSmelt = loreSmelt || enchantsSmelt || configNormalDropSmelt || permSmelt;
+		isNormalSmelt = (mine != null || mine == null && !limit2minesSmelt) && isNormalSmelt;
+		
+		boolean isNormalBlock = loreBlock || enchantsPickup || configNormalDropBlock || permBlock;
+		isNormalBlock = (mine != null || mine == null && !limit2minesBlock) && isNormalBlock;
+
+		
 		boolean includePlayerInventoryWhenSmelting = isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting );
 		boolean includePlayerInventoryWhenBlocking = isBoolean( AutoFeatures.includePlayerInventoryWhenBlocking );
 		
@@ -709,7 +717,8 @@ public abstract class AutoManagerFeatures
 		//       Ops will have to have the perms set to actually use them.
 				
 		// AutoPickup
-		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
+//		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) 
+		{
 			
 			if ( isAutoPickup ) {
 				
@@ -728,14 +737,29 @@ public abstract class AutoManagerFeatures
 //						.append( "{br}||    ")
 						.append( "(&7NormalDrop handling enabled&3: " )
 						.append( "&7normalDropSmelt&3[" )
-						.append( configNormalDropSmelt ? "enabled" : 
+						.append( isNormalSmelt ? "enabled" : 
 								Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
-						.append( configNormalDropSmelt && includePlayerInventoryWhenSmelting ? " includePlayerInventory" : "" )
+						
+						.append( loreSmelt ? "lore " : "" )
+						.append( enchantsSmelt ? "enchant " + enchantsSmeltLevel + " " : "" )
+						.append( permSmelt ? "perm " : "" )
+						.append( configNormalDropSmelt ? "config " : "" )
+						
+						.append( isNormalSmelt && includePlayerInventoryWhenSmelting ? " includePlayerInventory" : "" )
+
+						
 						.append( "] " )
 						.append( "&7normalDropBlock&3[" )
-						.append( configNormalDropBlock ? "enabled" : 
+						.append( isNormalBlock ? "enabled" : 
 								Output.get().getColorCodeError() + "disabled:" + Output.get().getColorCodeDebug() )
-						.append( configNormalDropBlock && includePlayerInventoryWhenBlocking ? " includePlayerInventory" : "" )
+						
+						.append( loreBlock ? "lore " : "" )
+						.append( enchantsBlock ? "enchant " + enchantsBlockLevel + " " : "" )
+						.append( permBlock ? "perm " : "" )
+						.append( configNormalDropBlock ? "config " : "" )
+
+						
+						.append( isNormalBlock && includePlayerInventoryWhenBlocking ? " includePlayerInventory" : "" )
 						.append( "] " )
 						
 						.append( "&7normalDropCheckForFullInventory&3[" )
@@ -746,7 +770,7 @@ public abstract class AutoManagerFeatures
 					
 					// process normal drops here:
 					
-					totalDrops = calculateNormalDrop( pmEvent );
+					totalDrops = calculateNormalDrop( pmEvent, isNormalSmelt, isNormalBlock );
 
 				}
 				else {
@@ -813,11 +837,14 @@ public abstract class AutoManagerFeatures
 		
 		Map<Enchantment, Integer> enchants = itemInHand.getEnchantments();
 		
-		Set<Enchantment> enchs = enchants.keySet();
-		for (Enchantment enchant : enchs) {
-			if ( enchant.getKey().toString().equalsIgnoreCase(enchantmentName) ) {
-				results = true;
-				break;
+		if ( enchants != null && enchants.size() > 0 ) {
+			
+			Set<Enchantment> enchs = enchants.keySet();
+			for (Enchantment enchant : enchs) {
+				if ( enchant.getKey().toString().equalsIgnoreCase(enchantmentName) ) {
+					results = true;
+					break;
+				}
 			}
 		}
 		
@@ -830,15 +857,18 @@ public abstract class AutoManagerFeatures
 		
 		Map<Enchantment, Integer> enchants = itemInHand.getEnchantments();
 		
-		Set<Enchantment> enchs = enchants.keySet();
-		for (Enchantment enchant : enchs) {
-			if ( enchant.getKey().toString().equalsIgnoreCase(enchantmentName) ) {
-				Integer eLevel = enchants.get(enchant);
-				if ( eLevel != null ) {
-					
-					enchantLevel = eLevel;
+		if ( enchants != null && enchants.size() > 0 ) {
+			
+			Set<Enchantment> enchs = enchants.keySet();
+			for (Enchantment enchant : enchs) {
+				if ( enchant.getKey().toString().equalsIgnoreCase(enchantmentName) ) {
+					Integer eLevel = enchants.get(enchant);
+					if ( eLevel != null ) {
+						
+						enchantLevel = eLevel;
+					}
+					break;
 				}
-				break;
 			}
 		}
 		
@@ -1263,7 +1293,8 @@ public abstract class AutoManagerFeatures
 
 
 
-	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent ) {
+	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent, 
+			boolean isNormalSmelt, boolean isNormalBlock ) {
 		
 		// Count should be the total number of items that are to be "dropped".
 		// So effectively it will be the sum of all bukkitDrops counts.
@@ -1343,7 +1374,7 @@ public abstract class AutoManagerFeatures
 			drops = mergeDrops( drops );
 			
 			
-			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
+			if ( isNormalSmelt ) {
 				pmEvent.getDebugInfo().append( "(normSmelting: " );
 				
 				normalDropSmelt( pmEvent.getPlayer(), drops, pmEvent.getDebugInfo() );
@@ -1352,7 +1383,7 @@ public abstract class AutoManagerFeatures
 			}
 			
 			
-			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
+			if ( isNormalBlock ) {
 				pmEvent.getDebugInfo().append( "(normBlocking: " );
 
 				normalDropBlock( pmEvent.getPlayer(), drops, pmEvent.getDebugInfo() );

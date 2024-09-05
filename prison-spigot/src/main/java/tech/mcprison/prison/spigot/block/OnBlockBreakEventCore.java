@@ -1345,7 +1345,11 @@ public abstract class OnBlockBreakEventCore
 	public boolean doAction( PrisonMinesBlockBreakEvent pmEvent ) {
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-		int totalDrops = aMan.calculateNormalDrop( pmEvent );
+		
+		boolean isNormalSmelt = false;
+		boolean isNormalBlock = false;
+		
+		int totalDrops = aMan.calculateNormalDrop( pmEvent, isNormalSmelt, isNormalBlock );
 		
 		pmEvent.getDebugInfo().append( "(normalDrops totalDrops: " + totalDrops + ") ");
 		
