@@ -1007,8 +1007,11 @@ public abstract class MineReset
     			String blockName = sBlock.getBlockName();
     			statsBlock = getBlockStats().get( blockName );
     			
+    			
+    			// TODO Not sure if air.getBlockName() is correct!  It was just 'air' which was wrong.
+    			//      Did not have time to review this code to see if blockName is correct.
     			if ( statsBlock == null ) {
-    				statsBlock = getBlockStats().get( air );
+    				statsBlock = getBlockStats().get( air.getBlockName() );
     			}
     			
     			

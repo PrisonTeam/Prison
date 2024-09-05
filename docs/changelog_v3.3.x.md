@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-09-04
 
 
+* **Mine reset: Not sure if this was a problem but found that the wrong value was being used as a key to access a set of blocks.**
+
+
 * **WorldGuard Region support:  Starting to add WorldGuard region support to mines.**
 These initially are intended to help create regions, update regions, and view the regions based upon the mine sizes.
 There are some default command listings in config.yml so they can be customized and expanded to meet your server's needs.
