@@ -366,33 +366,64 @@ prison-mines:
     - SampleMineName
   world-guard:
     WARNING: WorldGuard support is not yet available. Coming soon.
+
+    global-region-commands:
+      info:
+      - '/rg list'
+      - '/rg info __global__'
+      define:
+      - '/rg flag __global__ passthrough deny'
+      deny-mob-spawning:
+      - 'rg flag __global__ mob-spawning deny'
+      - '/gamerule doMobSpawning false'
+    mine-region-commands:
+      info:
+      - '/rg list'
+      - '/rg info  {region-mine-name}'
+      redefine:
+      - '//pos1 {mine-pos1}'
+      - '//pos2 {mine-pos2}'
+      - '//region redefine {region-mine-name}'
+      define:
+      - '/region define {region-mine-name}'
+      - '/region addmember {region-mine-name} {region-group-permission}'
+      - '/region setpriority {region-mine-name} 20'
+      - '/region flag {region-mine-name} block-break allow'
+      - '/region flag {region-mine-name} item-pickup allow'
+      - '/region flag {region-mine-name} exp-drops allow'
+      - '/region flag {region-mine-name} item-drop allow'
+      select:
+      - '/region select {region-mine-name}'
+
+    mine-area-region-commands:
+      info:
+      - '/rg list'
+      - '/rg info  {region-mine-area-name}'
+      redefine:
+      - '//pos1 {mine-area-pos1}'
+      - '//pos2 {mine-area-pos2}'
+      - '/region redefine {region-mine-area-name}'
+      define:
+      - '/region define {region-mine-area-name}'
+      - '/region addmember {region-mine-area-name} {region-group-permission}'
+      - '/region setpriority {region-mine-area-name} 10'
+      - '/region flag {region-mine-area-name} block-break deny'
+      - '/region flag {region-mine-area-name} item-pickup allow'
+      - '/region flag {region-mine-area-name} exp-drops allow'
+      - '/region flag {region-mine-area-name} item-drop allow'
+      select:
+      - '/region select {region-mine-area-name}'
+
     region-mine:
       enable: true
-      name-prefix: prison_mine_
-      permission-prefix: "g:prison.mines."
-      priority: 10
-      deny-non-members: true
-      deny-message: You must rankup to access this mine.
-      flags:
-        block-break: true
-        item-pickup: true
-        xp-drops: true
-        item-drop: true
+      region-mine-name: 'prison_mine_{mine}'
+      region-group-permission: 'g:prison.mines.{mine}'
     region-mine-area:
-      enable: true
-      name-prefix: prison_mine_area_
+      enable: false
+      region-mine-area-name: 'prison_mine_area_{mine}'
       increase-x: 15
       increase-z: 15
       increase-y: 9999
-      permission-prefix: "g:prison.mines."
-      priority: 10
-      deny-non-members: true
-      deny-message: You must rankup to access this mine.
-      flags:
-        block-break: false
-        item-pickup: true
-        xp-drops: true
-        item-drop: true
     
 
 

@@ -75,7 +75,7 @@ import tech.mcprison.prison.util.Text;
  * @author Dylan M. Perks
  */
 public class MinesCommands
-	extends MinesImportCommands {
+	extends MinesWorldGuardCommands {
 	
 	public MinesCommands() {
 		super( "MinesCommands" );
@@ -5319,4 +5319,420 @@ private ChatDisplay minesCommandList( Mine m )
 
     }
     
+	
+	@Command(identifier = "mines worldguard region mineInfo", 
+			description = "WorldGuard Regions: shows a mine region info.", 
+    		onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineInfo(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+					description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options) {
+		
+		String cmd = "mineInfo";
+		
+		String wgSetting = "prison-mines.world-guard.mine-region-commands.info";
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+		
+	}
+
+	@Command(identifier = "mines worldguard region mineDefine", 
+			description = "WorldGuard Regions: define a mine region based upon the mine's size.", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineDefine(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+					description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options) {
+		
+		String cmd = "mineDefine";
+		
+		String wgSetting = "prison-mines.world-guard.mine-region-commands.define";
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+
+	@Command(identifier = "mines worldguard region mineRedefine", 
+			description = "WorldGuard Regions: define a mine region based upon the mine's size.", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineRedfine(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+					description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options) {
+		
+		String cmd = "mineRedefine";
+		
+		String wgSetting = "prison-mines.world-guard.mine-region-commands.redefine";
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	
+	@Command(identifier = "mines worldguard region mineSelect", 
+			description = "WorldGuard Regions: select a mine region", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineSelect(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+			description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+			description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options) {
+		
+		String cmd = "mineSelect";
+		
+		String wgSetting = "prison-mines.world-guard.mine-region-commands.select";
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	
+	@Command(identifier = "mines worldguard region globalInfo", 
+			description = "WorldGuard Regions: info on the global region '__global__'.", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsGlobalInfo(CommandSender sender, 
+			@Arg(name = "playerName", def = "view",
+					description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options) {
+		
+		String cmd = "globalInfo";
+		
+		String wgSetting = "prison-mines.world-guard.global-region-commands.info";
+		
+		String mineName = "*global*";
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	
+	@Command(identifier = "mines worldguard region globalDefine", 
+			description = "WorldGuard Regions: define the global region '__global__' based "
+					+ "upon the config settings within config.yml..", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsGlobalDefine(CommandSender sender, 
+			@Arg(name = "playerName", def = "view",
+			description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+			description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options) {
+		
+		String cmd = "globalDefine";
+		
+		String wgSetting = "prison-mines.world-guard.global-region-commands.define";
+		
+		String mineName = "*global*";
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	@Command(identifier = "mines worldguard region globalMobSpawningDeny", 
+			description = "WorldGuard Regions: prevent mob spawning using global region '__global__' based "
+					+ "upon the config settings within config.yml..", 
+					onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsGlobalMobSpawningDeny(CommandSender sender, 
+			@Arg(name = "playerName", def = "view",
+			description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+			description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options) {
+		
+		String cmd = "globalMobSpawningDeny";
+
+		String wgSetting = "prison-mines.world-guard.global-region-commands.deny-mob-spawning";
+		
+		String mineName = "*global*";
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	
+	@Command(identifier = "mines worldguard region mineAreaInfo", 
+			description = "WorldGuard Regions: info on the mine area's region. "
+					+ "&6NOTE: mine areas have not been added to prison yet, so this will do nothing.", 
+					onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineAreaInfo(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+					description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options)  {
+		
+		String cmd = "mineAreaInfo";
+		
+		String wgSetting = "prison-mines.world-guard.mine-area-region-commands.info";
+		
+		sender.sendMessage( "&6Notice: mine areas have not been added to prison yet. This will do nothing.");
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	@Command(identifier = "mines worldguard region mineAreaDefine", 
+			description = "WorldGuard Regions: define the mine area's region. "
+					+ "&6NOTE: mine areas have not been added to prison yet, so this will do nothing.", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineAreaDefine(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+					description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options)  {
+		
+		String cmd = "mineAreaDefine";
+
+		String wgSetting = "prison-mines.world-guard.mine-area-region-commands.define";
+		
+		sender.sendMessage( "&6Notice: mine areas have not been added to prison yet. This will do nothing.");
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	@Command(identifier = "mines worldguard region mineAreaRedefine", 
+			description = "WorldGuard Regions: redefine the mine area's region. "
+					+ "&6NOTE: mine areas have not been added to prison yet, so this will do nothing.", 
+			onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineAreaRedefine(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+					description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options)  {
+		
+		String cmd = "mineAreaRedefine";
+
+		String wgSetting = "prison-mines.world-guard.mine-area-region-commands.redefine";
+		
+		sender.sendMessage( "&6Notice: mine areas have not been added to prison yet. This will do nothing.");
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	
+	@Command(identifier = "mines worldguard region mineAreaSelect", 
+			description = "WorldGuard Regions: select the mine area's region. "
+					+ "&6NOTE: mine areas have not been added to prison yet, so this will do nothing.", 
+					onlyPlayers = false, permissions = "mines.set")
+	public void commandWorldGuardRegionsMineAreaSelect(CommandSender sender, 
+			@Arg(name = "mineName", description = "mine name") String mineName,
+			@Arg(name = "playerName", def = "view",
+			description = "An online player who can run the "
+					+ "world guard region commands. Optional. If no player is "
+					+ "specified and ran from console, it will only list the "
+					+ "commands and will not try to run them.") String playerName,
+			@Arg(name = "options", def = "view",
+			description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					+ "list of commands and display them in the console. The 'run' will submit them "
+					+ "to be ran as the player, who must be online.  They will be "
+					+ "teleported to the mine's spawn point to ensure they are in the correct "
+					+ "world.") @Wildcard String options)  {
+		
+		String cmd = "mineAreaSelect";
+		
+		String wgSetting = "prison-mines.world-guard.mine-area-region-commands.select";
+		
+		sender.sendMessage( "&6Notice: mine areas have not been added to prison yet. This will do nothing.");
+		
+		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
+	}
+	
+	
+	public void worldGuardRegions( CommandSender sender, String wbSetting, 
+					String mineName, String playerName, String options, String command ) {
+		
+        PrisonMines pMines = PrisonMines.getInstance();
+
+        Mine mine = "*global*".equalsIgnoreCase(mineName) ? null : pMines.getMine( mineName );
+        Player player = null;
+        boolean run = false;
+        
+        if ( mine == null && !"*global*".equalsIgnoreCase(mineName) ) {
+        	sender.sendMessage( "A valid mine name is required. Try again.");;
+        	return;
+        }
+        
+        if ( playerName.equalsIgnoreCase("run") ) {
+        	
+        	if ( sender.isPlayer() ) {
+        		run = true;
+        		player = sender.getPlatformPlayer();
+        	}
+        	else {
+        		sender.sendMessage( "A valid player name must be provided if this command is ran from the console.");
+        	}
+        }
+        else if ( playerName.equalsIgnoreCase( "view" ) || options.equalsIgnoreCase( "view" ) ) {
+        	run = false;
+        }
+        else {
+        	player = getPlayer( sender, playerName );
+        	
+        	if ( player == null ) {
+        	}
+        	
+        	if ( options.equalsIgnoreCase( "run" ) ) {
+            	run = true;
+            }
+        }
+        
+        
+    	String mode = run ? "Running" : "Viewing";
+    	ChatDisplay display = new ChatDisplay("WorldGuard Region Commands - " + mode);
+    	display.addText("'/mines worldGuard regions " + command +"'");
+    	display.addText("");
+
+    	if ( mine != null ) {
+    		display.addText( "&3Mine:   &7%s", mine.getTag() );
+    		
+    	}
+    	else if ( "*global*".equalsIgnoreCase(mineName) ) {
+    		display.addText( "&3Global: &7__global__");
+    	}
+
+    	if ( run && player != null ) {
+    		player.sendMessage( String.format(
+    				"&cTeleporting you to mine &3%s &bto run WorldGuard Region "
+    						+ "commands on your behalf.",
+    						mine.getTag()) );
+    		teleportPlayer(player, mine, "spawn");
+    	}
+
+    	String world = mine != null && !mine.isVirtual() ?
+    					mine.getWorldName() :
+    					player != null ? player.getLocation().getWorld().getName() :
+    						"world-not-set";
+    	display.addText( "&3World:  &7%s", world );
+    	
+    	display.addText("");
+
+        
+        List<String> wbCommands = Prison.get().getPlatform().getConfigStringArray( wbSetting );
+		
+        if ( wbCommands.size() > 0 ) {
+        	
+        	List<String> cmds = new ArrayList<>();
+
+        	
+        	String regionMineName = Prison.get().getPlatform().getConfigString( 
+        			"prison-mines.world-guard.region-mine.region-mine-name", "prison_mine_{mine}");
+        	String regionGroupPerms = Prison.get().getPlatform().getConfigString( 
+        			"prison-mines.world-guard.region-mine.region-group-permission", "g:prison.mines.{mine}");
+        	
+        	regionMineName = regionMineName.replace("{mine}", mine == null ? "(no-mine)" : mine.getName() );
+        	regionGroupPerms = regionGroupPerms.replace("{mine}", mine == null ? "(no-mine)" : mine.getName() );
+        	
+        	String minePos1 = mine == null ? "(no-mine)" :
+        				mine.isVirtual() ? "(virtual-mine-no-coordinates)" :
+        				mine.getBounds().getxBlockMin() + "," + 
+        				mine.getBounds().getyBlockMin() + "," + 
+        				mine.getBounds().getzBlockMin();
+        	String minePos2 = mine == null ? "(no-mine)" : 
+		        		mine.isVirtual() ? "(virtual-mine-no-coordinates)" :
+		        		mine.getBounds().getxBlockMax() + "," + 
+		        		mine.getBounds().getyBlockMax() + "," + 
+		        		mine.getBounds().getzBlockMax();
+        	
+        	for (String cmd : wbCommands) {
+				
+        		String msg = cmd.replace("{mine-pos1}", minePos1)
+        						.replace("{mine-pos2}", minePos2)
+        						.replace("{region-mine-name}", regionMineName)
+        						.replace("{region-group-permission}", regionGroupPerms);
+        		
+        		cmds.add( msg );
+        		display.addText( "&4  %s", msg );
+        		
+			}
+        	
+        	if ( run ) {
+        		// submit the commands in cmds:
+        		
+        		for (String cmd : cmds) {
+					
+        			Prison.get().getPlatform().dispatchCommand(player, cmd);
+				}
+        		
+        	}
+        	
+        	display.send( sender );
+        	
+        }
+        else {
+        	sender.sendMessage( 
+        			String.format( "Invalid settings: config.yml does not have the proper WorldGuard settings. " +
+        				"[%s]", wbSetting ) );
+        }
+
+	}
 }
