@@ -1929,46 +1929,91 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.COBBLESTONE, 4, true) );
 		blockList.add( new SellAllBlockData( XMaterial.ANDESITE, 5, true) );
 		blockList.add( new SellAllBlockData( XMaterial.DIORITE, 6, true) );
-		blockList.add( new SellAllBlockData( XMaterial.COAL_ORE, 13, true) );
 		
 		blockList.add( new SellAllBlockData( XMaterial.GRANITE, 8, true) );
 		blockList.add( new SellAllBlockData( XMaterial.STONE, 9, true) );
-		blockList.add( new SellAllBlockData( XMaterial.IRON_ORE, 18, true) );
 		blockList.add( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7, true) );
 
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_ORE, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.MOSSY_COBBLESTONE, 29, true) );
-
+		
+		blockList.add( new SellAllBlockData( XMaterial.CHARCOAL, 13, true) );
+		blockList.add( new SellAllBlockData( XMaterial.COAL, 13, true) );
+		blockList.add( new SellAllBlockData( XMaterial.COAL_ORE, 13, true) );
 		blockList.add( new SellAllBlockData( XMaterial.COAL_BLOCK, 135, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_COAL_ORE, 13, true) );
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.IRON_NUGGET, 2, true) );
+		blockList.add( new SellAllBlockData( XMaterial.IRON_ORE, 18, true) );
+		blockList.add( new SellAllBlockData( XMaterial.IRON_INGOT, 18, true) );
+		blockList.add( new SellAllBlockData( XMaterial.RAW_IRON, 18, true) );
+		blockList.add( new SellAllBlockData( XMaterial.RAW_IRON_BLOCK, 162, true) );
+		blockList.add( new SellAllBlockData( XMaterial.IRON_BLOCK, 190, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_IRON_ORE, 18, true) );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.NETHER_QUARTZ_ORE, 34, true) );
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_NUGGET, 5, true) );
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_ORE, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_INGOT, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.RAW_GOLD, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.RAW_GOLD_BLOCK, 405, true) );
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_BLOCK, 450, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_GOLD_ORE, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.NETHER_GOLD_ORE, 45, true) );
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.COPPER_ORE, 22, true) );
+		blockList.add( new SellAllBlockData( XMaterial.RAW_COPPER, 22, true) );
+		blockList.add( new SellAllBlockData( XMaterial.RAW_COPPER_BLOCK, 198, true) );
+		blockList.add( new SellAllBlockData( XMaterial.COPPER_BLOCK, 198, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_COPPER_ORE, 22, true) );
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.REDSTONE, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_ORE, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_REDSTONE_ORE, 45, true) );
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.DIAMOND, 222, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_ORE, 222, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 1998, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_DIAMOND_ORE, 222, true) );
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.EMERALD, 250, true) );
+		blockList.add( new SellAllBlockData( XMaterial.EMERALD_ORE, 250, true) );
+		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_EMERALD_ORE, 250, true) );
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_SHARD, 13, true ) );
+		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE, 52, true ) );
+		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ) );
+		
+		
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_ORE, 100, true) );
+		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 100, true) );
+		blockList.add( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 900, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_LAPIS_ORE, 100, true) );
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34, true) );
+		blockList.add( new SellAllBlockData( XMaterial.NETHER_QUARTZ_ORE, 34, true) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BLOCK, 136, true) );
+		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136, true) );
+		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136, true) );
+		
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.MOSSY_COBBLESTONE, 29, true) );
 		
 
 		blockList.add( new SellAllBlockData( XMaterial.END_STONE, 14, true ) );
-		blockList.add( new SellAllBlockData( XMaterial.IRON_BLOCK, 190, true) );
 		
-		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_ORE, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_ORE, 200, true) );
-
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BLOCK, 136, true) );
-		blockList.add( new SellAllBlockData( XMaterial.EMERALD_ORE, 250, true) );
-		
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_BLOCK, 450, true) );
-		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE, 52, true ) );
-		
-		
-		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ) );
-
-		blockList.add( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 950, true) );
-		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true) );
 		
 		blockList.add( new SellAllBlockData( XMaterial.OBSIDIAN, 450, true ) );
 		
-		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 2000, true) );
 		
-		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
 		
 		
 		
@@ -1998,13 +2043,13 @@ public class SpigotPlatform
 
 		
 		
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34 ) );
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68) );
 
-		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ) );
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BRICKS, 136 ) );
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_PILLAR, 136 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136 ) );
 
 
 		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_RED_SANDSTONE, 14 ) );
@@ -2012,11 +2057,11 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_STONE, 14 ) );
 		
 		
-		blockList.add( new SellAllBlockData( XMaterial.CHARCOAL, 16 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.CHARCOAL, 16 ) );
 		blockList.add( new SellAllBlockData( XMaterial.CRACKED_NETHER_BRICKS, 16 ) );
 		blockList.add( new SellAllBlockData( XMaterial.CRACKED_STONE_BRICKS, 14 ) );
 		
-		blockList.add( new SellAllBlockData( XMaterial.EMERALD, 14 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.EMERALD, 14 ) );
 		blockList.add( new SellAllBlockData( XMaterial.END_STONE_BRICKS, 14 ) );
 
 		
@@ -2024,7 +2069,7 @@ public class SpigotPlatform
 		
 		
 		// BLUE_DYE is used as LAPIS_LAZULI for bukkit v1.8.x etc...
-		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ) );
 		blockList.add( new SellAllBlockData( XMaterial.BLUE_DYE, 14 ) );
 		
 		blockList.add( new SellAllBlockData( XMaterial.MOSSY_STONE_BRICKS, 14 ) );
@@ -2069,13 +2114,13 @@ public class SpigotPlatform
 		
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.IRON_NUGGET, 3 ) );
-		blockList.add( new SellAllBlockData( XMaterial.IRON_INGOT, 27 ) );
-		
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_NUGGET, 12 ) );
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_INGOT, 108 ) );
-		
-		blockList.add( new SellAllBlockData( XMaterial.REDSTONE, 45 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.IRON_NUGGET, 3 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.IRON_INGOT, 27 ) );
+//		
+//		blockList.add( new SellAllBlockData( XMaterial.GOLD_NUGGET, 12 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.GOLD_INGOT, 108 ) );
+//		
+//		blockList.add( new SellAllBlockData( XMaterial.REDSTONE, 45 ) );
 		
 
 		blockList.add( new SellAllBlockData( XMaterial.GLOWSTONE, 52 ) );
@@ -2083,8 +2128,8 @@ public class SpigotPlatform
 
 		
 		
-		blockList.add( new SellAllBlockData( XMaterial.COAL, 15 ) );
-		blockList.add( new SellAllBlockData( XMaterial.DIAMOND, 200 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.COAL, 15 ) );
+//		blockList.add( new SellAllBlockData( XMaterial.DIAMOND, 200 ) );
 		
 		blockList.add( new SellAllBlockData( XMaterial.SUGAR_CANE, 13 ) );
 		blockList.add( new SellAllBlockData( XMaterial.SUGAR, 13 ) );

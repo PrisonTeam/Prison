@@ -14,8 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-09-02
+# 3.3.0-alpha.18d 2024-09-04
 
+
+
+* **Sellall Items: Expanded the number of default sellall items.**
+Can use `/sellall items setDefaults` to add the missing items.
 
 
 * **Auto Features: Can now trigger auto pickup, auto smelt, and auto block with the use of enchantments.***  
