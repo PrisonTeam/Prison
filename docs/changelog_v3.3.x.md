@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-09-04
 
 
+* **Startup directory check: Changed where and how the startup directory check is ran so it is actually included on startup, which it was skipping it.**
+
+
+
 * **Mine block searches:  Changed them so if the command is ran from the console, it will list all items without any paging.**
 
 

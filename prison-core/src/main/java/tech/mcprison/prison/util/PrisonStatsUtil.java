@@ -147,7 +147,7 @@ public class PrisonStatsUtil {
 	}
 
 
-	private void checkDirectoryStructures(ChatDisplay display) {
+	public void checkDirectoryStructures(ChatDisplay display) {
 
 	       
         display.addText(".");
@@ -216,11 +216,11 @@ public class PrisonStatsUtil {
 		DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
 		DecimalFormat dFmt = Prison.getDecimalFormatStaticDouble();
 		String msg = String.format(
-				"  &bplugins%-40s  &2dirs: &b%3s  &2files: &b%3s  &2totalFileSize: &b%7s &3%s %s",
+				"  &bplugins%-40s  &2dirs: %s%3s  &2files: %s%3s  &2totalFileSize: %s%7s &3%s %s",
 				path.getAbsolutePath().replace(pathMask, ""),
-				(countDirs == 0 ? "&3" : "") + iFmt.format( countDirs ),
-				(countFiles == 0 ? "&3" : "") + iFmt.format( countFiles ),
-				(fileSize == 0 ? "&3" : "") + dFmt.format( fileSize ),
+				(countDirs == 0 ? "&3" : "&b"), iFmt.format( countDirs ),
+				(countFiles == 0 ? "&3" : "&b"), iFmt.format( countFiles ),
+				(fileSize == 0 ? "&3" : "&b"), dFmt.format( fileSize ),
 				fileSizeUnit, 
 				( pathCreated ? " &6DirCreated!" : "" )
 				);

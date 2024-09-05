@@ -306,6 +306,9 @@ public class Prison
         
         Output.get().logInfo("Enabling and starting...");
 
+        
+        //getPrisonStatsUtil().checkDirectoryStructures( );
+
         // Initialize various parts of the API. The magic happens here :)
         initManagers();
         if (!initMetaDatabase()) {
@@ -323,7 +326,8 @@ public class Prison
         long stopTime = System.currentTimeMillis();
         
         Output.get()
-                .logInfo("Enabled &3Prison v%s in %d milliseconds.", getPlatform().getPluginVersion(),
+                .logInfo("Enabled &3Prison v%s in %d milliseconds.", 
+                		getPlatform().getPluginVersion(),
                         (stopTime - startTime));
 
         registerInbuiltTroubleshooters();
@@ -367,12 +371,15 @@ public class Prison
 
     	display.addText("");
     	
+    	
+    	getPrisonStatsUtil().checkDirectoryStructures( display );
+    	
     	display.sendtoOutputLogInfo();
     }
     
     public void displaySystemSettings( ChatDisplay display ) {
     	
-        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );
         
         Runtime runtime = Runtime.getRuntime();
         
