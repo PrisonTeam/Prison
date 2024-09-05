@@ -45,7 +45,7 @@ public class AutoManagerPrisonEnchants
 	extends AutoManagerFeatures 
 	implements PrisonEventManager {
 	
-	private PEExplosionEventVersion peApiVersion;
+	private PEExplosionEventVersion peApiVersion = null;
 	
 	private BlockBreakPriority bbPriority;
 	
@@ -63,9 +63,9 @@ public class AutoManagerPrisonEnchants
 	public AutoManagerPrisonEnchants( BlockBreakPriority bbPriority ) {
 		super();
 		
-		this.peApiVersion = PEExplosionEventVersion.undefined;
-		
 		this.bbPriority = bbPriority;
+		
+		
 	}
 	
 	
@@ -95,6 +95,9 @@ public class AutoManagerPrisonEnchants
 		
     	public AutoManagerPEExplosiveEventListener( BlockBreakPriority bbPriority ) {
     		super( bbPriority );
+    		
+    		// Setup the plugin's version:
+    		getPEPluginVersion();
     	}
     	
 		@EventHandler(priority=EventPriority.NORMAL) 
@@ -117,7 +120,7 @@ public class AutoManagerPrisonEnchants
 	}
 	
 
-	@SuppressWarnings("unused")
+//	@SuppressWarnings("unused")
 	@Override
 	public void initialize() {
 
@@ -125,6 +128,7 @@ public class AutoManagerPrisonEnchants
 		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 		
 		setBbPriority( bbPriority );
+		//setPeApiVersion( PEExplosionEventVersion.undefined );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
@@ -183,42 +187,12 @@ public class AutoManagerPrisonEnchants
 			
 			
 			
+//			HandlerList handlerList = PEExplosionEvent.getHandlerList();
 			
-			Class<?> klass = PEExplosionEvent.class;
-			if ( hasMethod( "getBlockBroken", klass ) &&
-				 hasMethod( "getExplodedBlocks", klass ) ) {
-				
-					 setPeApiVersion( PEExplosionEventVersion.pev1_0_0 );
-			}
-			else if ( hasMethod( "getBlocks", klass ) &&
-					  !hasMethod( "getOrigin", klass ) ) {
-				
-				setPeApiVersion( PEExplosionEventVersion.pev2_0_0 );
-			}
-			else if ( hasMethod( "getBlocks", klass ) &&
-					hasMethod( "getOrigin", klass ) ) {
-				
-				setPeApiVersion( PEExplosionEventVersion.pev2_2_1 );
-			}
+			
+			getPEPluginVersion();
 
-			
-			String msg = "";
-			if ( getPeApiVersion() == PEExplosionEventVersion.undefined ) {
-				msg = "&cWarning: AutoFeatures has been configured to use Pulsi's "
-						+ "PrisonEnchant's PEExplosionEvent but the plugin is not "
-						+ "loaded or active.";
-			}
-			else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
-				msg = "&6PEExplosionEvent API based on v2.2.1 or newer has been found and registered.";
-			}
-			else {
-				msg = "&6PEExplosionEvent API has been found and registered, but it is "
-						+ "out of date.  &cPlease upgrade PrisonEnchants to the lastest release "
-						+ "for best results. &66https://polymart.org/resource/prisonenchants.1434";
-			}
 
-			Output.get().logWarn( msg );
-			
 			
 			
 			
@@ -245,6 +219,47 @@ public class AutoManagerPrisonEnchants
 		catch ( Exception e ) {
 			Output.get().logInfo( "AutoManager: Pulsi_'s PrisonEnchants failed to load. [%s]", e.getMessage() );
 		}
+	}
+
+	private void getPEPluginVersion() {
+		Class<?> klass = PEExplosionEvent.class;
+		
+		setPeApiVersion( PEExplosionEventVersion.undefined );
+		
+		if ( hasMethod( "getBlockBroken", klass ) &&
+			 hasMethod( "getExplodedBlocks", klass ) ) {
+			
+				 setPeApiVersion( PEExplosionEventVersion.pev1_0_0 );
+		}
+		else if ( hasMethod( "getBlocks", klass ) &&
+				  !hasMethod( "getOrigin", klass ) ) {
+			
+			setPeApiVersion( PEExplosionEventVersion.pev2_0_0 );
+		}
+		else if ( hasMethod( "getBlocks", klass ) &&
+				hasMethod( "getOrigin", klass ) ) {
+			
+			setPeApiVersion( PEExplosionEventVersion.pev2_2_1 );
+		}
+		
+		
+		String msg = "";
+		if ( getPeApiVersion() == PEExplosionEventVersion.undefined ) {
+			msg = "&cWarning: AutoFeatures has been configured to use Pulsi's "
+					+ "PrisonEnchant's PEExplosionEvent but the plugin is not "
+					+ "loaded or active.";
+		}
+		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
+			msg = "&6PEExplosionEvent API based on v2.2.1 or newer has been found and &2successfully &6registered.";
+		}
+		else {
+			msg = "&6PEExplosionEvent API has been found and &2successfully &6registered, but it is "
+					+ "out of date.  &cPlease upgrade PrisonEnchants to the lastest release "
+					+ "for best results. &6https://polymart.org/resource/prisonenchants.1434";
+		}
+
+		Output.get().logWarn( msg );
+		
 	}
 
 	/**
@@ -275,6 +290,10 @@ public class AutoManagerPrisonEnchants
 	private Block getBlock( PEExplosionEvent event ) {
 		Block results = null;
 		
+		if ( getPeApiVersion() == null ) {
+			getPEPluginVersion();
+		}
+		
 		if ( getPeApiVersion() == PEExplosionEventVersion.pev1_0_0 ) {
 			
 			results = event.getBlockBroken();
@@ -289,12 +308,19 @@ public class AutoManagerPrisonEnchants
 			Location bLocation = event.getOrigin();
 			results = bLocation.getWorld().getBlockAt(bLocation);
 		}
+		else if ( getPeApiVersion() == PEExplosionEventVersion.undefined ) {
+			Output.get().logWarn( "AutoManager: Pulsi_'s PrisonEnchants api version is &6undefined&3!" );
+		}
 		
 		return results;
 	}
 	
 	private List<Block> getBlocks( PEExplosionEvent event ) {
 		List<Block> results = new ArrayList<>();
+		
+		if ( getPeApiVersion() == null ) {
+			getPEPluginVersion();
+		}
 		
 		if ( getPeApiVersion() == PEExplosionEventVersion.pev1_0_0 ) {
 			
@@ -307,6 +333,9 @@ public class AutoManagerPrisonEnchants
 		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
 			
 			results.addAll( event.getBlocks() );
+		}
+		else if ( getPeApiVersion() == PEExplosionEventVersion.undefined ) {
+			Output.get().logWarn( "AutoManager: Pulsi_'s PrisonEnchants api version is &6undefined&3!" );
 		}
 		
 		return results;
@@ -339,7 +368,7 @@ public class AutoManagerPrisonEnchants
 
     @Override
     public void unregisterListeners() {
-    	
+    	setPeApiVersion( null );
 //    	super.unregisterListeners();
     }
 	
@@ -378,8 +407,10 @@ public class AutoManagerPrisonEnchants
 			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
 							this.getClass().getClassLoader() );
 			
-			
 			HandlerList handlers = PEExplosionEvent.getHandlerList();
+			
+			// debug only:
+			Output.get().logInfo( "PEExplosionEvent: " + handlers.getClass().getName() );
 			
 //    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
     		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
@@ -528,6 +559,7 @@ public class AutoManagerPrisonEnchants
     			
     			if ( pmEvent.isCancelOriginalEvent() ) {
     				
+    				e.getBlocks().clear();
     				e.setCancelled( true );
     			}
     			
@@ -565,6 +597,10 @@ public class AutoManagerPrisonEnchants
     				e.setCancelled( true );
     				debugInfo.append( "(event canceled) " );
     			}
+    			
+    			e.getBlocks().clear();
+    			
+    			
 //    			else if ( cancelBy == EventListenerCancelBy.drops ) {
 //					try
 //					{
@@ -603,10 +639,12 @@ public class AutoManagerPrisonEnchants
 	}
 
 	public PEExplosionEventVersion getPeApiVersion() {
-		return peApiVersion;
+		return this.peApiVersion;
+//		return AutoManagerPrisonEnchants.peApiVersion;
 	}
 	public void setPeApiVersion(PEExplosionEventVersion peApiVersion) {
 		this.peApiVersion = peApiVersion;
+//		AutoManagerPrisonEnchants.peApiVersion = peApiVersion;
 	}
 
 

@@ -16,6 +16,9 @@ These change logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.18d 2024-09-04
 
+* **Auto features: PrisonEnchants plugin support.**  Adjustments to get it to work better for all versions.
+Needed to have it perform the checks in two different areas.
+
 
 * **Auto Manager: Bug Fix!  I realized by chance that the whole normal drop config was setup incorrectly!  This was fixed.**
 What was wrong, was that the normal drops for smelting and blocking were not tied to the perms, lore, and enchantment activators!
