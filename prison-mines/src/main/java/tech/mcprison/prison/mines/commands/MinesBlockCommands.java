@@ -569,7 +569,8 @@ public class MinesBlockCommands
     	ChatDisplay display = null;
     	
     	display = prisonBlockSearchBuilder(search, page, true, 
-    			blockSeachCommand, commandBlockAdd, targetText );
+    			blockSeachCommand, commandBlockAdd, targetText,
+    			!sender.isPlayer()  );
         
         display.send(sender);
 
@@ -592,7 +593,8 @@ public class MinesBlockCommands
     	ChatDisplay display = null;
     	
     	display = prisonBlockSearchBuilder(search, page, false, 
-    			blockSeachCommand, commandBlockAdd, targetText );
+    			blockSeachCommand, commandBlockAdd, targetText,
+    			!sender.isPlayer() );
     	
     	display.send(sender);
     	
@@ -603,7 +605,8 @@ public class MinesBlockCommands
     							boolean restrictToBlocks, 
     							String commandBlockSearch,
     							String commandBlockAdd,
-    					        String targetText )
+    					        String targetText,
+    					        boolean console )
     {
     	
     	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
@@ -635,7 +638,10 @@ public class MinesBlockCommands
     	
     	BulletedListComponent.BulletedListBuilder builder =
     			new BulletedListComponent.BulletedListBuilder();
-    	for ( int i = cmdPageData.getPageStart(); i < cmdPageData.getPageEnd(); i++ )
+    	
+    	int start = console ? 0 : cmdPageData.getPageStart();
+    	int end = console ? blocks.size() : cmdPageData.getPageEnd();
+    	for ( int i = start; i < end; i++ )
     	{
     		PrisonBlock block = blocks.get(i);
     		FancyMessage msg =
@@ -655,7 +661,10 @@ public class MinesBlockCommands
     	// This command plus parameters used:
 //        String pageCmd = "/mines block search " + search;
     	
-    	cmdPageData.generatePagedCommandFooter( display );
+    	if ( !console ) {
+    		
+    		cmdPageData.generatePagedCommandFooter( display );
+    	}
     	
     	return display;
     }

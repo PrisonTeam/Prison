@@ -17,6 +17,8 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-09-04
 
 
+* **Mine block searches:  Changed them so if the command is ran from the console, it will list all items without any paging.**
+
 
 * **Sellall Items: Expanded the number of default sellall items.**
 Can use `/sellall items setDefaults` to add the missing items.
