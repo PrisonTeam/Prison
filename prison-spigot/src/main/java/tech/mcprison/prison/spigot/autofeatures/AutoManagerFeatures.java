@@ -445,9 +445,9 @@ public abstract class AutoManagerFeatures
 			try {
 				Class.forName( "me.revils.revenchants.api.RevEnchantApi", false, this.getClass().getClassLoader() );
 				
-				boolean has1 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag");
-				boolean has2 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants");
-				boolean has3 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants.Fortune");
+//				boolean has1 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag");
+//				boolean has2 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants");
+//				boolean has3 = PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants.Fortune");
 
 				if ( RevEnchantsApi.isTool( itemInHand.getBukkitStack() ) && 
 									PrisonNBTUtil.hasNBTInt( itemInHand.getBukkitStack(), "tag.Enchants.Fortune") ) {
@@ -457,6 +457,7 @@ public abstract class AutoManagerFeatures
 					if ( fortRevEnchants > -1 ) {
 						
 						fortLevel = fortRevEnchants;
+						usedRevEnchantsFortune = true;
 						
 						debugInfo.append( "used RevEnchant NBT: level " ).append( fortLevel );
 					}
@@ -466,7 +467,7 @@ public abstract class AutoManagerFeatures
 					}
 					
 					
-					usedRevEnchantsFortune = true;
+//					usedRevEnchantsFortune = true;
 				}
 			}
 			catch ( Exception e ) {
@@ -484,6 +485,7 @@ public abstract class AutoManagerFeatures
 		
 		try {
 			if ( !usedTEFortune &&
+				 !usedRevEnchantsFortune &&
 					itemInHand != null && 
 					itemInHand.getBukkitStack() != null && 
 					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
