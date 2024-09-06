@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-09-04
+# 3.3.0-alpha.18d 2024-09-05
+
+* **Auto Features: blocking: Fixed a bug where 'blockAllBlocks' was incorrectly using 'smeltAllBlocks'.**
+Fixed.  'blockAllBlocks' now works properly.
+
 
 * **Auto features: PrisonEnchants plugin support.**  Adjustments to get it to work better for all versions.
 Needed to have it perform the checks in two different areas.

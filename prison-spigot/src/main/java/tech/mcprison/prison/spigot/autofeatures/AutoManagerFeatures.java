@@ -2674,7 +2674,7 @@ public abstract class AutoManagerFeatures
 	 */
 	protected void normalDropBlock( Player player, List<SpigotItemStack> drops, StringBuilder debugInfo ) {
 		
-		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
+		boolean isAll = isBoolean( AutoFeatures.blockAllBlocks );
 		
 		boolean includePlayerInventory = isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting );
 		
