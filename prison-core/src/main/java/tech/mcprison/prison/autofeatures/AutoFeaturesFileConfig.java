@@ -452,22 +452,36 @@ public class AutoFeaturesFileConfig {
 		    	blockAllBlocks(blockFeature, true),
 
 		    	
-		    	blockRawGoldBlock(blockFeature, true),
-		    	blockGoldBlock(blockFeature, true),
-		    	blockIronBlock(blockFeature, true),
-		    	blockRawIronBlock(blockFeature, true),
-		    	blockCoalBlock(blockFeature, true),
-		    	blockDiamondBlock(blockFeature, true),
-		    	blockRedstoneBlock(blockFeature, true),
-		    	blockEmeraldBlock(blockFeature, true),
-		    	blockQuartzBlock(blockFeature, true),
-		    	blockPrismarineBlock(blockFeature, true),
-		    	blockLapisBlock(blockFeature, true),
-		    	blockSnowBlock(blockFeature, true),
-		    	blockGlowstone(blockFeature, true),
 		    	blockRawCopperBlock(blockFeature, true),
 		    	blockCopperBlock(blockFeature, true),
-		   
+		    	
+		    	blockGoldIngot(blockFeature, true), 
+		    	blockRawGoldBlock(blockFeature, true),
+		    	blockGoldBlock(blockFeature, true),
+
+		    	blockIronIngot(blockFeature, true), 
+		    	blockRawIronBlock(blockFeature, true),
+		    	blockIronBlock(blockFeature, true),
+		    	
+		    	blockAmethystBlock(blockFeature, true), 
+		    	blockDiamondBlock(blockFeature, true),
+		    	blockEmeraldBlock(blockFeature, true),
+		    	blockRedstoneBlock(blockFeature, true),
+
+		    	blockCoalBlock(blockFeature, true),
+		    	blockLapisBlock(blockFeature, true),
+		    	blockPrismarineBlock(blockFeature, true),
+		    	blockQuartzBlock(blockFeature, true),
+		    	
+		    	blockBoneBlock(blockFeature, true), 
+		    	blockDriedKelpBlock(blockFeature, true), 
+		    	blockGlowstone(blockFeature, true),
+		    	blockHayBlock(blockFeature, true), 
+		    	blockNetherWartBlock(blockFeature, true), 
+		    	blockMelon(blockFeature, true), 
+		    	blockPackedIceBlock(blockFeature, true), 
+		    	blockSnowBlock(blockFeature, true),
+
 		    	
 		    	
 		    blockConverters(options),

@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18d 2024-09-05
 
 
+* **Auto Features: Added support for 9 new Blocking combinations.**
+These can be individually controlled to disable.
+
+
 * **Auto Manager: Use RevEnchant's fortune.**
 This may have been a bug, but not sure.  Was successfully loading Rev's fortune level, but it appears like the default minecraft fortune level may have overwritten it. If so, its now fixed.
 

@@ -2705,9 +2705,20 @@ public abstract class AutoManagerFeatures
 			
 			switch ( source )
 			{
+				case GOLD_NUGGET:
+					if ( isAll || isBoolean( AutoFeatures.blockGoldIngot ) ) {
+
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 9, debugInfo );
+					}
+					break;
+					
 				case RAW_GOLD:
 					if ( isAll || isBoolean( AutoFeatures.blockRawGoldBlock ) ) {
-
+						
 						if ( includePlayerInventory ) {
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
@@ -2727,9 +2738,20 @@ public abstract class AutoManagerFeatures
 					}
 					break;
 					
-				case RAW_IRON:
-					if ( isAll || isBoolean( AutoFeatures.blockRawIronBlock ) ) {
+				case IRON_NUGGET: 
+					if ( isAll || isBoolean( AutoFeatures.blockIronIngot ) ) {
 
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 9, debugInfo );
+					}
+					break;
+					
+				case RAW_IRON: 
+					if ( isAll || isBoolean( AutoFeatures.blockRawIronBlock ) ) {
+						
 						if ( includePlayerInventory ) {
 							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
 									player, source, drop );
@@ -2826,6 +2848,72 @@ public abstract class AutoManagerFeatures
 					}
 					break;
 					
+				case PACKED_ICE:
+					if ( isAll || isBoolean( AutoFeatures.blockPackedIceBlock ) ) {
+						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.BLUE_ICE, 9, debugInfo );
+					}
+					break;
+					
+				case BONE_MEAL:
+					if ( isAll || isBoolean( AutoFeatures.blockBoneBlock ) ) {
+						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.BONE_BLOCK, 9, debugInfo );
+					}
+					break;
+					
+				case DRIED_KELP:
+					if ( isAll || isBoolean( AutoFeatures.blockDriedKelpBlock ) ) {
+						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DRIED_KELP_BLOCK, 9, debugInfo );
+					}
+					break;
+					
+				case WHEAT:
+					if ( isAll || isBoolean( AutoFeatures.blockHayBlock ) ) {
+						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.HAY_BLOCK, 9, debugInfo );
+					}
+					break;
+					
+				case MELON_SLICE:
+					if ( isAll || isBoolean( AutoFeatures.blockMelon ) ) {
+						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.MELON, 9, debugInfo );
+					}
+					break;
+					
+				case NETHER_WART:
+					if ( isAll || isBoolean( AutoFeatures.blockNetherWartBlock ) ) {
+						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHER_WART_BLOCK, 9, debugInfo );
+					}
+					break;
+					
 				case GLOWSTONE_DUST:
 					if ( isAll || isBoolean( AutoFeatures.blockGlowstone ) ) {
 
@@ -2867,6 +2955,19 @@ public abstract class AutoManagerFeatures
 									player, source, drop );
 						}
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_BLOCK, 9, debugInfo );
+					}
+					break;
+					
+					
+					
+				case AMETHYST_SHARD:
+					if ( isAll || isBoolean( AutoFeatures.blockAmethystBlock ) ) {
+						
+						if ( includePlayerInventory ) {
+							SpigotUtil.getAllDroppedItemTypesFromPlayerInventory( 
+									player, source, drop );
+						}
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.AMETHYST_BLOCK, 4, debugInfo );
 					}
 					break;
 					
