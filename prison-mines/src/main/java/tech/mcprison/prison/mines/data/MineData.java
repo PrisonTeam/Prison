@@ -873,10 +873,8 @@ public abstract class MineData
 	
 
     public boolean isInMineExact(Location location) {
-    	if ( isVirtual() ) {
-    		return false;
-    	}
-        return getBounds().within(location);
+    	
+        return !isVirtual() && getBounds().within(location);
     }
     
     public boolean isInMineIncludeTopBottomOfMine(Location location) {
