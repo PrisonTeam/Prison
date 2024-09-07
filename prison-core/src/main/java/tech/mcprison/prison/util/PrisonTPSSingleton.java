@@ -158,8 +158,10 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
  * </p> 
  *
  */
-public class PrisonTPS
+public class PrisonTPSSingleton
 		implements PrisonRunnable {
+	
+	private static PrisonTPSSingleton instance;
 	
 	/**
 	 * Note: Normally the task would have to run each tick, but by specifying the
@@ -204,6 +206,23 @@ public class PrisonTPS
 	private final DecimalFormat tpsFmt = Prison.get().getDecimalFormat("#,##0.00");
 	
 	public static final Object tpsLock = new Object();
+	
+	
+	private PrisonTPSSingleton() {
+		super();
+	}
+	
+	
+	public static PrisonTPSSingleton getInstance() {
+		if ( instance == null ) {
+			synchronized ( PrisonTPSSingleton.class ) {
+				if ( instance == null ) {
+					instance = new PrisonTPSSingleton();
+				}
+			}
+		}
+		return instance;
+	}
 	
 	
 	// When submitted, taskId identifies the job.  A value of -1 indicates the job

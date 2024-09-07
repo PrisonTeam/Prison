@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-09-06
+# 3.3.0-alpha.18d 2024-09-07
+
+
+* **Change the prison TPS monitor to a singleton.**
+Will be using this in the near future to monitor system loads.
 
 
 * **Mines: Minor change: Simplify how the command is ran so there is one exit point instead of two.**
