@@ -47,7 +47,7 @@ import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
 import tech.mcprison.prison.util.PrisonStatsUtil;
-import tech.mcprison.prison.util.PrisonTPS;
+import tech.mcprison.prison.util.PrisonTPSSingleton;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
@@ -106,7 +106,7 @@ public class Prison
     private Database metaDatabase;
     
     private PrisonStatsUtil statsUtil;
-    private PrisonTPS prisonTPS;
+    private PrisonTPSSingleton prisonTPS;
     
     
     private List<String> localeLoadInfo;
@@ -293,10 +293,10 @@ public class Prison
         this.statsUtil = new PrisonStatsUtil();
         
         
-        this.prisonTPS = new PrisonTPS();
+        this.prisonTPS = PrisonTPSSingleton.getInstance();
         this.prisonTPS.submitAsyncTPSTask();
 
-        
+
         // Setup the LocalManager if it is not yet started:
         getLocaleManager();
 
@@ -483,14 +483,14 @@ public class Prison
 	public void displaySystemTPS( ChatDisplay display ) {
     	
         DecimalFormat iFmt = getDecimalFormatInt();
-        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
+        PrisonTPSSingleton prisonTPS = Prison.get().getPrisonTPS();
         display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
         					"Interval: %s ticks  Samples: %s",
         						prisonTPS.getAverageTPSFormatted(),
         						prisonTPS.getTPSMinFormatted(),
         						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
         						prisonTPS.getTPSMaxFormatted(),
-        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
+        						iFmt.format( PrisonTPSSingleton.SUBMIT_TICKS_INTERVAL ),
         						iFmt.format( prisonTPS.getTpsSamples() )
         		);
         
@@ -505,7 +505,7 @@ public class Prison
     public void getSystemTPS( LinkedHashMap<String, String> fields ) {
     	
     	//DecimalFormat iFmt = getDecimalFormatInt();
-    	PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
+    	PrisonTPSSingleton prisonTPS = Prison.get().getPrisonTPS();
     	
     	fields.put( "tps", prisonTPS.getAverageTPSFormatted() );
     	fields.put( "tpsMin", prisonTPS.getTPSMinFormatted() );
@@ -904,7 +904,7 @@ public class Prison
     	return PlaceholdersUtil.formattedTime( runtimeMs / 1000 );
     }
 
-	public PrisonTPS getPrisonTPS() {
+	public PrisonTPSSingleton getPrisonTPS() {
 		return prisonTPS;
 	}
 
