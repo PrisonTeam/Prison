@@ -478,12 +478,21 @@ public class Bounds {
 	{
 		return center;
 	}
+    
 
-	@Override public String toString() {
+	public double getRadius() {
+		double radius = getDistance3d() / 2.0;
+		return radius;
+	}
+	
+
+	@Override 
+	public String toString() {
         return "Bounds{" + "min=" + min.toCoordinates() + ", max=" + max.toCoordinates() + '}';
     }
 
-    @Override public boolean equals(Object o) {
+    @Override 
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }

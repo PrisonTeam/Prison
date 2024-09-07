@@ -1,7 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -315,31 +314,31 @@ public class AutoManagerPrisonEnchants
 		return results;
 	}
 	
-	private List<Block> getBlocks( PEExplosionEvent event ) {
-		List<Block> results = new ArrayList<>();
-		
-		if ( getPeApiVersion() == null ) {
-			getPEPluginVersion();
-		}
-		
-		if ( getPeApiVersion() == PEExplosionEventVersion.pev1_0_0 ) {
-			
-			results.addAll( event.getExplodedBlocks() );
-		}
-		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_0_0 ) {
-			
-			results.addAll( event.getBlocks().subList(1, event.getBlocks().size()));
-		}
-		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
-			
-			results.addAll( event.getBlocks() );
-		}
-		else if ( getPeApiVersion() == PEExplosionEventVersion.undefined ) {
-			Output.get().logWarn( "AutoManager: Pulsi_'s PrisonEnchants api version is &6undefined&3!" );
-		}
-		
-		return results;
-	}
+//	private List<Block> getBlocks( PEExplosionEvent event ) {
+//		List<Block> results = new ArrayList<>();
+//		
+//		if ( getPeApiVersion() == null ) {
+//			getPEPluginVersion();
+//		}
+//		
+//		if ( getPeApiVersion() == PEExplosionEventVersion.pev1_0_0 ) {
+//			
+//			results.addAll( event.getExplodedBlocks() );
+//		}
+//		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_0_0 ) {
+//			
+//			results.addAll( event.getBlocks().subList(1, event.getBlocks().size()));
+//		}
+//		else if ( getPeApiVersion() == PEExplosionEventVersion.pev2_2_1 ) {
+//			
+//			results.addAll( event.getBlocks() );
+//		}
+//		else if ( getPeApiVersion() == PEExplosionEventVersion.undefined ) {
+//			Output.get().logWarn( "AutoManager: Pulsi_'s PrisonEnchants api version is &6undefined&3!" );
+//		}
+//		
+//		return results;
+//	}
 	
 	private void createListener(BlockBreakPriority bbPriority) {
 		
@@ -483,6 +482,31 @@ public class AutoManagerPrisonEnchants
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
 		
+		
+		if ( e.getBlocks().size() == 0 ) {
+			// Nothing to process:
+			return ;
+		}
+		
+
+		// Remove all invalid blocks:
+		// The original collection in the event will be updated...
+		int blocksBefore = e.getBlocks().size();
+		
+		// verified blocks:
+		List<Block> vBlocks = removeAllInvalidBlocks( e.getPlayer(), e.getBlocks(), bbPriority, true );
+		int blocksAfter = vBlocks.size();
+
+		Output.get().logInfo( "&6 #### PEExplosionEvent:  &7removeAllInvalidBlocks:&3  before: %d  after: %d",
+				blocksBefore, blocksAfter );
+		
+		
+		if ( vBlocks.size() == 0 ) {
+			// No blocks are within prison mines... ignore this event.
+			return;
+		}
+		
+		
 		// NOTE: support for v1.0, v2.2, and v2.2.1 has different block structures:
 		Block bBlock = getBlock( e );
 		
@@ -490,17 +514,35 @@ public class AutoManagerPrisonEnchants
     			e.getPlayer(), bBlock,
     			bbPriority, true );
     	
+    	// The primary block is not in the mine, or they don't have access to it, so ignore event:
     	if ( eventResults.isIgnoreEvent() ) {
-    		return;
+
+    		// But if vBlocks.size() > 0, the try the first block in that list to see if it will work:
+    		if ( vBlocks.size() > 0 ) {
+    			bBlock = vBlocks.remove( 0 );
+    			
+    			eventResults = ignoreMinesBlockBreakEvent( e, 
+    	    			e.getPlayer(), bBlock,
+    	    			bbPriority, true );
+    			
+    			if ( eventResults.isIgnoreEvent() ) {
+    				return;
+    			}
+    		}
+    		else {
+    			
+    			return;
+    		}
     	}
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
 		
 		debugInfo.append( String.format( "&6### ** handlePEEExplosionEvent (Pulsi) ** ###&3 " +
-				"(event: &6PEExplosionEvent&3, config: %s, priority: %s, canceled: %s) ",
+				"(event: &6PEExplosionEvent&3, config: %s, priority: %s, %scanceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
+				(e.getEventName() == null ? "" : "EventName: " + e.getEventName()),
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
@@ -540,9 +582,11 @@ public class AutoManagerPrisonEnchants
         		return;
         	}
         	
-        	List<Block> blocks = getBlocks( e );
+//        	List<Block> blocks = getBlocks( e );
         	
-    		pmEvent.setUnprocessedRawBlocks( blocks );
+        	// vBlocks have been verified to be within a mine.  There may be restrictions that prevent them
+        	// from being used, but they passed the first check.
+    		pmEvent.setUnprocessedRawBlocks( vBlocks );
     		
     		
     		// Check to see if the blockConverter's EventTrigger should have

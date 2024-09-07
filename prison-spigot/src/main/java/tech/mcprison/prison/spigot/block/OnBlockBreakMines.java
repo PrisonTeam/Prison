@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -24,11 +25,12 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
+import tech.mcprison.prison.spigot.game.SpigotLocation;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
-import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 
 public class OnBlockBreakMines
 	extends OnBlockBreakEventCoreMessages
@@ -274,6 +276,203 @@ public class OnBlockBreakMines
 //		return eventResults.isIgnoreEvent();
 //	}
 
+	
+	public List<Block> removeAllInvalidBlocks( Player player, 
+			List<Block> blocks, 
+			BlockBreakPriority bbPriority, 
+			boolean ignoreBlockReuse ) {
+
+		List<Block> goodBlocks = new ArrayList<>();
+		
+		if ( blocks.size() == 0 || getPrisonMineManager() == null ) {
+			// Mines are not enabled, so exit with request to ignore event:
+			return goodBlocks;
+		}
+
+		
+		
+		// searching for mines is expensive because it's has to check each and every block
+		// against all possible mines.  
+		
+		// So first find the "center" of the block list by taking the averages of all blocks's x, y, and z coordinates:
+		Location locAvgBukkit = getCenterLocationOfBlocks(blocks, player);
+		
+		
+		// next we need to find the greatest distance from the average:
+		double locAvgRadius = getGreatestDistanceFromLocation(blocks, locAvgBukkit);
+		
+		
+		SpigotLocation locAvg = new SpigotLocation( locAvgBukkit );
+		
+		
+		// Next we need to find all mines that are within the max distance of the mine, 
+		// to ensure we don't miss the outer corners, take the mine's distance to a corner 
+		// and mult by 1.3 which will potentially include mines that are outside of the
+		// list of blocks:
+		List<Mine> minesShortList = getAllMinesWithinTheRadialDistance( locAvg, locAvgRadius );
+		
+		
+		
+		// If no mines are found, then obviously no blocks will be within the mines:
+		if ( minesShortList.size() == 0 ) {
+			return goodBlocks;
+		}
+			
+		
+//		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+
+		// All blocks must be not be null, and the blocks cannot be identified as an
+		// unbreakable block, which is usually part of an explosion event such as a 
+		// block decay.
+		Mine lastMine = null;
+		
+		for (Block block : blocks) {
+			
+			SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
+			
+			if ( block != null && !BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+
+				// If a block is in the same mine as the 'lastMine', then add it to the
+				// goodBlocks list.
+				if ( lastMine != null && lastMine.isInMine(sBlock) ) {
+					goodBlocks.add(block);
+				}
+				
+				// else if lastMine is null or the block is not in the lastMine, then
+				// need to check all mines in the short list to see if the block is in
+				// mine.  If it is, then capture it in the goodBlocks list.
+				else {
+					
+					for (Mine mine : minesShortList) {
+						if ( mine.isInMineExact(locAvg) ) {
+							lastMine = mine;
+							
+							goodBlocks.add(block);
+							break;
+						}
+					}
+				}
+				
+			}
+		}
+		
+//		// Purge all blocks in the parameter List:
+//		blocks.clear();
+//		
+//		// Add only the goodBlocks back to the parameter's variable:
+//		blocks.addAll( goodBlocks );
+		
+		return goodBlocks;
+	}
+
+
+	/**
+	 * <p>This function will take a list of blocks, and calculate the average location, 
+	 * which will be the center of the group of blocks.  The group of blocks can be
+	 * any shape, and it will still find the center.
+	 * </p>
+	 * 
+	 * <p>The way this function works, is that it adds all x's, all y's, and all z's.
+	 * Then divides all these values by the number of blocks that were summed together.
+	 * Basically finding the common vector or everything.
+	 * </p>
+	 * 
+	 * @param blocks
+	 * @param player
+	 * @return
+	 */
+	private Location getCenterLocationOfBlocks(List<Block> blocks, Player player) {
+		long xT = 0;
+		long yT = 0;
+		long zT = 0;
+		int count = 0;
+		for (Block block : blocks) {
+			xT += block.getX();
+			yT += block.getY();
+			zT += block.getZ();
+			count++;
+		}
+		
+		double xAvg = (double) xT / count;
+		double yAvg = (double) yT / count;
+		double zAvg = (double) zT / count;
+		Location locAvgBukkit = new Location( player.getWorld(), xAvg, yAvg, zAvg );
+		return locAvgBukkit;
+	}
+	
+	
+	/**
+	 * <p>This function, given the a location, which should be the center of all blocks 
+	 * (See function `getCenterLocationOfBlocks()`), will return the greatest distance 
+	 * of all of the included blocks.  This will be the outer radius of all the blocks, 
+	 * based upon the 'centerLocation'.
+	 * </p>
+	 * 
+	 * @param blocks
+	 * @param locAvgBukkit
+	 * @return
+	 */
+	private double getGreatestDistanceFromLocation(List<Block> blocks, Location centerLocation ) {
+		double locAvgRadius = 0;
+		for (Block block : blocks) {
+			double d = centerLocation.distance( block.getLocation() );
+			if ( d > locAvgRadius ) {
+				locAvgRadius = d;
+			}
+		}
+		return locAvgRadius;
+	}
+
+	/**
+	 * <p>This function, given a location, and the radius of a sphere around that location, find all 
+	 * mines that that has at least one block that will fall within the range of this the location's
+	 * sphere.  To ensure a mine is not missed by a block or two, the 'maxPossibleDistance' has 
+	 * four added to it.  This will help ensure that more mines are included in this list, even if it 
+	 * may miss the farthest block by a couple of blocks.  It's far better to be more inclusive, than 
+	 * to exclude too many.
+	 * </p>
+	 * 
+	 * <p>This function basically behaves as if we have two points and spheres around each point.  The
+	 * spheres would be the radius from each location, to form a sphere for each location. Between the
+	 * two spheres, we only need to use in our calculations, the closest point on each sphere, such that
+	 * the two chosen points (one of each sphere) are the closest to each other, out of the whole surface
+	 * of those two spheres.  Basically, these two points, also happen to be on the line that is formed
+	 * from one location to the other location.  And the two points on that line, which represents the 
+	 * spheres surface, would be consider intersecting with each other if the distance between the points
+	 * is less than zero.  If they don't intersect then the distance will be greater than zero.
+	 * </p>
+	 * 
+	 * <p>So basically, the total distance should be less than the two radiuses added together (plus 4.0)
+	 * which indicates there is a probable chance a block may be within that mine.  All mines that 
+	 * meet this requirement is returned in a List<Mine>.
+	 * </p>
+	 * 
+	 * @param locAvg
+	 * @param locAvgRadius
+	 * @return
+	 */
+	private List<Mine> getAllMinesWithinTheRadialDistance( SpigotLocation location, double locationRadius ) {
+		List<Mine> minesShortList = new ArrayList<>();
+		for (Mine m : getPrisonMineManager().getMines() ) {
+			if ( !m.isVirtual() ) {
+				
+				double mineRadius = m.getBounds().getRadius();
+				double maxPossibleDistance = mineRadius + locationRadius + 4;
+
+				double distanceFromMine = m.getBounds().getDistance3d( location );
+				
+				
+				if ( distanceFromMine <= maxPossibleDistance ) {
+					minesShortList.add( m );
+				}
+			}
+		}
+		return minesShortList;
+	}
+
+	
+	
 		
 	/**
 	 * <p> If the event is canceled, it still needs to be processed because of the MONITOR events: 
@@ -357,6 +556,7 @@ public class OnBlockBreakMines
 				results.setResultsReason( EventResultsReasons
 								.results_passed__access_priority__player_has_access );
 				
+				// Not sure why that was here?  This looks like they should have access?]
 				results.setIgnoreEvent( true );
 			}
 		

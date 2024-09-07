@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.18d 2024-09-05
+# 3.3.0-alpha.18d 2024-09-06
+
+
+* **AutoFeatures: PrisonEnchants (Pulsi's): Made changes to handle explosion events that happen outside of the mine, but there are some blocks that are within the mine.**
+This prevents PrisonEnchants, or bukkit, from breaking the blocks within the mine.
 
 
 * **Auto Features: Added support for 9 new Blocking combinations.**
