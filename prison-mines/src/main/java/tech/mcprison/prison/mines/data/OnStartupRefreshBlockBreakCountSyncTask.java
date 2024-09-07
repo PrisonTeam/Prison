@@ -46,7 +46,13 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 	private void resubmit() {
 
 		// Must run synchronously!!
-		setJobId( mine.submitSyncTask( this, 0 ) );
+		
+		
+		long submitDelay = 0;
+		
+		
+		
+		setJobId( mine.submitSyncTask( this, submitDelay ) );
 	}
 	
 	@Override
@@ -79,9 +85,9 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 					long nanoEnd = System.nanoTime();
 					long elpased = (nanoEnd - nanoStart );
 					long elapsedMs = elpased / 1000000;
-					if ( elapsedMs > 20 ) {
+					if ( elapsedMs > 15 ) {
 						
-						// Check every 500 blocks and if been running longer than 20 ms then yield to prevent lag
+						// Check every 500 blocks and if been running longer than 15 ms then yield to prevent lag
 						
 						this.elapsedNanos += elpased;
 						pages++;
