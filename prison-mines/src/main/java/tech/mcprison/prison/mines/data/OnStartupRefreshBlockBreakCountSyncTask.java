@@ -153,6 +153,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 		if ( mine == null ) {
 			mine = getNextMine();
 			locations = null;
+			position = 0;
 			
 			pagesStart = pages;
 			
@@ -164,7 +165,8 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 		if ( mine != null ) {
 			
 			// Must run synchronously!!
-			setJobId( mine.submitSyncTask( this, delay ) );
+			setJobId( PrisonTaskSubmitter.runTaskLater( this, delay) );
+//			setJobId( mine.submitSyncTask( this, delay ) );
 		}
 	}
 	
@@ -205,7 +207,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 				mine.refreshAirCountSyncTaskSetLocation( targetLocation, this );
 				position++;
 		
-				if ( (i - start) % 500 == 0 ) {
+				if ( i != start && (i - start) % 500 == 0 ) {
 					
 					long nanoEnd = System.nanoTime();
 					long elpased = (nanoEnd - nanoStart );

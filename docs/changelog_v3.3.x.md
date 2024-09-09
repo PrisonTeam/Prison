@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19 2024-09-09
 
 
+* **Mines: Air Block Counts: A few more fixes. Found that 'position' was not being reset on each mine, which was causing partial, or no resets for most mines.**
+
+
 * **Mines: Air block counts: Minor change to the completed message to be more consistent with the other similar messages.**
 Changed "-" to "of".
 
