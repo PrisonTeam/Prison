@@ -16,7 +16,11 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 /**
  * This task will run after the server starts up.
- * If the 'prison-ranks.use-friendly-user-file-name'
+ * If the 'prison-ranks.use-friendly-user-file-name' is set.
+ * 
+ * Please note: this is no longer used. Prison now will automatically
+ * convert individual files as needed.  This will try to convert
+ * everything at once, but is not required.
  */
 public class PlayerNewFileNameCheckAsyncTask
 	implements PrisonRunnable {

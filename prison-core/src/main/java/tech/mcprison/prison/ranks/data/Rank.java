@@ -83,6 +83,8 @@ public class Rank
     
     private transient final StatsRankPlayerBalance statsPlayerBlance;
     
+    private transient boolean dirty = false;
+    
 
     public Rank() {
     	super();
@@ -314,8 +316,12 @@ public class Rank
     	return "Rank: " + id + " " + name;
     }
     
-    public String filename() {
-    	return "rank_" + id;
+    public String filenameNew() {
+    	return "rank_" + getName();
+    }
+    
+    public String filenameOld() {
+    	return getId() == -1 ? null : "rank_" + getId();
     }
     
     
@@ -557,6 +563,13 @@ public class Rank
 
 	public List<RankPlayer> getPlayers() {
 		return players;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
 	}
 
 }

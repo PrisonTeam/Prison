@@ -55,7 +55,7 @@ public class RankLadder
     private double rankCostMultiplierPerRank = 0.0d;
     private boolean applyRankCostMultiplierToLadder = true;
     
-    private boolean dirty = false;
+    private transient boolean dirty = false;
 
 
     public RankLadder() {
@@ -213,7 +213,10 @@ public class RankLadder
 
     public Document toDocument() {
         Document ret = new Document();
-        ret.put("id", this.id);
+        
+        if ( this.id != -1 ) {
+        	ret.put("id", this.id);
+        }
         ret.put("name", this.name);
         
         List<String> cmds = new ArrayList<>();
@@ -232,7 +235,12 @@ public class RankLadder
         	LinkedTreeMap<String, Object> rnk = new LinkedTreeMap<String, Object>();
         	
 //        	rnk.put( "position", rank.getPosition() );
-        	rnk.put( "rankId", rank.getId() );
+        	
+        	// Do not save the rank ID in the ladder file:
+//        	if ( rank.getId() != -1 ) {
+//        		rnk.put( "rankId", rank.getId() );
+//        	}
+        	
         	rnk.put( "rankName", rank.getName());
 
         	ranksLocal.add( rnk );

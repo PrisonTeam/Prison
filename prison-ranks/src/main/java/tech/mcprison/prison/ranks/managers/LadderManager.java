@@ -110,6 +110,10 @@ public class LadderManager
         						rlFactory.createRankLadder(document, rankManager)) );
         
         for ( RankLadder ladder : loadedLadders ) {
+        	
+        	// If old file exists, then set dirty so it can be saved and update the file name:
+        	checkIfOldFileExists( ladder );
+
         	// Will be dirty if load a ladder and the rank name does not exist and it adds them:
         	if ( ladder.isDirty() ) {
         		saveLadder(ladder);
@@ -118,14 +122,27 @@ public class LadderManager
     }
 
     /**
+     * If the old file name exists, then this ladder has not been upgraded
+     * yet.  So set it to dirty so it can be saved and update the file name.
+     * 
+     * @param ladder
+     */
+    private void checkIfOldFileExists(RankLadder ladder) {
+    	if ( collection.exists( getLadderNameOld(ladder) )) {
+    		ladder.setDirty( true );
+    	}
+	}
+
+	/**
      * Saves a ladder to its save file.
      *
      * @param ladder  The {@link RankLadder} to save.
      * @param fileKey The key to write the ladder as.
+     * @param oldFileName The old file name based upon id.
      * @throws IOException If the ladder could not be serialized, or if the ladder could not be saved to the file.
      */
-    public void saveLadder(RankLadder ladder, String fileKey) throws IOException {
-        collection.save(fileKey, ladder.toDocument());
+    public void saveLadder(RankLadder ladder, String fileKey, String oldFileName) throws IOException {
+        collection.save(fileKey, ladder.toDocument(), oldFileName, "Ladder");
     }
 
     /**
@@ -135,11 +152,28 @@ public class LadderManager
      * @throws IOException If the ladder could not be serialized, or if the ladder could not be saved to the file.
      */
     private void saveLadder(RankLadder ladder) throws IOException {
-        this.saveLadder(ladder, getLadderName(ladder));
+    	
+    	String fileLadderNameNew = getLadderNameNew(ladder);
+    	String fileLadderNameOld = getLadderNameOld(ladder);
+    	
+        this.saveLadder(ladder, fileLadderNameNew, fileLadderNameOld);
     }
 
-    private String getLadderName( RankLadder ladder ) {
-    	return "ladder_" + ladder.getId();
+    private String getLadderNameNew( RankLadder ladder ) {
+    	return "ladder_" + ladder.getName();
+    }
+    
+    /**
+     * This function will generate an old ladder name only if the id is not
+     * -1.  If it's -1, then there is no need to return anything other than null.
+     * This will be used to identify if an old file exists so it can be removed
+     * when the newer format is saved.
+     * 
+     * @param ladder
+     * @return
+     */
+    private String getLadderNameOld( RankLadder ladder ) {
+    	return ladder.getId() == -1 ? null : "ladder_" + ladder.getId();
     }
     
     /**
@@ -251,7 +285,9 @@ public class LadderManager
         loadedLadders.remove(ladder);
 
         // ... and remove the ladder's save files.
-        collection.delete("ladder_" + ladder.getId());
+        collection.delete( getLadderNameNew(ladder) );
+        collection.delete( getLadderNameOld(ladder) );
+        
 //        collection.remove("ladder_" + ladder.id);
         return true;
     }
@@ -379,9 +415,22 @@ public class LadderManager
 		String results = "";
 		
 		for (RankLadder rankLadder : loadedLadders) {
-			String ladderFileName = getLadderName(rankLadder) + ".json";
+			
+			// NOTE: if the ladder was renamed, will need to check the old 
+			//       name? 
+			
+			// Check using the new file name for the ladder:
+			String ladderFileName = getLadderNameNew(rankLadder) + ".json";
 			if ( ladderFileName.equalsIgnoreCase(fileName) ) {
 				results = rankLadder.getName();
+			}
+			else {
+				
+				// Check using the old file name for the ladder:
+				String ladderFileName2 = getLadderNameOld(rankLadder) + ".json";
+				if ( ladderFileName2.equalsIgnoreCase(fileName) ) {
+					results = rankLadder.getName();
+				}
 			}
 		}
 		return results;

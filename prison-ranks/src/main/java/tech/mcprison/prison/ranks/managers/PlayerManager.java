@@ -170,7 +170,7 @@ public class PlayerManager
     	
     	if ( !player.isEnableDirty() || player.isEnableDirty() && player.isDirty() ) {
     		
-    		collection.save(playerFile, RankPlayerFactory.toDocument( player ) );
+    		collection.save(playerFile, RankPlayerFactory.toDocument( player ), null, "Player" );
     		
     		player.setDirty( false );
     		

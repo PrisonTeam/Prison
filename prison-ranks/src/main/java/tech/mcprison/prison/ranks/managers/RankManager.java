@@ -141,7 +141,10 @@ public class RankManager
     		getLoadedRanks().add( rank );
     		String rankName = rank.getName();
     		getRanksByName().put( rankName.toLowerCase(), rank );
-    		getRanksById().put( rank.getId(), rank );
+    		
+    		if ( rank.getId() != -1 ) {
+    			getRanksById().put( rank.getId(), rank );
+    		}
     		
     		// Do not have to reset position number since the new rank is 
     		// added to the end of the ladder's rank List, and therefore 
@@ -153,7 +156,11 @@ public class RankManager
     	if ( rank != null ) {
     		getLoadedRanks().remove( rank );
     		getRanksByName().remove( rank.getName().toLowerCase() );
-    		getRanksById().remove( rank.getId() );
+    		
+    		if ( rank.getId() != -1 && getRanksById().containsKey( rank.getId() ) ) {
+    			
+    			getRanksById().remove( rank.getId() );
+    		}
     		
     		// Since the removal of a rank could shift the position of
     		// more than one rank, then all positions should be reset.
@@ -206,23 +213,43 @@ public class RankManager
         	
         	Rank rank = rankFactory.createRank( rankDocument );
         	addRank( rank );
-		}
+        	
+        	// If old file exists, then set dirty so it can be saved and update the file name:
+        	checkIfOldFileExists( rank );
+
+        	if ( rank.isDirty() ) {
+        		saveRank(rank);
+        	}
+   		}
         
 //        ranks.forEach(document -> addRank(new Rank(document)));
 //        ranks.forEach(document -> loadedRanks.add(new Rank(document)));
     }
 
+
+    /**
+     * If the old file name exists, then this ladder has not been upgraded
+     * yet.  So set it to dirty so it can be saved and update the file name.
+     * 
+     * @param ladder
+     */
+    private void checkIfOldFileExists(Rank rank) {
+    	if ( collection.exists( rank.filenameOld() )) {
+    		rank.setDirty( true );
+    	}
+	}
+    
     /**
      * Saves a rank to its save file.
      *
      * @param rank     The {@link Rank} to save.
      * @param saveFile The key to write the rank as. Case sensitive.
      */
-    public void saveRank(Rank rank, String saveFile) {
+    public void saveRank(Rank rank, String saveFileNew, String saveFileOld ) {
 
     	RankFactory rankFactory = new RankFactory();
         
-    	collection.save(saveFile, rankFactory.toDocument( rank ) );
+    	collection.save(saveFileNew, rankFactory.toDocument( rank ), saveFileOld, "Ranks" );
     }
 
     /**
@@ -231,7 +258,7 @@ public class RankManager
      * @param rank The {@link Rank} to save.
      */
     public void saveRank(Rank rank) {
-        this.saveRank(rank, rank.filename());
+        this.saveRank(rank, rank.filenameNew(), rank.filenameOld() );
     }
 
     /**
@@ -278,10 +305,20 @@ public class RankManager
      */
     private int getNextAvailableId() {
     	
-    	int current = (getRanksById().size() == 0 ?
-    				-1 : getRanksById().lastKey().intValue());
+    	int current = -1;
+    	
+    	for (Rank rank : loadedRanks) {
+			if ( rank.getId() != -1 && rank.getId() > current ) {
+				current = rank.getId();
+			}
+		}
     	
     	return current + 1;
+
+//    	current = (getRanksById().size() == 0 ?
+//    				-1 : getRanksById().lastKey().intValue());
+//    	
+//    	return current + 1;
     	
 //        // Set the highest to -1 for now, since we'll add one at the end
 //        int highest = -1;
@@ -425,7 +462,9 @@ public class RankManager
         	// connectRanks();
         	
         	// ... and remove the rank's save files.
-        	collection.delete(rank.filename());
+        	// try both the old and new names:
+        	collection.delete(rank.filenameNew());
+        	collection.delete(rank.filenameOld());
         }
 
         return success;
@@ -1584,9 +1623,16 @@ public class RankManager
 		String results = "";
 		
 		for (Rank rank : loadedRanks) {
-			String rankFileName = rank.filename() + ".json";
-			if ( rankFileName.equalsIgnoreCase(fileName) ) {
+			String rankFileNameNew = rank.filenameNew() + ".json";
+			if ( rankFileNameNew.equalsIgnoreCase(fileName) ) {
 				results = rank.getName();
+			}
+			else {
+				String rankFileNameOld = rank.filenameOld() + ".json";
+				if ( rankFileNameOld.equalsIgnoreCase(fileName) ) {
+					results = rank.getName();
+				}
+				
 			}
 		}
 		return results;
@@ -1603,7 +1649,9 @@ public class RankManager
 	public TreeMap<Integer, Rank> getRanksById() {
 		return ranksById;
 	}
-	
+	public void setRanksById(TreeMap<Integer, Rank> ranksById) {
+		this.ranksById = ranksById;
+	}
 	
 	public CommandCommands getRankCommandCommands() {
 		return rankCommandCommands;
@@ -1639,9 +1687,7 @@ public class RankManager
 	public void setRanksByName(TreeMap<String, Rank> ranksByName) {
 		this.ranksByName = ranksByName;
 	}
-	public void setRanksById(TreeMap<Integer, Rank> ranksById) {
-		this.ranksById = ranksById;
-	}
+
 
 	private void resetAllRanks() {
 		

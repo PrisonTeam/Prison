@@ -103,7 +103,11 @@ public class RankFactory
     public Document toDocument( Rank rank ) {
         Document ret = new Document();
 //        ret.put("position", this.position );
-        ret.put("id", rank.getId());
+        
+        if ( rank.getId() != -1 ) {
+        	ret.put("id", rank.getId());
+        }
+        
         ret.put("name", rank.getName() );
         ret.put("tag", (rank.getTag() == null ? "none" : rank.getTag()) );
         ret.put("cost", rank.getCost() );

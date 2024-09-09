@@ -375,7 +375,7 @@ public class MineManager
      * PrisonMines}
      */
     public void saveMine(Mine mine) {
-        coll.save(mine.toDocument());
+        coll.save( mine.getName(), mine.toDocument(), null, "Mine" );
     }
 
     public void saveMines(){

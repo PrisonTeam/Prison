@@ -2774,8 +2774,8 @@ public class MinesCommands
         	File backupFile = pMines.getMineManager().backupMine( m );
         	
         	String messageBu = "Mine &7" + m.getName() + " &3has " + 
-        				( backupFile.exists() ? "been successfully" : "failed to be" ) +
-        				" backed up: " + backupFile.getAbsolutePath();
+        				( backupFile != null && backupFile.exists() ? "been successfully" : "failed to be" ) +
+        				" backed up: " + (backupFile != null ? backupFile.getAbsolutePath() : "none");
         	sender.sendMessage( messageBu );
         	Output.get().logInfo( messageBu );
         	
@@ -2960,8 +2960,8 @@ public class MinesCommands
     	File backupFile = pMines.getMineManager().backupMine( m );
     	
     	String messageBu = "Mine &7" + m.getName() + " &3has " + 
-    				( backupFile.exists() ? "been successfully" : "failed to be" ) +
-    				" backed up: " + backupFile.getAbsolutePath();
+    				( backupFile != null && backupFile.exists() ? "been successfully" : "failed to be" ) +
+    				" backed up: " + (backupFile != null ? backupFile.getAbsolutePath() : "none");
     	
     	if ( sender.isPlayer() ) {
     		sender.sendMessage( messageBu );

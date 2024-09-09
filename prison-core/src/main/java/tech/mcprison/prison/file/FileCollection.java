@@ -86,43 +86,100 @@ public class FileCollection
     @Override 
     public Optional<Document> get(String key) {
     	
-    	String suffix = key.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
-    	File dbFile = new File(collDir, key + suffix);
+    	File dbFile = getFile(key);
     	Document doc = (Document) readJsonFile(dbFile, new Document());
     	
         return Optional.ofNullable(doc);
     }
     
-    @Override 
-    public void save(Document document)
-    {
-    	save((String)document.get("name"), document);
-    }
+//    @Override 
+//    public void save(Document document)
+//    {
+//    	save((String)document.get("name"), document);
+//    }
     
-    @Override 
-    public void save(String filename, Document document)
-    {
-    	String suffix = filename.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
-    	File dbFile = new File(collDir, filename + suffix);
+//    @Override 
+//    public void save(String filename, Document document)
+//    {
+//    	String suffix = filename.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
+//    	File dbFile = new File(collDir, filename + suffix);
+//    	saveJsonFile( dbFile, document );
+//    }
+    
+
+	@Override
+	public void save(String filename, Document document, 
+				String oldFilename, String fileType ) {
+		
+		File dbFile = getFile(filename);
     	saveJsonFile( dbFile, document );
-    }
+
+    	if ( oldFilename != null ) {
+    		
+    		// Since the new file should have been saved by now...
+    		File oldDbFile = getFile(oldFilename);
+    		
+    		// If both the new file and old file exists, then need to remove the old file:
+    		if ( dbFile.exists() && dbFile.length() > 0 && oldDbFile.exists() ) {
+    			
+    			boolean deleted = oldDbFile.delete();
+    			
+    			if ( deleted ) {
+    				
+    				Output.get().logInfo( 
+    						"&3%s File Converted: &7%s &3--> &7%s",
+    								fileType,
+    								oldFilename + FILE_SUFFIX_JSON, 
+    								filename + FILE_SUFFIX_JSON
+    						);
+    			}
+    			else {
+    				Output.get().logInfo( 
+    						"&3The old %s file could not be removed: "
+    						+ "Old file &7%s &3. " +
+    								"Reason unknown (check logs?). "
+    								+ "New file name &7%s. [%s]",
+    								fileType,
+    								oldFilename + FILE_SUFFIX_JSON, 
+    								filename + FILE_SUFFIX_JSON,
+    								oldDbFile.getAbsolutePath() 
+    						);
+    				
+    			}
+    		}
+    	}
+	}
     
+	
+	private File getFile(String name) 
+	{
+		String suffix = name.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
+		File dbFile = new File(collDir, name + suffix);
+		return dbFile;
+	}
+	
+	@Override
+	public boolean exists(String name) 
+	{
+		File dbFile = getFile(name);
+		return dbFile.exists();
+	}
+	
     @Override 
     public boolean delete(String name)
     {
-    	String suffix = name.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
-    	File dbFile = new File(collDir, name + suffix);
-    	return virtualDelete( dbFile );
+    	File dbFile = getFile(name);
+    	return dbFile.exists() ? virtualDelete( dbFile ) : false;
     }
     
     @Override 
     public File backup( String name )
     {
-    	String suffix = name.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
-    	File dbFile = new File(collDir, name + suffix);
-    	File backupFile = virtualBackup( dbFile );
+    	File dbFile = getFile(name);
+    	File backupFile = dbFile.exists() ? virtualBackup( dbFile ) : null;
     	
     	return backupFile;
     }
+
 
 }

@@ -32,9 +32,13 @@ public interface Collection {
     public Optional<Document> get(String key);
 
     
-    public void save(Document document);
-    public void save(String filename, Document document);
+//    public void save(Document document);
+//    public void save(String filename, Document document);
+    public void save(String filename, Document document, 
+    							String oldFilename, String fileType);
     
+    
+    boolean exists(String name);
     
     public boolean delete(String name);
 
