@@ -73,7 +73,9 @@ public class OnBlockBreakMines
 		private boolean cancelEvent = false;
 		private boolean ignoreEvent = false;
 		
-		BlockBreakPriority bbPriority;
+		private String eventName;
+		
+		private BlockBreakPriority bbPriority;
 		private Mine mine = null;
 		private SpigotPlayer sPlayer;
 		
@@ -90,9 +92,12 @@ public class OnBlockBreakMines
 		}
 		
 		public void logDebugInfo() {
-			if ( isIgnoreEvent() && 
+			if ( (isIgnoreEvent() || isCancelEvent()) && 
 					Output.get().isDebug() ) {
 				
+				String eventName = getEventName() != null && getEventName().trim().length() > 0 ?
+						"[event: " + getEventName() + "] " : "";
+						
 				String blockName = getSpigotBlock() == null ? 
 						"noPrisonBlock" : 
 						getSpigotBlock().getBlockName();
@@ -100,7 +105,8 @@ public class OnBlockBreakMines
 						"" : 
 						getSpigotBlock().getLocation().toWorldCoordinates();
 				
-				Output.get().logInfo( "Prison AutoFeatures Fast-Fail: %s %s %s %s%s", 
+				Output.get().logInfo( "Prison AutoFeatures Fast-Fail: %s%s %s %s %s%s",
+						eventName,
 						getResultsReason().name(),
 						//getBbPriority().name(),
 						getSpigotPlayer().getName(),
@@ -140,6 +146,13 @@ public class OnBlockBreakMines
 			this.resultsReason = resultsReason;
 		}
 		
+		public String getEventName() {
+			return eventName;
+		}
+		public void setEventName(String eventName) {
+			this.eventName = eventName;
+		}
+
 		public BlockBreakPriority getBbPriority() {
 			return bbPriority;
 		}
@@ -668,7 +681,7 @@ public class OnBlockBreakMines
 			results.setResultsReason( EventResultsReasons.results_passed );
 		}
 		
-		results.logDebugInfo();
+		//results.logDebugInfo();
 		
 		return results;
 	}

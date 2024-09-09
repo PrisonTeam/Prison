@@ -156,13 +156,18 @@ public abstract class OnBlockBreakEventCore
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, 
 			Block block, BlockBreakPriority bbPriority,
 			boolean ignoreBlockReuse ) {
+		
+		String eventName = event.getClass().getSimpleName();
 	
 		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
 						bbPriority, ignoreBlockReuse );
+		eventResults.setEventName( eventName );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
 		}
+		
+		eventResults.logDebugInfo();
 		
 //		return eventResults.isIgnoreEvent();
 		return eventResults;
