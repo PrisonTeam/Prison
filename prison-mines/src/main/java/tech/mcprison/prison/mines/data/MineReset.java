@@ -1501,16 +1501,18 @@ public abstract class MineReset
     	
     	// if the mine is being used in a unit test, then it will not have a value for 
     	// bounds and therefore do not run the task.
-    	if ( getBounds() != null ) {
+//    	if ( getBounds() != null ) {
     		
-    		OnStartupRefreshBlockBreakCountSyncTask.submit( this, delay );
+//    		OnStartupRefreshBlockBreakCountSyncTask.getInstance().submit( delay );
+    		
+//    		OnStartupRefreshBlockBreakCountSyncTask.getInstance().submit( this, delay );
     		
 //    		OnStartupRefreshBlockBreakCountAsyncTask cabAsyncTask = new OnStartupRefreshBlockBreakCountAsyncTask(this);
 //    		
 //    		// Must run synchronously!!
 //    		submitSyncTask( cabAsyncTask );
 //    		//submitAsyncTask( cabAsyncTask );
-    	}
+//    	}
     }
     
 //    protected void resetAirCountStartupAsyncTask() {

@@ -10,7 +10,7 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 public class PrisonSpigetUpdateCheckTask
 	implements PrisonRunnable {
 	
-	private long delayTicks = 5 * 20; // 5 seconds
+	private long delayTicks = 8 * 20; // 8 seconds
 	
 	private int taskId = 0;
 	

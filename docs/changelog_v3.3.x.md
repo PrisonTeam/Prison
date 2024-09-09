@@ -14,7 +14,12 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19 2024-09-07
+# 3.3.0-alpha.19 2024-09-08
+
+
+* **Mines: Air Block Counts: Improvement.  Rewrote the way prison is handling the air block counts because they were causing the servers to fall behind on TPS by a significant amount.**
+The server, depending upon how many mines, and how large they were, the system (spigot, paper, etc) would warn that it was running behind by 50 ticks to a few hundred ticks.  The primary reason was that all the mines would be submitted to run almost at the same time, in different threads, so it would starve all available TPS.
+These changes were a complete rewrite on how the jobs are submitted and the mines are processed.  Now it's just one initial job submission, instead of each mine submitting it's own task.  And that one new job steps through each mine, one at time, counting the blocks, and then moving on to the next mine.  As such, we are not ensuring only one task is trying to run at the same time, thus allowing other services to get sufficient access to the processing that they need.  Where a mine-heavy test server was reporting falling behind by 600+ ticks, after these changes there were no warnings.  During, and right after the air counts, the server is reporting a solid 20 TPS.
 
 
 **Prison v3.3.0-alpha.19 2024-09-07**

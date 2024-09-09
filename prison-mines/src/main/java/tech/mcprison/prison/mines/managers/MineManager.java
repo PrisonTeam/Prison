@@ -35,6 +35,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.OnStartupRefreshBlockBreakCountSyncTask;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
@@ -252,6 +253,10 @@ public class MineManager
         Output.get().logInfo( String.format("Loaded %d mines and submitted with a %d " +
         		"millisecond offset timing for auto resets.", 
         			getMines().size(), offsetTimingMs));
+        
+        
+        // Start task to count air blocks:
+        OnStartupRefreshBlockBreakCountSyncTask.getInstance().submit( 60 );
         
         
 //        // When finished loading the mines, then if there are any worlds that
@@ -667,7 +672,7 @@ public class MineManager
 
 //    			List<Mine> remove = new ArrayList<>();
     			
-    			long delay = 0;
+//    			long delay = 0;
     			for ( Mine mine : unenabledMines ) {
     				
     				if ( !mine.isEnabled() ) {
@@ -692,13 +697,18 @@ public class MineManager
     						}
     						
     						// Run the air-counts now that mine can be activated:
-    						mine.refreshBlockBreakCountUponStartup( delay++ );
+//    						mine.refreshBlockBreakCountUponStartup( delay++ );
     						
     					}
     					
     				}
 //    				remove.add( mine );
     			}
+    			
+    			
+    			// Count the blocks for the mines that were just loaded.. 2 sec delay
+    			OnStartupRefreshBlockBreakCountSyncTask.getInstance().submit( 40 );
+    			
     			
 //    			// Purge all removed mines from the unenabledMines list:
 //    			if ( remove.size() > 0 ) {
