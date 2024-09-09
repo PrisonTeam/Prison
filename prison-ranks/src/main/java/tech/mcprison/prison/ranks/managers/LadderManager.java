@@ -229,7 +229,9 @@ public class LadderManager
      */
     public RankLadder createLadder(String name) {
         // Set the default values...
-        RankLadder newLadder = new RankLadder( getNextAvailableId(), name );
+    	// ladder id is no longer used, so use -1:
+        RankLadder newLadder = new RankLadder( -1, name );
+//        RankLadder newLadder = new RankLadder( getNextAvailableId(), name );
 
         // ... add it to the list...
         loadedLadders.add(newLadder);
@@ -244,7 +246,8 @@ public class LadderManager
      *
      * @return The next available ladder's ID.
      */
-    private int getNextAvailableId() {
+    @SuppressWarnings("unused")
+	private int getNextAvailableId() {
         // Set the highest to -1 for now, since we'll add one at the end
         int highest = -1;
 

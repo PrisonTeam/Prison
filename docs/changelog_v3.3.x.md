@@ -14,7 +14,11 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19 2024-09-08
+# 3.3.0-alpha.19 2024-09-09
+
+
+* **Ranks and Ladders: Minor changes to prevent new ranks and ladders from getting assigned a non -1 id.**
+All new ranks and ladders will have an id of -1.  All existing ranks and ladders will keep their ids.
 
 
 * **Ranks and Ladders: Changed the way the ladder and rank file names are saved. Instead of using their IDs, it is now using their names.**

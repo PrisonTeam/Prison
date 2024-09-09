@@ -285,7 +285,9 @@ public class RankManager
     public Optional<Rank> createRank(String name, String tag, double cost) {
     	
         // Set the default values...
-        Rank newRank = new Rank( getNextAvailableId(), name, tag, cost );
+    	// rank id is no longer used, so use -1:
+        Rank newRank = new Rank( -1, name, tag, cost );
+//        Rank newRank = new Rank( getNextAvailableId(), name, tag, cost );
 
         // ... add it to the list...
         addRank(newRank);
@@ -303,7 +305,8 @@ public class RankManager
      *
      * @return The next available rank's ID.
      */
-    private int getNextAvailableId() {
+    @SuppressWarnings("unused")
+	private int getNextAvailableId() {
     	
     	int current = -1;
     	
