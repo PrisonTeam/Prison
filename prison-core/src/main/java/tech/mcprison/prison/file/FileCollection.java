@@ -161,8 +161,15 @@ public class FileCollection
 	@Override
 	public boolean exists(String name) 
 	{
-		File dbFile = getFile(name);
-		return dbFile.exists();
+		boolean results = false;
+		
+		if ( name != null && name.trim().length() > 0 ) {
+			
+			File dbFile = getFile(name);
+			results = dbFile.exists();
+		}
+		
+		return results;
 	}
 	
     @Override 
