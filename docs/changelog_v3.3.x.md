@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19 2024-09-09
 
 
+* **Minor: variable not being used, so commented out to eliminate a compile warning.**
+
+
 * **Mines: Air Block Counts: A few more fixes. Found that 'position' was not being reset on each mine, which was causing partial, or no resets for most mines.**
 
 

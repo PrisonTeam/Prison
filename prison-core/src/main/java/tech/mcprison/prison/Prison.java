@@ -259,7 +259,7 @@ public class Prison
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
     public void init(Platform platform, String minecraftVersion ) {
-    	long startTime = System.currentTimeMillis();
+    	//long startTime = System.currentTimeMillis();
     	
     	
     	this.platform = platform;
