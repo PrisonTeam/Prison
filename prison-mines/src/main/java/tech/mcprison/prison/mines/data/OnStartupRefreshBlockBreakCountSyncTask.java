@@ -134,7 +134,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			}
 			
 			String message = String.format( 
-					"MineReset startup air-count: Completed. [%3d - %3d]:  " +
+					"MineReset startup air-count: Completed. [%3d of %3d]:  " +
 							"Mines not processed: %d", 
 							countCurrentMine,
 							countTotalMines,
