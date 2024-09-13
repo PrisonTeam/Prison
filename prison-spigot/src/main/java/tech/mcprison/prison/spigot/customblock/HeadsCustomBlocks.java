@@ -26,7 +26,6 @@ public class HeadsCustomBlocks
 	@Override
 	public String getCustomBlockId( Block block )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -34,7 +33,6 @@ public class HeadsCustomBlocks
 	@Override
 	public PrisonBlock getCustomBlock( Block block )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -42,7 +40,6 @@ public class HeadsCustomBlocks
 	@Override
 	public Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -50,7 +47,6 @@ public class HeadsCustomBlocks
 	@Override
 	public void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location )
 	{
-		// TODO Auto-generated method stub
 		
 	}
 

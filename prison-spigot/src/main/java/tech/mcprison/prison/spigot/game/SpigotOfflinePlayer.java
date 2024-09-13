@@ -479,7 +479,6 @@ public class SpigotOfflinePlayer
 
 	@Override
 	public void sendMessage(List<String> messages) {
-		// TODO Auto-generated method stub
 		
 	}
 

@@ -504,7 +504,6 @@ public class PrisonBlock
 	@Override
 	public List<ItemStack> getDrops()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -515,7 +514,6 @@ public class PrisonBlock
 	@Override
 	public List<ItemStack> getDrops( ItemStack tool )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

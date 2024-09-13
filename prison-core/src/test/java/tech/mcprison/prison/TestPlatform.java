@@ -586,19 +586,16 @@ public class TestPlatform implements Platform {
 
 	@Override
 	public String dumpEventListenersBlockPlaceEvents() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String dumpEventListenersPlayerDropItemEvents() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String dumpEventListenersPlayerPickupItemEvents() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

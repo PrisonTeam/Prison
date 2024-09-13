@@ -3138,7 +3138,6 @@ public class SpigotPlatform
 	@Override
 	public void traceEventListenersBlockBreakEvents( tech.mcprison.prison.internal.CommandSender sender )
 	{
-		// TODO Auto-generated method stub
 		Output.get().logInfo( "This feature is not enabled yet." );
 	}
 	
@@ -3612,7 +3611,6 @@ public class SpigotPlatform
 //			}
 //			
 //		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 		

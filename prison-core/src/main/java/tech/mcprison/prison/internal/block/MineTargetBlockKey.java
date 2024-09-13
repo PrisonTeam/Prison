@@ -102,7 +102,6 @@ public class MineTargetBlockKey
 		
 		hash += x * 13 + y * 37 + z * 17;
 				
-		// TODO Auto-generated method stub
 //		return super.hashCode();
 		
 		return hash;

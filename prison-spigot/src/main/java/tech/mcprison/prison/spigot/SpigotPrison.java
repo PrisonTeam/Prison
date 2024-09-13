@@ -1078,7 +1078,7 @@ public class SpigotPrison
         boolean isMinesEnabled = false;
         boolean isRanksEnabled = false;
 
-        // TODO: This business logic needs to be moved to the Module Manager:
+        // TO DO: This business logic needs to be moved to the Module Manager:
         if (modulesConf.getBoolean("mines")) {
         	isMinesEnabled = true;
         	

@@ -630,7 +630,8 @@ public abstract class MineReset
 					addMineTargetPrisonBlock( prisonBlock, targetLocation );
 //						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
 					
-					if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
+					if ( prisonBlock.isAir() ) {
+//						if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
 //						mAirBlocks[i++] = true;
 						airCount++;
 					}

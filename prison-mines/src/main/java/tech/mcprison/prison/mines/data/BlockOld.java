@@ -27,6 +27,7 @@ import tech.mcprison.prison.util.ObsoleteBlockType;
  * 
  * @deprecated
  */
+@SuppressWarnings("deprecation")
 public class BlockOld
 			extends PrisonBlockStatusData
 			implements Comparable<BlockOld> {

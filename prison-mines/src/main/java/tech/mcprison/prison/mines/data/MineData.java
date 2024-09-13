@@ -886,7 +886,7 @@ public abstract class MineData
     
     // Obsolete... the old block model:
 //    public boolean isInMine(BlockType blockType) {
-//    	//TODO Not sure if virtual should return false... they do have blocks.
+//    	//TO DO Not sure if virtual should return false... they do have blocks.
 ////    	if ( isVirtual() ) {
 ////    		return false;
 ////    	}

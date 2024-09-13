@@ -1054,6 +1054,7 @@ public class SpigotPlayer
 	 * @param isPlayerAutosellEnabled
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private boolean isAutoSellByPermEnabledAutoFeatures( StringBuilder debugInfo ) {
 		
 		boolean autoSellByPerm = true;

@@ -1,13 +1,10 @@
 package tech.mcprison.prison.placeholders;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.placeholders.PlaceholderManager.NumberTransformationUnitTypes;
 import tech.mcprison.prison.placeholders.PlaceholderManager.TimeTransformationUnitTypes;
 import tech.mcprison.prison.util.Text;
 
