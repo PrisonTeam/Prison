@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19b 2024-09-13
 
 
+* **Custom Placeholders: Created support for custom placeholders that are defined in the config.yml file, and one simple short custom placeholder will be replaced by any combination of text and other placeholders.**
+This way you can define complex placeholders within prison, and then use the short custom placeholders in other config files, which will help a lot if you are limited by characters.
+
+
 * **Auto features: PrisonEnchant's listener: minor changes to only display the registration notice once.**
 
 

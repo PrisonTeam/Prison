@@ -12,6 +12,8 @@ public class PlaceholderManager {
     public static final String PRISON_PLACEHOLDER_PREFIX = "prison";
     public static final String PRISON_PLACEHOLDER_PREFIX_EXTENDED = PRISON_PLACEHOLDER_PREFIX + "_";
     
+    public static final String PRISON_PLACEHOLDER_CUSTOM_PREFIX_EXTENDED = PRISON_PLACEHOLDER_PREFIX + "__";
+    
     public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
     public static final String PRISON_PLACEHOLDER_LADDERNAME_SUFFIX = "_laddername";
     public static final String PRISON_PLACEHOLDER_RANKNAME_SUFFIX = "_rankname";
@@ -57,7 +59,11 @@ public class PlaceholderManager {
     	PLAYERBLOCKS,
     	STATSMINES( true ),
     	
-    	
+    	// A custom prison placeholder is one that starts with `prison:` and it cannot have any 
+    	// placeholder attributes.  Basically, it's a substitution of the custom placeholder 
+    	// with whatever has been paired to it within the config.yml file.  The mappings can 
+    	// be as long as needed and contain any other combination of other placeholders.
+    	CUSTOM,
     	
     	SUPRESS,
     	ALIAS,
@@ -196,6 +202,10 @@ public class PlaceholderManager {
 	public enum PrisonPlaceHolders {
 		
 		no_match__(PlaceholderFlags.SUPRESS),
+		
+		
+		custom_placeholder__(PlaceholderFlags.CUSTOM),
+		
 		
 		// Rank aliases:
 		prison_r(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
@@ -699,6 +709,9 @@ public class PlaceholderManager {
 		public boolean isAlias() {
 			return flags.contains( PlaceholderFlags.ALIAS );
 		}
+		public boolean isCustomPlaceholder() {
+			return flags.contains( PlaceholderFlags.CUSTOM );
+		}
 		public boolean isSuppressed() {
 			return flags.contains( PlaceholderFlags.SUPRESS );
 		}
@@ -737,16 +750,22 @@ public class PlaceholderManager {
 			if ( placeHolder != null && placeHolder.trim().length() > 0 ) {
 				placeHolder = placeHolder.trim();
 				
-				// This allows us to get rid of suppressed placeholders that were used for 
-				// internal matching when placeholder APIs strip off the prefix:
-				if ( !placeHolder.toLowerCase().startsWith( PRISON_PLACEHOLDER_PREFIX ) ) {
-					placeHolder = PRISON_PLACEHOLDER_PREFIX + "_" + placeHolder;
+				if ( placeHolder.startsWith(PRISON_PLACEHOLDER_CUSTOM_PREFIX_EXTENDED) ) {
+					result = custom_placeholder__;
 				}
-				
-				for ( PrisonPlaceHolders ph : values() ) {
-					if ( ph.name().equalsIgnoreCase( placeHolder ) ) {
-						result = ph;
-						break;
+				else {
+					
+					// This allows us to get rid of suppressed placeholders that were used for 
+					// internal matching when placeholder APIs strip off the prefix:
+					if ( !placeHolder.toLowerCase().startsWith( PRISON_PLACEHOLDER_PREFIX ) ) {
+						placeHolder = PRISON_PLACEHOLDER_PREFIX + "_" + placeHolder;
+					}
+					
+					for ( PrisonPlaceHolders ph : values() ) {
+						if ( ph.name().equalsIgnoreCase( placeHolder ) ) {
+							result = ph;
+							break;
+						}
 					}
 				}
 			}

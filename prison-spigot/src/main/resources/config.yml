@@ -270,7 +270,14 @@ placeholder:
   bar-positive-segment: "|"
   bar-negative-color: "&4"
   bar-negative-segment: "="
-
+  
+  custom-placeholders:
+    prison__player_stats: "{prison_rank_tag_default} -> {prison_rankup_rank_tag_default} 
+      {prison_rankup_cost_remaining_bar_default::bar:50:&a:|:&d:|} 
+      {prison_rankup_cost_remaining_formatted_default} needed to rankup"
+    prison__branding: "&#e81416P&#ffa500r&#faeb36o
+      &#79c314M&#487de7i&#4b369dn&#70369de&#ac7ad1s"
+      
 
 
 # Default language that is used as the primary language.
