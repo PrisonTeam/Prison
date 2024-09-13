@@ -11,7 +11,7 @@ public class PlaceHolderAPIIntegration
 	extends PlaceholderIntegration {
 	
 	private PlaceHolderAPIIntegrationWrapper placeHolderWrapper;
-	private PlaceHolderAPIIntegrationUppercaseWrapper placeHolderUppercaseWrapper;
+//	private PlaceHolderAPIIntegrationUppercaseWrapper placeHolderUppercaseWrapper;
 
 	public PlaceHolderAPIIntegration() {
 		super( "PlaceholderAPI", "PlaceholderAPI" );
@@ -25,8 +25,10 @@ public class PlaceHolderAPIIntegration
 					this.placeHolderWrapper = new PlaceHolderAPIIntegrationWrapper();
 					this.placeHolderWrapper.register();
 					
-					this.placeHolderUppercaseWrapper = new PlaceHolderAPIIntegrationUppercaseWrapper();
-					this.placeHolderUppercaseWrapper.register();
+					// NOTE: the registration of the placeholders and their usage is 
+					//       case insensitive, so this is not needed:
+//					this.placeHolderUppercaseWrapper = new PlaceHolderAPIIntegrationUppercaseWrapper();
+//					this.placeHolderUppercaseWrapper.register();
 				}
 			}
 			catch ( NoClassDefFoundError | IllegalStateException e ) {
