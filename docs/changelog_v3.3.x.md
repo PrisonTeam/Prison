@@ -17,6 +17,8 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19b 2024-09-13
 
 
+* **Auto features: PrisonEnchant's listener: minor changes to only display the registration notice once.**
+
 
 * **Removed various comments that were auto generated.**
 
