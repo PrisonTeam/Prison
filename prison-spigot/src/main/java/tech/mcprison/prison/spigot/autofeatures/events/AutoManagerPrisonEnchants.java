@@ -92,11 +92,20 @@ public class AutoManagerPrisonEnchants
 		extends AutoManagerPrisonEnchants
 		implements Listener {
 		
-    	public AutoManagerPEExplosiveEventListener( BlockBreakPriority bbPriority ) {
+    	public AutoManagerPEExplosiveEventListener( 
+    					BlockBreakPriority bbPriority, 
+    					PEExplosionEventVersion peApiVersion ) {
     		super( bbPriority );
     		
     		// Setup the plugin's version:
-    		getPEPluginVersion();
+    		if ( peApiVersion != PEExplosionEventVersion.undefined ) {
+    			// It's already been calculated, so save it:
+    			setPeApiVersion( peApiVersion );
+    		}
+    		else {
+    			// It was not properly calculated before, so figure it out and save it:
+    			getPEPluginVersion();
+    		}
     	}
     	
 		@EventHandler(priority=EventPriority.NORMAL) 
@@ -347,7 +356,7 @@ public class AutoManagerPrisonEnchants
 		EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
 		
 		AutoManagerPEExplosiveEventListener autoManagerListener = 
-				new AutoManagerPEExplosiveEventListener( bbPriority );
+				new AutoManagerPEExplosiveEventListener( bbPriority, getPeApiVersion() );
 		
 		pm.registerEvent(PEExplosionEvent.class, autoManagerListener, ePriority,
 				new EventExecutor() {
