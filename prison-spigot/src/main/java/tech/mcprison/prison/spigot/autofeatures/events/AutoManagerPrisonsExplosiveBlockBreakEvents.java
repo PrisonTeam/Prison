@@ -15,6 +15,7 @@ import org.bukkit.plugin.PluginManager;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -236,6 +237,8 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
 		
+		MineBombData mineBomb = e.getMineBomb();
+		
 		// If the event is canceled, it still needs to be processed because of the 
 		// MONITOR events:
 		// An event will be "canceled" and "ignored" if the block 
@@ -321,17 +324,20 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			//       if the pseudo tool breaks, it will clear the player's in-hand
 			//       inventory stack, which will be more mine bombs if they had more 
 			//       than one.
-			if ( e.getMineBomb() != null ) {
+			if ( mineBomb != null ) {
+				
+				pmEvent.setMineBomb( mineBomb );
+				
 				pmEvent.setCalculateDurability( false );
 				
 				// Set if forced autoSell:
-				pmEvent.setForceAutoSell( e.getMineBomb().isAutosell() );
+				pmEvent.setForceAutoSell( mineBomb.isAutosell() );
 			}
 			
     		
     		// Check to see if the blockConverter's EventTrigger should have
     		// it's blocks suppressed from explosion events.  If they should be
-    		// removed, then it's removed within this funciton.
+    		// removed, then it's removed within this function.
     		removeEventTriggerBlocksFromExplosions( pmEvent );
     		
     		

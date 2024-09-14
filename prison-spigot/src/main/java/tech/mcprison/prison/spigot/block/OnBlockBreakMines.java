@@ -495,9 +495,16 @@ public class OnBlockBreakMines
 	 * or if the targetBlock has been set to ignore all block events which 
 	 * means the block has already been processed.
 	 * </p>
-	 * 
-	 * @param player
-	 * @param block
+	 *  
+	 * @param player The player that caused the event by mining or breaking blocks
+	 * @param block The "target" block that was initially broke by the player.  Note that sometimes
+	 *              this is not the actual block, since the event does not preserve that information.
+	 * @param bbPriority The priority that prison was listening at for this event.
+	 * @param ignoreBlockReuse If set to true, then if the block was already counted, then prison 
+	 *  	      will still process the blocks.  Otherwise if the block has been already counted, then
+	 *  	      prison will ignore the event, which can have a huge impact if it's an explosion and
+	 *            there are many other blocks that "should" be processed, but ignoring the whole event 
+	 *            would be skipping a lot of block processing.
 	 * @return
 	 */
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, 

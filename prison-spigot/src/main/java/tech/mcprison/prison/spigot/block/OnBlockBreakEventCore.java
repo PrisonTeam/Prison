@@ -153,6 +153,26 @@ public abstract class OnBlockBreakEventCore
 	
 	
 
+	/**
+	 * <p>The purpose of this function is to "quickly" evaluate if this event should be used,
+	 * canceled, or ignored.  Ignoring the event will mean that other plugins, and the originator
+	 * of the event, can process EVERYTHING normally.  If the event is canceled, then some plugins
+	 * may then ignore the whole event, but some may also process it in some way or another. Prison 
+	 * uses canceled events to track block breakage when other plugins are handling the breaks.
+	 * </p>
+	 * 
+	 * @param event The event we're monitoring and processing
+	 * @param player The player that caused the event by mining or breaking blocks
+	 * @param block The "target" block that was initially broke by the player.  Note that sometimes
+	 *        this is not the actual block, since the event does not preserve that information.
+	 * @param bbPriority The priority that prison was listening at for this event.
+	 * @param ignoreBlockReuse If set to true, then if the block was already counted, then prison 
+	 *  	  will still process the blocks.  Otherwise if the block has been already counted, then
+	 *  	  prison will ignore the event, which can have a huge impact if it's an explosion and
+	 *        there are many other blocks that "should" be processed, but ignoring the whole event 
+	 *        would be skipping a lot of block processing.
+	 * @return
+	 */
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, 
 			Block block, BlockBreakPriority bbPriority,
 			boolean ignoreBlockReuse ) {
