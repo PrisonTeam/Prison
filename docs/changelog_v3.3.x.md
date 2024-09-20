@@ -14,7 +14,15 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19b 2024-09-13
+# 3.3.0-alpha.19c 2024-09-20
+
+
+** 3.3.0-alpha.19c 2024-09-20 **
+
+
+* **Build automation: github has deprecated and disabled version 1 and 2 of the actions, and v3 is slated to be disabled in Nov/Dec of this year too.**
+So moving on to v4 to allow for better future use. 
+This prison build script is very simple and therefore the newer issues related to v4 when upgrading from older versions, should not impact prison.  Basically the largest change is that these artifacts are now immutable.
 
 
 * **Mine bombs: Not a significant change. Allowed the mine bomb data to be part of the event that is being passed along so it can be used in later updates and future features.**
