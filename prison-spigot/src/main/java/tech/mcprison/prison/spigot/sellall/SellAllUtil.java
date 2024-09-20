@@ -32,6 +32,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.sellall.events.PrePlayerSellAllEvent;
 import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -772,8 +773,16 @@ public class SellAllUtil
     	
     	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
 
-    	return sellInventoryItems( spInventory, multiplier );
-	}
+        // Pass onto event bus for any plugins to edit/cancel the sale.
+        PrePlayerSellAllEvent preSaleEvent = new PrePlayerSellAllEvent( sPlayer, spInventory );
+        Prison.get().getEventBus().post(preSaleEvent);
+
+        if ( preSaleEvent.isCanceled() ) {
+            return new ArrayList<>();
+        }
+
+        return sellInventoryItems( spInventory, multiplier );
+    }
 
     /**
      * <p>This function sells the Item Stacks and returns a transaction log of items sold.
