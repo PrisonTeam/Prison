@@ -373,7 +373,7 @@ public class PlaceholderManagerUtils {
 			}
 		}
 		
-		else {
+		else if ( !pIdentifier.getIdentifierRaw().startsWith( "_" ) ) {
 			Matcher matcher = PlaceholderManager.PLACEHOLDER_ESCAPE_CHARACTER_LEFT_PATTERN.matcher( pIdentifier.getIdentifierRaw() );
 			
 			if ( matcher.find() ) {

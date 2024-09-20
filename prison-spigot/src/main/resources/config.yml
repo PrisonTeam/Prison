@@ -275,6 +275,9 @@ placeholder:
     prison__player_stats: "{prison_rank_tag_default} -> {prison_rankup_rank_tag_default} 
       {prison_rankup_cost_remaining_bar_default::bar:50:&a:|:&d:|} 
       {prison_rankup_cost_remaining_formatted_default} needed to rankup"
+
+# Pre-spigot 1.14: Cannot do RGB colors:
+#    prison__branding: "&2P&3r&4o &5M&6i&an&be&cs"
     prison__branding: "&#e81416P&#ffa500r&#faeb36o
       &#79c314M&#487de7i&#4b369dn&#70369de&#ac7ad1s"
       

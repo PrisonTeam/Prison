@@ -826,21 +826,31 @@ public class PrisonCommand
     	display.send(sender);
     }
     
-    @Command(identifier = "prison reload placeholders", 
-    		description = "Placeholder reload: Regenerates all placeholders and reregisters them.", 
-    		onlyPlayers = false, permissions = "prison.placeholder")
-    public void placeholdersReloadCommandAlias(CommandSender sender ) {
-    	placeholdersReloadCommand( sender );
-    }
+//    @Command(identifier = "prison reload placeholders", 
+//    		description = "Placeholder reload: Regenerates all placeholders and reregisters them.", 
+//    		onlyPlayers = false, 
+//    		permissions = "prison.placeholder",
+//    	    		aliases = { "prison reload configyml" })
+//    public void placeholdersReloadCommandAlias(CommandSender sender ) {
+//    	placeholdersReloadCommand( sender );
+//    }
     
     @Command(identifier = "prison placeholders reload", 
-    		description = "Placeholder reload: Regenerates all placeholders and reregisters them.", 
-    		onlyPlayers = false, permissions = "prison.placeholder")
+    		description = "Placeholder reload: Regenerates all placeholders and reregisters them. "
+    				+ "&dThis also forces the config.yml properties to be reloaded too, but be warned, "
+    				+ "it will not force anything that uses config.yml to be reloaded and you may "
+    				+ "still have to restart the server.", 
+    		onlyPlayers = false, 
+    		permissions = "prison.placeholder",
+    	    aliases = { 
+    	    	"prison reload configyml",
+    	    	"prison reload placeholders"
+    	    } )
     public void placeholdersReloadCommand(CommandSender sender ) {
     	
     	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
     	
-    	String message = "Placeholder reload was attempted. " +
+    	String message = "Placeholder and config.yml reload was attempted. " +
     			"No guarentees that it worked 100%. Restart server if any doubts.";
 
     	sender.sendMessage( message );
