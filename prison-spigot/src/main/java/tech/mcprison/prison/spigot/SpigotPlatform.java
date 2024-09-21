@@ -1140,6 +1140,17 @@ public class SpigotPlatform
 		return keys;
 	}
 	
+	
+	@Override
+	public boolean isConfigSection( String section ) {
+		boolean results = false;
+		
+		results = SpigotPrison.getInstance().getConfig().isConfigurationSection( section );
+		
+		return results;
+	}
+	
+	
 	@Override
 	public boolean isWorldExcluded( String worldName ) {
 		boolean exclude = false;

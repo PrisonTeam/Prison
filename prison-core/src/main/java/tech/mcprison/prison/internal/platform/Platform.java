@@ -320,6 +320,16 @@ public interface Platform {
 	public List<String> getConfigHashKeys(String hashPrefix);
 
 	
+	/**
+	 * <p>This returns a value of true if the given config path exists.
+	 * </p>
+	 * 
+	 * @param section
+	 * @return
+	 */
+	public boolean isConfigSection( String section );
+	
+	
 	public boolean isWorldExcluded( String worldName );
 
 

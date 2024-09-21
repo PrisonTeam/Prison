@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19c 2024-09-20
+# 3.3.0-alpha.19c 2024-09-21
+
+
+* **Added a new function to the platform to check to see if there is a specific configuration section.**
+
+
+* **Custom Placeholders: A custom placeholder is identified with the prefix of 'prison__' but one of the functions that cleans the placeholder fragments sent to prison, was removing one of those underscore characters.**
+This preserves the needed underscore and allows for proper matching and identification.
 
 
 ** 3.3.0-alpha.19c 2024-09-20 **

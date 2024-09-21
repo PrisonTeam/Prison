@@ -322,6 +322,11 @@ public class TestPlatform implements Platform {
 		return new ArrayList<String>();
 	}
 
+	@Override
+	public boolean isConfigSection(String section) {
+		return false;
+	}
+	
 	
 	@Override
 	public boolean isWorldExcluded( String worldName ) {
@@ -602,4 +607,5 @@ public class TestPlatform implements Platform {
 	public MineBombEffectsData validateMineBombEffect(MineBombEffectsData mineBombEffectsData) {
 		return mineBombEffectsData;
 	}
+
 }
