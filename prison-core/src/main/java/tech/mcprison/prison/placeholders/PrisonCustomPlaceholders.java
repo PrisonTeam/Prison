@@ -1,18 +1,12 @@
-package tech.mcprison.prison.spigot.placeholder;
+package tech.mcprison.prison.placeholders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import tech.mcprison.prison.placeholders.ManagerPlaceholders;
-import tech.mcprison.prison.placeholders.PlaceHolderKey;
-import tech.mcprison.prison.placeholders.PlaceholderIdentifier;
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
-import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class PrisonCustomPlaceholders
 	implements ManagerPlaceholders {
@@ -75,28 +69,71 @@ public class PrisonCustomPlaceholders
     	return results;
     }
     
-	
+    /**
+     * <p>This checks for custom placeholders and gets their values.
+     * A custom placeholder can be abbreviated, or expanded.
+     * <p>
+     * 
+     * <p>An abbreviated placeholder only has the text with no other settings:
+     * </p>
+     * <pre>
+     *   
+  custom-placeholders:
+    prison__chat_prefix: "{prison_rank_tag_default}{prison_rank_tag_prestiges}"
+     * </pre>
+     * 
+     * <p>An extended placeholder has more details and settings:
+     * </p>
+     * <pre>
+  custom-placeholders:
+    prison__chat_prefix: 
+      placeholder: "{prison_rank_tag_default}{prison_rank_tag_prestiges}"
+      papi_expansion: false
+      </pre>
+     */
 	@Override
 	public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
 		
 		if ( translatedPlaceHolderKeys == null ) {
     		translatedPlaceHolderKeys = new ArrayList<>();
     		
-    		FileConfiguration config = SpigotPrison.getInstance().getConfig();
-
-    		if ( config.isConfigurationSection(CUSTOM_PLACEHOLDER_CONFIG_PATH) ) {
+//    		FileConfiguration config = SpigotPrison.getInstance().getConfig();
+    		
+    		Platform pf = Prison.get().getPlatform();
+    		
+    		if ( pf.isConfigSection(CUSTOM_PLACEHOLDER_CONFIG_PATH) ) {
+    			
+    			
     			
     			PrisonPlaceHolders customPlaceholder = PrisonPlaceHolders.custom_placeholder__;
     			
-    			ConfigurationSection cpConfigs = config.getConfigurationSection(CUSTOM_PLACEHOLDER_CONFIG_PATH);
     			
-    			Set<String> keys = cpConfigs.getKeys( false );
+    			List<String> keys = pf.getConfigHashKeys(CUSTOM_PLACEHOLDER_CONFIG_PATH);
+    			
+//    			ConfigurationSection cpConfigs = config.getConfigurationSection(CUSTOM_PLACEHOLDER_CONFIG_PATH);
+//    			
+//    			Set<String> keys = cpConfigs.getKeys( false );
     			
     			for (String key : keys) {
     				
-    				String customPlaceholderStr = cpConfigs.getString( key );
+    				String keyPath = CUSTOM_PLACEHOLDER_CONFIG_PATH + "." + key;
+    				
+    				String custExpandedPlaceholderKey = keyPath + ".placeholder";
+    				String custExpandedPapiExpansionKey = keyPath + ".papi_expansion";
+    				String custExpandedDescriptionKey = keyPath + ".description";
+    				
+    				String cePlaceholder = pf.getConfigString( custExpandedPlaceholderKey );
+    				boolean cePapiExpansion = pf.getConfigBooleanFalse( custExpandedPapiExpansionKey );
+    				String ceDescription = pf.getConfigString( custExpandedDescriptionKey );
+    				
+    				String customPlaceholderStr = 
+    							cePlaceholder != null ? 
+    									cePlaceholder : pf.getConfigString( keyPath );
     				
     				PlaceHolderKey placeholder = new PlaceHolderKey(key, customPlaceholder, customPlaceholderStr );
+    				placeholder.setPapiExpansion( cePapiExpansion );
+    				placeholder.setDescription( ceDescription );
+    				
     				translatedPlaceHolderKeys.add(placeholder);
     			}
     		}

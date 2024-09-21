@@ -59,7 +59,7 @@ public class PlaceholderManager {
     	PLAYERBLOCKS,
     	STATSMINES( true ),
     	
-    	// A custom prison placeholder is one that starts with `prison:` and it cannot have any 
+    	// A custom prison placeholder is one that starts with `prison__` and it cannot have any 
     	// placeholder attributes.  Basically, it's a substitution of the custom placeholder 
     	// with whatever has been paired to it within the config.yml file.  The mappings can 
     	// be as long as needed and contain any other combination of other placeholders.
@@ -204,7 +204,7 @@ public class PlaceholderManager {
 		no_match__(PlaceholderFlags.SUPRESS),
 		
 		
-		custom_placeholder__(PlaceholderFlags.CUSTOM),
+		custom_placeholder__(PlaceholderFlags.CUSTOM, PlaceholderFlags.SUPRESS),
 		
 		
 		// Rank aliases:
@@ -827,6 +827,7 @@ public class PlaceholderManager {
 		   	
 			
 			int totalCount = 0;
+			int totalAliases = 0;
 			for ( PlaceholderFlags type : PlaceholderFlags.values() )
 			{
 				if ( type == PlaceholderFlags.ALIAS || type == PlaceholderFlags.SUPRESS ) {
@@ -885,30 +886,65 @@ public class PlaceholderManager {
 				
 
 				int count = 0;
+				int aliases = 0;
 				for ( PrisonPlaceHolders ph : values() )
 				{
-					if ( !isRanksEnabled && ( 
-							type == PlaceholderFlags.PLAYER && ph.name().toLowerCase().contains("rank") )) {
-						break;
-					}
-					
-					if ( ph.getFlags().contains( type ) &&
-							( !omitSuppressable || 
-							omitSuppressable && !ph.isSuppressed() && !ph.isAlias() )) {
+					if ( ph.getFlags().contains( type ) ) {
 						
-						if ( !hasDeprecated && ph.isSuppressed() ) {
-							hasDeprecated = true;
+						if ( !isRanksEnabled && ( 
+								type == PlaceholderFlags.PLAYER && ph.name().toLowerCase().contains("rank") )) {
+
+							// do nothing since ranks is not enabled:
 						}
 						
-						results.add( "    " + ph.getChatText() );
-						
-						count++;
-						totalCount++;
+						else if ( 
+								 !omitSuppressable || 
+										omitSuppressable && !ph.isSuppressed() && !ph.isAlias() ) {
+							
+							if ( !hasDeprecated && ph.isSuppressed() ) {
+								hasDeprecated = true;
+							}
+							
+							results.add( "    " + ph.getChatText() );
+							
+							count++;
+							totalCount++;
+							if ( ph.isAlias() ) {
+								aliases++;
+								totalAliases++;
+							}
+							
+						}
+						else if ( ph == custom_placeholder__ ) {
+							// Get the list of custom placeholders:
+							PrisonCustomPlaceholders cp = new PrisonCustomPlaceholders();
+							List<PlaceHolderKey> phKeys = cp.getTranslatedPlaceHolderKeys();
+							
+							for (PlaceHolderKey phKey : phKeys) {
+								
+								results.add( "    &a" + phKey.getKey() + 
+										(phKey.isPapiExpansion() ? "  &d(papi_expansion)" : "") );
+								
+								if ( phKey.getData() != null ) {
+									results.add( "        \\Q" + phKey.getData() + "\\E" );
+								}
+								
+								if ( phKey.getDescription() != null && phKey.getDescription().trim().length() > 0 ) {
+									results.add( "        &b" + phKey.getDescription() );
+								}
+								
+								
+								count++;
+								totalCount++;
+							}
+						}
 					}
+					
+					
 				}
 				
 				results.set( pos, results.get( pos ) + 
-						" (" + (count * 2) + ", " + count + " aliases):");
+						" (" + (count + aliases) + ", " + aliases + " aliases):");
 			}
 			
 			
@@ -917,7 +953,7 @@ public class PlaceholderManager {
 			}
 			
 			results.add( 0, "&7Available PlaceHolders" +
-					" (" + (totalCount * 2) +  ", " + totalCount + " aliases):");
+					" (" + (totalCount + totalAliases) +  ", " + totalAliases + " aliases):");
 			
 			return results;
 		}

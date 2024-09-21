@@ -17,6 +17,13 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-21
 
 
+* **Custom Placeholders: Added support for a more complex custom placeholder where the default is an abbreviated placeholder (simple) and a more complex expanded placeholder where you can set various options such as enable PAPI expansions and adding descriptions.**
+Added custom placeholders to be included in the `/prison placeholders list`.
+To view all custom placeholders, as translated, search for the custom placeholder prefix:
+`/prison placeholder search prison__`
+
+
+
 * **Added a new function to the platform to check to see if there is a specific configuration section.**
 
 

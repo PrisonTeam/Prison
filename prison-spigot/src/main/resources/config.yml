@@ -271,7 +271,22 @@ placeholder:
   bar-negative-color: "&4"
   bar-negative-segment: "="
   
+  # Custom Placeholders:
+  #  They MUST begin with 'prison__', which  has two underscores, or they will not work.
+  #  Custom placeholders can have an abbreviated format where it is the placeholder
+  #  with the quoted value, which can be multi-lined.
+  #  The extended format can have additonal settings.  The actual placeholder is 
+  #  paired with 'placeholder'.
+  #  If the custom placeholder contains non-prison placeholders, then you can set
+  #  the 'papi_expansion' to true.
+  #  If a description is provided, it will be shown within the placeholder listing.
+  #  Note that the use of hex colors will not work with bukkit versions prior to 
+  #  spigot 1.14.
   custom-placeholders:
+    prison__chat_prefix: 
+      placeholder: "{prison_rank_tag_default}{prison_rank_tag_prestiges}"
+      papi_expansion: false
+      description: "Can use this in your chat prefix. May have to use %% instead of {}."
     prison__player_stats: "{prison_rank_tag_default} -> {prison_rankup_rank_tag_default} 
       {prison_rankup_cost_remaining_bar_default::bar:50:&a:|:&d:|} 
       {prison_rankup_cost_remaining_formatted_default} needed to rankup"

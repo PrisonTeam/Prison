@@ -10,6 +10,9 @@ public class PlaceHolderKey {
 	private boolean primary = true;
 	private String aliasName;
 	
+	private boolean papiExpansion = false;
+	private String description = null;
+	
 	
 //	// NOTE: Pattern is thread safe so make it static.  Matcher is not thead safe.
 //	public static Pattern PLACEHOLDER_SEQUENCE_PATTERN = Pattern.compile( "(\\_([0-9]+)\\_)" );
@@ -275,5 +278,19 @@ public class PlaceHolderKey {
 	}
 	public void setAliasName( String aliasName ) {
 		this.aliasName = aliasName;
+	}
+	
+	public boolean isPapiExpansion() {
+		return papiExpansion;
+	}
+	public void setPapiExpansion(boolean papiExpansion) {
+		this.papiExpansion = papiExpansion;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

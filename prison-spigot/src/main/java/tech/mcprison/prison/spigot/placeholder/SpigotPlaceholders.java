@@ -9,6 +9,9 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
+
+import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -22,6 +25,7 @@ import tech.mcprison.prison.placeholders.PlaceholderManagerUtils;
 import tech.mcprison.prison.placeholders.PlaceholderStatsData;
 import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.placeholders.PlaceholdersStats;
+import tech.mcprison.prison.placeholders.PrisonCustomPlaceholders;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -48,6 +52,10 @@ public class SpigotPlaceholders
 //	private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
 //	private static final Pattern BRACKET_PLACEHOLDER_PATTERN = Pattern.compile("[{]([^{}]+)[}]");
 	  
+    private final boolean placeholderAPINotNull = 
+    		Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || 
+    		Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
+
 	
 	public SpigotPlaceholders() {
 		super();
@@ -580,10 +588,22 @@ public class SpigotPlaceholders
 				
 				Player player = identifier.getPlayer();
 				
+				
+				// Process custom placeholders... after expanding all prison placeholders, then
+				// call PAPI so it can expand non-prison placeholders:
 				if ( placeHolderKey.getPlaceholder().isCustomPlaceholder() ) {
 					// Need to translate all placeholders within the custom placeholder:
 					
 					value = placeholderTranslateText( playerUuid, playerName, value );
+					
+					if ( value != null && value.trim().length() > 0 &&
+							placeHolderKey.isPapiExpansion() && 
+							placeholderAPINotNull ) {
+						
+						value = PlaceholderAPI.setPlaceholders(
+		            			Bukkit.getOfflinePlayer( playerUuid), value );
+						
+					}
 				}
 				
 				if ( player instanceof SpigotPlayer && 
