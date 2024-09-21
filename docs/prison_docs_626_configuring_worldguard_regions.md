@@ -10,9 +10,170 @@ This document explains how to setup WorldGuard to protect your mines and how to 
 The preferred way is with using **Access by Ranks**, but other alternative techniques are also included in this document, but some may not be supported (read carefully).  It also explains how to setup the permissions in the Prison's **/ranks command add <rankName** so they are ran automatically during a **/rankup** and **/ranks promote** event. This document also covers what needs to be configured to ensure that the rank commands will work properly with **/ranks demote**.
 
 
+Please note that work is underway with providing prison based commands to help generate and update WorldGuard regions. So far, they are very flexible with the ability to customize what commands are ran by a series of config settings within the config.yml file.  The primary problem is when you need to use WorldEdit command with the regions, since most of them do not allow you to specify the world.  So one technique prison is employing is to run the commands through an admin that is online so it behaves as if they have entered the commands themselves.
+
+
+*Documented updated: 2024-0-21*
 
 <hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
+# WorldGuard Regions, WorldEdit, Permission PLugins, and Prison
+
+Initially, Prison did not have any direct support for WorldGuard, but it used WorldGuard regions to control access to the mines.  Getting WorldGuard properly configured was the admin's responsibility, but yet we would spend a huge number of hours trying to help many people new to WorldGuard try to figure out how to get everything working properly.  This also included having to have a working understanding of a few WorldEdit selection commands, and a moderate understanding of how permissions worked, including a good understanding of your perms plugin.  All of these plugins, and their related commands, had to be crafted in Prison rankup commands to provide a controlled adjustments when a player is ranking up. All of this was complex with way too many moving parts.  Of course, with many new people exploring setting up their first minecraft server, there was a large learning curve, and we helped many people figure it out.
+
+Helping with WorldGuard, or a perms plugin, was not ideal, because that prevented us from working on prison to allow it to grow and become a more enhanced plugin.  So we had to find a way to move on from a harsh dependency upon WorldGuard.
+
+Enter Prison's **Access by Ranks**.  This shift the focus from WorldGuard to allowing Prison to self-manage access to the mines through a player's ranks.  On the surface, this simplified a lot of things because Prison no longer had to depend upon WorldGuard regions.  This holds true for today even, but it's not that simple when you start to try to add enchantment plugins, because they still rely on WorldGuard regions.  
+
+This document was initially created when WorldGuard Regions were the only way to control access.  As things evolved, this document really only provided "hints" to working with WorldGuard for the sake of other plugins.  Prison still needs to provide hooks to help with ranking up, but with LuckPerm tracks, the complexity within prison has greatly been reduced.
+
+There is a dedicated document related to [LuckPerms Groups & Tracks](prison_docs_030_LuckPerms_Groups_Tracks.md) (*[prison_docs_030_LuckPerms_Groups_Tracks.md](prison_docs_030_LuckPerms_Groups_Tracks.md)*), and how to set them up to work with prison.  Please review that document if needed.
+
+
+# Prison's New Support for WorldGuard Regions
+
+This support is a new work in progress.  Some features may not fully work, or may not be well documented.  These features were initially introduced with version *3.3.0-alpha.19c*.
+
+WorldGuard region support, within Prison, is through the mines commands, since they are physically associated with mines and their physical locations in the worlds.  
+
+Prison does not understand WorldGuard Regions and there is no way to teach it either.  This is true because everyone may want to use regions in a different way, with different setup of perms, groups, and flags.  So Prison cannot force our limited experience upon everyone else. Trust me on this, we know Prison, but may not know anything about the other plugins that you are trying to use.
+
+To provide you with the ultimate control for Prison's use of WorldGuard regions, we will allow the best expert to control everything.  Who is that expert?  It's you!  Yes... You.  
+
+This way, if prison is not configured properly with it's use of WorldGuard regions, you can customize any way you want, and Prison will obey.  If you're new to WorldGuard regions, then we have you covered because we provide a simplified way we would use WorldGuard to interact with just Prison.  As you learn more, or encounter more complex needs, then you can customize everything to suite your needs.
+
+But the important thing to realize, is that you're in control, and you can customize anything you want.
+
+
+How is this possible?  
+
+It's easy... In the file `plugins/Prison/config.yml` are various WorldEdit and WorldGuard scripts setup under different commands.  So when a prison command is ran, prison takes those scripts and replaces the provided placeholders and then displays the commands in the console.  You can do whatever you want with them at that point, such as **view**ing them or copying a pasting them in to your game's console so they can be applied.  
+
+Prison also has the feature where you can **run** them through a player that is online.  The way that works, is that the player must be in game, and then prison will teleport them to the mine to ensure they are in the correct world.  Then prison will run the specified commands as that player.  Therefore, the commands use the implied world and Prison injects all of the mine specific settings.  
+
+This makes it simple.  But yet there is still a lot of lack of automation because this requires a player to be online in the game.  Why does the player have to be in the game? WorldEdit.  Because WorldEdit does not provide a way to specify a target world on some of their commands, such as `//pos1` and `//pos2`, which is the primary way to set a regions area through the use of x,y,z coordinates.  Sucks doesn't it?  If this was not a limitation, then it would be trivial to script everything.
+
+# Running the Prison Mines WorldGuard Region commands
+
+These new commands are located under this command, which will list all available commands:
+`/mines worldGuard region`
+
+```
+>mines worldguard region
+[INFO]: ----- < Cmd: /mines worldguard region > ------- (3.3.0-alpha.19c)
+[INFO]: /mines worldguard region
+[INFO]: Subcommands:
+[INFO]: /mines worldguard region globalDefine [playerName] [options]
+[INFO]: /mines worldguard region globalInfo [playerName] [options]
+[INFO]: /mines worldguard region globalMobSpawningDeny [playerName] [options]
+[INFO]: /mines worldguard region mineAreaDefine [mineName] [playerName] [options]
+[INFO]: /mines worldguard region mineAreaInfo [mineName] [playerName] [options]
+[INFO]: /mines worldguard region mineAreaRedefine [mineName] [playerName] [options]
+[INFO]: /mines worldguard region mineAreaSelect [mineName] [playerName] [options]
+[INFO]: /mines worldguard region mineDefine [mineName] [playerName] [options]
+[INFO]: /mines worldguard region mineInfo [mineName] [playerName] [options]
+[INFO]: /mines worldguard region mineRedefine [mineName] [playerName] [options]
+[INFO]: /mines worldguard region mineSelect [mineName] [playerName] [options]
+```
+
+
+# Prison's config.yml settings
+
+In the file `plugins/Prison/config.yml`, under the settings of `prison-mines.world-guard` are the configs.  They are numerous.  They will be listed at the end of this section.  But first let me explain a few things.
+
+All of the scripts are grouped under a command header.  This allows full customization and helps organize each command.
+
+The scripts are stored in an array of Strings, so they must be quoted (yaml actually will allow you not to quote them, but we advise you use quotes).  And you can have as many as you want for each command.  We do not impose limitations. 
+
+Prison uses placeholders in these commands, so some commands have placeholders that will be removed and nothing will be inserted in their place.  This is how it's designed to work.  And that is also why it is important to understand why the placeholders are used, what they do, and why you need to use them.  At this time, mine areas are not supported, but they have been added so as to be ready for this support when they are added.
+
+
+| Placeholder | Description | Notes |
+| :--- | :--- | ------------------- |
+| {world} | Inserts the world name | When ran from the console, many commands must include `-w worldName`.  Prison will inject this as needed, and only when the commands are viewed or ran from the console. |
+| {mine-pos1} | One corner of the mine | Prison inserts the `x,y,z` coordinates for the first position. |
+| {mine-pos2} | The other corner of the mine | Prison inserts the `x,y,z` coordinates for the second position.|
+| {region-mine-name} | The generated region name to use | This is configured under `prison-mines.world-guard.region-mine.region-mine-name`. |
+| {region-group-permission} | The generated group permission name to use | This is configured under `prison-mines.world-guard.region-mine.region-group-permission`. |
+| {mine-area-pos1} | One corner of the mine area | Prison inserts the `x,y,z` coordinates for the first position. |
+| {mine-area-pos2} | The other corner of the mine area | Prison inserts the `x,y,z` coordinates for the second position.|
+| {region-mine-area-name} | The generated region name to use | This is configured under `prison-mines.world-guard.region-mine-area.region-mine-name`. |
+
+
+## WorldGuard Region Scripts - Examples
+
+If your `config.yml` file does not contain these entries, you can copy and paste them from this document.  
+
+But the actual preferred method would be to allow prison to regenerate the `config.yml` file.  This can be achieved by renaming config.yml to something else, restart the server, then prison will generate one, and then you can shut down the server, rename the original and copy and paste what you need.  Yeah this is a bit of a messy way of doing it, but this ensures you have the latest published version of these settings.
+
+
+```yaml
+prison-mines:
+
+  world-guard:
+    WARNING: WorldGuard may not be fully supported yet.
+
+    global-region-commands:
+      info:
+      - '/rg list {world}'
+      - '/rg info {world} __global__'
+      define:
+      - '/rg flag {world} __global__ passthrough deny'
+      deny-mob-spawning:
+      - 'rg flag {world} __global__ mob-spawning deny'
+      - '/gamerule doMobSpawning false'
+    mine-region-commands:
+      info:
+      - '/rg list {world}'
+      - '/rg info {world} {region-mine-name}'
+      redefine:
+      - '//pos1 {mine-pos1}'
+      - '//pos2 {mine-pos2}'
+      - '//region redefine {world} {region-mine-name}'
+      define:
+      - '/region define {world} {region-mine-name}'
+      - '/region addmember {world} {region-mine-name} {region-group-permission}'
+      - '/region setpriority {world} {region-mine-name} 20'
+      - '/region flag {world} {region-mine-name} block-break allow'
+      - '/region flag {world} {region-mine-name} item-pickup allow'
+      - '/region flag {world} {region-mine-name} exp-drops allow'
+      - '/region flag {world} {region-mine-name} item-drop allow'
+      select:
+      - '/region select {world} {region-mine-name}'
+
+    mine-area-region-commands:
+      info:
+      - '/rg list {world}'
+      - '/rg info {world} {region-mine-area-name}'
+      redefine:
+      - '//pos1 {mine-area-pos1}'
+      - '//pos2 {mine-area-pos2}'
+      - '/region redefine {world} {region-mine-area-name}'
+      define:
+      - '/region define {world} {region-mine-area-name}'
+      - '/region addmember {world} {region-mine-area-name} {region-group-permission}'
+      - '/region setpriority {world} {region-mine-area-name} 10'
+      - '/region flag {world} {region-mine-area-name} block-break deny'
+      - '/region flag {world} {region-mine-area-name} item-pickup allow'
+      - '/region flag {world} {region-mine-area-name} exp-drops allow'
+      - '/region flag {world} {region-mine-area-name} item-drop allow'
+      select:
+      - '/region select {world} {region-mine-area-name}'
+
+    region-mine:
+      enable: true
+      region-mine-name: 'prison_mine_{mine}'
+      region-group-permission: 'g:prison.mines.{mine}'
+    region-mine-area:
+      enable: false
+      region-mine-area-name: 'prison_mine_area_{mine}'
+      increase-x: 15
+      increase-z: 15
+      increase-y: 9999
+    
+```
+
+Please note that `mine-area-region-commands`, `region-mine-area`, and mine areas in general, are not yet implemented in prison, and are not currently used.
 
 
 # Please READ This First - Using Access by Ranks to Simplify Many Things
@@ -187,7 +348,7 @@ Then **in game**, give yourself a WorldEdit wand:
 **Purpose:** This prevents players from breaking any blocks in the world. It also prevents mobs from spawning.
 
 
-As op, protect the whole world with a passthrough flag set to deny. This will prevent building, PVP, and everything else.  Basically, any action that “passthrough” all over defined regions, will be denied.  The command with the **-w world** parameter has been added to the following list too.  Use that version from console, the other without **-w world** in game.  And where the name **world** is the actual name of your world.
+As op, protect the whole world with a passthrough flag set to deny. This will prevent building, PVP, and everything else.  Basically, any action that â€œpassthroughâ€� all over defined regions, will be denied.  The command with the **-w world** parameter has been added to the following list too.  Use that version from console, the other without **-w world** in game.  And where the name **world** is the actual name of your world.
 
 
 Note: the minimum you will need is the first line.  The other two shuts down mob spawning, which is optional.
@@ -282,7 +443,7 @@ And to now hook this up to prison, you do same command, dropping the leading sla
 This defines a WorldGuard region, and needs to be applied to all mines, unless the Mine Access Permissions are used.
 
 
-Select the same area of the mine with the WorldEdit **wand**, then use the following commands to define a mine.  It will define a region with the mine’s name, and set the parent to mine_template, with the only member ever being the permission group **prison.mines.<mine-name>**.  Never add a player to a WorldGuard region since it will get messy.  Always use permission based groups and then add the player to that group.
+Select the same area of the mine with the WorldEdit **wand**, then use the following commands to define a mine.  It will define a region with the mineâ€™s name, and set the parent to mine_template, with the only member ever being the permission group **prison.mines.<mine-name>**.  Never add a player to a WorldGuard region since it will get messy.  Always use permission based groups and then add the player to that group.
 
 
 This example includes an owner of this mine which is the group owner.  And added the group admin as a member so the admins will have full access to this mine, even if they do not personally have the player's rank to access this mine. The actual members you add are up to you, but these are just two examples that you should consider.
@@ -321,7 +482,7 @@ The following region setting for access and deny may *appear* to be useful, but 
 
 **NOTE:** 
 
-It’s a bad idea to deny access to the mines through these regions. Such as with **-g nonmembers deny** on the **prison_mine_<mine-name>** regions. If the players doesn't have access to the mines, and they try to enter from the top, WorldGuard will continually prevent them from entering, or more specifically it will prevent them from falling in to the mine.  This will basically keep them floating in the air which will trigger a fly event within anti-hacking tools.  It will be far more professional to protect the area that contains the mine, thus you can protect it over the whole y-axis too. Players can also get caught in a rapid loop where WorldGuard is trying to kick them out of the mine when restricting just the mine; could possibly cause a lot of lag, depending upon how many event’s are being triggered.
+Itâ€™s a bad idea to deny access to the mines through these regions. Such as with **-g nonmembers deny** on the **prison_mine_<mine-name>** regions. If the players doesn't have access to the mines, and they try to enter from the top, WorldGuard will continually prevent them from entering, or more specifically it will prevent them from falling in to the mine.  This will basically keep them floating in the air which will trigger a fly event within anti-hacking tools.  It will be far more professional to protect the area that contains the mine, thus you can protect it over the whole y-axis too. Players can also get caught in a rapid loop where WorldGuard is trying to kick them out of the mine when restricting just the mine; could possibly cause a lot of lag, depending upon how many eventâ€™s are being triggered.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -341,17 +502,17 @@ It’s a bad idea to deny access to the mines through these regions. Such as wit
 **Important:** You don't need to define mine-area regions if your mines are geographically isolated, such as islands in a void world.
   
 
-In general, it may be tempting to restrict access to the mine itself so non-members cannot mine it.  But there is a serious problem with just protecting the mine, and that’s when non-members walk on top of the mine.  They will fall in to the mine, as expected, but WorldGuard will try to keep them out, so they will be bumped back above the mine, thus triggering a “fly” event, or a “hover” event.  This action may trigger anti-hacking software to auto kick them, or auto ban the players, or the players could get stuck, and it may even cause a lot of lag on the server too.
+In general, it may be tempting to restrict access to the mine itself so non-members cannot mine it.  But there is a serious problem with just protecting the mine, and thatâ€™s when non-members walk on top of the mine.  They will fall in to the mine, as expected, but WorldGuard will try to keep them out, so they will be bumped back above the mine, thus triggering a â€œflyâ€� event, or a â€œhoverâ€� event.  This action may trigger anti-hacking software to auto kick them, or auto ban the players, or the players could get stuck, and it may even cause a lot of lag on the server too.
 
 This also happens really fast, in a very repeated action, so it could lock up the player so they cannot jump back out before they get banned.  I do not know if this could contribute to server lag, but a lot of processing appears to be happening so it is possible.
 
-The suggested action is to create a new region around the mine and protect that from entry from non-members.  This region can then be extended from y=0 to y=255 with the WorldEdit command `//expand vert``. If anyone does get past it, they still won’t be able to mine.
+The suggested action is to create a new region around the mine and protect that from entry from non-members.  This region can then be extended from y=0 to y=255 with the WorldEdit command `//expand vert``. If anyone does get past it, they still wonâ€™t be able to mine.
 
 
 The primary purpose is to keep non-members out of the region.  It will also prevent non-members from TP'ing in to the area too.  It will also supply the player with an error message to inform them they don't have the rn
 
 
-Select the an area around the mine with the WorldEdit **wand**.  Only select a rectangle area around the mine, ignoring the **y** axis.  Then use the following commands to define a mine.  It will define a region with the mine’s name, and set the parent to mine_template, with the only member ever being the permission **g:prison.mines.<mine-name>**:
+Select the an area around the mine with the WorldEdit **wand**.  Only select a rectangle area around the mine, ignoring the **y** axis.  Then use the following commands to define a mine.  It will define a region with the mineâ€™s name, and set the parent to mine_template, with the only member ever being the permission **g:prison.mines.<mine-name>**:
 
 
 The command **//expand vert** will take your selection and extend the **y** to cover the whole vertical range in your region.  This is why you don't have to be concerned with the *y* axis when defining your mine area regions.
@@ -563,7 +724,7 @@ One of the primary focuses for this document has been protecting the area around
     
     
 
-Set’s the WorldEdit selection to the dimensions of the given mine:
+Setâ€™s the WorldEdit selection to the dimensions of the given mine:
 
     /region select prison_mine_<mine-name>
     /region select prison_mine_area_<mine-name>
