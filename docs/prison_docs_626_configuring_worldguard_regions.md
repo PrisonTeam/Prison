@@ -247,9 +247,9 @@ These reports can become pretty complex, especially if there are many events tha
 Prison also has a debug mode that allows debugging of an actual block breakage event, and inspects what each plugin does with that event.
 
 You can enable it with:
-`/prison debug`   (run in console: enables debug mode in prison)
-`/mines wand`   (run in game: gives your admin charater a mine wand)
-<CTRL><SHIFT><RIGHT-CLICK> on a block  (sneak click with your right mouse button to trigger the event)
+  `/prison debug`   (run in console: enables debug mode in prison)
+  `/mines wand`   (run in game: gives your admin charater a mine wand)
+  `<CTRL><SHIFT><RIGHT-CLICK>` on a block  (sneak click with your right mouse button to trigger the event)
 
 The details will be printed to the console.  To turn off Prison's debug mode: `/prison debug`
 
@@ -268,22 +268,23 @@ The details will be printed to the console.  To turn off Prison's debug mode: `/
 [INFO]:  BlockBreakEvent Dump: GOLD_ORE (365, 82, 226)
 [INFO]:    Tool Used for drops: Diamond pickaxe
 [INFO]:     Legend: EP: EventPriority  EC: EventCanceled  DC: DropsCanceled  EB: EventBlock  Ds: Drops  ms: dur ms
-[INFO]:     Plugin: -initial-         EP:            EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: ---
-[INFO]:     Plugin: ExcellentEnchants EP: LOWEST     EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: 0.059400
-[INFO]:     Plugin: FastAsyncWorldEdit EP: LOWEST    EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: 0.020100
-[INFO]:     Plugin: ExcellentEnchants EP: LOW        EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: 0.022800
-[INFO]:     Plugin: Prison            EP: LOW        EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 51.845600
-[INFO]:     Plugin: ExcellentEnchants EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.048900
-[INFO]:     Plugin: WorldGuard        EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 10.979900
-[INFO]:     Plugin: WorldGuard        EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.053500
-[INFO]:     Plugin: PrisonEnchants    EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 10.162000
-[INFO]:     Plugin: Prison            EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 1.030600
-[INFO]:     Plugin: ExcellentEnchants EP: HIGH       EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.023500
-[INFO]:     Plugin: WorldGuard        EP: HIGH       EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.033300
-[INFO]:     Plugin: ExcellentEnchants EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.007500
-[INFO]:     Plugin: ExcellentEnchants EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.041100
-[INFO]:     Plugin: Essentials        EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.178200
-[INFO]:     Plugin: ExcellentEnchants EP: MONITOR    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.075300
+
+[INFO]:     Plugin: -initial-          EP:            EC: false  DC: normal    EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: ---
+[INFO]:     Plugin: ExcellentEnchants  EP: LOWEST     EC: false  DC: normal    EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.059400
+[INFO]:     Plugin: FastAsyncWorldEdit EP: LOWEST     EC: false  DC: normal    EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.020100
+[INFO]:     Plugin: ExcellentEnchants  EP: LOW        EC: false  DC: normal    EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.022800
+[INFO]:     Plugin: Prison             EP: LOW        EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 51.845600
+[INFO]:     Plugin: ExcellentEnchants  EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.048900
+[INFO]:     Plugin: WorldGuard         EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 10.979900
+[INFO]:     Plugin: WorldGuard         EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.053500
+[INFO]:     Plugin: PrisonEnchants     EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 10.162000
+[INFO]:     Plugin: Prison             EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 1.030600
+[INFO]:     Plugin: ExcellentEnchants  EP: HIGH       EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.023500
+[INFO]:     Plugin: WorldGuard         EP: HIGH       EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.033300
+[INFO]:     Plugin: ExcellentEnchants  EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.007500
+[INFO]:     Plugin: ExcellentEnchants  EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.041100
+[INFO]:     Plugin: Essentials         EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.178200
+[INFO]:     Plugin: ExcellentEnchants  EP: MONITOR    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.075300
 [INFO]:   - - End DebugBlockInfo - -
 >
 ```
