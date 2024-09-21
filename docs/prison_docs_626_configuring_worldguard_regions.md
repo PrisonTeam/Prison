@@ -30,6 +30,8 @@ This document was initially created when WorldGuard Regions were the only way to
 There is a dedicated document related to [LuckPerms Groups & Tracks](prison_docs_030_LuckPerms_Groups_Tracks.md) (*[prison_docs_030_LuckPerms_Groups_Tracks.md](prison_docs_030_LuckPerms_Groups_Tracks.md)*), and how to set them up to work with prison.  Please review that document if needed.
 
 
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
 # Prison's New Support for WorldGuard Regions
 
 This support is a new work in progress.  Some features may not fully work, or may not be well documented.  These features were initially introduced with version *3.3.0-alpha.19c*.
@@ -52,6 +54,9 @@ It's easy... In the file `plugins/Prison/config.yml` are various WorldEdit and W
 Prison also has the feature where you can **run** them through a player that is online.  The way that works, is that the player must be in game, and then prison will teleport them to the mine to ensure they are in the correct world.  Then prison will run the specified commands as that player.  Therefore, the commands use the implied world and Prison injects all of the mine specific settings.  
 
 This makes it simple.  But yet there is still a lot of lack of automation because this requires a player to be online in the game.  Why does the player have to be in the game? WorldEdit.  Because WorldEdit does not provide a way to specify a target world on some of their commands, such as `//pos1` and `//pos2`, which is the primary way to set a regions area through the use of x,y,z coordinates.  Sucks doesn't it?  If this was not a limitation, then it would be trivial to script everything.
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
 
 # Running the Prison Mines WorldGuard Region commands
 
@@ -76,6 +81,7 @@ These new commands are located under this command, which will list all available
 [INFO]: /mines worldguard region mineSelect [mineName] [playerName] [options]
 ```
 
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 # Prison's config.yml settings
 
@@ -99,6 +105,9 @@ Prison uses placeholders in these commands, so some commands have placeholders t
 | {mine-area-pos2} | The other corner of the mine area | Prison inserts the `x,y,z` coordinates for the second position.|
 | {region-mine-area-name} | The generated region name to use | This is configured under `prison-mines.world-guard.region-mine-area.region-mine-name`. |
 
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 ## WorldGuard Region Scripts - Examples
 
@@ -176,8 +185,116 @@ prison-mines:
 Please note that `mine-area-region-commands`, `region-mine-area`, and mine areas in general, are not yet implemented in prison, and are not currently used.
 
 
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
+# WorldGuard Help
+
+Let's be honest, it's not always easy to get all plugins properly configured and working with each other as we may envision our servers. Plus, when access is being controlled by another plugin, such as WorldGuard and LuckPerms, it makes things even more complicated, especially when it's your first time working with these tools and plugins.
+
+Generally, googling with specific problems helps, but since Spigot, WorldGuard, and LuckPerms has been out for so many years, sometimes the suggested search results are not exactly what your plugin versions need, or they can be just flat-out bad advice.  So as a suggestion, look at when your version of plugins were released and then compare those release dates to the time stamps that google sometimes provides (they don't always tell you how old a post is).  This is important if you're running Spigot 1.8.8 and using WG v6.x.  That old version is not supported by WG support anymore, so you won't get live help from them.  But don't give up, solutions usually exist and you will find them if you keep looking.
+
+One general challenge to getting Prison to work with WorldGuard when using it with BlockBreakEvents, are the priorities of the event listeners.  To help with these kind of issues of who is canceling, or denying access to my mines!? Prison has some tools you can use to help debug which plugin is doing what to the BlockBreakEvents.
+
+`/prison support listeners blockBreak`
+
+This lists all block-break events that Prison is enabled to listen for (see the `autoFeaturesConfig.yml` file for enabling others if needed).  And it shows their priorities.  This alone can be very helpful in understanding which plugins before Prison my be denying the access to a mine (canceling the event).
+
+These reports can become pretty complex, especially if there are many events that prison has been setup to listen to.
+
+```
+> prison support listeners blockbreak
+[INFO]:  PEExplosionEvent: org.bukkit.event.HandlerList
+[INFO]:  ||Listeners blockBreak||-- < Event Dump: BlockBreakEvent (LOW) > ---- (3.3.0-alpha.19c)
+[INFO]:  All registered EventListeners (15):
+[INFO]:  . Plugin: ExcellentEnchants    LOWEST   (su.nightexpress.excellentenchants.registry.wrapper.WrappedEvent)
+[INFO]:  . Plugin: FastAsyncWorldEdit   LOWEST   (com.fastasyncworldedit.bukkit.listener.ChunkListener9)
+[INFO]:  . Plugin: ExcellentEnchants    LOW      (su.nightexpress.excellentenchants.registry.wrapper.WrappedEvent)
+[INFO]:  . Plugin: Prison               LOW      (tmps.ae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener)
+[INFO]:  . Plugin: ExcellentEnchants    NORMAL   (su.nightexpress.excellentenchants.registry.wrapper.WrappedEvent)
+[INFO]:  . Plugin: WorldGuard           NORMAL   (com.sk89q.worldguard.bukkit.listener.EventAbstractionListener)
+[INFO]:  . Plugin: WorldGuard           NORMAL   (com.sk89q.worldguard.bukkit.listener.EventAbstractionListener)
+[INFO]:  . Plugin: PrisonEnchants       NORMAL   (me.pulsi_.prisonenchants.listeners.customEnchantListener.CustomEnchantListenerNormal)
+[INFO]:  . Plugin: Prison               NORMAL   (tmps.SpigotListener)
+[INFO]:  . Plugin: ExcellentEnchants    HIGH     (su.nightexpress.excellentenchants.registry.wrapper.WrappedEvent)
+[INFO]:  . Plugin: WorldGuard           HIGH     (com.sk89q.worldguard.bukkit.listener.WorldGuardBlockListener)
+[INFO]:  . Plugin: ExcellentEnchants    HIGHEST  (su.nightexpress.excellentenchants.registry.wrapper.WrappedEvent)
+[INFO]:  . Plugin: ExcellentEnchants    HIGHEST  (su.nightexpress.excellentenchants.enchantment.impl.armor.FlameWalkerEnchant)
+[INFO]:  . Plugin: Essentials           HIGHEST  (com.earth2me.essentials.signs.SignBlockListener)
+[INFO]:  . Plugin: ExcellentEnchants    MONITOR  (su.nightexpress.excellentenchants.registry.wrapper.WrappedEvent)
+[INFO]:  NOTE: Prison's Block-Event Listeners:
+[INFO]:  . . Prison Internal BlockBreakEvents (non-auto features): tmps.SpigotListener
+[INFO]:  . . Auto Features: tmps.ae.AutoManagerBlockBreakEvents$*]
+[INFO]:  . . Prison Abbrv: 'tmps.' = 'tech.mcprison.prison.spigot.' & 'tmps.ae.' = 'tmps.autofeatures.events.'
+[INFO]:  < Event Dump: Pulsi_'s PEExplosionEvent (NORMAL) > (3.3.0-alpha.19c)
+[INFO]:  All registered EventListeners (1):
+[INFO]:  . Plugin: Prison   NORMAL  (tmps.ae.AutoManagerPrisonEnchants$AutoManagerPEExplosiveEventListener)
+[INFO]:  < Event Dump: ExplosiveBlockBreakEvent (LOW) > (3.3.0-alpha.19c)
+[INFO]:  All registered EventListeners (1):
+[INFO]:  . Plugin: Prison   LOW  (tmps.ae.AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener)
+[INFO]:  < Event Dump: EntityExplodeEvent (LOW) > (3.3.0-alpha.19c)
+[INFO]:  All registered EventListeners (8):
+[INFO]:  . Plugin: Essentials          LOW     (com.earth2me.essentials.signs.SignEntityListener)
+[INFO]:  . Plugin: Essentials          LOW     (com.earth2me.essentials.TNTExplodeListener)
+[INFO]:  . Plugin: Prison              LOW     (tmps.ae.AutoManagerEntityExplodeEvents$AutoManagerEntityExplodeEventListener)
+[INFO]:  . Plugin: ExcellentEnchants   NORMAL  (su.nightexpress.excellentenchants.enchantment.impl.tool.BlastMiningEnchant)
+[INFO]:  . Plugin: ExcellentEnchants   NORMAL  (su.nightexpress.excellentenchants.enchantment.impl.armor.FlameWalkerEnchant)
+[INFO]:  . Plugin: WorldGuard          NORMAL  (com.sk89q.worldguard.bukkit.listener.EventAbstractionListener)
+[INFO]:  . Plugin: PrisonEnchants      NORMAL  (me.pulsi_.prisonenchants.listeners.EntityListener)
+[INFO]:  . Plugin: WorldGuard          HIGH    (com.sk89q.worldguard.bukkit.listener.WorldGuardEntityListener)
+>
+```
+
+Prison also has a debug mode that allows debugging of an actual block breakage event, and inspects what each plugin does with that event.
+
+You can enable it with:
+`/prison debug`   (run in console: enables debug mode in prison)
+`/mines wand`   (run in game: gives your admin charater a mine wand)
+<CTRL><SHIFT><RIGHT-CLICK> on a block  (sneak click with your right mouse button to trigger the event)
+
+The details will be printed to the console.  To turn off Prison's debug mode: `/prison debug`
+
+
+```
+[INFO]:  Transaction log: RoyalBlueRanger multiplier: 1.00 ItemStacks: 1 ItemCount: 1 TotalAmount: 45.00 [raw_gold:1:45.00]
+[INFO]:  ### ** handleBlockBreakEvent ** ### (event: BlockBreakEvent, config: LOW, priority: LOW, canceled: FALSE)   EventInfo: results_passed RoyalBlueRanger Mine: blue_a GOLD_ORE (world,365,82,226)
+[INFO]: ||    validateEvent:: itemInHand=[Diamond pickaxe ]  blocks(1+0) (PassedValidation) (Fire pmEvent *start*)
+[INFO]: ||    (applyAutoEvents: GOLD_ORE Pickup [disabled:mines]  Smelt [disabled:mines]  Block [disabled:mines] )(NormalDrop handling enabled: normalDropSmelt[disabled:] normalDropBlock[disabled:] normalDropCheckForFullInventory[disabled:] )
+[INFO]: ||    [normalDrops:: Raw gold:1] (getToolFort: fort=0) (dropping: Raw gold qty: 1 value: 45.0)
+[INFO]: ||    [normalDrops total: qty: 1 value: 45.0] (autoEvents totalDrops: 1) (applyDropsBlockBreakage multi-blocks: 0)  (breakBlocks:submitTask:1)(Fire pmEvent *completed*) (sellallEnabled:userToggleable)(autosellPlayerToggled: enabled)
+[INFO]: || ### ** End Event Debug Info ** ### [50.996 ms]
+[INFO]:  DebugBlockInfo:  Mine blue_a  Rank: ---  GOLD_ORE  (world,365,82,226)
+[INFO]:      TargetBlock: gold_ore  Mined: false  Broke: false  Counted: false
+[INFO]:      isEdge: false  Exploded: false  IgnoreAllEvents: false
+[INFO]:  BlockBreakEvent Dump: GOLD_ORE (365, 82, 226)
+[INFO]:    Tool Used for drops: Diamond pickaxe
+[INFO]:     Legend: EP: EventPriority  EC: EventCanceled  DC: DropsCanceled  EB: EventBlock  Ds: Drops  ms: dur ms
+[INFO]:     Plugin: -initial-         EP:            EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: ---
+[INFO]:     Plugin: ExcellentEnchants EP: LOWEST     EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: 0.059400
+[INFO]:     Plugin: FastAsyncWorldEdit EP: LOWEST    EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: 0.020100
+[INFO]:     Plugin: ExcellentEnchants EP: LOW        EC: false  DC: normal   EB: minecraft:GOLD_ORE   Ds:  Raw gold(1)  ms: 0.022800
+[INFO]:     Plugin: Prison            EP: LOW        EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 51.845600
+[INFO]:     Plugin: ExcellentEnchants EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.048900
+[INFO]:     Plugin: WorldGuard        EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 10.979900
+[INFO]:     Plugin: WorldGuard        EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.053500
+[INFO]:     Plugin: PrisonEnchants    EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 10.162000
+[INFO]:     Plugin: Prison            EP: NORMAL     EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 1.030600
+[INFO]:     Plugin: ExcellentEnchants EP: HIGH       EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.023500
+[INFO]:     Plugin: WorldGuard        EP: HIGH       EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.033300
+[INFO]:     Plugin: ExcellentEnchants EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.007500
+[INFO]:     Plugin: ExcellentEnchants EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.041100
+[INFO]:     Plugin: Essentials        EP: HIGHEST    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.178200
+[INFO]:     Plugin: ExcellentEnchants EP: MONITOR    EC: false  DC: canceled  EB: minecraft:GOLD_ORE  Ds:  Raw gold(1)  ms: 0.075300
+[INFO]:   - - End DebugBlockInfo - -
+>
+```
+
+
+<hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
+
+
 # Please READ This First - Using Access by Ranks to Simplify Many Things
 
+*Note: This part of the document, through to the end, represents older notes. These may still be useful.*
 
 The latest versions of Prison has a new feature called **Access by Ranks** where a player, based upon their rank, is able to access a mine (break blocks within a mine) and also they can use the `/mtp` feature (mines teleport).  By using **Access by Ranks** you do not have to setup any WorldGuard regions to allow players to break blocks within the mines, and you don't have to setup any permissions.
 
@@ -208,6 +325,7 @@ If you need to manually setup Access By Ranks:
 
 # Prison's Event Priorities and WorldGuard Regions
 
+*Note: This represents older notes. These may still be useful.*
 
 **NOTE:** You can also grant access through WorldGuard regions, and then prison will allow anyone to break blocks in the mines.  The catch is that you must ensure WorldGuard checks access prior to Prison getting control of the BlockBreakEvents.  This requires setting up WorldGuard regions and permissions. 
 
@@ -246,6 +364,8 @@ You cannot set any of the above event priorities to MONITOR since that goes agai
 
 
 # Please READ This Next
+
+*Note: This represents older notes. These may still be useful.*
 
 This document is a work in progress.  This is a complex topic and depending upon how your environment is setup, the actual configurations may need to vary from what's covered in this document.
 
@@ -378,6 +498,8 @@ Note that the **/gamerule doMobSpawning false** may also help prevent mobs from 
 
 # Various LuckPerm Commands for Templates and Mines
 
+*Note: This represents older notes. These may still be useful.*
+
 *Not supported - For informational purposes only*
 
 The WorldGuard regions are covered below, but first you need to setup the groups within LuckPerm. Failure to create the groups prior to using them with the regions and prison rank commands may result in failures to work properly.
@@ -432,6 +554,8 @@ And to now hook this up to prison, you do same command, dropping the leading sla
 
 
 # Unprotecting a Mine for its members - Required for all Mines
+
+*Note: This represents older notes. These may still be useful.*
 
 *Not supported - For informational purposes only*
 
@@ -493,6 +617,8 @@ Itâ€™s a bad idea to deny access to the mines through these regions. Such a
 
 # Protecting a Mine's Area - Required for all Mine Areas
 
+*Note: This represents older notes. These may still be useful.*
+
 *This kind of a region is partially supported.  It is used to physically prevent a player from entering an a mine's area.**
 
 
@@ -553,6 +679,8 @@ Of course, just like **prison_mine_<mine-name>** region, we also give `owner` an
 
 
 # Granting Access to a Mine and Removal of the access
+
+*Note: This represents older notes. These may still be useful.*
 
 **Purpose:** From either the console, or from within game, manually grant a player access to a mine.
 
@@ -629,6 +757,8 @@ The following is an example of adding and removing a permission to a player.  Th
 
 # Adding Rank Commands to run when /rankup is Performed
 
+*Note: This represents older notes. These may still be useful.*
+
 **Purpose:** Adds the permission to access the mine area and to mine within a mine, when a player successfully runs /rankup.
 
 
@@ -664,6 +794,7 @@ So to recap, for every rank, ideally you should add the new perms for that rank,
 
 # Adding the Prison Rank Commands - Summary of Rank Commands
 
+*Note: This represents older notes. These may still be useful.*
 
 This is an example of setting up Rank Commands for mines a and b, we now need to add the Rank Commands to active the permission for both.  Also included in these commands are the permissions for the mines.tp command, where mines.tp.<MineName> is a permission and not a group.
 
@@ -697,6 +828,8 @@ And that's it!  Just repeat for all your other mines.
 
 # Alternatives
 
+*Note: This represents older notes. These may still be useful.*
+
 There are many ways to accomplish the same goals and that's what makes Minecraft so versatile and interesting to play.  The Prison Plugin does not want to impose a specific way to do most things, since it may not be the ideal way for your sever.
 
 One of the primary focuses for this document has been protecting the area around your mine to prevent players who should not access the mine, from enter that region.  One alternative to needing to protect a mine, would be to limit the access to the mine so it does not have to be protected.  One simple way of accomplishing that, is to have the mines in a void world, and then each mine would be a separate island.  Then all that would need to be protected, or controlled, would be the warping to that location.
@@ -715,6 +848,7 @@ One of the primary focuses for this document has been protecting the area around
 
 # Other Commands That May Be Important:
 
+*Note: This represents older notes. These may still be useful.*
 
     /region redefine mine_<mine-name>
     
@@ -724,7 +858,7 @@ One of the primary focuses for this document has been protecting the area around
     
     
 
-Setâ€™s the WorldEdit selection to the dimensions of the given mine:
+Set's the WorldEdit selection to the dimensions of the given mine:
 
     /region select prison_mine_<mine-name>
     /region select prison_mine_area_<mine-name>
