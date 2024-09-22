@@ -36,6 +36,7 @@ import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -5429,11 +5430,13 @@ private ChatDisplay minesCommandList( Mine m )
 					+ "specified and ran from console, it will only list the "
 					+ "commands and will not try to run them.") String playerName,
 			@Arg(name = "options", def = "view",
-					description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+					description = "Options: default 'view' [view, run, world-name]. The option 'view' will generate the "
 					+ "list of commands and display them in the console. The 'run' will submit them "
 					+ "to be ran as the player, who must be online.  They will be "
 					+ "teleported to the mine's spawn point to ensure they are in the correct "
-					+ "world.") @Wildcard String options) {
+					+ "world. If running from console, you must supply the world name, or these "
+					+ "commands cannot be ran from the console."
+					) @Wildcard String options) {
 		
 		String cmd = "globalInfo";
 		
@@ -5456,11 +5459,14 @@ private ChatDisplay minesCommandList( Mine m )
 					+ "specified and ran from console, it will only list the "
 					+ "commands and will not try to run them.") String playerName,
 			@Arg(name = "options", def = "view",
-			description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+			description = "Options: default 'view' [view, run, world-name]. "
+					+ "The option 'view' will generate the "
 					+ "list of commands and display them in the console. The 'run' will submit them "
 					+ "to be ran as the player, who must be online.  They will be "
 					+ "teleported to the mine's spawn point to ensure they are in the correct "
-					+ "world.") @Wildcard String options) {
+					+ "world. If running from console, you must supply the world name, or these "
+					+ "commands cannot be ran from the console."
+					) @Wildcard String options) {
 		
 		String cmd = "globalDefine";
 		
@@ -5482,11 +5488,13 @@ private ChatDisplay minesCommandList( Mine m )
 					+ "specified and ran from console, it will only list the "
 					+ "commands and will not try to run them.") String playerName,
 			@Arg(name = "options", def = "view",
-			description = "Options: default 'view' [view, run]. The option 'view' will generate the "
+			description = "Options: default 'view' [view, run, world-name]. The option 'view' will generate the "
 					+ "list of commands and display them in the console. The 'run' will submit them "
 					+ "to be ran as the player, who must be online.  They will be "
 					+ "teleported to the mine's spawn point to ensure they are in the correct "
-					+ "world.") @Wildcard String options) {
+					+ "world. If running from console, you must supply the world name, or these "
+					+ "commands cannot be ran from the console. "
+					) @Wildcard String options) {
 		
 		String cmd = "globalMobSpawningDeny";
 
@@ -5494,6 +5502,7 @@ private ChatDisplay minesCommandList( Mine m )
 		
 		String mineName = "*global*";
 		
+
 		worldGuardRegions( sender, wgSetting, mineName, playerName, options, cmd );
 	}
 	
@@ -5608,19 +5617,39 @@ private ChatDisplay minesCommandList( Mine m )
 	}
 	
 	
+//	public void worldGuardRegions( CommandSender sender, String wbSetting, 
+//			String mineName, String playerName, String options, 
+//			String command ) {
+//		
+//		worldGuardRegions(sender, wbSetting, mineName, playerName, options, command, null);
+//	}
+	
 	public void worldGuardRegions( CommandSender sender, String wbSetting, 
-					String mineName, String playerName, String options, String command ) {
+					String mineName, String playerName, String options, 
+					String command ) {
 		
         PrisonMines pMines = PrisonMines.getInstance();
 
         Mine mine = "*global*".equalsIgnoreCase(mineName) ? null : pMines.getMine( mineName );
         Player player = null;
         boolean run = false;
+        String world = null;
         
         if ( mine == null && !"*global*".equalsIgnoreCase(mineName) ) {
         	sender.sendMessage( "A valid mine name is required. Try again.");;
         	return;
         }
+        
+        // First check to make sure the playerName does not contain the world parameter:
+        if ( playerName != null ) {
+        	Optional<World> wOpt = Prison.get().getPlatform().getWorld( playerName );
+        	if ( wOpt.isPresent() ) {
+        		// Player name is a world name, so use it:
+        		world = playerName;
+        		playerName = "";
+        	}
+        }
+        
         
         if ( playerName.equalsIgnoreCase("run") ) {
         	
@@ -5632,7 +5661,7 @@ private ChatDisplay minesCommandList( Mine m )
         		sender.sendMessage( "A valid player name must be provided if this command is ran from the console.");
         	}
         }
-        else if ( playerName.equalsIgnoreCase( "view" ) || options.equalsIgnoreCase( "view" ) ) {
+        else if ( playerName.equalsIgnoreCase( "view" ) || options.toLowerCase().contains( "view" ) ) {
         	run = false;
         }
         else {
@@ -5641,9 +5670,26 @@ private ChatDisplay minesCommandList( Mine m )
         	if ( player == null ) {
         	}
         	
-        	if ( options.equalsIgnoreCase( "run" ) ) {
+        	if ( options.toLowerCase().contains( "run" ) ) {
             	run = true;
             }
+        }
+        
+        if ( options != null ) {
+        	
+        	// If a world name is supplied, then it should be what's left after you remove any possible
+    		// values for 'view' or 'run'.
+    		String worldName = options.replace("view", "").replace("run", "").trim();
+    		
+    		if ( worldName != null && worldName.length() > 0 ) {
+            	Optional<World> wOpt = Prison.get().getPlatform().getWorld( worldName );
+            	if ( wOpt.isPresent() ) {
+            		// Player name is a world name, so use it:
+            		world = worldName;
+            		
+            		// Do not change options... it's not used anymore:
+            	}
+    		}
         }
         
         
@@ -5668,11 +5714,13 @@ private ChatDisplay minesCommandList( Mine m )
     		teleportPlayer(player, mine, "spawn");
     	}
 
-    	String world = mine != null && !mine.isVirtual() ?
+    	String worldName = mine != null && !mine.isVirtual() ?
     					mine.getWorldName() :
+    					world != null ? world :
     					player != null ? player.getLocation().getWorld().getName() :
     						"world-not-set";
-    	display.addText( "&3World:  &7%s", world );
+    	
+    	display.addText( "&3World:  &7%s", worldName );
     	
     	display.addText("");
 
@@ -5683,6 +5731,11 @@ private ChatDisplay minesCommandList( Mine m )
         	
         	List<String> cmds = new ArrayList<>();
 
+        	
+        	String worldPlaceholder = worldName.equals("world-not-set") ? "" :
+        		!sender.isPlayer() ? "-w " + worldName :
+        			"";
+        	
         	
         	String regionMineName = Prison.get().getPlatform().getConfigString( 
         			"prison-mines.world-guard.region-mine.region-mine-name", "prison_mine_{mine}");
@@ -5708,7 +5761,8 @@ private ChatDisplay minesCommandList( Mine m )
         		String msg = cmd.replace("{mine-pos1}", minePos1)
         						.replace("{mine-pos2}", minePos2)
         						.replace("{region-mine-name}", regionMineName)
-        						.replace("{region-group-permission}", regionGroupPerms);
+        						.replace("{region-group-permission}", regionGroupPerms)
+        						.replace("{world}", worldPlaceholder);
         		
         		cmds.add( msg );
         		display.addText( "&4  %s", msg );

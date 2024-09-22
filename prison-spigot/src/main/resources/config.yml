@@ -389,55 +389,56 @@ prison-mines:
     prevent-usage-in-mines: 
     - GoldMine
     - SampleMineName
+
   world-guard:
-    WARNING: WorldGuard support is not yet available. Coming soon.
+    WARNING: WorldGuard may not be fully supported yet.
 
     global-region-commands:
       info:
-      - '/rg list'
-      - '/rg info __global__'
+      - '/rg list {world}'
+      - '/rg info {world} __global__'
       define:
-      - '/rg flag __global__ passthrough deny'
+      - '/rg flag {world} __global__ passthrough deny'
       deny-mob-spawning:
-      - 'rg flag __global__ mob-spawning deny'
+      - 'rg flag {world} __global__ mob-spawning deny'
       - '/gamerule doMobSpawning false'
     mine-region-commands:
       info:
-      - '/rg list'
-      - '/rg info  {region-mine-name}'
+      - '/rg list {world}'
+      - '/rg info {world} {region-mine-name}'
       redefine:
       - '//pos1 {mine-pos1}'
       - '//pos2 {mine-pos2}'
-      - '//region redefine {region-mine-name}'
+      - '//region redefine {world} {region-mine-name}'
       define:
-      - '/region define {region-mine-name}'
-      - '/region addmember {region-mine-name} {region-group-permission}'
-      - '/region setpriority {region-mine-name} 20'
-      - '/region flag {region-mine-name} block-break allow'
-      - '/region flag {region-mine-name} item-pickup allow'
-      - '/region flag {region-mine-name} exp-drops allow'
-      - '/region flag {region-mine-name} item-drop allow'
+      - '/region define {world} {region-mine-name}'
+      - '/region addmember {world} {region-mine-name} {region-group-permission}'
+      - '/region setpriority {world} {region-mine-name} 20'
+      - '/region flag {world} {region-mine-name} block-break allow'
+      - '/region flag {world} {region-mine-name} item-pickup allow'
+      - '/region flag {world} {region-mine-name} exp-drops allow'
+      - '/region flag {world} {region-mine-name} item-drop allow'
       select:
-      - '/region select {region-mine-name}'
+      - '/region select {world} {region-mine-name}'
 
     mine-area-region-commands:
       info:
-      - '/rg list'
-      - '/rg info  {region-mine-area-name}'
+      - '/rg list {world}'
+      - '/rg info {world} {region-mine-area-name}'
       redefine:
       - '//pos1 {mine-area-pos1}'
       - '//pos2 {mine-area-pos2}'
-      - '/region redefine {region-mine-area-name}'
+      - '/region redefine {world} {region-mine-area-name}'
       define:
-      - '/region define {region-mine-area-name}'
-      - '/region addmember {region-mine-area-name} {region-group-permission}'
-      - '/region setpriority {region-mine-area-name} 10'
-      - '/region flag {region-mine-area-name} block-break deny'
-      - '/region flag {region-mine-area-name} item-pickup allow'
-      - '/region flag {region-mine-area-name} exp-drops allow'
-      - '/region flag {region-mine-area-name} item-drop allow'
+      - '/region define {world} {region-mine-area-name}'
+      - '/region addmember {world} {region-mine-area-name} {region-group-permission}'
+      - '/region setpriority {world} {region-mine-area-name} 10'
+      - '/region flag {world} {region-mine-area-name} block-break deny'
+      - '/region flag {world} {region-mine-area-name} item-pickup allow'
+      - '/region flag {world} {region-mine-area-name} exp-drops allow'
+      - '/region flag {world} {region-mine-area-name} item-drop allow'
       select:
-      - '/region select {region-mine-area-name}'
+      - '/region select {world} {region-mine-area-name}'
 
     region-mine:
       enable: true

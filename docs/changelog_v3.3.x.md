@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-22
 
 
+* **WorldGuard Regions: Updated the configs to include placeholders for the world, and updated the code to support it too.**
+
+
 * **Custom placeholders: Fix an issue with the custom placeholders changes being able to correctly count the aliases in the command `/prison commands list`.**
 
 
