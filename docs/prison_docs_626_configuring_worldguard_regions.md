@@ -13,7 +13,7 @@ The preferred way is with using **Access by Ranks**, but other alternative techn
 Please note that work is underway with providing prison based commands to help generate and update WorldGuard regions. So far, they are very flexible with the ability to customize what commands are ran by a series of config settings within the config.yml file.  The primary problem is when you need to use WorldEdit command with the regions, since most of them do not allow you to specify the world.  So one technique prison is employing is to run the commands through an admin that is online so it behaves as if they have entered the commands themselves.
 
 
-*Documented updated: 2024-0-21*
+*Documented updated: 2024-09-21*
 
 <hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -246,10 +246,12 @@ These reports can become pretty complex, especially if there are many events tha
 
 Prison also has a debug mode that allows debugging of an actual block breakage event, and inspects what each plugin does with that event.
 
+
 You can enable it with:
-  `/prison debug`   (run in console: enables debug mode in prison)
-  `/mines wand`   (run in game: gives your admin charater a mine wand)
-  `<CTRL><SHIFT><RIGHT-CLICK>` on a block  (sneak click with your right mouse button to trigger the event)
+*  `/prison debug`   (run in console: enables debug mode in prison)
+*  `/mines wand  `   (run in game: gives your admin charater a mine wand)
+*  `<CTRL><SHIFT><RIGHT-CLICK>` on a block  (sneak click with your right mouse button to trigger the event)
+
 
 The details will be printed to the console.  To turn off Prison's debug mode: `/prison debug`
 
