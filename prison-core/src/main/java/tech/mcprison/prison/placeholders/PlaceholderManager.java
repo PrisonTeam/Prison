@@ -909,7 +909,7 @@ public class PlaceholderManager {
 							
 							count++;
 							totalCount++;
-							if ( ph.isAlias() ) {
+							if ( ph.getAlias() != null && ph.getAlias().isAlias() ) {
 								aliases++;
 								totalAliases++;
 							}

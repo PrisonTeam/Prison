@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19c 2024-09-21
+# 3.3.0-alpha.19c 2024-09-22
+
+
+* **Custom placeholders: Fix an issue with the custom placeholders changes being able to correctly count the aliases in the command `/prison commands list`.**
 
 
 * **Custom Placeholders: Added support for a more complex custom placeholder where the default is an abbreviated placeholder (simple) and a more complex expanded placeholder where you can set various options such as enable PAPI expansions and adding descriptions.**
