@@ -304,14 +304,23 @@ public class SpigotPlatform
     
     @Override 
     public Optional<Player> getPlayer(String name) {
+    	SpigotPlayer player = null;
     	
-    	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
-    	
-    	if ( name != null && playerBukkit != null && !playerBukkit.getName().equalsIgnoreCase( name ) ) {
-    		playerBukkit = null;
+    	if ( !"CONSOLE".equalsIgnoreCase( name ) ) {
+    		
+    		org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+    		
+    		if ( name != null && playerBukkit != null && !playerBukkit.getName().equalsIgnoreCase( name ) ) {
+    			playerBukkit = null;
+    		}
+    		
+    		if ( playerBukkit != null ) {
+    			player = new SpigotPlayer( playerBukkit );
+    		}
     	}
 
-    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
+    	return Optional.ofNullable( player );
+//    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
     	
 //        return Optional.ofNullable(
 //            players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()

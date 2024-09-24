@@ -50,24 +50,46 @@ public abstract class BaseCommands
 	public Player getPlayer( CommandSender sender, String playerName, UUID uuid ) {
 		Player result = null;
 		
-		playerName = playerName != null && !playerName.trim().isEmpty() ? 
-								playerName : sender != null ? sender.getName() : null;
-		
-		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
+		boolean console = "CONSOLE".equalsIgnoreCase( sender.getName() );
+		if ( !console ) {
+			playerName = sender.getName();
+		}
 		
 		if ( playerName != null ) {
 			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
 			if ( !opt.isPresent() ) {
 				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
 			}
-			if ( !opt.isPresent() ) {
-				opt = Prison.get().getPlatform().getOfflinePlayer( uuid );
-			}
 			if ( opt.isPresent() ) {
 				result = opt.get();
 			}
-			
 		}
+		if ( result == null && uuid != null ) {
+			Optional<Player> opt = Prison.get().getPlatform().getOfflinePlayer( uuid );
+			if ( opt.isPresent() ) {
+				result = opt.get();
+			}
+		}
+		
+//		playerName = playerName != null && !playerName.trim().isEmpty() ? 
+//								playerName : sender != null ? sender.getName() : null;
+//		
+//		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
+//		
+//		// Do not try to get the player name if 
+//		if ( playerName != null ) {
+//			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
+//			if ( !opt.isPresent() ) {
+//				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
+//			}
+//			if ( !opt.isPresent() ) {
+//				opt = Prison.get().getPlatform().getOfflinePlayer( uuid );
+//			}
+//			if ( opt.isPresent() ) {
+//				result = opt.get();
+//			}
+//			
+//		}
 		return result;
 	}
 	
