@@ -17,6 +17,8 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-24
 
 
+* **WorldGuard Regions: Enable the commands to be able to be ran from the console and through online players.**
+Disabled the Mine-Area commands related to the WorldGuard regions because mine areas are not yet implemented.
 
 
 * **Player: the code that gets a player object based upon a name has been altered to address a few issues.**
