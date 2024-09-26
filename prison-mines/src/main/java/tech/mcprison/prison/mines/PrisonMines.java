@@ -317,7 +317,26 @@ public class PrisonMines extends Module {
 		getMineManager().cancelResetAllMines();;
 	}
 	
-	
+    /**
+     * For modules that have elements, this will return the count.  If a module has no
+     * elements, then it will return a -1.  Otherwise a zero would indicate that a module
+     * should have elements, but it currently has none.
+     * 
+     * Example would be ranks and mines.  For these, if it returns a zero, then they have 
+     * no ranks or mines defined.  If it return a -1 then the module is not active.
+     * 
+     * @return
+     */
+    public int getElementCount() {
+    	int results = isEnabled() ? 0 : -1;
+    	
+    	if ( isEnabled() ) {
+    		results = getMines().size();
+    	}
+    	
+    	return results;
+    }
+    
 	
     public JsonFileIO getJsonFileIO()
 	{

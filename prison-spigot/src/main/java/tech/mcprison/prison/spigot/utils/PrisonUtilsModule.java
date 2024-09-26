@@ -12,8 +12,9 @@ public class PrisonUtilsModule
 {
 	public static final String MODULE_NAME = "Utils";
 	
+	private int modulesEnabled = 0;
+	
 	private YamlConfiguration modulesConf;
-
     
     public PrisonUtilsModule(String version, YamlConfiguration modulesConf) {
         super(MODULE_NAME, version, 3);
@@ -30,6 +31,8 @@ public class PrisonUtilsModule
 	@Override
 	public void enable() {
 			
+		int modulesEnabled = 0;
+		
 		if ( isEnabled( "utils.enabled", true ) ) {
 			
 			if ( isEnabled( "utils.repair.enabled", true ) ) {
@@ -41,6 +44,7 @@ public class PrisonUtilsModule
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
 
+				modulesEnabled++;
 			}
 			
 			if ( isEnabled( "utils.messages.enabled", true ) ) {
@@ -52,6 +56,7 @@ public class PrisonUtilsModule
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
 				
+				modulesEnabled++;
 			}
 			
 			if ( isEnabled( "utils.mining.enabled", true ) ) {
@@ -63,6 +68,7 @@ public class PrisonUtilsModule
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
 				
+				modulesEnabled++;
 			}
 
 			if ( isEnabled( "utils.healing.enabled", true ) ) {
@@ -72,6 +78,8 @@ public class PrisonUtilsModule
 				utils.setEnableHealingBreath( isEnabled("utils.healing.breath", true));
 
 				Prison.get().getCommandHandler().registerCommands( utils );
+
+				modulesEnabled++;
 			}
 
 
@@ -84,6 +92,7 @@ public class PrisonUtilsModule
 
 				Prison.get().getCommandHandler().registerCommands( utils );
 
+				modulesEnabled++;
 			}
 			
 			
@@ -97,6 +106,7 @@ public class PrisonUtilsModule
 
 				Prison.get().getCommandHandler().registerCommands( utils );
 
+				modulesEnabled++;
 			}
 			
 			if ( isEnabled( "utils.sounds.enabled", true ) ) {
@@ -107,6 +117,7 @@ public class PrisonUtilsModule
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
 				
+				modulesEnabled++;
 			}
 			
 			if ( isEnabled( "utils.titles.enabled", true ) ) {
@@ -122,6 +133,7 @@ public class PrisonUtilsModule
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
 				
+				modulesEnabled++;
 			}
 			
 			if ( isEnabled( "utils.bombs.enabled", true ) ) {
@@ -136,9 +148,12 @@ public class PrisonUtilsModule
 				Bukkit.getPluginManager().registerEvents(
 								new PrisonBombListener( utils ), SpigotPrison.getInstance());
 				
+				modulesEnabled++;
 			}
 			
 		}
+		
+		setModulesEnabled( modulesEnabled );
 	}
 
 	@Override
@@ -159,4 +174,34 @@ public class PrisonUtilsModule
 	private boolean isEnabled( String configPath, boolean defaultValue ) {
 		return getModulesConf().getBoolean( configPath, defaultValue );
 	}
+	
+    /**
+     * For modules that have elements, this will return the count.  If a module has no
+     * elements, then it will return a -1.  Otherwise a zero would indicate that a module
+     * should have elements, but it currently has none.
+     * 
+     * Example would be ranks and mines.  For these, if it returns a zero, then they have 
+     * no ranks or mines defined.  If it return a -1 then the module is not active.
+     * 
+     * @return
+     */
+    public int getElementCount() {
+    	int results = isEnabled() ? 0 : -1;
+    	
+    	if ( isEnabled() ) {
+    		results = getModulesEnabled();
+    	}
+    	
+    	return results;
+    }
+
+
+	public int getModulesEnabled() {
+		return modulesEnabled;
+	}
+	public void setModulesEnabled(int modulesEnabled) {
+		this.modulesEnabled = modulesEnabled;
+	}
+
+
 }

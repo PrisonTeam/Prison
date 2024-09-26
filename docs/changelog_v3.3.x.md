@@ -17,6 +17,8 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-26
 
 
+* ***Prison modules: Added an element count which reflects how many elements are loaded for each module.**
+  Examples would be ranks and mines, or number of prison utilities that were enabled.
 
 
 * **File storage: Prison was changed a few weeks ago to precheck some of the critical folder structures to ensure they are there.**
