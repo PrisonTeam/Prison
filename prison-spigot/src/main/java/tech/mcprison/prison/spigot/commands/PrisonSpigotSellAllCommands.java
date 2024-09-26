@@ -732,19 +732,22 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
         if (itemID == null){
-            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_missing_name));
+            Output.get().sendWarn(sender, messages.getString(
+            		MessagesConfig.StringID.spigot_message_sellall_item_missing_name));
             return;
         }
         itemID = itemID.toUpperCase();
 
         if (value == null){
-            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_missing_price));
+            Output.get().sendWarn(sender, messages.getString(
+            		MessagesConfig.StringID.spigot_message_sellall_item_missing_price));
             return;
         }
 
 
         if (sellAllUtil.sellAllConfig.getConfigurationSection("Items." + itemID) != null){
-            Output.get().sendWarn(sender, itemID + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_already_added));
+            Output.get().sendWarn(sender, itemID + " " + 
+            			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_already_added));
             return;
         }
 
@@ -753,16 +756,21 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             try {
                 blockAdd = XMaterial.matchXMaterial(itemID).orElse(null);
             } catch (IllegalArgumentException ex){
-                Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
+                Output.get().sendInfo(sender, messages.getString(
+                		MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + 
+                		" [" + itemID + "]");
                 return;
             }
 
             if (sellAllUtil.addSellAllBlock(blockAdd, value)){
-                Output.get().sendInfo(sender, "&3 ITEM [" + itemID + ", " + value + "] " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
+                Output.get().sendInfo(sender, "&3 ITEM [" + itemID + ", " + value + "] " + 
+                			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
             }
 
         } catch (IllegalArgumentException ex){
-            Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
+            Output.get().sendError(sender, messages.getString(
+            		MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + 
+            		" [" + itemID + "]");
         }
     }
 
@@ -790,7 +798,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
         if (sellAllUtil.addSellAllBlock(blockAdd, value)) return;
 
-        Output.get().logInfo("&3 ITEM [" + itemID + ", " + value + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
+        Output.get().logInfo("&3 ITEM [" + itemID + ", " + value + "] " + 
+        			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
     }
 
     @Command(identifier = "sellall items delete", 

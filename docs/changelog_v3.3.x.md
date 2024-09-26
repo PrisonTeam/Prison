@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-26
 
 
+* **Sellall startup messages:  Fixed some formatting issues that were causing a misrepresentation of the sellall configurations within the startup logs.**
+
+
 * **Prison Backpacks: Found that the startup messages for backpacks was using references to sellall configs, which was incorrect.**
 The messages are now corrected.  This error appeared as if sellall was being setup and configured twice, which it was not.
 
