@@ -25,8 +25,10 @@ public class BackpacksConfig extends SpigotConfigComponents{
 
     public void initialize(){
 
+    	String path = "/backpacks/backpacksconfig.yml";
+    	
         // Filepath
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksconfig.yml");
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + path );
 
         // Check if the config exists
         fileMaker(file);
@@ -48,10 +50,17 @@ public class BackpacksConfig extends SpigotConfigComponents{
         if (changeCount > 0) {
             try {
                 conf.save(file);
-                Output.get().logInfo( "&aThere were &b%d &anew values added for the language files " + "used by the SellAllConfig.yml file located at &b%s", changeCount, file.getAbsoluteFile() );
+                Output.get().logInfo( "&aThere were &b%d &anew values added for the language files " +
+                			"used by the '%s' file located at &b%s", 
+                			changeCount, 
+                			path, file.getAbsoluteFile() );
             }
             catch (IOException e) {
-                Output.get().logInfo( "&4Failed to save &b%d &4new values for the language files " + "used by the SellAllConfig.yml file located at &b%s&4. " + "&a %s", changeCount, file.getAbsoluteFile(), e.getMessage() );
+                Output.get().logInfo( "&4Failed to save &b%d &4new values for the language files " + 
+                			"used by the '%s' file located at &b%s&4. " + 
+                			"&a %s", 
+                			changeCount, 
+                			path, file.getAbsoluteFile(), e.getMessage() );
             }
         }
 

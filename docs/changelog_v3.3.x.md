@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-26
 
 
+* **Prison Backpacks: Found that the startup messages for backpacks was using references to sellall configs, which was incorrect.**
+The messages are now corrected.  This error appeared as if sellall was being setup and configured twice, which it was not.
+
+
 * **Sellall: The sellall initialization function was being called twice by error.**
 As such, this prevents a duplicate message from appearing in the startup log.  No problems were caused by calling initialize twice, but it was unneeded.
 
