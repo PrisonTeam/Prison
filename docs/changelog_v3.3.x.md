@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19c 2024-09-26
+# 3.3.0-alpha.19d 2024-09-26
+
+
+
+
+** 3.3.0-alpha.19d 2024-09-26**
+
 
 
 * **Prison blocks: It was realized that due to a recent expansion of the items that are included in the default for sellall, that the first 27 or so entries, were the blocks that were used in the auto generated mines when running the command '/ranks autoConfigure'.**
