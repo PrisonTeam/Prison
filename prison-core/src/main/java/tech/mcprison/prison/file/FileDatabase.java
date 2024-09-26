@@ -81,10 +81,11 @@ public class FileDatabase
 
     /**
      * <p>This function will create a new FileCollection on the file system (a directory).
-     * It will generate the new directory with the provided name.  If there is already
-     * a directory by that name, then this function will fail and it will log a
-     * warning.  If successful, then it will add a File entry Collection to the 
-     * collectionMap.
+     * It will generate the new directory with the provided name, and all parents.
+     * If successful, then it will add a File entry Collection to the collectionMap.
+     * </p>
+     * 
+     * <p>If the directory already exists, then all is good (return true) and move on.
      * </p>
      * 
      * @param name
@@ -96,13 +97,13 @@ public class FileDatabase
     	
         File collDir = new File(dbDir, name);
         if (!collDir.exists()) {
-        	results = collDir.mkdir();
-        	collectionMap.put(name, new FileCollection(collDir));
-        } else {
-        	String message = "The attempt to create a new FileCollection named " + name + 
-        			" failed because a directory on the file system already exists by that name.";
-        	Output.get().logWarn( message );
+        	results = collDir.mkdirs();
+        } 
+        else {
+        	// the directory already exist... who cares?  Let's use it:
+        	results = true;
         }
+        collectionMap.put(name, new FileCollection(collDir));
         
         return results;
     }

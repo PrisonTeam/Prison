@@ -14,7 +14,13 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19c 2024-09-24
+# 3.3.0-alpha.19c 2024-09-26
+
+
+
+
+* **File storage: Prison was changed a few weeks ago to precheck some of the critical folder structures to ensure they are there.**
+That change was causing problems when creating a new instance of prison since the old code would fail if the directories were already there, which made no sense.
 
 
 * **WorldGuard Regions: Enable the commands to be able to be ran from the console and through online players.**

@@ -100,10 +100,8 @@ public class FileStorage
 
     /**
      * <p>This function will create a new FileDatabase on the file system (a directory).
-     * It will generate the new directory with the provided name.  If there is already
-     * a directory by that name, then this function will fail and it will log a
-     * warning.  If successful, then it will add a FileDatabase entry to the 
-     * databaseMap.
+     * It will generate the new directory with the provided name.
+     * If successful, then it will add a FileDatabase entry to the databaseMap. 
      * </p>
      * 
      * @param name
@@ -115,13 +113,14 @@ public class FileStorage
     	
         File directory = new File(rootDir, name);
         if (!directory.exists()) {
-        	results = directory.mkdir();
-        	databaseMap.put(name, new FileDatabase(directory));
-        } else {
-        	String message = "The attempt to create a new FileDatabase named " + name + 
-        			" failed because a directory on the file system already exists by that name.";
-        	Output.get().logWarn( message );
+        	results = directory.mkdirs();
+        } 
+        else {
+        	// directory already exists, so use it:
+        	results = true;
         }
+        databaseMap.put(name, new FileDatabase(directory));
+        
         return results;
     }
 

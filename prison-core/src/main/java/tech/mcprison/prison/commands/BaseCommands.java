@@ -50,7 +50,8 @@ public abstract class BaseCommands
 	public Player getPlayer( CommandSender sender, String playerName, UUID uuid ) {
 		Player result = null;
 		
-		boolean console = "CONSOLE".equalsIgnoreCase( sender.getName() );
+		boolean console = sender == null ? true : "CONSOLE".equalsIgnoreCase( sender.getName() );
+		
 		if ( !console ) {
 			playerName = sender.getName();
 		}
