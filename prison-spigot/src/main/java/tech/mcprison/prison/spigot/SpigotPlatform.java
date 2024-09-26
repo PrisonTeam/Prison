@@ -1780,8 +1780,9 @@ public class SpigotPlatform
 			double total = 0;
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
+				String blockName = mBlocks.get( i );
 				
-				PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
+				PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockName );
 				if ( prisonBlock != null ) {
 					
 					double chance = percents.size() > i ? percents.get( i ) : 0;
@@ -1804,7 +1805,7 @@ public class SpigotPlatform
 					Output.get().logInfo(
 							String.format( "AutoConfigure block assignment failure: New Block Model: " +
 									"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
-									mBlocks.get( i ) ) );
+									blockName ) );
 				}
 				
 				
@@ -1938,7 +1939,29 @@ public class SpigotPlatform
 	
 	
 	/**
-	 * This listing of blocks is based strictly upon XMaterial. 
+	 * <p>This listing of blocks is based strictly upon XMaterial. 
+	 * </p>
+	 * 
+	 * <p>Please note:  First part of this list is used in the mine's block list 
+	 * for the command `/ranks autoConfigure'. 
+	 * These should be listed in ascending order as far as values for the blocks
+	 * that are included in the mines.
+	 * </p>
+	 * 
+	 * <p>In the source code are comments listing which blocks are assigned to each
+	 * along with the percentages.
+	 * </p>
+	 * 
+	 * <p>Before each block is added, it is confirmed that it's valid for the
+	 * version of Spigot that is being ran.  If it's not valid, it will be 
+	 * ignored.
+	 * </p>
+	 * 
+	 * <p>It should be noted the blocks in this list need to be fully compatible with
+	 * Spigot 1.8 through 1.21 +, otherwise invalid blocks will be omitted and
+	 * the last few mines could be messed up.
+	 * </p>
+	 * 
 	 * This is the preferred list to use with the new block model.
 	 * 
 	 * @return
@@ -1946,230 +1969,298 @@ public class SpigotPlatform
 	public List<SellAllBlockData> buildBlockListXMaterial() {
 		List<SellAllBlockData> blockList = new ArrayList<>();
 		
-		blockList.add( new SellAllBlockData( XMaterial.COBBLESTONE, 4, true) );
-		blockList.add( new SellAllBlockData( XMaterial.ANDESITE, 5, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DIORITE, 6, true) );
 		
-		blockList.add( new SellAllBlockData( XMaterial.GRANITE, 8, true) );
-		blockList.add( new SellAllBlockData( XMaterial.STONE, 9, true) );
-		blockList.add( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7, true) );
+//		Mine A: [minecraft: andesite 5.0, minecraft: cobblestone 95.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.ANDESITE, 5, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.COBBLESTONE, 4, true), blockList );
+
+//		Mine B: [minecraft: diorite 5.0, minecraft: andesite 10.0, minecraft: cobblestone 85.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DIORITE, 6, true), blockList );
+		
+//		Mine C: [minecraft: coal_ore 5.0, minecraft: diorite 10.0, minecraft: andesite 20.0, minecraft: cobblestone 65.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.COAL_ORE, 13, true), blockList );
+		
+//		Mine D: [minecraft: granite 5.0, minecraft: coal_ore 10.0, minecraft: diorite 20.0, minecraft: andesite 20.0, minecraft: cobblestone 45.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GRANITE, 8, true), blockList );
+		
+//		Mine E: [minecraft: stone 5.0, minecraft: granite 10.0, minecraft: coal_ore 20.0, minecraft: diorite 20.0, minecraft: andesite 20.0, minecraft: cobblestone 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.STONE, 9, true), blockList );
+		
+//		Mine F: [minecraft: iron_ore 5.0, minecraft: stone 10.0, minecraft: granite 20.0, minecraft: coal_ore 20.0, minecraft: diorite 20.0, minecraft: andesite 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.IRON_ORE, 18, true), blockList );
+		
+//		Mine G: [minecraft: polished_andesite 5.0, minecraft: iron_ore 10.0, minecraft: stone 20.0, minecraft: granite 20.0, minecraft: coal_ore 20.0, minecraft: diorite 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7, true), blockList );
+		
+//		Mine H: [minecraft: gold_ore 5.0, minecraft: polished_andesite 10.0, minecraft: iron_ore 20.0, minecraft: stone 20.0, minecraft: granite 20.0, minecraft: coal_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GOLD_ORE, 45, true), blockList );
+
+//		Mine I: [minecraft: mossy_cobblestone 5.0, minecraft: gold_ore 10.0, minecraft: polished_andesite 20.0, minecraft: iron_ore 20.0, minecraft: stone 20.0, minecraft: granite 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.MOSSY_COBBLESTONE, 29, true), blockList );
+		
+//		Mine J: [minecraft: coal_block 5.0, minecraft: mossy_cobblestone 10.0, minecraft: gold_ore 20.0, minecraft: polished_andesite 20.0, minecraft: iron_ore 20.0, minecraft: stone 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.COAL_BLOCK, 135, true), blockList );
+
+//		Mine K: [minecraft: nether_quartz_ore 5.0, minecraft: coal_block 10.0, minecraft: mossy_cobblestone 20.0, minecraft: gold_ore 20.0, minecraft: polished_andesite 20.0, minecraft: iron_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.NETHER_QUARTZ_ORE, 34, true), blockList );
+
+//		Mine L: [minecraft: lapis_ore 5.0, minecraft: nether_quartz_ore 10.0, minecraft: coal_block 20.0, minecraft: mossy_cobblestone 20.0, minecraft: gold_ore 20.0, minecraft: polished_andesite 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.LAPIS_ORE, 100, true), blockList );
+		
+//		Mine M: [minecraft: end_stone 5.0, minecraft: lapis_ore 10.0, minecraft: nether_quartz_ore 20.0, minecraft: coal_block 20.0, minecraft: mossy_cobblestone 20.0, minecraft: gold_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.END_STONE, 14, true ), blockList );
+		
+//		Mine N: [minecraft: iron_block 5.0, minecraft: end_stone 10.0, minecraft: lapis_ore 20.0, minecraft: nether_quartz_ore 20.0, minecraft: coal_block 20.0, minecraft: mossy_cobblestone 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.IRON_BLOCK, 190, true), blockList );
+		
+//		Mine O: [minecraft: redstone_ore 5.0, minecraft: iron_block 10.0, minecraft: end_stone 20.0, minecraft: lapis_ore 20.0, minecraft: nether_quartz_ore 20.0, minecraft: coal_block 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.REDSTONE_ORE, 45, true), blockList );
+		
+//		Mine P: [minecraft: diamond_ore 5.0, minecraft: redstone_ore 10.0, minecraft: iron_block 20.0, minecraft: end_stone 20.0, minecraft: lapis_ore 20.0, minecraft: nether_quartz_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DIAMOND_ORE, 222, true), blockList );
+
+//		Mine Q: [minecraft: quartz_block 5.0, minecraft: diamond_ore 10.0, minecraft: redstone_ore 20.0, minecraft: iron_block 20.0, minecraft: end_stone 20.0, minecraft: lapis_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.QUARTZ_BLOCK, 136, true), blockList );
+
+//		Mine R: [minecraft: emerald_ore 5.0, minecraft: quartz_block 10.0, minecraft: diamond_ore 20.0, minecraft: redstone_ore 20.0, minecraft: iron_block 20.0, minecraft: end_stone 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.EMERALD_ORE, 250, true), blockList );
+		
+//		Mine S: [minecraft: gold_block 5.0, minecraft: emerald_ore 10.0, minecraft: quartz_block 20.0, minecraft: diamond_ore 20.0, minecraft: redstone_ore 20.0, minecraft: iron_block 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GOLD_BLOCK, 450, true), blockList );
+
+//		Mine T: [minecraft: prismarine 5.0, minecraft: gold_block 10.0, minecraft: emerald_ore 20.0, minecraft: quartz_block 20.0, minecraft: diamond_ore 20.0, minecraft: redstone_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PRISMARINE, 52, true ), blockList );
+
+//		Mine U: [minecraft: dark_prismarine 5.0, minecraft: prismarine 10.0, minecraft: gold_block 20.0, minecraft: emerald_ore 20.0, minecraft: quartz_block 20.0, minecraft: diamond_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ), blockList );
+		
+//		Mine V: [minecraft: lapis_block 5.0, minecraft: dark_prismarine 10.0, minecraft: prismarine 20.0, minecraft: gold_block 20.0, minecraft: emerald_ore 20.0, minecraft: quartz_block 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 900, true), blockList );
+		
+//		Mine W: [minecraft: redstone_block 5.0, minecraft: lapis_block 10.0, minecraft: dark_prismarine 20.0, minecraft: prismarine 20.0, minecraft: gold_block 20.0, minecraft: emerald_ore 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true), blockList );
+
+//		Mine X: [minecraft: obsidian 5.0, minecraft: redstone_block 10.0, minecraft: lapis_block 20.0, minecraft: dark_prismarine 20.0, minecraft: prismarine 20.0, minecraft: gold_block 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.OBSIDIAN, 450, true ), blockList );
+		
+//		Mine Y: [minecraft: diamond_block 5.0, minecraft: obsidian 10.0, minecraft: redstone_block 20.0, minecraft: lapis_block 20.0, minecraft: dark_prismarine 20.0, minecraft: prismarine 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 1998, true), blockList );
+		
+//		Mine Z: [minecraft: emerald_block 5.0, minecraft: diamond_block 10.0, minecraft: obsidian 20.0, minecraft: redstone_block 20.0, minecraft: lapis_block 20.0, minecraft: dark_prismarine 25.0]
+		addBlockToSellallList( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true), blockList );
+		
+		
+		
+		
+		
+//		addBlockToSellallList( XMaterial.SLIME_BLOCK.name(), blockList );
+		
+
+		// The following blocks are not used to generate the mine blocks:
+		
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CHARCOAL, 13, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.COAL, 13, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_COAL_ORE, 13, true), blockList );
+		
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.IRON_NUGGET, 2, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.IRON_INGOT, 18, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RAW_IRON, 18, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RAW_IRON_BLOCK, 162, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_IRON_ORE, 18, true), blockList );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.CHARCOAL, 13, true) );
-		blockList.add( new SellAllBlockData( XMaterial.COAL, 13, true) );
-		blockList.add( new SellAllBlockData( XMaterial.COAL_ORE, 13, true) );
-		blockList.add( new SellAllBlockData( XMaterial.COAL_BLOCK, 135, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_COAL_ORE, 13, true) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GOLD_NUGGET, 5, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GOLD_INGOT, 45, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RAW_GOLD, 45, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RAW_GOLD_BLOCK, 405, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_GOLD_ORE, 45, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.NETHER_GOLD_ORE, 45, true), blockList );
 		
 		
-		blockList.add( new SellAllBlockData( XMaterial.IRON_NUGGET, 2, true) );
-		blockList.add( new SellAllBlockData( XMaterial.IRON_ORE, 18, true) );
-		blockList.add( new SellAllBlockData( XMaterial.IRON_INGOT, 18, true) );
-		blockList.add( new SellAllBlockData( XMaterial.RAW_IRON, 18, true) );
-		blockList.add( new SellAllBlockData( XMaterial.RAW_IRON_BLOCK, 162, true) );
-		blockList.add( new SellAllBlockData( XMaterial.IRON_BLOCK, 190, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_IRON_ORE, 18, true) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.COPPER_ORE, 22, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RAW_COPPER, 22, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RAW_COPPER_BLOCK, 198, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.COPPER_BLOCK, 198, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_COPPER_ORE, 22, true), blockList );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_NUGGET, 5, true) );
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_ORE, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_INGOT, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.RAW_GOLD, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.RAW_GOLD_BLOCK, 405, true) );
-		blockList.add( new SellAllBlockData( XMaterial.GOLD_BLOCK, 450, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_GOLD_ORE, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.NETHER_GOLD_ORE, 45, true) );
-		
-		
-		blockList.add( new SellAllBlockData( XMaterial.COPPER_ORE, 22, true) );
-		blockList.add( new SellAllBlockData( XMaterial.RAW_COPPER, 22, true) );
-		blockList.add( new SellAllBlockData( XMaterial.RAW_COPPER_BLOCK, 198, true) );
-		blockList.add( new SellAllBlockData( XMaterial.COPPER_BLOCK, 198, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_COPPER_ORE, 22, true) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.REDSTONE, 45, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_REDSTONE_ORE, 45, true), blockList );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.REDSTONE, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_ORE, 45, true) );
-		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_REDSTONE_ORE, 45, true) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DIAMOND, 222, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_DIAMOND_ORE, 222, true), blockList );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.DIAMOND, 222, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_ORE, 222, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 1998, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_DIAMOND_ORE, 222, true) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.EMERALD, 250, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_EMERALD_ORE, 250, true), blockList );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.EMERALD, 250, true) );
-		blockList.add( new SellAllBlockData( XMaterial.EMERALD_ORE, 250, true) );
-		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_EMERALD_ORE, 250, true) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PRISMARINE_SHARD, 13, true ), blockList );
+		
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 100, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DEEPSLATE_LAPIS_ORE, 100, true), blockList );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_SHARD, 13, true ) );
-		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE, 52, true ) );
-		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ) );
-		
-		
-		blockList.add( new SellAllBlockData( XMaterial.LAPIS_ORE, 100, true) );
-		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 100, true) );
-		blockList.add( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 900, true) );
-		blockList.add( new SellAllBlockData( XMaterial.DEEPSLATE_LAPIS_ORE, 100, true) );
-
-		
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34, true) );
-		blockList.add( new SellAllBlockData( XMaterial.NETHER_QUARTZ_ORE, 34, true) );
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BLOCK, 136, true) );
-		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136, true) );
-		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136, true) );
-		
-		
-		
-		blockList.add( new SellAllBlockData( XMaterial.MOSSY_COBBLESTONE, 29, true) );
-		
-
-		blockList.add( new SellAllBlockData( XMaterial.END_STONE, 14, true ) );
-		
-		
-		blockList.add( new SellAllBlockData( XMaterial.OBSIDIAN, 450, true ) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.QUARTZ, 34, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136, true), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136, true), blockList );
 		
 		
 		
 		
-		
-//		blockList.add( XMaterial.SLIME_BLOCK.name() );
-		
-		
-		
-		// these are not used to generate the mine blocks:
-		blockList.add( new SellAllBlockData( XMaterial.CLAY, 12 ) );
-		blockList.add( new SellAllBlockData( XMaterial.GRAVEL, 3 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SAND, 6 ) );
-		blockList.add( new SellAllBlockData( XMaterial.DIRT, 4 ) );
-		blockList.add( new SellAllBlockData( XMaterial.COARSE_DIRT, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.PODZOL, 6 ) );
-		blockList.add( new SellAllBlockData( XMaterial.RED_SAND, 9 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BEDROCK, 500 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SANDSTONE, 3 ) );
-		
-		blockList.add( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.POLISHED_DIORITE, 8 ) );
-		blockList.add( new SellAllBlockData( XMaterial.POLISHED_GRANITE, 9 ) );
-		blockList.add( new SellAllBlockData( XMaterial.CHISELED_NETHER_BRICKS, 39 ) );
-		blockList.add( new SellAllBlockData( XMaterial.CHISELED_RED_SANDSTONE, 11 ) );
-		blockList.add( new SellAllBlockData( XMaterial.CHISELED_STONE_BRICKS, 11 ) );
-		blockList.add( new SellAllBlockData( XMaterial.CUT_RED_SANDSTONE, 13 ) );
-		blockList.add( new SellAllBlockData( XMaterial.CUT_SANDSTONE, 10 ) );
 
 		
 		
-//		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34 ) );
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68) );
-
-//		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ) );
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BRICKS, 136 ) );
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_PILLAR, 136 ) );
-//		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136 ) );
-
-
-		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_RED_SANDSTONE, 14 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_SANDSTONE, 14 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_STONE, 14 ) );
 		
 		
-//		blockList.add( new SellAllBlockData( XMaterial.CHARCOAL, 16 ) );
-		blockList.add( new SellAllBlockData( XMaterial.CRACKED_NETHER_BRICKS, 16 ) );
-		blockList.add( new SellAllBlockData( XMaterial.CRACKED_STONE_BRICKS, 14 ) );
 		
-//		blockList.add( new SellAllBlockData( XMaterial.EMERALD, 14 ) );
-		blockList.add( new SellAllBlockData( XMaterial.END_STONE_BRICKS, 14 ) );
+		
+		
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CLAY, 12 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GRAVEL, 3 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SAND, 6 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DIRT, 4 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.COARSE_DIRT, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PODZOL, 6 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RED_SAND, 9 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BEDROCK, 500 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SANDSTONE, 3 ), blockList );
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.POLISHED_DIORITE, 8 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.POLISHED_GRANITE, 9 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CHISELED_NETHER_BRICKS, 39 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CHISELED_RED_SANDSTONE, 11 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CHISELED_STONE_BRICKS, 11 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CUT_RED_SANDSTONE, 13 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CUT_SANDSTONE, 10 ), blockList );
 
 		
-		blockList.add( new SellAllBlockData( XMaterial.FLINT, 9 ) );
+		
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.QUARTZ, 34 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68), blockList );
+
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.QUARTZ_BRICKS, 136 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.QUARTZ_PILLAR, 136 ), blockList );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136 ), blockList );
+
+
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SMOOTH_RED_SANDSTONE, 14 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SMOOTH_SANDSTONE, 14 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SMOOTH_STONE, 14 ), blockList );
+		
+		
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.CHARCOAL, 16 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CRACKED_NETHER_BRICKS, 16 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.CRACKED_STONE_BRICKS, 14 ), blockList );
+		
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.EMERALD, 14 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.END_STONE_BRICKS, 14 ), blockList );
+
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.FLINT, 9 ), blockList );
 		
 		
 		// BLUE_DYE is used as LAPIS_LAZULI for bukkit v1.8.x etc...
-//		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BLUE_DYE, 14 ) );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BLUE_DYE, 14 ), blockList );
 		
-		blockList.add( new SellAllBlockData( XMaterial.MOSSY_STONE_BRICKS, 14 ) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.MOSSY_STONE_BRICKS, 14 ), blockList );
 		
 		
-		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_SHARD, 13 ) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PRISMARINE_SHARD, 13 ), blockList );
 		
-		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_BRICKS, 52 ) );
-		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_BRICK_SLAB, 52 ) );
-		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_CRYSTALS, 37 ) );
-		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE_SLAB, 52 ) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PRISMARINE_BRICKS, 52 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PRISMARINE_BRICK_SLAB, 52 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PRISMARINE_CRYSTALS, 37 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DARK_PRISMARINE_SLAB, 52 ), blockList );
 		
-		blockList.add( new SellAllBlockData( XMaterial.PURPUR_BLOCK, 14 ) );
-		blockList.add( new SellAllBlockData( XMaterial.PURPUR_PILLAR, 14 ) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PURPUR_BLOCK, 14 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PURPUR_PILLAR, 14 ), blockList );
 
 		
 		
-//		blockList.add( new SellAllBlockData( XMaterial.SEA_LANTERN, 98 ) );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.SEA_LANTERN, 98 ), blockList );
 
-		blockList.add( new SellAllBlockData( XMaterial.TERRACOTTA, 10 ) );
-
-		
-		blockList.add( new SellAllBlockData( XMaterial.ACACIA_LOG, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BIRCH_LOG, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.DARK_OAK_LOG, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.JUNGLE_LOG, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.OAK_LOG, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SPRUCE_LOG, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.ACACIA_PLANKS, 28 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BIRCH_PLANKS, 28 ) );
-		blockList.add( new SellAllBlockData( XMaterial.DARK_OAK_PLANKS, 28 ) );
-		blockList.add( new SellAllBlockData( XMaterial.JUNGLE_PLANKS, 28 ) );
-		blockList.add( new SellAllBlockData( XMaterial.OAK_PLANKS, 28 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SPRUCE_PLANKS, 28 ) );
-		
-		blockList.add( new SellAllBlockData( XMaterial.ACACIA_WOOD, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BIRCH_WOOD, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.DARK_OAK_WOOD, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.JUNGLE_WOOD, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.OAK_WOOD, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SPRUCE_WOOD, 7 ) );
-		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.TERRACOTTA, 10 ), blockList );
 
 		
-//		blockList.add( new SellAllBlockData( XMaterial.IRON_NUGGET, 3 ) );
-//		blockList.add( new SellAllBlockData( XMaterial.IRON_INGOT, 27 ) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.ACACIA_LOG, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BIRCH_LOG, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DARK_OAK_LOG, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.JUNGLE_LOG, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.OAK_LOG, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SPRUCE_LOG, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.ACACIA_PLANKS, 28 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BIRCH_PLANKS, 28 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DARK_OAK_PLANKS, 28 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.JUNGLE_PLANKS, 28 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.OAK_PLANKS, 28 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SPRUCE_PLANKS, 28 ), blockList );
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.ACACIA_WOOD, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BIRCH_WOOD, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.DARK_OAK_WOOD, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.JUNGLE_WOOD, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.OAK_WOOD, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SPRUCE_WOOD, 7 ), blockList );
+		
+
+		
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.IRON_NUGGET, 3 ), blockList );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.IRON_INGOT, 27 ), blockList );
 //		
-//		blockList.add( new SellAllBlockData( XMaterial.GOLD_NUGGET, 12 ) );
-//		blockList.add( new SellAllBlockData( XMaterial.GOLD_INGOT, 108 ) );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.GOLD_NUGGET, 12 ), blockList );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.GOLD_INGOT, 108 ), blockList );
 //		
-//		blockList.add( new SellAllBlockData( XMaterial.REDSTONE, 45 ) );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.REDSTONE, 45 ), blockList );
 		
 
-		blockList.add( new SellAllBlockData( XMaterial.GLOWSTONE, 52 ) );
-		blockList.add( new SellAllBlockData( XMaterial.GLOWSTONE_DUST, 14 ) );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GLOWSTONE, 52 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.GLOWSTONE_DUST, 14 ), blockList );
 
 		
 		
-//		blockList.add( new SellAllBlockData( XMaterial.COAL, 15 ) );
-//		blockList.add( new SellAllBlockData( XMaterial.DIAMOND, 200 ) );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.COAL, 15 ), blockList );
+//		addBlockToSellallList( new SellAllBlockData( XMaterial.DIAMOND, 200 ), blockList );
 		
-		blockList.add( new SellAllBlockData( XMaterial.SUGAR_CANE, 13 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SUGAR, 13 ) );
-		blockList.add( new SellAllBlockData( XMaterial.PAPER, 13 ) );
-		
-		
-		blockList.add( new SellAllBlockData( XMaterial.SOUL_SAND, 25 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BROWN_MUSHROOM, 5 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BROWN_MUSHROOM_BLOCK, 5 ) );
-		blockList.add( new SellAllBlockData( XMaterial.RED_MUSHROOM, 5 ) );
-		blockList.add( new SellAllBlockData( XMaterial.RED_MUSHROOM_BLOCK, 5 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SLIME_BALL, 7 ) );
-		blockList.add( new SellAllBlockData( XMaterial.SLIME_BLOCK, 63 ) );
-		blockList.add( new SellAllBlockData( XMaterial.PACKED_ICE, 7 ) );
-		
-		blockList.add( new SellAllBlockData( XMaterial.BRICK, 4 ) );
-		blockList.add( new SellAllBlockData( XMaterial.BRICKS, 16 ) ); // 1 bricks = 4 brick
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SUGAR_CANE, 13 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SUGAR, 13 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PAPER, 13 ), blockList );
 		
 		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SOUL_SAND, 25 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BROWN_MUSHROOM, 5 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BROWN_MUSHROOM_BLOCK, 5 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RED_MUSHROOM, 5 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.RED_MUSHROOM_BLOCK, 5 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SLIME_BALL, 7 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.SLIME_BLOCK, 63 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.PACKED_ICE, 7 ), blockList );
+		
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BRICK, 4 ), blockList );
+		addBlockToSellallList( new SellAllBlockData( XMaterial.BRICKS, 16 ), blockList ); // 1 bricks = 4 brick
+		
+		
+		 
 		return blockList;
+	}
+	
+	private void addBlockToSellallList( SellAllBlockData saBlockData, List<SellAllBlockData> blockList ) {
+		
+		org.bukkit.inventory.ItemStack itemStack = saBlockData.getBlock().parseItem();
+		
+		// Exclude invalid blocks since the sellall list includes block names from 1.8 through 1.21+
+		if ( itemStack != null ) {
+			blockList.add( saBlockData );
+		}
+		
 	}
 	
 //	/**

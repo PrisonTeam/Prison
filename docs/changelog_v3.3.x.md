@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-26
 
 
+* **Prison blocks: It was realized that due to a recent expansion of the items that are included in the default for sellall, that the first 27 or so entries, were the blocks that were used in the auto generated mines when running the command '/ranks autoConfigure'.**
+These first few blocks, were returned to their proper place so the mines are properly populated again.
+Also, since blocks from multiple versions of spigot have been added, new code has been added to prevent adding any block that is not support by the version of spigot that the server is running.
+
+
 * **Sellall startup messages:  Fixed some formatting issues that were causing a misrepresentation of the sellall configurations within the startup logs.**
 
 
