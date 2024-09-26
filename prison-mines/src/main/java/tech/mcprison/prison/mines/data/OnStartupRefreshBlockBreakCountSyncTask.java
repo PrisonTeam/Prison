@@ -194,6 +194,13 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			
 		}
 //		else // The 'this.mine.refreshAirCountSyncTaskBuildLocations()' is trivial...
+		
+		if ( mine == null ) {
+			// No mine is available, either they are all processed, or none exist on 
+			// the server yet (new startup), so exit without resubmitting:
+			return;
+		}
+		
 		{
 			pages++;
 			
