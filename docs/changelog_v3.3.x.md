@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-26
 
 
+* **Mine Bombs: When loading the default bombs, this change now prevents the display of "warnings" which are actually normal because the settings for the wrong spigot platform must be removed.**
+This now uses the check to see if the mine module has been enabled, and if it has mines, if not, then it will not purge any of the mine constraints since the server is probably under construction and they should not be purged until the mines have been setup.
+
+
 * ***Prison modules: Added an element count which reflects how many elements are loaded for each module.**
   Examples would be ranks and mines, or number of prison utilities that were enabled.
 

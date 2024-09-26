@@ -12,6 +12,8 @@ public class MineBombDefaultConfigSettings {
 	public void setupDefaultMineBombData(MineBombs mineBombs)
 	{
 		if ( mineBombs.getConfigData().getBombs().size() == 0 ) {
+			
+			boolean showWarnings = false;
 
 //			XMaterial.WOODEN_PICKAXE;
 //			XMaterial.STONE_PICKAXE;
@@ -65,16 +67,16 @@ public class MineBombDefaultConfigSettings {
 				mbd.getLore().add( "&4Lore line 2&r" );
 				mbd.getLore().add( "&aLore line &73&r" );
 
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 30 ), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode06a.clone() );
-				mbd.addVisualEffects( mbeExplode10.clone() );
-				mbd.addVisualEffects( mbeExplode06.clone() );
+				mbd.addVisualEffects( mbeExplode06a.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode10.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06.clone(), showWarnings );
 				
 				mbd.setCooldownTicks( 10 );
 
@@ -96,15 +98,15 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 3 );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 30 ), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode10.clone() );
-				mbd.addVisualEffects( mbeExplode06.clone() );
+				mbd.addVisualEffects( mbeExplode10.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06.clone(), showWarnings );
 
 				mbd.setCooldownTicks( 60 );
 
@@ -127,16 +129,16 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 3 );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone().setVolumne( 2.0f ) );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone().setVolumne( 2.0f ), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 30 ), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode10.clone() );
-				mbd.addVisualEffects( mbeExplode06.clone() );
-				mbd.addVisualEffects( mbeExplode06a.clone() );
+				mbd.addVisualEffects( mbeExplode10.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06a.clone(), showWarnings );
 
 				mbd.setCooldownTicks( 60 );
 
@@ -159,38 +161,38 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandName( "GOLDEN_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 13 );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 10 ).setVolumne( 0.25f ).setPitch( 0.25f ) );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 20 ).setVolumne( 0.5f ).setPitch( 0.5f ) );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ).setVolumne( 1.0f ).setPitch( 0.75f ) );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 40 ).setVolumne( 2.0f ).setPitch( 1.5f ) );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 50 ).setVolumne( 5.0f ).setPitch( 2.5f ) );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 10 ).setVolumne( 0.25f ).setPitch( 0.25f ), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 20 ).setVolumne( 0.5f ).setPitch( 0.5f ), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ).setVolumne( 1.0f ).setPitch( 0.75f ), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 40 ).setVolumne( 2.0f ).setPitch( 1.5f ), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 50 ).setVolumne( 5.0f ).setPitch( 2.5f ), showWarnings );
 				
-				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 0 ).setVolumne( 3.0f ) );
-				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 5 ).setVolumne( 1.5f ) );
-				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 10 ).setVolumne( 2.5f ) );
-				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 15 ).setVolumne( 1.0f ) );
-				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 20 ).setVolumne( 2.0f ) );
-				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 25 ).setVolumne( 0.75f ) );
-				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 30 ).setVolumne( 1.5f ) );
-				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 35 ).setVolumne( 0.55f ) );
-				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 40 ).setVolumne( 1.0f ) );
-				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 45 ).setVolumne( 0.25f ) );
-				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 50 ).setVolumne( 0.5f ) );
-				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 55 ).setVolumne( 0.15f ) );
+				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 0 ).setVolumne( 3.0f ), showWarnings );
+				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 5 ).setVolumne( 1.5f ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 10 ).setVolumne( 2.5f ), showWarnings );
+				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 15 ).setVolumne( 1.0f ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 20 ).setVolumne( 2.0f ), showWarnings );
+				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 25 ).setVolumne( 0.75f ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 30 ).setVolumne( 1.5f ), showWarnings );
+				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 35 ).setVolumne( 0.55f ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 40 ).setVolumne( 1.0f ), showWarnings );
+				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 45 ).setVolumne( 0.25f ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone().setOffsetTicks( 50 ).setVolumne( 0.5f ), showWarnings );
+				mbd.addSoundEffects( mbeSound04.clone().setOffsetTicks( 55 ).setVolumne( 0.15f ), showWarnings );
 				
 				
-				mbd.addVisualEffects( mbeExplode06.clone() );
-				mbd.addVisualEffects( mbeExplode06a.clone() );
-				mbd.addVisualEffects( mbeExplode03.clone() );
-				mbd.addVisualEffects( mbeExplode12.clone() );
-				mbd.addVisualEffects( mbeExplode12.clone().setOffsetTicks( 30 ) );
-				mbd.addVisualEffects( mbeExplode12.clone().setOffsetTicks( 60 ) );
-				mbd.addVisualEffects( mbeExplode07.clone().setOffsetTicks( 60 ) );
-				mbd.addVisualEffects( mbeExplode08.clone().setOffsetTicks( 90 ) );
+				mbd.addVisualEffects( mbeExplode06.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06a.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode03.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode12.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode12.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addVisualEffects( mbeExplode12.clone().setOffsetTicks( 60 ), showWarnings );
+				mbd.addVisualEffects( mbeExplode07.clone().setOffsetTicks( 60 ), showWarnings );
+				mbd.addVisualEffects( mbeExplode08.clone().setOffsetTicks( 90 ), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode10.clone() );
-				mbd.addVisualEffects( mbeExplode06.clone().setOffsetTicks( 20 ) );
+				mbd.addVisualEffects( mbeExplode10.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06.clone().setOffsetTicks( 20 ), showWarnings );
 				
 				mbd.setAutosell( true );
 				mbd.setGlowing( true );
@@ -236,19 +238,19 @@ public class MineBombDefaultConfigSettings {
 				mbd.getPreventedMines().add( "d" );
 				mbd.getPreventedMines().add( "e" );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode01.clone() );
-				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
-				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 10 ) );
-				mbd.addVisualEffects( mbeExplode04.clone() );
+				mbd.addVisualEffects( mbeExplode01.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addVisualEffects( mbeExplode03.clone().setOffsetTicks( 10 ), showWarnings );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode10.clone() );
-				mbd.addVisualEffects( mbeExplode06.clone() );
-				mbd.addVisualEffects( mbeExplode06a.clone() );
-				mbd.addVisualEffects( mbeExplode11.clone().setOffsetTicks( 05 ) );
+				mbd.addVisualEffects( mbeExplode10.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode06a.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode11.clone().setOffsetTicks( 05 ), showWarnings );
 				
 				mbd.setCooldownTicks( 3 * 20 ); // 3 seconds
 				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds
@@ -281,12 +283,12 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandFortuneLevel( 7 );
 				mbd.setRemovalChance( 100.0d );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ), showWarnings );
 				
 				mbd.setGlowing( true );
 				
@@ -314,12 +316,12 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandFortuneLevel( 1 );
 				mbd.setRemovalChance( 25.0d );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ), showWarnings );
 				
 				mbd.setCooldownTicks( 20 );
 				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds
@@ -348,12 +350,12 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandFortuneLevel( 1 );
 				mbd.setRemovalChance( 50.0d );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ), showWarnings );
 				
 				mbd.setCooldownTicks( 20 );
 				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds
@@ -382,12 +384,12 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandFortuneLevel( 1 );
 				mbd.setRemovalChance( 50.0d );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ), showWarnings );
 				
 				mbd.setCooldownTicks( 20 );
 				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds
@@ -420,12 +422,12 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandFortuneLevel( 1 );
 				mbd.setRemovalChance( 50.0d );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ), showWarnings );
 				
 				mbd.setCooldownTicks( 20 );
 				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds
@@ -458,12 +460,12 @@ public class MineBombDefaultConfigSettings {
 				mbd.setToolInHandFortuneLevel( 1 );
 				mbd.setRemovalChance( 50.0d );
 				
-				mbd.addSoundEffects( mbeSound01.clone() );
-				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ) );
-				mbd.addSoundEffects( mbeSound03.clone() );
+				mbd.addSoundEffects( mbeSound01.clone(), showWarnings );
+				mbd.addSoundEffects( mbeSound02.clone().setOffsetTicks( 30 ), showWarnings );
+				mbd.addSoundEffects( mbeSound03.clone(), showWarnings );
 				
-				mbd.addVisualEffects( mbeExplode04.clone() );
-				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				mbd.addVisualEffects( mbeExplode04.clone(), showWarnings );
+				mbd.addVisualEffects( mbeExplode02.clone().setOffsetTicks( 30 ), showWarnings );
 				
 				mbd.setCooldownTicks( 20 );
 				mbd.setFuseDelayTicks( 15 * 20 ); // 15 seconds

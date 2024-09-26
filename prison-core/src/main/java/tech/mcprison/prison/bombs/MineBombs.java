@@ -9,6 +9,8 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
@@ -366,6 +368,7 @@ public class MineBombs
 		
 		if ( !configExists ) {
 			
+			
 			// The save file does not exist so regenerate the default bombs listing:
 			getConfigData().getBombs().clear();
 			
@@ -484,6 +487,16 @@ public class MineBombs
 		
 		
 		MineBombsConfigData config = getConfigData();
+		
+		
+		Module moduleMines = Prison.get().getModuleManager() == null ?
+								null : Prison.get().getModuleManager().getModule( ModuleElementType.MINE.name() );
+		boolean hasMines = moduleMines == null ? 
+								false : moduleMines.isEnabled() && moduleMines.getElementCount() > 0;
+		
+//		Module moduleRanks = Prison.get().getModuleManager().getModule( ModuleElementType.RANK.name() );
+//		boolean hasRanks = moduleRanks.isEnabled() && moduleRanks.getElementCount() > 0;
+		
 		
 		if ( config.getDataFormatVersion() > MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION || 
 				config.getDataFormatVersion() < 0 ) {
@@ -614,7 +627,10 @@ public class MineBombs
 						cleaned = true;
 					}
 
-					if ( !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
+					// Only purge mines if the mines module is enabled and there are more than one mines.
+					// If enabled and no mines, then could be that its clean startup and mines have not yet
+					// been added, so do not purge any mines.
+					if ( hasMines && !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
 						Output.get().log( "MineBomb %s: invalid mine name for allowedMines: %s  Removed.", 
 								LogLevel.WARNING,
 								bomb.getName(), cleanedMineName );
@@ -644,7 +660,10 @@ public class MineBombs
 						cleaned = true;
 					}
 
-					if ( !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
+					// Only purge mines if the mines module is enabled and there are more than one mines.
+					// If enabled and no mines, then could be that its clean startup and mines have not yet
+					// been added, so do not purge any mines.
+					if ( hasMines && !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
 						Output.get().log( "MineBomb %s: invalid mine name for prevented-Mines: %s  Removed.", 
 								LogLevel.WARNING,
 								bomb.getName(), cleanedMineName );
