@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19c 2024-09-26
 
 
+* **Sellall: The sellall initialization function was being called twice by error.**
+As such, this prevents a duplicate message from appearing in the startup log.  No problems were caused by calling initialize twice, but it was unneeded.
+
+
 * **Mines: Startup air block counts.  Bypass processing if no mines exist.***
 This prevents an error when starting prison for the first time before any mines can be defined.
 

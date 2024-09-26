@@ -520,7 +520,7 @@ public class SpigotPrison
     public FileConfiguration updateSellAllConfig() {
         // Let this like this or it won't update when you do /Sellall etc and will need a server restart.
         sellAllConfig = new SellAllConfig();
-        sellAllConfig.initialize();
+//        sellAllConfig.initialize();  // initialize() is called in the constructor, so this was doubling the messages.
         return sellAllConfig.getFileSellAllConfig();
     }
 
