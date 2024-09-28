@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19d 2024-09-28
 
 
+* **Auto Features: clear bukkit clearDrops.**
+An issue using an older version of prison resulted in the targetBlock being null. This has not been reproduceable with the current version of prison, so it's probably been fixed at it's root levels.  But this change was made just to ensure it does not become an issue in the future.
+
+
 * **PrisonBlock: Fix an issue with PrisonBlock setting a class variable that is also set within it's parent class.**
 Overall, at a rough level, this does not cause a problem with the current prison environment.  It's wrong.  But it works. 
 Where it is failing is when prison is trying to setup ORM on the Mine object to simplify and expand the capability of future enhancements..

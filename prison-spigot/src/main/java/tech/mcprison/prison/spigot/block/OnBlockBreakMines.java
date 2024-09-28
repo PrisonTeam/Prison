@@ -919,10 +919,14 @@ public class OnBlockBreakMines
 	
 	public void clearBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock )
 	{
+		if ( targetBlock != null ) {
+			SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
 
-		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
-		sBlock.clearDrops();
-
+			if ( sBlock != null ) {
+				
+				sBlock.clearDrops();
+			}
+		}
 	}
 
 	
