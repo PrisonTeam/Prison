@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.file.FileIOData;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
@@ -48,7 +49,9 @@ import tech.mcprison.prison.util.ObsoleteBlockType;
 @SuppressWarnings( "deprecation" )
 public class Mine 
 	extends MineScheduler 
-	implements PrisonSortable, Comparable<Mine>, PlaceholderStringCoverter {
+	implements PrisonSortable, Comparable<Mine>, 
+			PlaceholderStringCoverter,
+			FileIOData {
 	
 	
 	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes

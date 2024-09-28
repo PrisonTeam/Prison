@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -34,12 +35,15 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
+import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.Mine.MineNotificationMode;
@@ -5877,4 +5881,64 @@ private ChatDisplay minesCommandList( Mine m )
         }
 
 	}
+	
+	
+	public void minesDumpCommand(CommandSender sender,
+			@Arg(name = "mineName", description = "The name of the mine to dump")
+					String mineName ) {
+    	
+        PrisonMines pMines = PrisonMines.getInstance();
+
+        Mine mine = pMines.getMine( mineName );
+        
+        if ( mine != null ) {
+        
+        	JsonFileIO jfio = new JsonFileIO();
+        	
+//        	Gson gson = new GsonBuilder().registerTypeAdapter(IsBean.class, new InterfaceAdapter<IsBean>()).create();
+        	
+        	DecimalFormat dFmt = new DecimalFormat( "####" );
+
+        	int ser = (int) (Math.random() * 9999d);
+        	
+        	String fName = "temp_mines_" + dFmt.format(ser) + ".json";
+        	
+        	File f = new File( Prison.get().getDataFolder(), fName);
+        	
+        	
+        	try {
+        		
+//        		if ( mine.getBlockStats().size() > 0 ) {
+//        			
+//        			Entry<String, PrisonBlockStatusData> block = mine.getBlockStats().firstEntry();
+//        			
+//        			String blockJson = jfio.toString(block);
+//        			
+//        			Output.get().logInfo(blockJson);
+//        			
+//        			
+//        		}
+        		
+        		String mineJson = jfio.toString(mine); 
+        		
+        		
+				jfio.saveJsonFile(f, mine );
+				
+				sender.sendMessage( "Mine dumpped to: " + f.getAbsolutePath() );
+			} 
+        	catch (Exception e) {
+        		
+        		sender.sendMessage( "Mine dump error: " + e.getMessage() );
+				e.printStackTrace();
+			}
+        	
+        }
+        else {
+        	sender.sendMessage( "A valid mine name is required. Try again.");;
+        	return;
+        }
+
+
+
+    }
 }
