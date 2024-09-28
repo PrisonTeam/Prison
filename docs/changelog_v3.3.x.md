@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19d 2024-09-28
 
 
+* **Mines: checking access.  This change breaks down the access checks to see if a player has access to a given mine so it can be properly logged when in debug mode.**
+It's been a problem trying to figure out why some events would work or wouldn't, now this will help identify access related conditions.  Example is the use of mine bombs.
+
+
 * **Mines: Hooking up a test dump to the mines commands so I can more easily test what JSON is generated with the current settings and configurations.**
  
  

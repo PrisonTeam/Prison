@@ -1022,16 +1022,50 @@ public abstract class MineData
     public boolean hasMiningAccess( Player player ) {
     	boolean results = false;
     	
-    	if ( isMineAccessByRank() && 
-				Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
-				!isMineAccessByRank() &&
-    					isAccessPermissionEnabled() && player.hasPermission( getAccessPermission() ) 
-    					
-    			/// Note: the following cannot be added here since it will grant access if both are disabled
-    			//		|| !isMineAccessByRank() && !isAccessPermissionEnabled() 
-    			 ) {
+    	StringBuilder dbug = new StringBuilder();
+    	
+    	dbug.append( "&3## hasMineAccess: mineAccessByRank: " ).append( isMineAccessByRank() );
+    	
+    	/// Note: the following cannot be added here since it will grant access if both are disabled
+    	//		|| !isMineAccessByRank() && !isAccessPermissionEnabled() 
 
-    		results = true;
+    	if ( isMineAccessByRank() ) {
+    		 
+    		if ( Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ) {
+    			
+    			dbug.append( "Success!" );
+    			results = true;
+    		}
+    		else {
+    			dbug.append( "&cFailed! &aPlayer does not have access based upon their rank." );
+    		}
+    		
+    	}
+    	else {
+
+    		dbug.append( "  accessByPerms: " ).append( isAccessPermissionEnabled() );
+    		
+    		if ( isAccessPermissionEnabled() ) {
+    			
+    			if ( player.hasPermission( getAccessPermission() )) {
+
+    				dbug.append( "Success!" );
+    				results = true;
+    			}
+    			else {
+    				dbug.append( "&cFailed! &aPlayer does not have access based upon the permission: [" )
+    					.append( getAccessPermission() == null ? "null" : getAccessPermission()  );
+    			}
+    		}
+    		else {
+    			
+    			dbug.append( " &cFailed! &aMust have either accessByRank or accessByPerm enabled. " );
+    		}
+    				
+    	}
+    	
+    	if ( Output.get().isDebug() ) {
+    		Output.get().logInfo( dbug.toString() );
     	}
     				
     	return results;
