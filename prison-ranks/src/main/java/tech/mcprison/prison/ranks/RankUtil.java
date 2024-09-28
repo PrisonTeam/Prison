@@ -600,8 +600,8 @@ public class RankUtil
         // Validate that the player's rank was actually changed:
         PlayerRank newRank = rankPlayer.getPlayerRank( ladderName );
 
-        if ( newRank.equals( originalRank ) || 
-        		!targetRank.equals( newRank.getRank() ) ) {
+        if ( newRank != null && (newRank.equals( originalRank ) || 
+        		!targetRank.equals( newRank.getRank() )) ) {
         	
         	results.setUnexpectedRank( newRank.getRank() );
         	
