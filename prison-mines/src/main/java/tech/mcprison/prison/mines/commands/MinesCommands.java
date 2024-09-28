@@ -42,8 +42,7 @@ import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.data.MineData;
-import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
+import tech.mcprison.prison.mines.data.Mine.MineNotificationMode;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
@@ -1994,15 +1993,15 @@ public class MinesCommands
     public void resetTimeCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to apply to all mines.") String mineName,
         @Arg(name = "time", description = "Time in seconds for the mine to auto reset. " +
-        		"With a minimum value of "+ MineData.MINE_RESET__TIME_SEC__MINIMUM + " seconds. " +
+        		"With a minimum value of "+ Mine.MINE_RESET__TIME_SEC__MINIMUM + " seconds. " +
         				"Using '*disable*' will turn off the auto reset.  Use of "
         				+ "*default* will set the time to " + 
-        				MineData.MINE_RESET__TIME_SEC__DEFAULT + " seconds. "
+        				Mine.MINE_RESET__TIME_SEC__DEFAULT + " seconds. "
         						+ "[*default* *disable*]" ) String time
         
     		) {
 
-    	int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
+    	int resetTime = Mine.MINE_RESET__TIME_SEC__DEFAULT;
 
     	PrisonMines pMines = PrisonMines.getInstance();
         
@@ -2021,14 +2020,14 @@ public class MinesCommands
     		catch ( NumberFormatException e ) {
 				Output.get().sendWarn( sender, 
 						"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d &7or greater. [&b%s&7]",
-						mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
+						mineName, Mine.MINE_RESET__TIME_SEC__MINIMUM, time );
 				return;
 			}
     	}
-    	if ( !"*disable*".equalsIgnoreCase( time ) && resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
+    	if ( !"*disable*".equalsIgnoreCase( time ) && resetTime < Mine.MINE_RESET__TIME_SEC__MINIMUM ) {
     		Output.get().sendWarn( sender, 
     				"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
-    				mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
+    				mineName, Mine.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
     		return;
     	}
     	
@@ -2337,17 +2336,17 @@ public class MinesCommands
     	long noteRadius = 0L;
     	if ( noteMode == MineNotificationMode.radius ) {
     		if ( radius == null || radius.trim().length() == 0 ) {
-    			noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    			noteRadius = Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     		} else {
     			try {
     				noteRadius = Long.parseLong( radius );
     				
     				if ( noteRadius < 1 ) {
-    					noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    					noteRadius = Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     					DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     					Output.get().sendWarn( sender, "&7Invalid radius value. " +
     							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
-    							dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
+    							dFmt.format(Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
     					return;
     				}
     			}
@@ -3680,7 +3679,7 @@ public class MinesCommands
     		// some arbitrary distance as a max radius.  We do not want to use the individual values
     		// that have been set for each mine.
     		else if ( !mine.isVirtual() &&  mine.getBounds().within( player.getLocation(), 
-    									MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
+    									Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS) ) {
     			Double distance = mine.getBounds().getDistance3d( player.getLocation() );
 //    			Double distance = new Bounds( mine.getBounds().getCenter(), player.getLocation()).getDistance();
     			nearMine.put( distance.intValue(), mine );
@@ -3715,7 +3714,7 @@ public class MinesCommands
     	} 
     	else if ( inMine.size() == 0 ) {
     		// you are not near any mines:
-    		sender.sendMessage( "&3Sorry, you are not within " + MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS + 
+    		sender.sendMessage( "&3Sorry, you are not within " + Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS + 
     				" blocks from any mine." );
     	}
 

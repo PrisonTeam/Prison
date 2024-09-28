@@ -55,7 +55,7 @@ public class MinesConfig implements FileIOData {
     /**
      * The duration between mine resets in seconds.
      */
-    public int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
+    public int resetTime = Mine.MINE_RESET__TIME_SEC__DEFAULT;
 
 //    /**
 //     * The worlds that reset messages should be broadcasted to. Ignored if multiworld is disabled.

@@ -14,14 +14,14 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.Mine.MineNotificationMode;
 import tech.mcprison.prison.mines.data.Mine.MineType;
-import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
-import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Bounds.Edges;
+import tech.mcprison.prison.util.Location;
 
 public class MinesImportCommands
 	extends MinesBlockCommands {

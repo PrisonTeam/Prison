@@ -51,6 +51,13 @@ public class Mine
 	implements PrisonSortable, Comparable<Mine>, PlaceholderStringCoverter {
 	
 	
+	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
+	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
+	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
+	
+	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";	
+	
+	
 	public enum MineType {
 		primary,
 		playerMines
@@ -74,6 +81,39 @@ public class Mine
 	public enum MineUnitTestUsage {
 		TRUE;
 	}
+
+    public enum MineNotificationMode {
+    	disabled,
+    	disable,
+    	within,
+    	radius,
+    	world,
+    	server,
+    	
+    	displayOptions
+    	;
+    	
+    	public static MineNotificationMode fromString(String mode) {
+    		return fromString(mode, radius);
+    	}
+    	public static MineNotificationMode fromString(String mode, MineNotificationMode defaultValue) {
+    		MineNotificationMode results = defaultValue;
+    		
+    		if ( mode != null && mode.trim().length() > 0 ) {
+    			for ( MineNotificationMode mnm : values() ) {
+    				if ( mnm.name().equalsIgnoreCase( mode )) {
+    					results = mnm;
+    				}
+    			}
+    		}
+    		
+    		if ( results == disable ) {
+    			results = disabled;
+    		}
+    		
+    		return results;
+    	}
+    }
 
     /**
      * Creates a new, empty mine instance

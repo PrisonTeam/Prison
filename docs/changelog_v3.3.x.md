@@ -17,6 +17,13 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19d 2024-09-28
 
 
+* **Mines: relocate a few objects to pull them out of MineData since they are constants.**
+
+
+* **Mines: reconnectObjects() is a way to re-hooked up objects that could not be saved/stored when loading these objects from the database/files.**
+These currently are not enabled or tested yet, but they are the foundation of getting the new process working to support a new way of storing and loading data.
+
+
 * **Auto Features: clear bukkit clearDrops.**
 An issue using an older version of prison resulted in the targetBlock being null. This has not been reproduceable with the current version of prison, so it's probably been fixed at it's root levels.  But this change was made just to ensure it does not become an issue in the future.
 

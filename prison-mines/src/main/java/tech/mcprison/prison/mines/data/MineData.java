@@ -14,6 +14,7 @@ import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
+import tech.mcprison.prison.mines.data.Mine.MineNotificationMode;
 import tech.mcprison.prison.mines.data.Mine.MineType;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
@@ -25,12 +26,6 @@ import tech.mcprison.prison.util.Location;
 
 public abstract class MineData
 		implements ModuleElement {
-	
-	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
-	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
-	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
-	
-	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";
 	
 	private transient final ModuleElementType elementType;
 		
@@ -162,38 +157,7 @@ public abstract class MineData
     private transient boolean isDeleted = false; 
     
 
-    public enum MineNotificationMode {
-    	disabled,
-    	disable,
-    	within,
-    	radius,
-    	world,
-    	server,
-    	
-    	displayOptions
-    	;
-    	
-    	public static MineNotificationMode fromString(String mode) {
-    		return fromString(mode, radius);
-    	}
-    	public static MineNotificationMode fromString(String mode, MineNotificationMode defaultValue) {
-    		MineNotificationMode results = defaultValue;
-    		
-    		if ( mode != null && mode.trim().length() > 0 ) {
-    			for ( MineNotificationMode mnm : values() ) {
-    				if ( mnm.name().equalsIgnoreCase( mode )) {
-    					results = mnm;
-    				}
-    			}
-    		}
-    		
-    		if ( results == disable ) {
-    			results = disabled;
-    		}
-    		
-    		return results;
-    	}
-    }
+
     
     public MineData() {
 
@@ -223,9 +187,9 @@ public abstract class MineData
     	 */
     	this.sortOrder = 0;
     	
-    	this.resetTime = MINE_RESET__TIME_SEC__DEFAULT;
+    	this.resetTime = Mine.MINE_RESET__TIME_SEC__DEFAULT;
     	this.notificationMode = MineNotificationMode.radius;
-    	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    	this.notificationRadius = Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     	this.useNotificationPermission = false;
     	
     	this.targetResetTime = 0;
@@ -1145,7 +1109,7 @@ public abstract class MineData
 	}
 
 	public String getMineNotificationPermissionName() {
-		return MINE_NOTIFICATION_PERMISSION_PREFIX + getName().toLowerCase();
+		return Mine.MINE_NOTIFICATION_PERMISSION_PREFIX + getName().toLowerCase();
 	}
 	
 	/**

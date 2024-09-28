@@ -55,6 +55,10 @@ public abstract class PrisonBlockStatusData {
 	private transient int altCountPhysical;
 	
 	
+	public PrisonBlockStatusData() {
+		super();
+	}
+	
 	public PrisonBlockStatusData( 
 			PrisonBlockType blockType, String blockName, String displayName,
 			double chance, long blockCountTotal ) {
