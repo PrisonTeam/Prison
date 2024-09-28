@@ -29,7 +29,7 @@ public class PrisonBlock
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
-	private PrisonBlockType blockType;
+//	private PrisonBlockType blockType;
 	private boolean useBlockTypeAsPrefix = false;
 	
 //	private String blockName;
@@ -101,7 +101,7 @@ public class PrisonBlock
 	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
 		super( blockType, blockName, chance, blockCountTotal );
 
-		this.blockType = blockType;
+//		this.blockType = blockType;
 		
 //		this.blockName = blockName.toLowerCase();
 //		this.chance = chance;
@@ -130,12 +130,12 @@ public class PrisonBlock
 				( getChance() > 0 ? " " + Double.toString( getChance()) : "");
 	}
 	
-	public PrisonBlockType getBlockType() {
-		return blockType;
-	}
-	public void setBlockType( PrisonBlockType blockType ) {
-		this.blockType = blockType;
-	}
+//	public PrisonBlockType getBlockType() {
+//		return blockType;
+//	}
+//	public void setBlockType( PrisonBlockType blockType ) {
+//		this.blockType = blockType;
+//	}
 
 //	public String getBlockName() {
 //		return blockName;

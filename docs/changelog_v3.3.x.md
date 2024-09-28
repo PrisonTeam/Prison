@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19d 2024-09-28
 
 
+* **PrisonBlock: Fix an issue with PrisonBlock setting a class variable that is also set within it's parent class.**
+Overall, at a rough level, this does not cause a problem with the current prison environment.  It's wrong.  But it works. 
+Where it is failing is when prison is trying to setup ORM on the Mine object to simplify and expand the capability of future enhancements..
+
+
 * **Mine Bombs: Improve the debugging information on when mine bombs are selected, or rejected based upon the player having access to the mine or if a cooldown has rejected the mine bomb.**
 SpigotPlayer: Using bukkit's block.isPassable() on getLineOfSight(), but may need to be extended to getLineOfsightExactLocation().
 It was not clear why mine bombs were not working.
