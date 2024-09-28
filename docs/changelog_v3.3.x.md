@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19d 2024-09-28
 
 
+* **Mines: Hook up the reconnectObjects() function so it will be able to hook up the dependencies.**
+This is not hooked up yet, but will be used with the new ORM json manager.
+
+
 * **Mines: adding transient to Mine data so it will not try to save the temporary and transient data when using ORM is generating json data from it.**
 
 

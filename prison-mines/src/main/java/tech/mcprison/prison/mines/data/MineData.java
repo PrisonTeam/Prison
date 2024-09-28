@@ -235,6 +235,56 @@ public abstract class MineData
     }
     
   
+	/**
+	 * <p>This function should be called after loading a mine from 
+	 * storage, and this function should reconnect all dynamic objects 
+	 * that could not be stored with the core Mine data.
+	 * </p>
+	 * 
+	 * <p>Note: getWorld() is actually a helper to get a world object out of 
+	 * getBounds() and setWorld() sets the world on both getBounds() and getSpawn().
+	 * </p>
+	 * 
+	 * <p>Examples: World objects. There may be other objects that need to be reconnected.
+	 * </p>
+	 */
+	public void reconnectObjects() {
+		
+		if ( !isVirtual() ) {
+			
+			if ( getBounds() != null ) {
+				getBounds().reconnectObjects();
+			}
+			
+			if ( getSpawn() != null ) {
+				getSpawn().reconnectObects();
+			}
+			
+			// Note: getWorld() is actually a helper to get a world object out of 
+			// getBounds() and setWorld() sets the world on both getBounds() and 
+			// getSpawn().
+
+			
+			// The following two collections do not use World objects so they do not 
+			// need to be reconnected:
+//			getPrisonBlocks();
+//			getBlockStats();
+			
+		}
+		
+//		if ( getWorld() == null ) {
+//			String worldName = getWorldName();
+//			
+//			Optional<World> worldOpt = Prison.get().getPlatform().getWorld(worldName);
+//			
+//			if ( worldOpt.isPresent() ) {
+//				World world = worldOpt.get();
+//				
+//				setWorld( world );
+//			}
+//		}
+
+	}
 	
   
     public boolean isEnabled() {
