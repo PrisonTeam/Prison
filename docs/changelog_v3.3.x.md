@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19d 2024-09-28
 
 
+* **Mines: adding transient to Mine data so it will not try to save the temporary and transient data when using ORM is generating json data from it.**
+
+
 * **Ranks: a user reported a null pointer issue so made some changes to prevent it.***
 Was not able to reproduce it.
 

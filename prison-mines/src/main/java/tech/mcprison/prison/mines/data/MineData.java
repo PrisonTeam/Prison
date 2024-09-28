@@ -26,18 +26,20 @@ import tech.mcprison.prison.util.Location;
 
 public abstract class MineData
 		implements ModuleElement {
+
+	private int dataVersion = 1;
 	
 	private transient final ModuleElementType elementType;
 		
 	private String name;
 	private String tag;
 	
-	private boolean enabled = false;
+	private transient boolean enabled = false;
 	private boolean virtual = false;
 	
 	
 	// Controls if a mine is able to be used during a mine reset:
-	private MineStateMutex mineStateMutex;
+	private transient MineStateMutex mineStateMutex;
 	
 	
 	private MineType mineType;
@@ -68,10 +70,10 @@ public abstract class MineData
 	private long notificationRadius;
 	private boolean useNotificationPermission = false;
     
-	private long targetResetTime;
-	private int resetCount = 0;
+	private transient long targetResetTime;
+	private transient int resetCount = 0;
 	
-	private long lastResetTimeLong = 0;
+	private transient long lastResetTimeLong = 0;
 	
 	/**
 	 * These blocks are obsolete, and are no longer used in prison, but they
@@ -82,7 +84,7 @@ public abstract class MineData
 	 * supporting magic values with the older bukkit versions.
 	 */
     @SuppressWarnings( "deprecation" )
-	private List<BlockOld> blocks;
+	private transient List<BlockOld> blocks;
     
     /**
      * This list of PrisonBlocks represents the new Prison block model. Its 
@@ -102,7 +104,7 @@ public abstract class MineData
     private transient Set<PrisonBlockType> prisonBlockTypes;
     
     
-    private TreeMap<String, PrisonBlockStatusData> blockStats;
+    private transient TreeMap<String, PrisonBlock> blockStats;
     
     /**
      * <p>If any of the mine's blocks are effected by gravity, then this field
@@ -129,13 +131,13 @@ public abstract class MineData
     private boolean skipResetEnabled = false;
     private double skipResetPercent;
     private int skipResetBypassLimit;
-    private transient int skipResetBypassCount;
+    private int skipResetBypassCount;
     
     private List<String> resetCommands;
     
 //    private boolean usePagingOnReset = false;
     
-    private ModuleElement rank;
+    private transient ModuleElement rank;
     /**
      * When loading mines, ranks will not have been loaded yet, so must
      * save the rankString to be paired to the Ranks later.
@@ -150,9 +152,9 @@ public abstract class MineData
     
     
     private boolean mineSweeperEnabled;
-    private int mineSweeperCount;
-    private long mineSweeperTotalMs;
-    private long mineSweeperBlocksChanged;
+    private transient int mineSweeperCount;
+    private transient long mineSweeperTotalMs;
+    private transient long mineSweeperBlocksChanged;
     
     private transient boolean isDeleted = false; 
     
@@ -830,7 +832,7 @@ public abstract class MineData
     	return results;
     }
     
-	public TreeMap<String, PrisonBlockStatusData> getBlockStats() {
+	public TreeMap<String, PrisonBlock> getBlockStats() {
 		return blockStats;
 	}
     
@@ -995,6 +997,13 @@ public abstract class MineData
 		this.accessPermission = accessPermission;
 	}
 	
+
+	public int getDataVersion() {
+		return dataVersion;
+	}
+	public void setDataVersion(int dataVersion) {
+		this.dataVersion = dataVersion;
+	}
 
 	public MineType getMineType() {
 		return mineType;

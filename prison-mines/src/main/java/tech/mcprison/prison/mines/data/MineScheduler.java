@@ -44,10 +44,10 @@ public abstract class MineScheduler
 	 * once a workflow cycle has been completed.
 	 * </p>
 	 */
-	private List<MineJob> jobWorkflow;
-	private Stack<MineJob> jobStack;
-//	private MineJob currentJob;
-	private Integer taskId = null;
+	private transient List<MineJob> jobWorkflow;
+	private transient Stack<MineJob> jobStack;
+//	private transient MineJob currentJob;
+	private transient Integer taskId = null;
 	
 	private transient long mineResetStartTimestamp;
 	

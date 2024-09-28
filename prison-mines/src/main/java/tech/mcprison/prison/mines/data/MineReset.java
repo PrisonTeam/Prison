@@ -94,29 +94,29 @@ public abstract class MineReset
 	public static final long MINE_RESET__AIR_COUNT_BASE_DELAY = 30000L; // 30 seconds
 	
 
-	private List<MineTargetPrisonBlock> mineTargetPrisonBlocks = null;
-	private TreeMap<MineTargetBlockKey, MineTargetPrisonBlock> mineTargetPrisonBlocksMap = null;
+	private transient List<MineTargetPrisonBlock> mineTargetPrisonBlocks = null;
+	private transient TreeMap<MineTargetBlockKey, MineTargetPrisonBlock> mineTargetPrisonBlocksMap = null;
 	
-	private MineJob currentJob;
+	private transient MineJob currentJob;
 	
-	private int resetPage = 0;
-	private int resetPosition = 0;
+	private transient int resetPage = 0;
+	private transient int resetPosition = 0;
 	
-	private long resetPageMaxPageElapsedTimeMs = -1;
-	private long resetPagePageSubmitDelayTicks = -1;
-	private long resetPageTimeoutCheckBlockCount = -1;
+	private transient long resetPageMaxPageElapsedTimeMs = -1;
+	private transient long resetPagePageSubmitDelayTicks = -1;
+	private transient long resetPageTimeoutCheckBlockCount = -1;
 	
-	private int airCountOriginal = 0;
-	private int airCount = 0;
-	private long airCountTimestamp = 0L;
-	private long airCountElapsedTimeMs = 0L;
+	private transient int airCountOriginal = 0;
+	private transient int airCount = 0;
+	private transient long airCountTimestamp = 0L;
+	private transient long airCountElapsedTimeMs = 0L;
 	
 	
 	
-	private long statsResetTimeMS = 0;
-	private long statsBlockGenTimeMS = 0;
-	private long statsBlockUpdateTimeMS = 0;
-	private long statsBlockUpdateTimeNanos = 0;
+	private transient long statsResetTimeMS = 0;
+	private transient long statsBlockGenTimeMS = 0;
+	private transient long statsBlockUpdateTimeMS = 0;
+	private transient long statsBlockUpdateTimeNanos = 0;
 	
 	// Note: The time it takes to teleport players and broadcast is so trivial
 	//       that they are being disabled to reduce the clutter and memory load.
@@ -124,13 +124,13 @@ public abstract class MineReset
 //	private long statsTeleport2TimeMS = 0;
 //	private long statsMessageBroadcastTimeMS = 0;
 	
-	private int statsResetPages = 0;
-	private long statsResetPageBlocks = 0;
-	private long statsResetPageMs = 0;
+	private transient int statsResetPages = 0;
+	private transient long statsResetPageBlocks = 0;
+	private transient long statsResetPageMs = 0;
 	
 	
-	private List<Long> statsMineSweeperTaskMs;
-	private boolean mineSweeperSubmitted = false;
+	private transient List<Long> statsMineSweeperTaskMs;
+	private transient boolean mineSweeperSubmitted = false;
 	
 	public MineReset() {
 		super();

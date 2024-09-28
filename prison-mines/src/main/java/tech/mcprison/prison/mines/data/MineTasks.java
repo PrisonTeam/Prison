@@ -8,6 +8,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.data.Mine.MineNotificationMode;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.tasks.MineChangeBlockTask;
 import tech.mcprison.prison.output.Output;
