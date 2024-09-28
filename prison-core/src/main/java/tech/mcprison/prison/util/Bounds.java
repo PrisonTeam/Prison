@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.util;
 
+import java.util.Optional;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 
@@ -298,6 +300,37 @@ public class Bounds {
     }
 
     
+
+	/**
+	 * <p>This function should be called after loading a mine from 
+	 * storage, and this function should reconnect all dynamic objects 
+	 * that could not be stored with the core Mine data.
+	 * </p>
+	 * 
+	 * <p>Examples: World objects.
+	 * </p>
+	 */
+	public void reconnectObjects() {
+
+		if ( getMin() != null && getMin().getWorld() == null ) {
+			String worldName = getMin().getWorldName();
+			
+			Optional<World> worldOpt = Prison.get().getPlatform().getWorld(worldName);
+			
+			if ( worldOpt.isPresent() ) {
+				World world = worldOpt.get();
+				
+				setWorld( world );
+			}
+		}
+	}
+    
+	/**
+	 * <p>Sets the world on the min, max, and center objects.
+	 * </p>
+	 * 
+	 * @param world
+	 */
     public void setWorld( World world ) {
     	if ( world != null ) {
     		

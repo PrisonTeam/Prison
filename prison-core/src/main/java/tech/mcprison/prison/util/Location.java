@@ -19,6 +19,7 @@
 package tech.mcprison.prison.util;
 
 import java.text.DecimalFormat;
+import java.util.Optional;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
@@ -37,7 +38,9 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
  */
 public class Location {
 
-    private World world;
+    private transient World world;
+    private String worldName;
+    
     private double x, y, z;
     private float pitch, yaw;
     
@@ -48,6 +51,8 @@ public class Location {
 
     public Location(World world, double x, double y, double z, float pitch, float yaw, Vector direction) {
     	this.world = world;
+    	this.worldName = world == null ? null : world.getName();
+    	
     	this.x = x;
     	this.y = y;
     	this.z = z;
@@ -79,6 +84,30 @@ public class Location {
     	return new Location( this );
     }
     
+    
+	/**
+	 * <p>This function should be called after loading a mine from 
+	 * storage, and this function should reconnect all dynamic objects 
+	 * that could not be stored with the core Mine data.
+	 * </p>
+	 * 
+	 * <p>Examples: World objects.
+	 * </p>
+	 */
+	public void reconnectObects() {
+		if ( getWorld() == null ) {
+			String worldName = getWorldName();
+			
+			Optional<World> worldOpt = Prison.get().getPlatform().getWorld(worldName);
+			
+			if ( worldOpt.isPresent() ) {
+				World world = worldOpt.get();
+				
+				setWorld( world );
+			}
+		}
+	}
+    
     public World getWorld() {
         return world;
     }
@@ -87,7 +116,14 @@ public class Location {
         this.world = world;
     }
 
-    public double getX() {
+    public String getWorldName() {
+		return worldName;
+	}
+	public void setWorldName(String worldName) {
+		this.worldName = worldName;
+	}
+
+	public double getX() {
         return x;
     }
 

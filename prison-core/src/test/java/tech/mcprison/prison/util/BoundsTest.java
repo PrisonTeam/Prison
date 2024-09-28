@@ -30,7 +30,8 @@ import tech.mcprison.prison.TestWorld;
  */
 public class BoundsTest {
 
-    @Test public void equals() throws Exception {
+    @Test 
+    public void equals() throws Exception {
         Bounds bounds =
             new Bounds(new Location(null, 0.0, 0.0, 0.0), new Location(null, 10.0, 10.0, 10.0));
         Bounds otherBounds =
@@ -39,11 +40,13 @@ public class BoundsTest {
         assertTrue(bounds.equals(otherBounds));
     }
     
-    @Test public void fail() throws Exception {
+    @Test 
+    public void fail() throws Exception {
     	assertTrue( true );
     }
 
-    @Test public void within() throws Exception {
+    @Test 
+    public void within() throws Exception {
     	TestWorld world1 = new TestWorld("test1");
 //    	TestWorld world2 = new TestWorld("test2");
     	Location loc1 = new Location(world1, 0.0, 4.0, 0.0);
