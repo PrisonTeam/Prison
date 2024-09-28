@@ -271,8 +271,11 @@ public class MineBombs
 	{
 		MineBombData results = null;
 		
+		StringBuilder dbug = new StringBuilder();
 		
 		String cleanedBombName = Text.stripColor( bombName.toLowerCase() );
+
+		dbug.append( "&3## findBombByName: [&a" ).append( cleanedBombName ).append( "&3] ");
 		
 		if ( cleanedBombName != null && !cleanedBombName.isEmpty() ) {
 			for ( String bombKey : getConfigData().getBombs().keySet() )
@@ -285,6 +288,8 @@ public class MineBombs
 					if ( cBombName != null && 
 							(cBombName.equalsIgnoreCase( cleanedBombName ) || 
 								cleanedBombName.equalsIgnoreCase( bombKey )) ) {
+						
+						dbug.append( " &aMatch! &3" );
 						
 						results = bomb;
 					}
@@ -302,6 +307,8 @@ public class MineBombs
 			if ( cooldownTicks <= 0 ) {
 				// Submit another cooldown:
 				MineBombCooldownTask.addPlayerCooldown( player, ticks );
+				
+				dbug.append( "&3 StartCoolDown: " ).append( ticks ).append( " ticks" );
 			}
 			else {
 				// The player is still in a cooldown using minebombs, so 
@@ -311,8 +318,17 @@ public class MineBombs
 				
 //				player.sendMessage( String.format( message, bombName ) );
 				
+				
+				dbug.append( "&3 CoolDownIsInEffect: " )
+					.append( cooldownTicks ).append( " ticks remaining" ).append(" &aRejected! &3 " );
 				results = null;
 			}
+		}
+		
+		dbug.append( "  &3Results: ").append( results == null ? "&cFail-NoBomb" : "&aSuccess" );
+		
+		if ( Output.get().isDebug() ) {
+			Output.get().logInfo( dbug.toString() );
 		}
 		
 		return results == null ? null : results.clone();

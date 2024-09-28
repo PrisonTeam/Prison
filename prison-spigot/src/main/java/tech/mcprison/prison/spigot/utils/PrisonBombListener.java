@@ -95,12 +95,12 @@ public class PrisonBombListener
         		
         		Block targetBlock = event.getBlockAgainst();
         		
-        		SpigotBlock lsBlock = sPlayer.getLineOfSightBlock();
+//        		SpigotBlock lsBlock = sPlayer.getLineOfSightBlock();
         		
-        		Output.get().logInfo( 
-        				"### Place mine bomb: mineBombPlacementEvent: block: %s  sight: %s", 
-        				targetBlock.getLocation().toString(),
-        				lsBlock.getLocation().toString() );
+//        		Output.get().logInfo( 
+//        				"### Place mine bomb: mineBombPlacementEvent: block: %s  sight: %s", 
+//        				targetBlock.getLocation().toString(),
+//        				lsBlock.getLocation().toString() );
         		
         		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
         		
@@ -351,21 +351,45 @@ public class PrisonBombListener
             		
             		Location losLoc = sPlayer.getLineOfSightExactLocation();
             		
-            		// The placedBombLocation will be used as the center point of the animation:
-            		mineBomb.setPlacedBombLocation( losLoc );
-            		
-            		Output.get().logInfo( 
-            				"### Place mine bomb: bombPlacementEvent: block: %s  "
-            								+ "sight: %s  LineOfSight: %s ", 
-            				new SpigotLocation( targetBlock.getLocation()).toString(),
-            				lsBlock.getLocation().toString(),
-            				(losLoc == null ? "null" : losLoc.toString()) );
-
             		if ( losLoc != null ) {
+            			
+            			// The placedBombLocation will be used as the center point of the animation:
+            			mineBomb.setPlacedBombLocation( losLoc );
+
             			lsBlock = (SpigotBlock) losLoc.getBlockAt();
             			
             			targetBlock = lsBlock.getWrapper();
             		}
+            		else {
+            			Location loc = new SpigotLocation( targetBlock.getLocation() );
+            					
+            			mineBomb.setPlacedBombLocation( loc );
+
+            			lsBlock = (SpigotBlock) loc.getBlockAt();
+            			
+            			targetBlock = lsBlock.getWrapper();
+            			
+            			if ( Output.get().isDebug() ) {
+            				
+            				String msg = "&3MineBombListener: LineOfSight was not able to be "
+            						+ "established to get the exactly placement locaiton. "
+            						+ "Falling back onv original targetBlock's location.";
+            				Output.get().logInfo( msg );
+            			}
+            		}
+            		
+//            		Output.get().logInfo( 
+//            				"### Place mine bomb: bombPlacementEvent: block: %s  "
+//            								+ "sight: %s  LineOfSight: %s ", 
+//            				new SpigotLocation( targetBlock.getLocation()).toString(),
+//            				lsBlock.getLocation().toString(),
+//            				(losLoc == null ? "null" : losLoc.toString()) );
+
+//            		if ( losLoc != null ) {
+//            			lsBlock = (SpigotBlock) losLoc.getBlockAt();
+//            			
+//            			targetBlock = lsBlock.getWrapper();
+//            		}
             		
             		
         			

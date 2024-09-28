@@ -252,8 +252,10 @@ public class SpigotPlayer
     	
     	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
     	for ( Block block : blocks ) {
-    		if ( block != null && block.getType() != Material.AIR ) {
+    		if ( block != null && block.getType() != Material.AIR &&
+    				!block.isPassable() ) {
 
+    			
     			// return the first non-null and non-AIR block, which will 
     			// be the one the player is looking at:
     			results = SpigotBlock.getSpigotBlock( block );
@@ -264,6 +266,25 @@ public class SpigotPlayer
     }
 
     
+    /**
+     * <p>This uses the line of sight to get an exact location of where the player
+     * is clicking.  Normally, when selecting a block, only the block's location
+     * is accessible which is basically integer resolution, although the player maybe 
+     * clicking somewhere in the middle of a block.  This gives a way to finely
+     * select where they were looking, instead of just the block they were 
+     * looking at and clicking on.
+     * </p>
+     * 
+     * <p>Please notice that there may be issues with this code.  Review the
+     * other function in this class 'getLineOfSightBlock()' in that it uses 
+     * bukkit's block.isPassible().  That function does not exist in the
+     * prison block and may need to be added.  Currently it's not possible to 
+     * be added at this time since too many other changes are in effect within
+     * prison.  This is a note and a placeholder for these possible changes.
+     * </p>
+     * 
+     * @return
+     */
     public Location getLineOfSightExactLocation() {
     	
     	SpigotLocation eyeLoc = new SpigotLocation( getWrapper().getEyeLocation() );
@@ -272,7 +293,11 @@ public class SpigotPlayer
     	Location loc = eyeLoc.add(eyeVec);
     	
     	int i = 0;
-    	while ( i++ <= 50 && loc.getBlockAt().isEmpty() ) {
+    	
+    	// Is isPassible also true when isEmpty? If so, then this could be simplified...
+    	// while ( i++ <= 75 && (loc.getBlockAt().isEmpty() || loc.getBlockAt().isPassible()) ) { 
+
+    	while ( i++ <= 75 && loc.getBlockAt().isEmpty() ) {
     		
     		loc = loc.add(eyeVec);
     	}
