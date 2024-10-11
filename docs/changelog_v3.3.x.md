@@ -14,7 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19d 2024-09-28
+# 3.3.0-alpha.19d 2024-10-11
+
+
+* **Update xseries to v11.3.0 from v11.2.1.**
 
 
 * **Mines: checking access.  This change breaks down the access checks to see if a player has access to a given mine so it can be properly logged when in debug mode.**
