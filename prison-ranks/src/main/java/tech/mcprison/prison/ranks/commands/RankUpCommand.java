@@ -261,7 +261,7 @@ public class RankUpCommand
         		);
         
     	
-    	if ( isDefaultBypassPermCheck || 
+;    	if ( isDefaultBypassPermCheck || 
     			isPrestigeBypassPermCheck ||
     			
     			isLadderDefault && hasDefaultPerm ||
@@ -592,25 +592,34 @@ public class RankUpCommand
         
         // Get the player's next rank on default ladder, or if at end then it will return the next
         // prestiges rank.
-        PlayerRank playerRankTarget = rankPlayer.getNextPlayerRank();
+        PlayerRank playerRankTarget = null;
         
-        
-        // If the nextRank is null or the ladder does not match selected ladder, then exit:
-        if ( playerRankTarget == null || playerRankTarget.getRank() == null  ||
-        		!playerRankTarget.getRank().getLadder().getName().equalsIgnoreCase( ladder )	) {
+        if ( targetLadder.isDefault() || targetLadder.isPrestiges() ) {
         	
-        	return false;
+        	playerRankTarget = rankPlayer.getNextPlayerRank();
+        	
+        	// If the nextRank is null or the ladder does not match selected ladder, then exit:
+        	if ( playerRankTarget == null || playerRankTarget.getRank() == null ) {
+        		
+        		if ( Output.get().isDebug() ) {
+        			Output.get().logInfo( 
+        					"RankUp  ladder= %s  currentRank= %s   "
+        					+ "No next default or prestige rank. At end of both ladders?", 
+        					ladder, rankCurrent.getRank().getName() );
+        		}
+        		
+        		return false;
+        	}
         }
+        
         
         
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         
         
         
-        // If the target ladder is either default or prestiges, then use the getNextPlayerRank() value
-        // that is provided.  Only use the following code if not these two ladders.
-        if ( !ladder.equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) && 
-        		!ladder.equalsIgnoreCase( LadderManager.LADDER_PRESTIGES ) ) {
+        // If ranking up on neither default or prestige ladders:
+        if ( !targetLadder.isDefault() && !targetLadder.isPrestiges() ) {
         	
 
         	PlayerRank playerRankCurrent = rankPlayerFactory.getRank( rankPlayer, ladder );

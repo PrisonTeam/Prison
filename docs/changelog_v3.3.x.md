@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19d 2024-10-11
 
 
+* **Rankup:  would not work for ladders other than default and prestiges.  Fixed.**
+
+
 * **Update xseries to v11.3.0 from v11.2.1.**
 
 
