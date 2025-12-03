@@ -30,6 +30,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -37,6 +38,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
+import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
@@ -61,6 +63,7 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 import tech.mcprison.prison.util.Vector;
 
 /**

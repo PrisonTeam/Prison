@@ -17,9 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19i 2025-12-03
 
 
-** 2025-07-28 **
+** 2025-07-26 ** **Bug fix: Prevent an NPE when a sellallItem is null.**  Generally this should not happen, but there was another bug that caused that object to be null, so this fix is just an extra insurance.
 
-* **Fix a bug with inventory items being held in the off-hand. If I recall, this was a potential exploit under some circumstances.  Added support for selling through the off-hand, and provided fallbacks for older versions of spigot, such as 1.9.
+
+** 2025-07-28 ** **Fix a bug with inventory items being held in the off-hand.** If I recall, this was a potential exploit under some circumstances.  Added support for selling through the off-hand, and provided fallbacks for older versions of spigot, such as 1.9.
 
 
 ** 2025-07-26 **

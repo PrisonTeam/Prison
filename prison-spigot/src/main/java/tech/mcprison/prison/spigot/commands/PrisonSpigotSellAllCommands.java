@@ -15,6 +15,7 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
@@ -33,6 +34,7 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayerUtil;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
@@ -1094,9 +1096,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     			int amount = iStack.getAmount();
     			
     			List<String> lore = iStack.getLore();
+    			
     			Map<Enchantment, Integer> enchants = iStack.getEnchantments();
     			
-    			String nbtInfo = iStack.getNBTItemStackInfo();
+				String nbtInfo = iStack.getNBTItemStackInfo();
 
     			
     			
@@ -1105,7 +1108,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     			
     			
     			PrisonBlock sellallItem = sellAllUtil.getSellAllItems().get( nameSellall );
-    			boolean sellallItemAllowLore = sellallItem.isLoreAllowed();
+    			boolean sellallItemAllowLore = sellallItem != null && sellallItem.isLoreAllowed();
     			
     			if ( sellallItem != null && iStackHasLore == sellallItemAllowLore ) {
 
