@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19i 2025-12-03
 
 
+
+** 2025-09-14 ** **Premium Vanish: If a player is using Premium Vanish and they are vanished**, then prison will reject all activity from that player and will cancel the block break event.
+This is to prevent a vanished player (admin) from accidentally breaking blocks in mines while vanished.
+
 ** 2025-07-26 ** **Bug fix: Prevent an NPE when a sellallItem is null.**  Generally this should not happen, but there was another bug that caused that object to be null, so this fix is just an extra insurance.
 
 

@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -54,7 +55,9 @@ public class OnBlockBreakMines
 		
 		results_passed__access_priority__player_has_access,
 		cancel_event__access_priority__block_is_not_in_a_mine,
-		cancel_event__access_priority__player_has_no_access
+		cancel_event__access_priority__player_has_no_access, 
+		
+		cancel_event__player_is_vanished
 		;
 		
 	}
@@ -536,9 +539,18 @@ public class OnBlockBreakMines
 		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
 		results.setSpigotBlock( sBlock );
 		
-		if ( block == null ) {
+		
+		// If player is vanished (ie PremiumVanish) then ignore all actions from player:
+		if ( isVanished( player ) ) {
 			
-			results.setResultsReason( EventResultsReasons.cancel_event__block_is_null);
+			results.setResultsReason( EventResultsReasons.cancel_event__player_is_vanished );
+			
+			results.setCancelEvent( true );
+			results.setIgnoreEvent( true );
+		}
+		else if ( block == null ) {
+			
+			results.setResultsReason( EventResultsReasons.cancel_event__block_is_null );
 			
 			results.setCancelEvent( true );
 			results.setIgnoreEvent( true );
@@ -712,6 +724,27 @@ public class OnBlockBreakMines
 		return results;
 	}
 	
+	
+	/**
+	 * <p>Checks to see if a player is vanished when using PremiumVanish, SuperVanish, 
+	 * EssentialsX, VanishNoPacket and many more vanish plugins.
+	 * </p>
+	 * 
+	 * <p>See the API for Devs section on their spigotmc.org page.
+	 * <a href="https://www.spigotmc.org/resources/premiumvanish-stay-hidden-bungee-velocity-support.14404/">
+	 * 		Premium Vanish at spigotmc.org
+	 * </a>
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	private boolean isVanished(Player player) {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
+}
 	
 //	/**
 //	 * <p>Warning... this is a temp copy of the real function and will be removed
