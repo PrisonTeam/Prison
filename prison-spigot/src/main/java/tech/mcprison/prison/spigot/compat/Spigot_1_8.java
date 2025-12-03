@@ -101,10 +101,28 @@ public class Spigot_1_8
     /**
      * This function does not exist in v1.8 so returns null.
      */
+    @Override
     public ItemStack getItemInOffHand(PlayerInventory playerInventory) {
     	return null;
     }
     
+    /**
+     * This function does not exist in v1.8 so returns null.
+     */
+	@Override
+	public ItemStack getItemInOffHandStrict(Player player) {
+		return null;
+	}
+
+	/**
+	 * This function does not exist in v1.8 so do nothing.
+	 */
+	@Override
+	public void setItemStackInOffHandStrict(Player player, ItemStack itemStack) {
+		
+	}
+	
+	
     @SuppressWarnings( "deprecation" )
 	@Override
     public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {

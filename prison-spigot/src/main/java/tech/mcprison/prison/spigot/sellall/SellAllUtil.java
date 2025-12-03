@@ -36,6 +36,7 @@ import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 //import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -1089,9 +1090,50 @@ public class SellAllUtil
     	
     	double multiplier = sPlayer.getSellAllMultiplier();
     	
-    	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
+    	
+    	// Remove player's off-hand and helmet slots since those don't always sell correctly:
+    	boolean invDirty = false;
+    	ItemStack offHandItemStack = SpigotCompatibility.getInstance().getItemInOffHandStrict( p );
+    	
+    	if ( offHandItemStack != null ) {
+    		// 1.8 will always be null, so it will never hit this.
+    		ItemStack itemStack = null;
+    		SpigotCompatibility.getInstance().setItemStackInOffHandStrict( p, itemStack );
+    		
+    		invDirty = true;
+    	}
+    	
+    	ItemStack helmetItemStack = p.getInventory().getHelmet();
+    	
+    	if ( helmetItemStack != null ) {
+    		p.getInventory().setHelmet( null );
 
+    		invDirty = true;
+    	}
+    	
+    	
+    	
+    	SpigotPlayerInventory spInventory = sPlayer.getSpigotPlayerInventory();
+    	
+    	
     	List<SellAllData> soldData = sellInventoryItems( spInventory, multiplier );
+
+    	
+    	
+    	// Since the inventory is done being sold, add back the offHand and helmet:
+    	if ( offHandItemStack != null ) {
+    		// 1.8 will always be null, so it will never hit this.
+    		SpigotCompatibility.getInstance().setItemStackInOffHandStrict( p, offHandItemStack );
+    	}
+    	
+    	if ( helmetItemStack != null ) {
+    		p.getInventory().setHelmet( helmetItemStack );
+    	}
+    	
+    	if ( invDirty ) {
+    		p.updateInventory();
+    	}
+    	
     	
     	if ( isSellAllBackpackItemsEnabled && BackpacksUtil.getInstance().isEnabled() ) {
     		BackpacksUtil bpUtil = BackpacksUtil.get();

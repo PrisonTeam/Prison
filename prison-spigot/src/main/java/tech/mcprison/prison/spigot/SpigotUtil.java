@@ -54,6 +54,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.integrations.IntegrationBackpackAPI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 import tech.mcprison.prison.util.Vector;
@@ -1177,40 +1178,86 @@ public class SpigotUtil {
     	return results;
     }
 
+    /**
+     * <p>This function will try to use the 'prisonStack' parameter, and then
+     * construct an org.bukkit.inventory.ItemStack object and return it. If
+     * the provided prisonStack already contains a bukkit ItemStack, then it 
+     * will be returned from this function, otherwise it will have to construct
+     * one.
+     * </p>
+     * 
+     * <p>If it has to construct one, it will add the lore and custom name.
+     * It may have to also handle enchantments too.  Not sure right now.
+     * </p>
+     * 
+     * <p>The idea is that hopefully the prisonStack will always have an
+     * included bukkit ItemStack so everything will faithfully copy over.
+     * </p>
+     * 
+     * @param prisonStack
+     * @return
+     */
     public static ItemStack prisonItemStackToBukkit(
     				tech.mcprison.prison.internal.ItemStack prisonStack) {
+    	
+    	ItemStack bukkitStack = null;
+    	
         int amount = prisonStack.getAmount();
         
-        ItemStack bukkitStack = getItemStack( prisonStack.getMaterial(), amount );
+        if ( prisonStack instanceof SpigotItemStack ) {
+        	
+        	SpigotItemStack sItemStack = (SpigotItemStack) prisonStack;
+        	
+        	if ( sItemStack.getBukkitStack() != null ) {
+        		bukkitStack = sItemStack.getBukkitStack();
+        	}
+        }
         
+
+        if ( bukkitStack == null ) {
+        	
+        	bukkitStack = getItemStack( prisonStack.getMaterial(), amount );
+        	
 //        MaterialData materialData = blockTypeToMaterial(prisonStack.getMaterial());
 //
 //        ItemStack bukkitStack = new ItemStack(materialData.getItemType(), amount);
 //        bukkitStack.setData(materialData);
-        
-        ItemMeta meta;
-        if (bukkitStack.getItemMeta() == null || !bukkitStack.hasItemMeta()) {
-        	meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
-        } else {
-        	meta = bukkitStack.getItemMeta();
-        }
-        
-        if (meta != null) {
-        	if (prisonStack.getDisplayName() != null) {
-        		meta.setDisplayName(Text.translateAmpColorCodes(prisonStack.getDisplayName()));
+        	
+        	ItemMeta meta;
+        	if (bukkitStack.getItemMeta() == null || !bukkitStack.hasItemMeta()) {
+        		meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+        	} else {
+        		meta = bukkitStack.getItemMeta();
         	}
-        	if (prisonStack.getLore() != null) {
-        		List<String> colored = new ArrayList<>();
-        		for (String uncolor : prisonStack.getLore()) {
-        			colored.add(Text.translateAmpColorCodes(uncolor));
+        	
+        	if (meta != null) {
+        		if (prisonStack.getDisplayName() != null) {
+        			meta.setDisplayName(Text.translateAmpColorCodes(prisonStack.getDisplayName()));
         		}
-        		meta.setLore(colored);
+        		if (prisonStack.getLore() != null) {
+        			List<String> colored = new ArrayList<>();
+        			for (String uncolor : prisonStack.getLore()) {
+        				colored.add(Text.translateAmpColorCodes(uncolor));
+        			}
+        			meta.setLore(colored);
+        		}
+        		bukkitStack.setItemMeta(meta);
         	}
-        	bukkitStack.setItemMeta(meta);
-        }        
+        	
+        	// Need to copy enchantments?
+        	
+        	// Need to copy lore:
+        	// No, this does not make sense... if prisonStack has NBT data, then
+        	// it would also have a getBukkitStack() entry, so this part of the
+        	// code would never be reached. So if there is no bukkitStack in the
+        	// prisonStack, then there would be no NBT data either.
+//        	PrisonNBTUtil.copyCustomNBT(bukkitStack, bukkitStack)
+        }
 
         return bukkitStack;
     }
+    
+    
     
     
     /**

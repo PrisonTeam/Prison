@@ -114,6 +114,23 @@ public class Spigot_1_9
     	return playerInventory.getItemInOffHand();
     }
     
+    /**
+     * 1.9 and higher supports off-hand:
+     */
+	@Override
+	public ItemStack getItemInOffHandStrict(Player player) {
+		return getItemInOffHand(player.getInventory());
+	}
+
+	/**
+	 * 1.9 and higher supports off-hand:
+	 */
+	@Override
+	public void setItemStackInOffHandStrict(Player player, ItemStack itemStack) {
+		
+		player.getInventory().setItemInOffHand(itemStack);
+	}
+    
     @Override
     public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
     	

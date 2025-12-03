@@ -14,8 +14,15 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19i 2025-07-26
+# 3.3.0-alpha.19i 2025-12-03
 
+
+** 2025-07-28 **
+
+* **Fix a bug with inventory items being held in the off-hand. If I recall, this was a potential exploit under some circumstances.  Added support for selling through the off-hand, and provided fallbacks for older versions of spigot, such as 1.9.
+
+
+** 2025-07-26 **
 
 * **Players: Bug fix. If unable to get a player's default rank, then return a null from the function.**
  It was recording that an error happened, but it was returning a null, but continuing on with the processing as if it has a valid rank.  This was not a commonly occurring bug, but was happening with edge case testing.

@@ -63,6 +63,8 @@ public interface Compatibility
     public ItemStack getItemInOffHand(PlayerInteractEvent e);
 
     public ItemStack getItemInOffHand(Player player);
+
+    public ItemStack getItemInOffHandStrict(Player player);
     
     public ItemStack getItemInOffHand(PlayerInventory playerInventory);
     
@@ -73,6 +75,8 @@ public interface Compatibility
     public void setItemInMainHand(SpigotPlayer p, ItemStack itemStack);
     
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack );
+
+    public void setItemStackInOffHandStrict( Player player, ItemStack itemStack );
     
     public void breakItemInMainHand(Player player);
     
