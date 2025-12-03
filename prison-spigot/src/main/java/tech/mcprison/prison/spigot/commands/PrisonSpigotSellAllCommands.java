@@ -1205,6 +1205,26 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     				
     			}
     			
+    			
+    			try {
+    				String bombName = PrisonNBTUtil.getNBTString( iStack.getBukkitStack(), 
+    															MineBombs.MINE_BOMBS_NBT_KEY );
+//    				String ownerUUID = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID );
+    				
+    				if ( bombName != null && bombName.trim().length() == 0 ) {
+    					bombName = null;
+    				}
+    				
+    				if ( bombName != null ) {
+        				chatDisplay.addText( "   Mine Bomb Name: %s", bombName  );
+    					
+    				}
+    			} 
+    			catch (Exception | Error e) {
+    				// Ignore... not a mine bomb.
+    			}
+    			
+    			
     			if ( nbtInfo == null || nbtInfo.trim().length() == 0 ) {
     				
     				chatDisplay.addText( "  No NBT." );

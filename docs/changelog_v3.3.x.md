@@ -18,6 +18,10 @@ These change logs represent the work that has been going on within prison.
 
 
 
+** 2025-07-26  ** **Mine bombs: Identify the name of the mine bomb in chat.**
+I don't recall the significance of this addition, but there was an issue with not knowing what mine bomb was active?
+
+
 ** 2025-09-14 ** **Premium Vanish: If a player is using Premium Vanish and they are vanished**, then prison will reject all activity from that player and will cancel the block break event.
 This is to prevent a vanished player (admin) from accidentally breaking blocks in mines while vanished.
 
