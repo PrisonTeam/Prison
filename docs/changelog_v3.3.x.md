@@ -17,6 +17,12 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19i 2025-12-03
 
 
+**Spigot 1.21.10 support added.  The addition of this new version has resulted in new blocks that are not recognized by the version of XSeries that prison is using.**
+Could not upgrade Xseries about 6+ months ago due to breaking changes that were causing failures with spigot 1.8 and a few other old releases.  These changes just ignores the unknown blocks, since prison would not be able to use them anyway.
+Not sure how to deal with XSeries, but may have to split the builds.
+There were also issues with building the sub-project prison-misc so that sub project was disabled since it's not directly being used.  The issue is that there is a resource in that project that is depending upon a specific library which is part of the bukkit 1.13.2 build, but it's using the repo from spigotmc.  Will address this later, when needed.
+
+
 
 ** 2025-04-13  ** **Placeholders: Bug fix.  When trying to access information through placeholders for an offline player**, it was throwing an NPE because prison was not able to get that player object from bukkit.
 This bug was from a major change to try to get away from using so many calls to bukkit for a specific offline player since it's a very expensive operation because bukkit reads every player setting file until it finds the correct one.  So on servers with over a few thousand players, it can contribute to a lot of lag with a few player requests.

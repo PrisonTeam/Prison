@@ -96,25 +96,35 @@ public abstract class Spigot_1_13_Blocks
 			results = getCachedXMaterial( spigotBlock, NO_DATA_VALUE );
 			
 			if ( results == null ) {
-				results = XMaterial.matchXMaterial( spigotBlock.getType() );
-				
-				if ( results == null ) {
-					results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
-				}
-				
-				if ( results == null ) {
+				try {
+					results = XMaterial.matchXMaterial( spigotBlock.getType() );
 					
-					Output.get().logWarn( "Spigot113Blocks.getXMaterial() : " +
-							"Spigot block cannot be mapped to a XMaterial : " +
-							spigotBlock.getType().name() + 
-							"  SpigotBlock = " + ( spigotBlock == null ? "null" : 
-								spigotBlock.getType().name()));
-				}
+					if ( results == null ) {
+						results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+					}
+					
+					if ( results == null ) {
+						
+						Output.get().logWarn( "Spigot113Blocks.getXMaterial() : " +
+								"Spigot block cannot be mapped to a XMaterial : " +
+								spigotBlock.getType().name() + 
+								"  SpigotBlock = " + ( spigotBlock == null ? "null" : 
+									spigotBlock.getType().name()));
+					}
 
-				
-				if ( results != null ) {
 					
-					putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+					if ( results != null ) {
+						
+						putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+					}
+				} 
+				catch ( IllegalArgumentException e) {
+					// xMaterial does not support this material type.
+					
+					// Add this bad spigotBlock to the cache with a NULL_TOKEN 
+					// so it will not try to map it again:
+					
+					putCachedXMaterial( spigotBlock, NO_DATA_VALUE, NULL_TOKEN );
 				}
 			}
 		}

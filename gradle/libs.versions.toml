@@ -39,7 +39,9 @@ junit = "4.12"
 guava = "31.1-jre"
 spigotApi = "1.13.2-R0.1-SNAPSHOT"
 
-nbtApi = "2.14.1"
+nbtApi = "2.15.3"
+#nbtApi = "2.15.0"
+#nbtApi = "2.14.1"
 papi = "2.11.6"
 vault = "1.7.1"
 

@@ -41,6 +41,7 @@ dependencyResolutionManagement {
 	    	content {
 	    		includeGroup 'org.spigotmc'
 	    		includeGroup 'org.bukkit'
+	    		includeGroup 'net.md-5'
 	    	}
 	    }
 	
@@ -88,7 +89,7 @@ include 'prison-mines'
 include 'prison-ranks'
 include 'prison-sellall'
 
-include 'prison-misc'
+//include 'prison-misc'
 
 include 'prison-worldguard6'
 include 'prison-worldguard7'
