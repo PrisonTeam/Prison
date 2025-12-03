@@ -18,6 +18,11 @@ These change logs represent the work that has been going on within prison.
 
 
 
+** 2025-04-13  ** **Placeholders: Bug fix.  When trying to access information through placeholders for an offline player**, it was throwing an NPE because prison was not able to get that player object from bukkit.
+This bug was from a major change to try to get away from using so many calls to bukkit for a specific offline player since it's a very expensive operation because bukkit reads every player setting file until it finds the correct one.  So on servers with over a few thousand players, it can contribute to a lot of lag with a few player requests.
+
+
+
 ** 2025-07-26  ** **Mine bombs: Identify the name of the mine bomb in chat.**
 I don't recall the significance of this addition, but there was an issue with not knowing what mine bomb was active?
 

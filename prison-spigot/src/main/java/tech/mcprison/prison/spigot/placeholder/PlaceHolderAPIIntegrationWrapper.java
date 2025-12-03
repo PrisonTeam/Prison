@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.util.ChatColor;
 
@@ -76,15 +77,30 @@ public class PlaceHolderAPIIntegrationWrapper
 	 */
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
+		String results = null;
 		
 //		if ( !identifier.toLowerCase().startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED ) ) {
 //			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
 //		}
 
-		UUID playerUuid = player == null ? null : player.getUniqueId();
-		String results = Prison.get().getPlatform().getPlaceholders()
-									.placeholderTranslate( playerUuid, player.getName(), identifier );
+		if( player != null ) {
+			
+			UUID playerUuid = player.getUniqueId();
+			results = Prison.get().getPlatform().getPlaceholders()
+					.placeholderTranslate( playerUuid, player.getName(), identifier );
+			
+			results = ChatColor.translateAlternateColorCodes( '&', results);
+		}
+		else if ( Output.get().isDebug() ) {
+			String msg = String.format(
+					"PlacefolderAPIIntegrationWrapper.onRequest: OfflinePlayer is null. Prison is " +
+					"receving a null value for the OfflinePlayer from PAI for the following " +
+					"placeholder: [\\Q%s\\E]",
+					identifier
+					);
+			Output.get().logInfo( msg );
+		}
 
-		return ChatColor.translateAlternateColorCodes( '&', results);
+		return results;
 	}
 }
