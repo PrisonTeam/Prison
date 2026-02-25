@@ -18,9 +18,10 @@ These change logs represent the work that has been going on within prison.
 
 
 
+** v3.3.0-alpha.19j 2025-12-10**
 
-2026-02-23 Upgrade item-nbt-api to v2.15.5 so it can support spigot 1.21.11.
-v3.3.0-alpha.19j 2025-12-10
+
+
 
 * **Bug fixes: There were some issues with a mine existing in the world that has not been reset, and as such, it had block types that XSeries did not recognize when running spigot 1.21.11.**  These fixes prevents prison from crashing and is able to perform a mine reset so they can be replaced with known blocks.
 
