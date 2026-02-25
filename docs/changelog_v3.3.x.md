@@ -18,6 +18,23 @@ These change logs represent the work that has been going on within prison.
 
 
 
+
+2026-02-23 Upgrade item-nbt-api to v2.15.5 so it can support spigot 1.21.11.
+v3.3.0-alpha.19j 2025-12-10
+
+* **Bug fixes: There were some issues with a mine existing in the world that has not been reset, and as such, it had block types that XSeries did not recognize when running spigot 1.21.11.**  These fixes prevents prison from crashing and is able to perform a mine reset so they can be replaced with known blocks.
+
+
+* **Better logging messages when something goes wrong with the air-counts.** Also, prevent an error in one mine from being displayed for all remaining mines.
+
+
+* **2026-02-24 Major cross roads: Spigot 1.21.11 requires XSeries v13.6.0, but prison is stuck at v11.3.0 due to support for spigot 1.8.**
+  - To move forward, I'm going to split prison in to a legacy build and a modern build. So the build will create two artifacts.  The source code will remain the same for both, but it will be different java versions it will be compiled with, and different versions of libraries.  Java 1.8's builds will be locked in to some plugin versions that cannot change, such as XSeries v11.3.0.  Others will be able to be upgraded and use the latest.
+  - XSeries (block control within prison) will have to be spit... Spigot 1.8 cannot use any version newer than v11.3.0.
+  - Java: The legacy build will continue to be built with java 1.8.  But the modern build may use java 21.  I will have to figure out what is ideal, and what other libraries are using.
+  - Since the source will be identical, legacy builds should still get bug fixes and new enhancements.
+  - Along with this change, I'm wanting to retire the v3.x.x and release v4.0.0.  There are a few core things that will change with the v4.0.0 release.
+  
    
 
 * **2026-02-23 Upgrade item-nbt-api to v2.15.5 so it can support spigot 1.21.11.**

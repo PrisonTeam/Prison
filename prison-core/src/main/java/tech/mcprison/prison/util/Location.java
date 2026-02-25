@@ -325,7 +325,12 @@ public class Location {
     }
 
     /**
-     * Returns the values in coordinate (x, y, z) format.
+     * <p>Returns the values in coordinate '(x, y, z)' format.
+     * Uses doubles with no rounding. Has spaces after the commas.
+     * </p>
+     * 
+     * <p>Example: (-15.1, 35.666667, 124.000325)
+     * </p>
      *
      * @return The {@link String} containing coordinates.
      */
@@ -333,24 +338,45 @@ public class Location {
         return "(" + x + ", " + y + ", " + z + ")";
     }
 
-    
+    /**
+     * <p>Returns the values in coordinate '(worldName, x, y, z)' format.
+     * Uses only the integer part of the doubles with no rounding. Has spaces after the commas.
+     * </p>
+     * 
+     * <p>Example: (PrisonWorld, -15, 35, 124)
+     * </p>
+     * @return
+     */
     public String toWorldCoordinates() {
-    	return "(" + world.getName() + "," + ((int) x) + "," + ((int) y) + "," + ((int) z) + ")";
+    		return "(" + world.getName() + "," + ((int) x) + "," + ((int) y) + "," + ((int) z) + ")";
     }
 
+    /**
+     * <p>Using a String value of the WorldCoordinates, decodes the string value
+     * to a Location object.
+     * </p>
+     * 
+     * @param worldCoordinats such as '(PrisonWorld, -15, 35, 124)'
+     * @return
+     */
     public static Location decodeWorldCoordinates( String worldCoordinats ) {
-    	Location results = null;
-    	String[] d = worldCoordinats.replaceAll( "\\(|\\)", "" ).split( "," );
-    	
-    	if ( d != null && d.length == 4 ) {
-    		results = new Location( d[0], Integer.parseInt( d[1] ), Integer.parseInt( d[2] ), Integer.parseInt( d[3] ) );
-    	}
-    	return results;
+	    	Location results = null;
+	    	String[] d = worldCoordinats.replaceAll( "\\(|\\)", "" ).split( "," );
+	    	
+	    	if ( d != null && d.length == 4 ) {
+	    		results = new Location( d[0], Integer.parseInt( d[1] ), Integer.parseInt( d[2] ), Integer.parseInt( d[3] ) );
+	    	}
+	    	return results;
     }
     
     /**
-     * Returns the values in coordinate (x, y, z) format, to the nearest block (i.e. no decimals).
-     *
+     * <p>Returns the values in coordinate '(x, y, z)' format, to the nearest 
+     * block (i.e. no decimals, rounded, spaces after commas).
+     * </p>
+     * 
+     * <p>Example: (-15, 35, 124)
+     * </p>
+     * 
      * @return The {@link String} containing coordinates.
      */
     public String toBlockCoordinates() {

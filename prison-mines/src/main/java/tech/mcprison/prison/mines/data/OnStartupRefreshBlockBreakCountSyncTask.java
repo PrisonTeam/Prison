@@ -34,6 +34,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 	
 	private int errorCount = 0;
 	private StringBuilder sbErrors = new StringBuilder();
+	private String exceptionError;
 	
 	
 	private List<Mine> processedMines;
@@ -96,6 +97,11 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			countTotalMines = mines.size();
 		}
 		
+		// When the server starts, all mines  will have a resetCount of zero.
+		// So to get the "nextMine", just need to go through the list of all mines
+		// and grab the first one that is zero.  Then set the resetCount on the 
+		// selected mine to 1 so it will not be chosen again. And then return 
+		// the selected mine.
 		for (Mine m : mines ) {
 			
 			// Check to see if we can even submit the job:
@@ -120,6 +126,9 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			}
 		}
 		
+		// If no mine has been selected, then that means all mines were 
+		// processed, so perform the ending tasks of printing out the
+		// list of mines that could not be processed and the totals message.
 		if ( mine == null ) {
 			// done processing:
 			
@@ -262,13 +271,14 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			mine.setAirCountElapsedTimeMs( (long) elapsedMs );
 			mine.setAirCountTimestamp( System.currentTimeMillis() );
 			
-			if ( Output.get().isDebug() ) {
+//			if ( Output.get().isDebug() ) 
+			{
 				
 				DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 				DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 				String message = String.format( 
 						"MineReset startup air-count: Mine [%3d of %3d]: %-10s " +
-								" blocks: %10s  pages: [%3s: %3s]  [%9s: %9s ms]", 
+								" blocks: %10s  pages: [%3s: %3s]  [%9s: %9s ms] <%b>", 
 								countCurrentMine,
 								countTotalMines,
 								mine.getName(), 
@@ -276,7 +286,8 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 								iFmt.format( pages - pagesStart ),
 								iFmt.format( pages ),
 								dFmt.format(elapsedMs),
-								dFmt.format(elapsedMsTotal) 
+								dFmt.format(elapsedMsTotal),
+								Output.get().isDebug()
 								);
 				
 				Output.get().logInfo( message );
@@ -286,11 +297,20 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			if ( getErrorCount() > 0 ) {
 				String message = String.format( 
 						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: Mine=%s: " +
-								"errorCount=%d  blocks: %s : %s", mine.getName(), getErrorCount(),
+								"errorCount=%d  blocks: %s : %s  ExcptError: [%s]", 
+								mine.getName(), getErrorCount(),
 								(getErrorCount() > 20 ? "(first 20)" : ""),
-								getSbErrors().toString() );
+								getSbErrors().toString(),
+								(getExceptionError() == null ? "" : getExceptionError())
+						);
 				
 				Output.get().logWarn( message );
+				
+				
+				// Since the error has beep logged, reset it.
+				setExceptionError( null );
+				getSbErrors().setLength( 0 );
+				setErrorCount( 0 );
 			}
 			
 			// Finalize by setting mine and locations to null so it will reset properly the next time:
@@ -349,5 +369,12 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 	}
 	public void setSbErrors( StringBuilder sbErrors ) {
 		this.sbErrors = sbErrors;
+	}
+
+	protected String getExceptionError() {
+		return exceptionError;
+	}
+	protected void setExceptionError(String exceptionError) {
+		this.exceptionError = exceptionError;
 	}
 }

@@ -205,6 +205,25 @@ public abstract class Spigot_1_8_Blocks
 //		return xMat;
 //	}
 	
+	/**
+	 * <p>This will take a given block and return the XMaterial object for it.
+	 * </p>
+	 * 
+	 * <p>But please keep in mind that just because the block is in a mine, that the
+	 * blocks may not belong in the mine.  Matter of fact, this may be the situation
+	 * when creating a new mine in a new world, or moving a mine.  I mention this 
+	 * fact, because even though the list of blocks for a mine may be very constrained
+	 * ( 'mines block list f') that it may actually contain blocks outside of that
+	 * list.  This actually becomes a problem when older versions of XSeries does
+	 * not support that block (ie... updated to new spigot or paper version) and 
+	 * therefore XSeries cannot match to one of it's block types.
+	 * This may not be a problem, because the mine may not have been reset yet.
+	 * Resetting the mine will purge those unknown block types.
+	 * Or at least, we can just ignore them since they are not blocks we are 
+	 * trying to track.
+	 * </p>
+	 * 
+	 */
 	@SuppressWarnings( "deprecation" )
 	@Override
 	public XMaterial getXMaterial( Block spigotBlock ) {
@@ -228,18 +247,38 @@ public abstract class Spigot_1_8_Blocks
 				
 				if ( results == null ) {
 					// Last chance: try to match by id:
-					int id = spigotBlock.getType().getId();
-					
-					results = matchXMaterial( id, data );
+					// WARNING: This will not work with "modern material".  So if this 
+					//          throws an exception when trying to get the ID, then just 
+					//          ignore it since results will be null and it will try to 
+					//          match by MaterialType and then by name.
+					try {
+						int id = spigotBlock.getType().getId();
+						
+						results = matchXMaterial( id, data );
 //					results = XMaterial.matchXMaterial( id, data ).orElse( null );
+					} 
+					catch (Exception e) {
+						// Ignore this exception and allow it to find a match by
+						// other means...
+					}
 				}
 				
 				if ( results == null ) {
-					results = XMaterial.matchXMaterial(spigotBlock.getType());
+					try {
+						results = XMaterial.matchXMaterial(spigotBlock.getType());
+					} 
+					catch (Exception e) {
+						// Ignore and let next test try it...
+					}
 				}
 				
 				if ( results == null ) {
-					results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+					try {
+						results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+					} 
+					catch (Exception e) {
+						// Ignore and let the next test try it...
+					}
 				}
 				
 				if ( results == null ) {

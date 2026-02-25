@@ -91,8 +91,9 @@ public abstract class MineReset
 	public static final long MINE_RESET__PAGE_TIMEOUT_CHECK__BLOCK_COUNT = 250;
 	
 	
-	public static final long MINE_RESET__AIR_COUNT_BASE_DELAY_TICKS = 6 * 20L; // 6 seconds
-	public static final long MINE_RESET__AIR_COUNT_SUBMIT_GAP_TICKS = 5; // 0.25 second
+	// NOTE: Longer delay on air counts will not prevent the "server is running behind" messages.
+	public static final long MINE_RESET__AIR_COUNT_BASE_DELAY_TICKS = 10 * 20L; // 10 seconds
+	public static final long MINE_RESET__AIR_COUNT_SUBMIT_GAP_TICKS = 10; // 10 ticks == 0.5 second
 	
 
 	private transient List<MineTargetPrisonBlock> mineTargetPrisonBlocks = null;
@@ -1746,6 +1747,8 @@ public abstract class MineReset
 			}
 		}
 		catch ( Exception e ) {
+			String msg = e.getMessage();
+			
 			stats.incrementErrorCount();
 			
 			// Updates to the "world" should never be ran async.  Upon review of the above 
@@ -1754,19 +1757,36 @@ public abstract class MineReset
 			//     java.lang.IllegalStateException: Asynchronous entity world add!
 			// If there are no entities, it will be fine, but they could cause issues with async 
 			// access of unloaded chunks.
-			String coords = String.format( "%d.%d.%d ", 
-					targetLocation.getBlockX(), targetLocation.getBlockY(), targetLocation.getBlockZ() );
+//			String coords = String.format( "%d.%d.%d ", 
+//					targetLocation.getBlockX(), targetLocation.getBlockY(), targetLocation.getBlockZ() );
+			
+			String coords = targetLocation.toBlockCoordinates();
+			
+			if ( stats.getExceptionError() == null ) {
+				
+				stats.setExceptionError( msg );
+				
+				StackTraceElement[] stackTrace = e.getStackTrace();
+				
+				// print only the first 6 lines of the stack trace:
+				for (int i = 0; i < stackTrace.length && i <= 9; i++) {
+					StackTraceElement stEle = stackTrace[i];
+					Output.get().logWarn( "*#* " + stEle.toString());
+				}
+			}
 			
 			if ( stats.getErrorCount() == 0 ) {
+				// Error count is 0, so setup the messages:
 				String message = String.format( 
 						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
-								"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
+								"Mine=%s coords=%s  Error: [%s] ", getName(), coords, msg );
 				
-				if ( e.getMessage() != null && e.getMessage().contains( "Asynchronous entity world add" )) {
+				if ( msg != null && msg.contains( "Asynchronous entity world add" )) {
 					Output.get().logWarn( message, e );
-				} else {
-					Output.get().logWarn( message, e );
-				}
+				} 
+//				else {
+//					Output.get().logWarn( message, e );
+//				}
 				
 			} 
 			else if ( stats.getErrorCount() <= 10 ) {
