@@ -24,7 +24,6 @@ public abstract class MineTasks
 	public MineTasks() {
 		super();
 		
-		
 	}
 	
 
@@ -41,10 +40,9 @@ public abstract class MineTasks
      */
 	@Override
 	protected void initialize() {
-    	super.initialize();
+		super.initialize();
     	
     }
-	
 	
 	
     /**
@@ -52,20 +50,12 @@ public abstract class MineTasks
      * 
      * @param callbackAsync
      */
-//	@Override
-//    public int submitAsyncTask( PrisonRunnable callbackAsync ) {
-//    	return submitAsyncTask( callbackAsync, 0L );
-//    }
 	@Override
 	public int submitAsyncTask( PrisonRunnable callbackAsync, long delay ) {
 		return Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 
 				getResetPagePageSubmitDelayTicks() + delay );
 	}
     
-//	@Override
-//    public int submitSyncTask( PrisonRunnable callbackSync ) {
-//    	return submitSyncTask( callbackSync, 0L );
-//    }
 	
 	@Override
 	public int submitSyncTask( PrisonRunnable callbackSync, long delay ) {
@@ -93,38 +83,39 @@ public abstract class MineTasks
      */
 	@Override
 	public long teleportAllPlayersOut() {
-    	long start = System.currentTimeMillis();
-    	
-    	if ( isVirtual() ) {
-    		return 0;
-    	}
-    	
-    	World world = getBounds().getCenter().getWorld();
-
-    	try {
-    		if ( isEnabled() && world != null ) {
-    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    				Prison.get().getPlatform().getOnlinePlayers());
-    			for (Player player : players) {
-    				if ( getBounds().withinIncludeTopBottomOfMine(player.getLocation()) ) {
-    					
-    					teleportPlayerOut(player);
-    				}
-    			}
-    		}
-    		
-    	}
-    	catch (Exception e) {
-			Output.get().logError("&cMineReset: Failed to TP players out of mine. mine= " + 
-							getName(), e);
+	    	long start = System.currentTimeMillis();
+	    	
+	    	if ( isVirtual() ) {
+	    		return 0;
+	    	}
+	    	
+	    	World world = getBounds().getCenter().getWorld();
+	
+	    	try {
+	    		if ( isEnabled() && world != null ) {
+	    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+	    				Prison.get().getPlatform().getOnlinePlayers());
+	    			for (Player player : players) {
+	    				if ( getBounds().withinIncludeTopBottomOfMine(player.getLocation()) ) {
+	    					
+	    					teleportPlayerOut(player);
+	    				}
+	    			}
+	    		}
+	    		
+	    	}
+	    	catch (Exception e) {
+				Output.get().logError("&cMineReset: Failed to TP players out of mine. mine= " + 
+								getName(), e);
 		}
-    	return System.currentTimeMillis() - start;
+	    	
+	    	return System.currentTimeMillis() - start;
     }
     
     
     @Override
     public void teleportPlayerOut(Player player) {
-    	teleportPlayerOut( player, "spawn" );
+    		teleportPlayerOut( player, "spawn" );
     }
     
     /**
@@ -155,78 +146,56 @@ public abstract class MineTasks
      */
     @Override
     public Location teleportPlayerOut(Player player, String targetLocation) {
-    	Location tpTargetLocation = null;
-    	
-    	if ( isVirtual() ) {
-    		// ignore:
-    	}
-    	else
-		if ( !isEnabled() ) {
-			player.sendMessage( 
-					String.format( "&7MineReset: Teleport failure: Mine is not enabled. " +
-							"Ensure world exists. mine= &3%s ", 
-							getName()  ));
-		}
-		else {
-//			Location altTp = alternativeTpLocation();
-			tpTargetLocation = "spawn".equalsIgnoreCase( targetLocation ) && isHasSpawn() ? 
-										getSpawn() : alternativeTpLocation();
-			
-			// Player needs to stand on something.  If block below feet is air, change it to a 
-			// glass block:
-			Location targetGround = new Location( tpTargetLocation );
-			targetGround.setY( tpTargetLocation.getBlockY() - 1 );
-			
-			Block pBlock = targetGround.getBlockAt();
-			if ( pBlock.isEmpty() ) {
-				pBlock.setPrisonBlock( PrisonBlock.GLASS );;
+	    	Location tpTargetLocation = null;
+	    	
+	    	if ( isVirtual() ) {
+	    		// ignore:
+	    	}
+	    	else
+			if ( !isEnabled() ) {
+				player.sendMessage( 
+						String.format( "&7MineReset: Teleport failure: Mine is not enabled. " +
+								"Ensure world exists. mine= &3%s ", 
+								getName()  ));
 			}
-			
-			player.teleport( tpTargetLocation );
-			
-			
-			
-//    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
-//    			.withReplacements(this.getName()).sendTo(player);
-		}
-    	
-    	return tpTargetLocation;
+			else {
+				tpTargetLocation = "spawn".equalsIgnoreCase( targetLocation ) && isHasSpawn() ? 
+											getSpawn() : alternativeTpLocation();
+				
+				// Player needs to stand on something.  If block below feet is air, change it to a 
+				// glass block:
+				Location targetGround = new Location( tpTargetLocation );
+				targetGround.setY( tpTargetLocation.getBlockY() - 1 );
+				
+				Block pBlock = targetGround.getBlockAt();
+				if ( pBlock.isEmpty() ) {
+					pBlock.setPrisonBlock( PrisonBlock.GLASS );;
+				}
+				
+				player.teleport( tpTargetLocation );
+				
+			}
+	    	
+	    	return tpTargetLocation;
     }
 
     @Override
     public void submitTeleportGlassBlockRemoval() {
     	
-//    	Location altTp = alternativeTpLocation();
-    	Location tpTargetLocation = isHasSpawn() ? getSpawn() : alternativeTpLocation();
-									
-    	Location glassBlockLocation = new Location( tpTargetLocation );
-    	int newY = tpTargetLocation.getBlockY() - 1;
-    	glassBlockLocation.setY( newY );
-    	
-    	
-    	MineChangeBlockTask changeBlockTask = 
-    			new MineChangeBlockTask( glassBlockLocation, 
-    								PrisonBlock.AIR, PrisonBlock.GLASS );
-    	
-    	int delayInTicks = 10;
-    	PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
+	    	Location tpTargetLocation = isHasSpawn() ? getSpawn() : alternativeTpLocation();
+										
+	    	Location glassBlockLocation = new Location( tpTargetLocation );
+	    	int newY = tpTargetLocation.getBlockY() - 1;
+	    	glassBlockLocation.setY( newY );
+	    	
+	    	
+	    	MineChangeBlockTask changeBlockTask = 
+	    			new MineChangeBlockTask( glassBlockLocation, 
+	    								PrisonBlock.AIR, PrisonBlock.GLASS );
+	    	
+	    	int delayInTicks = 10;
+	    	PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
 
-    	
-//    	Block block = glassBlockLocation.getBlockAt();
-//    	if ( block != null ) {
-//    		PrisonBlock prisonBlock = block.getPrisonBlock();
-//    		
-//    		if ( prisonBlock != null && prisonBlock.equals( PrisonBlock.GLASS ) ) {
-//    			// The glass block is under the player's feet so submit to remove it:
-//    			
-//    			MineChangeBlockTask changeBlockTask = 
-//    					new MineChangeBlockTask( glassBlockLocation, PrisonBlock.AIR );
-//    			
-//    			int delayInTicks = 10;
-//    			PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
-//    		}
-//    	}
-    			
     }
 
     /**
@@ -247,7 +216,7 @@ public abstract class MineTasks
 	{
 		Location altTp = new Location( getBounds().getCenter() );
 		int y = getBounds().getyBlockMax() + 2;
-    	altTp.setY( y );
+		altTp.setY( y );
 		return altTp;
 	}
 	
@@ -257,68 +226,62 @@ public abstract class MineTasks
 	
 	@Override
     protected void broadcastResetMessageToAllPlayersWithRadius() {
-//    	long start = System.currentTimeMillis();
     	
-    	if ( isVirtual() || getResetTime() <= 0 ) {
-    		// ignore:
-    	}
-    	else 
-    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
-    		World world = getBounds().getCenter().getWorld();
-    		
-    		if ( world != null ) {
-    			
-				boolean useWorld = getNotificationMode() != MineNotificationMode.server &&
-						world != null && world.getPlayers() != null;
-				
-				List<Player> players = 
-						useWorld ?
-								world.getPlayers() :
-								Prison.get().getPlatform().getOnlinePlayers();
-				
-    			for (Player player : players) {
-    				
-    				// Check for either mode: Within the mine, or by radius from mines center:
-    				if ( 
-    						getNotificationMode() == MineNotificationMode.server ||
-    						
-							getNotificationMode() == MineNotificationMode.world &&
-							getBounds().getMin().getWorld().getName().equalsIgnoreCase( 
-											player.getLocation().getWorld().getName() ) ||
-    						
-    						getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
-    						
-    						getNotificationMode() == MineNotificationMode.radius && 
-    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
-    					
-    					if ( !isUseNotificationPermission() ||
-    						  isUseNotificationPermission() && 
-    						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
-    						
-    						
-    						PrisonMines.getInstance().getMinesMessages()
-    									.getLocalizable("reset_message").withReplacements( getTag() )
-    									.sendTo(player);
-    						
-//    						player.sendMessage( "The mine " + getName() + " has just reset." );
-    					}
-    				}
-    			}
-    			
-    		}
-    		
-    	}
+	    	if ( isVirtual() || getResetTime() <= 0 ) {
+	    		// ignore:
+	    	}
+	    	else 
+	    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
+	    		World world = getBounds().getCenter().getWorld();
+	    		
+	    		if ( world != null ) {
+	    			
+					boolean useWorld = getNotificationMode() != MineNotificationMode.server &&
+							world != null && world.getPlayers() != null;
+					
+					List<Player> players = 
+							useWorld ?
+									world.getPlayers() :
+									Prison.get().getPlatform().getOnlinePlayers();
+					
+	    			for (Player player : players) {
+	    				
+	    				// Check for either mode: Within the mine, or by radius from mines center:
+	    				if ( 
+	    						getNotificationMode() == MineNotificationMode.server ||
+	    						
+								getNotificationMode() == MineNotificationMode.world &&
+								getBounds().getMin().getWorld().getName().equalsIgnoreCase( 
+												player.getLocation().getWorld().getName() ) ||
+	    						
+	    						getNotificationMode() == MineNotificationMode.within && 
+	    						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
+	    						
+	    						getNotificationMode() == MineNotificationMode.radius && 
+	    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
+	    					
+	    					if ( !isUseNotificationPermission() ||
+	    						  isUseNotificationPermission() && 
+	    						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
+	    						
+	    						
+	    						PrisonMines.getInstance().getMinesMessages()
+	    									.getLocalizable("reset_message").withReplacements( getTag() )
+	    									.sendTo(player);
+	    						
+	    					}
+	    				}
+	    			}
+	    			
+	    		}
+	    		
+	    	}
     	
-//        long stop = System.currentTimeMillis();
-        
-//        setStatsMessageBroadcastTimeMS( stop - start );
     }
     
 	
 	@Override
 	protected void broadcastSkipResetMessageToAllPlayersWithRadius() {
-//    	long start = System.currentTimeMillis();
 		
 		if ( isVirtual() || getResetTime() <= 0 ) {
 			// ignore:
@@ -367,7 +330,6 @@ public abstract class MineTasks
 								.getLocalizable("skip_reset_message").withReplacements( getTag() )
 								.sendTo(player);
 								
-//    						player.sendMessage( "The mine " + getName() + " has just reset." );
 							}
 						}
 					}
@@ -376,66 +338,61 @@ public abstract class MineTasks
 				
 			}
 		
-//        long stop = System.currentTimeMillis();
-		
-//        setStatsMessageBroadcastTimeMS( stop - start );
 	}
 	
     @Override
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
     	
-    	if ( isVirtual() || getResetTime() <= 0) {
-    		// ignore:
-    	}
-    	else
-    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
-    		World world = getBounds().getCenter().getWorld();
-    		
-    		if ( world != null ) {
-    			
-				boolean useWorld = getNotificationMode() != MineNotificationMode.server &&
-						world != null && world.getPlayers() != null;
-				
-				List<Player> players = 
-						useWorld ?
-								world.getPlayers() :
-								Prison.get().getPlatform().getOnlinePlayers();
-				
-    			for (Player player : players) {
-    				// Check for either mode: Within the mine, or by radius from mines center:
-    				if ( 
-    						getNotificationMode() == MineNotificationMode.server ||
-    						
-							getNotificationMode() == MineNotificationMode.world &&
-							getBounds().getMin().getWorld().getName().equalsIgnoreCase( 
-											player.getLocation().getWorld().getName() ) ||
-    						
-    						getNotificationMode() == MineNotificationMode.within && 
-    						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
-    						
-    						getNotificationMode() == MineNotificationMode.radius && 
-    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
-    					
-    					if ( !isUseNotificationPermission() ||
-      						  isUseNotificationPermission() && 
-      						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
-    						
-    						PrisonMines.getInstance().getMinesMessages()
-    										.getLocalizable("reset_warning")
-    										.withReplacements( getTag(), 
-    												Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
-    										.sendTo(player);
-    						
-//    						player.sendMessage( "The mine " + getName() + " will reset in " + 
-//    							Text.getTimeUntilString(mineJob.getResetInSec() * 1000) );
-    					}
-    					
-    					
-    				}
-    			}
-    			
-    		}
-    	}
+	    	if ( isVirtual() || getResetTime() <= 0) {
+	    		// ignore:
+	    	}
+	    	else
+	    	if ( getNotificationMode() != MineNotificationMode.disabled ) {
+	    		World world = getBounds().getCenter().getWorld();
+	    		
+	    		if ( world != null ) {
+	    			
+					boolean useWorld = getNotificationMode() != MineNotificationMode.server &&
+							world != null && world.getPlayers() != null;
+					
+					List<Player> players = 
+							useWorld ?
+									world.getPlayers() :
+									Prison.get().getPlatform().getOnlinePlayers();
+					
+	    			for (Player player : players) {
+	    				// Check for either mode: Within the mine, or by radius from mines center:
+	    				if ( 
+	    						getNotificationMode() == MineNotificationMode.server ||
+	    						
+								getNotificationMode() == MineNotificationMode.world &&
+								getBounds().getMin().getWorld().getName().equalsIgnoreCase( 
+												player.getLocation().getWorld().getName() ) ||
+	    						
+	    						getNotificationMode() == MineNotificationMode.within && 
+	    						getBounds().withinIncludeTopBottomOfMine(player.getLocation() ) ||
+	    						
+	    						getNotificationMode() == MineNotificationMode.radius && 
+	    						getBounds().within(player.getLocation(), getNotificationRadius()) ) {
+	    					
+	    					if ( !isUseNotificationPermission() ||
+	      						  isUseNotificationPermission() && 
+	      						  	player.hasPermission( getMineNotificationPermissionName() ) ) {
+	    						
+	    						PrisonMines.getInstance().getMinesMessages()
+	    										.getLocalizable("reset_warning")
+	    										.withReplacements( getTag(), 
+	    												Text.getTimeUntilString(Math.round(mineJob.getResetInSec() * 1000.0d)) )
+	    										.sendTo(player);
+	    						
+	    					}
+	    					
+	    					
+	    				}
+	    			}
+	    			
+	    		}
+	    	}
     }
 	
 }

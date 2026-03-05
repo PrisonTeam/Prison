@@ -261,29 +261,8 @@ public class MineManager
         OnStartupRefreshBlockBreakCountSyncTask.getInstance().submit( submitDelay );
         
         
-//        // When finished loading the mines, then if there are any worlds that
-//        // could not be loaded, dump the details:
-//        List<String> unavailableWorlds = getUnavailableWorldsListings();
-//        for ( String uWorld : unavailableWorlds ) {
-//			Output.get().logInfo( uWorld );
-//		}
-        
-        
-//        // Submit all the loaded mines to run:
-//        int offset = 0;
-//        for ( Mine mine : mines )
-//		{
-//			mine.submit(offset);
-//			offset += 5;
-//		}
-//        Output.get().logInfo("Mines are all queued to run auto resets.");
     }
 
-//    public void loadMine(String mineFile) throws IOException, MineException {
-//        Document document = coll.get(mineFile).orElseThrow(IOException::new);
-//        Mine m = new Mine(document);
-//        add(m, false, 0);
-//    }
 
     /**
      * Adds a {@link Mine} to this {@link MineManager} instance.
@@ -294,7 +273,7 @@ public class MineManager
      * @return if the add was successful
      */
     public boolean add(Mine mine) {
-    	return add(mine, true, 0);
+    		return add(mine, true, 0);
     }
     
     /**
@@ -309,17 +288,17 @@ public class MineManager
      * @return if the add was successful
      */
     private boolean add(Mine mine, boolean save, int offsetTimingMs ) {
-    	boolean results = false;
+    		boolean results = false;
     	
-    	// not add if it already exists, or if the mine is null or does not have a valid name:
+    		// not add if it already exists, or if the mine is null or does not have a valid name:
         if ( mine != null &&  mine.getName() != null && 
         		mine.getName().trim().length() > 0 && 
         		!getMines().contains(mine)) {
         	
-        	if ( save ) {
-        		saveMine( mine );
-        	}
-        	
+	        	if ( save ) {
+	        		saveMine( mine );
+	        	}
+	        	
             results = getMines().add(mine);
             getMinesByName().put( mine.getName().toLowerCase(), mine );
             
@@ -331,24 +310,24 @@ public class MineManager
 
 
     public boolean removeMine(String mineName){
-    	boolean results = false;
-    	if ( mineName != null ) {
-    		Mine mine = getMinesByName().get( mineName.toLowerCase() );
-    		if ( mine != null ) {
-    			results = removeMine(mine);
-    		}
-    	}
-    	
-    	return results;
+	    	boolean results = false;
+	    	if ( mineName != null ) {
+	    		Mine mine = getMinesByName().get( mineName.toLowerCase() );
+	    		if ( mine != null ) {
+	    			results = removeMine(mine);
+	    		}
+	    	}
+	    	
+	    	return results;
     }
 
     public boolean removeMine(Mine mine) {
-    	boolean success = false;
-    	if ( mine != null ) {
-    		coll.delete( mine.getName() );
-    		getMinesByName().remove(mine.getName().toLowerCase());
-    		success = getMines().remove(mine);
-    	}
+	    	boolean success = false;
+	    	if ( mine != null ) {
+	    		coll.delete( mine.getName() );
+	    		getMinesByName().remove(mine.getName().toLowerCase());
+	    		success = getMines().remove(mine);
+	    	}
 	    return success;
     }
 
@@ -388,11 +367,11 @@ public class MineManager
 
     
     public void saveMinesIfUnsavedBlockCounts() {
-    	for (Mine m : getMines()){
-    		if ( m.hasUnsavedBlockCounts() ) {
-    			saveMine( m );
-    		}
-    	}
+	    	for (Mine m : getMines()){
+	    		if ( m.hasUnsavedBlockCounts() ) {
+	    			saveMine( m );
+	    		}
+	    	}
     }
     
 
@@ -437,9 +416,7 @@ public class MineManager
      * does not exist by the specified name.
      */
     public Mine getMine(String mineName) {
-    	return (mineName == null ? null : getMinesByName().get( mineName.toLowerCase() ));
-    	
-        //return mines.stream().filter(mine -> mine.getName().equals(name)).findFirst();
+    		return (mineName == null ? null : getMinesByName().get( mineName.toLowerCase() ));
     }
 
     public List<Mine> getMines() {
@@ -447,44 +424,44 @@ public class MineManager
     }
     
     public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
-    	return getMines( sortOrder, getMines() );
+    		return getMines( sortOrder, getMines() );
     }
     
     protected PrisonSortableResults getMines( MineSortOrder sortOrder, List<Mine> mines ) {
-    	PrisonSortableResults results = new PrisonSortableResults( sortOrder );
-    	
-    	
-    	// if invalid, then that's invalid, so default to sortOrder:
-    	if ( sortOrder == MineSortOrder.invalid ) {
-    		sortOrder = MineSortOrder.sortOrder;
-    	}
-
-    	
-    	for ( Mine mine : mines ) {
-    		if ( mine.getSortOrder() < 0 ) {
-    			results.getExclude().add( mine );
-    		}
-    		else {
-    			results.getInclude().add( mine );
-    		}
+	    	PrisonSortableResults results = new PrisonSortableResults( sortOrder );
+	    	
+	    	
+	    	// if invalid, then that's invalid, so default to sortOrder:
+	    	if ( sortOrder == MineSortOrder.invalid ) {
+	    		sortOrder = MineSortOrder.sortOrder;
+	    	}
+	
+	    	
+	    	for ( Mine mine : mines ) {
+	    		if ( mine.getSortOrder() < 0 ) {
+	    			results.getExclude().add( mine );
+	    		}
+	    		else {
+	    			results.getInclude().add( mine );
+	    		}
 		}
-
-    	// Sort first by name, then by other means if needed:
-    	results.getInclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
-    	results.getExclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
-
-    	if ( sortOrder == MineSortOrder.sortOrder || sortOrder == MineSortOrder.xSortOrder ) {
-    		results.getInclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
-    		results.getExclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
-    	}
-    	
-    	// for now hold off on sorting by total blocks mined.
-    	else if ( sortOrder == MineSortOrder.active || sortOrder == MineSortOrder.xActive ) {
-    		results.getInclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
-    		results.getExclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
-    	}
-    	
-    	return results;
+	
+	    	// Sort first by name, then by other means if needed:
+	    	results.getInclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+	    	results.getExclude().sort( (a, b) -> a.getName().compareToIgnoreCase( b.getName()) );
+	
+	    	if ( sortOrder == MineSortOrder.sortOrder || sortOrder == MineSortOrder.xSortOrder ) {
+	    		results.getInclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
+	    		results.getExclude().sort( (a, b) -> Integer.compare( a.getSortOrder(), b.getSortOrder()) );
+	    	}
+	    	
+	    	// for now hold off on sorting by total blocks mined.
+	    	else if ( sortOrder == MineSortOrder.active || sortOrder == MineSortOrder.xActive ) {
+	    		results.getInclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+	    		results.getExclude().sort( (a, b) -> Long.compare(b.getTotalBlocksMined(), a.getTotalBlocksMined()) );
+	    	}
+	    	
+	    	return results;
     }
     
     
@@ -736,30 +713,30 @@ public class MineManager
 	}
 	
     public List<String> getUnavailableWorldsListings() {
-    	List<String> results = new ArrayList<>();
-    	
-    	if ( getUnavailableWorlds().size() > 0 ) {
-    		results.add( "&cUnavailable Worlds: &3Deferred loading of mines." );
-
-    		Set<String> worlds = getUnavailableWorlds().keySet();
-    		
-    		for ( String worldName : worlds ) {
-    			int enabledCount = 0;
-    			
-				List<Mine> mines = getUnavailableWorlds().get( worldName );
-				for ( Mine mine : mines ) {
-					if ( mine.isEnabled() ) {
-						enabledCount++;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	if ( getUnavailableWorlds().size() > 0 ) {
+	    		results.add( "&cUnavailable Worlds: &3Deferred loading of mines." );
+	
+	    		Set<String> worlds = getUnavailableWorlds().keySet();
+	    		
+	    		for ( String worldName : worlds ) {
+	    			int enabledCount = 0;
+	    			
+					List<Mine> mines = getUnavailableWorlds().get( worldName );
+					for ( Mine mine : mines ) {
+						if ( mine.isEnabled() ) {
+							enabledCount++;
+						}
 					}
+					results.add( 
+							String.format( "&7    world: &3%s &7(&c%s mines enabled out &7of &c%s &7mines in the world) ", 
+									worldName, Integer.toString( enabledCount ),
+									Integer.toString( mines.size() )));
 				}
-				results.add( 
-						String.format( "&7    world: &3%s &7(&c%s mines enabled out &7of &c%s &7mines in the world) ", 
-								worldName, Integer.toString( enabledCount ),
-								Integer.toString( mines.size() )));
-			}
-    	}
-    	
-    	return results;
+	    	}
+	    	
+	    	return results;
     }
 	
 	
@@ -768,15 +745,14 @@ public class MineManager
     
     public String getTranslateMinesPlaceholder( PlaceholderIdentifier identifier ) {
     	
-//    	// placeholder Attributes:
-//    	PlaceholderManager pman = Prison.get().getPlaceholderManager();
     	
-    	Player player = identifier.getPlayer();
-    	
-    	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
-    	
-		
-    	Mine mine = null;
+	    	Player player = identifier.getPlayer();
+	    	
+	    	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
+	    	
+			
+	    	Mine mine = null;
+	    	
 		if ( placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) || 
 				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSMINES ) ) {
 			
@@ -791,11 +767,11 @@ public class MineManager
 		}
     	
     	
-    	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
-    	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
-    	PlaceholderAttributeText attributeText = identifier.getAttributeText();
-    	PlaceholderAttributeTime attributeTime = identifier.getAttributeTime();
-    	
+	    	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
+	    	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
+	    	PlaceholderAttributeText attributeText = identifier.getAttributeText();
+	    	PlaceholderAttributeTime attributeTime = identifier.getAttributeTime();
+	    	
 		
 		int sequence = identifier.getSequence();
     	
@@ -1358,32 +1334,32 @@ public class MineManager
 
     
     public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
-    	String results = null;
-
-    	if ( playerUuid != null ) {
-    		
-    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
-    		
-    		
-    		PlaceholderIdentifier phIdentifier = new PlaceholderIdentifier( identifier );
-    		phIdentifier.setPlayer(playerUuid, playerName);
-    		
-    		
-    		
-    		
-    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
-    			
-    			if ( phIdentifier.checkPlaceholderKey(placeHolderKey) ) {
-    				
-    				results = getTranslateMinesPlaceholder( phIdentifier );
-    				
-    				break;
-    			}
-    			
-    		}
-    	}
-    	
-    	return results;
+	    	String results = null;
+	
+	    	if ( playerUuid != null ) {
+	    		
+	    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+	    		
+	    		
+	    		PlaceholderIdentifier phIdentifier = new PlaceholderIdentifier( identifier );
+	    		phIdentifier.setPlayer(playerUuid, playerName);
+	    		
+	    		
+	    		
+	    		
+	    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+	    			
+	    			if ( phIdentifier.checkPlaceholderKey(placeHolderKey) ) {
+	    				
+	    				results = getTranslateMinesPlaceholder( phIdentifier );
+	    				
+	    				break;
+	    			}
+	    			
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
 
@@ -1393,10 +1369,10 @@ public class MineManager
 
 		PlaceholderAttributeBar attributeBar = ( attribute instanceof PlaceholderAttributeBar ? (PlaceholderAttributeBar) attribute : null );
 		
-    	double timeRemaining = mine.getRemainingTimeSec();
-    	int time = mine.getResetTime();
-    	
-    	return PlaceholderManagerUtils.getInstance().
+	    	double timeRemaining = mine.getRemainingTimeSec();
+	    	int time = mine.getResetTime();
+	    	
+	    	return PlaceholderManagerUtils.getInstance().
     					getProgressBar( timeRemaining, ((double) time), true, attributeBar );
 	}
 
@@ -1414,73 +1390,24 @@ public class MineManager
      */
     @Override
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
-    	if ( translatedPlaceHolderKeys == null ) {
-    		translatedPlaceHolderKeys = new ArrayList<>();
-    		
-    		TreeSet<String> blockNames = new TreeSet<>();
-    		
-    		List<PrisonPlaceHolders> placeHolders = 
-    				PrisonPlaceHolders.getTypes( PlaceholderFlags.MINES );
-    		
-    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSMINES ) );
-    		
-    		
-    		for ( Mine mine : getMines() ) {
-    			for ( PrisonPlaceHolders ph : placeHolders ) {
-    				String key = ph.name().replace( 
-    						PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
-    						toLowerCase();
-    				
-    				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, mine.getName() );
-    				if ( ph.getAlias() != null ) {
-    					String aliasName = ph.getAlias().name().replace( 
-    							PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
-    							toLowerCase();
-    					placeholder.setAliasName( aliasName );
-    				}
-    				translatedPlaceHolderKeys.add( placeholder );
-    				
-    				// Getting too many placeholders... add back the extended prefix when looking up:
-
-//    				// Now generate a new key based upon the first key, but without the prison_ prefix:
-//    				String key2 = key.replace( 
-//    						IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
-//    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, mine.getName(), false );
-//    				translatedPlaceHolderKeys.add( placeholder2 );
-    				
-    				// capture all of the possible blocks used within the mines:
-    				for ( PrisonBlock block : mine.getPrisonBlocks() ) {
-    					
-    					String blockName = block.getBlockType() == PrisonBlockType.minecraft ?
-    											block.getBlockName().toLowerCase() :
-    											block.getBlockNameFormal().replace( ":", "-" ).toLowerCase();
-    					
-    					if ( !blockNames.contains( blockName ) ) {
-    						blockNames.add( blockName );
-    					}
-    				}
-    			}
-    		}
-    		
-    		
-    		// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
-    		// the player is in.  So this is just a simple registration.
-    		List<PrisonPlaceHolders> placeHoldersPM = 
-    									PrisonPlaceHolders.getTypes( PlaceholderFlags.MINEPLAYERS );
-    		
-			for ( PrisonPlaceHolders ph : placeHoldersPM ) {
-				String key = ph.name().toLowerCase();
-				
-				// There is a special condition when a MINEPLAYERS placeholder may have a suffix of 
-				// _minename so they need to be expanded the same as a MINES placeholder.
-				if ( key.endsWith( PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX ) ) {
-					
-					for ( Mine mine : getMines() ) {
-						String mineKey = ph.name().replace( 
+	    	if ( translatedPlaceHolderKeys == null ) {
+	    		translatedPlaceHolderKeys = new ArrayList<>();
+	    		
+	    		TreeSet<String> blockNames = new TreeSet<>();
+	    		
+	    		List<PrisonPlaceHolders> placeHolders = 
+	    				PrisonPlaceHolders.getTypes( PlaceholderFlags.MINES );
+	    		
+	    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSMINES ) );
+	    		
+	    		
+	    		for ( Mine mine : getMines() ) {
+	    			for ( PrisonPlaceHolders ph : placeHolders ) {
+	    				String key = ph.name().replace( 
 	    						PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
 	    						toLowerCase();
 	    				
-	    				PlaceHolderKey placeholder = new PlaceHolderKey(mineKey, ph, mine.getName() );
+	    				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, mine.getName() );
 	    				if ( ph.getAlias() != null ) {
 	    					String aliasName = ph.getAlias().name().replace( 
 	    							PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
@@ -1488,73 +1415,116 @@ public class MineManager
 	    					placeholder.setAliasName( aliasName );
 	    				}
 	    				translatedPlaceHolderKeys.add( placeholder );
-					}
-//					PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
-//					if ( ph.getAlias() != null ) {
-//						String aliasName = ph.getAlias().name().toLowerCase();
-//						placeholder.setAliasName( aliasName );
-//					}
-//					translatedPlaceHolderKeys.add( placeholder );
-				}
-				else {
+	    				
+	    				// Getting too many placeholders... add back the extended prefix when looking up:
+	
+	//    				// Now generate a new key based upon the first key, but without the prison_ prefix:
+	//    				String key2 = key.replace( 
+	//    						IntegrationManager.PRISON_PLACEHOLDER_PREFIX + "_", "" );
+	//    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, mine.getName(), false );
+	//    				translatedPlaceHolderKeys.add( placeholder2 );
+	    				
+	    				// capture all of the possible blocks used within the mines:
+	    				for ( PrisonBlock block : mine.getPrisonBlocks() ) {
+	    					
+	    					String blockName = block.getBlockType() == PrisonBlockType.minecraft ?
+	    											block.getBlockName().toLowerCase() :
+	    											block.getBlockNameFormal().replace( ":", "-" ).toLowerCase();
+	    					
+	    					if ( !blockNames.contains( blockName ) ) {
+	    						blockNames.add( blockName );
+	    					}
+	    				}
+	    			}
+	    		}
+	    		
+	    		
+	    		// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
+	    		// the player is in.  So this is just a simple registration.
+	    		List<PrisonPlaceHolders> placeHoldersPM = 
+	    									PrisonPlaceHolders.getTypes( PlaceholderFlags.MINEPLAYERS );
+	    		
+				for ( PrisonPlaceHolders ph : placeHoldersPM ) {
+					String key = ph.name().toLowerCase();
 					
-					PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
-					if ( ph.getAlias() != null ) {
-						String aliasName = ph.getAlias().name().toLowerCase();
-						placeholder.setAliasName( aliasName );
-					}
-					translatedPlaceHolderKeys.add( placeholder );
-				}
-			}
-			
-			
-			
-			// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
-			// the player is in.  So this is just a simple registration.
-			List<PrisonPlaceHolders> placeHoldersBN = 
-					PrisonPlaceHolders.getTypes( PlaceholderFlags.PLAYERBLOCKS );
-			
-			for ( PrisonPlaceHolders bn : placeHoldersBN ) {
-				String key = bn.name().toLowerCase();
-				
-				// There is a special condition when a MINEPLAYERS placeholder may have a suffix of 
-				// _minename so they need to be expanded the same as a MINES placeholder.
-				if ( key.endsWith( PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX ) ) {
-					
-					for ( String blockName : blockNames ) {
-						String mineKey = bn.name().replace( 
-								PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "__" + blockName ).
-								toLowerCase();
+					// There is a special condition when a MINEPLAYERS placeholder may have a suffix of 
+					// _minename so they need to be expanded the same as a MINES placeholder.
+					if ( key.endsWith( PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX ) ) {
 						
-						PlaceHolderKey placeholder = new PlaceHolderKey(mineKey, bn, blockName );
-						if ( bn.getAlias() != null ) {
-							String aliasName = bn.getAlias().name().replace( 
-									PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "__" + blockName ).
-									toLowerCase();
+						for ( Mine mine : getMines() ) {
+							String mineKey = ph.name().replace( 
+		    						PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+		    						toLowerCase();
+		    				
+		    				PlaceHolderKey placeholder = new PlaceHolderKey(mineKey, ph, mine.getName() );
+		    				if ( ph.getAlias() != null ) {
+		    					String aliasName = ph.getAlias().name().replace( 
+		    							PlaceholderManager.PRISON_PLACEHOLDER_MINENAME_SUFFIX, "_" + mine.getName() ).
+		    							toLowerCase();
+		    					placeholder.setAliasName( aliasName );
+		    				}
+		    				translatedPlaceHolderKeys.add( placeholder );
+						}
+	//					PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
+	//					if ( ph.getAlias() != null ) {
+	//						String aliasName = ph.getAlias().name().toLowerCase();
+	//						placeholder.setAliasName( aliasName );
+	//					}
+	//					translatedPlaceHolderKeys.add( placeholder );
+					}
+					else {
+						
+						PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
+						if ( ph.getAlias() != null ) {
+							String aliasName = ph.getAlias().name().toLowerCase();
 							placeholder.setAliasName( aliasName );
 						}
 						translatedPlaceHolderKeys.add( placeholder );
 					}
-//					PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
-//					if ( ph.getAlias() != null ) {
-//						String aliasName = ph.getAlias().name().toLowerCase();
-//						placeholder.setAliasName( aliasName );
-//					}
-//					translatedPlaceHolderKeys.add( placeholder );
 				}
-				else {
+				
+				
+				
+				// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
+				// the player is in.  So this is just a simple registration.
+				List<PrisonPlaceHolders> placeHoldersBN = 
+						PrisonPlaceHolders.getTypes( PlaceholderFlags.PLAYERBLOCKS );
+				
+				for ( PrisonPlaceHolders bn : placeHoldersBN ) {
+					String key = bn.name().toLowerCase();
 					
-					PlaceHolderKey placeholder = new PlaceHolderKey(key, bn );
-					if ( bn.getAlias() != null ) {
-						String aliasName = bn.getAlias().name().toLowerCase();
-						placeholder.setAliasName( aliasName );
+					// There is a special condition when a MINEPLAYERS placeholder may have a suffix of 
+					// _minename so they need to be expanded the same as a MINES placeholder.
+					if ( key.endsWith( PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX ) ) {
+						
+						for ( String blockName : blockNames ) {
+							String mineKey = bn.name().replace( 
+									PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "__" + blockName ).
+									toLowerCase();
+							
+							PlaceHolderKey placeholder = new PlaceHolderKey(mineKey, bn, blockName );
+							if ( bn.getAlias() != null ) {
+								String aliasName = bn.getAlias().name().replace( 
+										PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "__" + blockName ).
+										toLowerCase();
+								placeholder.setAliasName( aliasName );
+							}
+							translatedPlaceHolderKeys.add( placeholder );
+						}
 					}
-					translatedPlaceHolderKeys.add( placeholder );
+					else {
+						
+						PlaceHolderKey placeholder = new PlaceHolderKey(key, bn );
+						if ( bn.getAlias() != null ) {
+							String aliasName = bn.getAlias().name().toLowerCase();
+							placeholder.setAliasName( aliasName );
+						}
+						translatedPlaceHolderKeys.add( placeholder );
+					}
 				}
-			}
-
-    	}
-    	return translatedPlaceHolderKeys;
+	
+	    	}
+	    	return translatedPlaceHolderKeys;
     }
 
     /**
@@ -1564,18 +1534,18 @@ public class MineManager
      * </p>
      */
     public void resetTranslatedPlaceHolderKeys() {
-    	translatedPlaceHolderKeys = null;
+    		translatedPlaceHolderKeys = null;
     }
     
     
     @Override
     public void reloadPlaceholders() {
     	
-    	// clear the class variable so they will regenerate:
-    	translatedPlaceHolderKeys = null;
-    	
-    	// Regenerate the translated placeholders:
-    	getTranslatedPlaceHolderKeys();
+	    	// clear the class variable so they will regenerate:
+	    	translatedPlaceHolderKeys = null;
+	    	
+	    	// Regenerate the translated placeholders:
+	    	getTranslatedPlaceHolderKeys();
     }
 
 

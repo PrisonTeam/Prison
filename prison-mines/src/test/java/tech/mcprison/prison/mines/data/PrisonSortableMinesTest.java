@@ -29,13 +29,6 @@ public class PrisonSortableMinesTest
 		Mine b = new Mine( MineUnitTestUsage.TRUE, "b" ); // note lower case 'b'
 		Mine c = new Mine( MineUnitTestUsage.TRUE, "C" );
 		
-//		Mine a = new Mine();
-//		a.setName( "A" );
-//		Mine b = new Mine();
-//		b.setName( "b" );
-//		Mine c = new Mine();
-//		c.setName( "C" );
-		
 		List<Mine> unsortedList = new ArrayList<>();
 		unsortedList.add( b );
 		unsortedList.add( c );

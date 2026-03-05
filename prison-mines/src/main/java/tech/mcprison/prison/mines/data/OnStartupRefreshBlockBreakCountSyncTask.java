@@ -17,8 +17,6 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 	
 	private static OnStartupRefreshBlockBreakCountSyncTask instance;
 	
-//	private List<MineReset> mines;
-
 	private MineReset mine;
 	
 	private int jobId = 0;
@@ -41,8 +39,6 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 	private int countCurrentMine = 0;
 	private int countTotalMines = 0;
 	
-//	private boolean jobRunning = false;
-	
 	
 	private OnStartupRefreshBlockBreakCountSyncTask() {
 		super();
@@ -61,9 +57,6 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 		return instance;
 	}
 	
-//	public OnStartupRefreshBlockBreakCountSyncTask(MineReset mine) {
-//		this.mine = mine;
-//	}
 	
 	public void submit( long delay ) {
 		
@@ -180,14 +173,12 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			elapsedNanos = 0;
 			
 			delay = MineReset.MINE_RESET__AIR_COUNT_SUBMIT_GAP_TICKS;
-//			delay = 10; // Delay of 10 ticks, or 1/2 a second
 		}
 
 		if ( mine != null ) {
 			
 			// Must run synchronously!!
 			setJobId( PrisonTaskSubmitter.runTaskLater( this, delay) );
-//			setJobId( mine.submitSyncTask( this, delay ) );
 		}
 	}
 	
@@ -210,11 +201,9 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 				long elpased = (nanoEnd - nanoStart );
 				this.elapsedNanos += elpased;
 				
-//			resubmit();
 			}
 			
 		}
-//		else // The 'this.mine.refreshAirCountSyncTaskBuildLocations()' is trivial...
 		
 		if ( mine == null ) {
 			// No mine is available, either they are all processed, or none exist on 
@@ -278,7 +267,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 				DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 				String message = String.format( 
 						"MineReset startup air-count: Mine [%3d of %3d]: %-10s " +
-								" blocks: %10s  pages: [%3s: %3s]  [%9s: %9s ms] <%b>", 
+								" blocks: %10s  pages: [%3s: %3s]  [%9s: %9s ms]", 
 								countCurrentMine,
 								countTotalMines,
 								mine.getName(), 
@@ -286,8 +275,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 								iFmt.format( pages - pagesStart ),
 								iFmt.format( pages ),
 								dFmt.format(elapsedMs),
-								dFmt.format(elapsedMsTotal),
-								Output.get().isDebug()
+								dFmt.format(elapsedMsTotal)
 								);
 				
 				Output.get().logInfo( message );
@@ -322,13 +310,6 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 		// Submit the next mine, which will be assigned in resubmit():
 		resubmit();
 	}
-
-//	public List<MineReset> getMines() {
-//		return mines;
-//	}
-//	public void setMines(List<MineReset> mines) {
-//		this.mines = mines;
-//	}
 
 	public MineReset getMine() {
 		return mine;

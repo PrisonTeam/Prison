@@ -289,8 +289,6 @@ public class MineLinerBuilder {
 	private void generatePattern( Edges edge, World world, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
 		try {
 			
-			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
-
 //			Output.get().logInfo( "### MineLinerBuilder - xMin=%d, xMax=%d, yMin=%d, yMax=%d, zMin=%d, zMax=%d ",
 //					xMin, xMax, yMin, yMax, zMin, zMax);
 			
@@ -500,58 +498,6 @@ public class MineLinerBuilder {
 						// If odd, then plus/minus range above and below mid:
 						( curr >= (min + mid - range) && curr <= (min + mid + range));
 			
-			
-//			if ( getLadderType() == LadderType.normal ) {
-//				
-//				results = len <= 5;
-//				
-//				if ( len > 5 ) {
-//					
-//					
-//					if ( curr == (min + mid) ) {
-//						results = true;
-//					}
-//					else {
-//						results = isEven ?
-//								// if distance is even, then next ladder position is mid - 1
-//								( curr == min + mid + 1 ) :
-//									// If odd, then one above and below mid:
-//									( curr == min + mid + 1 || curr == min + mid - 1);
-//					}
-//					
-//				}
-//				
-//			}
-//			else if ( getLadderType() == LadderType.wide ) {
-//				
-//				results = len <= 7;
-//				
-//				if ( len > 7 ) {
-//					
-//					
-//					if ( curr == (min + mid) ) {
-//						results = true;
-//					}
-//					else {
-//						results = isEven ?
-//								// if distance is even, then next ladder position is mid - 1 through mid + 2
-//								( curr >= (min + mid - range + 1) && curr <= (min + mid + range ) ) :
-//									
-//									// If odd, then one above and below mid:
-//									( curr >= (min + mid - range) && curr <= (min + mid + range));
-//					}
-//					
-//				}
-//			}
-			
-			
-//			Output.get().logInfo( "#### isLadderBlock: curr=%d min=%d max=%d  " +
-//					"  len=%d  mid=%d  " +
-//					"isEven=%s  results=%s " +
-//					" (min+mid)=%d ",
-//					curr, min, max, len, mid,
-//					(isEven ? "true" : "false"),
-//					(results ? "true" : "false"), (min+mid) );
 			
 		}
 		
@@ -981,33 +927,6 @@ public class MineLinerBuilder {
 		
 	}
 
-	
-//	public boolean isPatternValidForSpigotVersion() {
-//		boolean results = true;
-//		
-//		try {
-//			
-//			String v = Prison.get().getMinecraftVersion();
-//			
-//			String versionStr = v.substring( v.indexOf( "(MC:" ) + 4, v.lastIndexOf( "." ) );
-//			
-//			
-//			Output.get().logInfo( "#### MineLinerBuilder : " + 
-//					getPattern() + " " + getPatternMinVersion() + " : " +
-//					"Prison Version: " + v + "  " + versionStr );
-//		
-//			double version = Double.parseDouble( versionStr );
-//			
-//			if ( version < getPatternMinVersion() ) {
-//				
-//			}
-//		}
-//		catch ( NumberFormatException e ) {
-//			// ignore... just use all patterns
-//		}
-//		
-//		return results;
-//	}
 
 	public List<List<List<String>>> getPattern3d() {
 		return pattern3d;

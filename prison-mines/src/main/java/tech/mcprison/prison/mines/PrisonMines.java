@@ -52,11 +52,9 @@ import tech.mcprison.prison.util.Text;
 public class PrisonMines extends Module {
 
 	public static final String MODULE_NAME = ModuleManager.MODULE_NAME_MINES;
-//	public static final String MODULE_NAME = "Mines";
 
     private static PrisonMines i = null;
     private MinesConfig config;
-//    private List<String> worlds;
     private LocaleManager localeManager;
     private Database db;
     private ErrorManager errorManager;
@@ -64,7 +62,6 @@ public class PrisonMines extends Module {
     private JsonFileIO jsonFileIO;
 
     private MineManager mineManager;
-//    private PlayerManager player;
     
     private MinesCommands minesCommands;
 
@@ -89,17 +86,17 @@ public class PrisonMines extends Module {
     }
 
     public static PrisonMines getInstance() {
-    	if ( i == null ) {
-    		PrisonMines temp = new PrisonMines("(not loaded yet)");
-    		temp.setEnabled(false);
-    		return temp;
-    	}
+	    	if ( i == null ) {
+	    		PrisonMines temp = new PrisonMines("(not loaded yet)");
+	    		temp.setEnabled(false);
+	    		return temp;
+	    	}
         return i;
     }
 
     @Override
     public String getBaseCommands() {
-    	return "/mines";
+    		return "/mines";
     }
     
     @Override
@@ -113,25 +110,13 @@ public class PrisonMines extends Module {
         initConfig();
         this.localeManager = new LocaleManager(this, "lang/mines");
 
-//        initWorlds();
-        
         this.mineManager = new MineManager();
-//        getMineManager().loadFromDbCollection(this);
         
-        // Player manager for mines is not used.
-//        this.player = new PlayerManager();
-        
-//        initMines();
         PrisonAPI.getEventBus().register(new MinesListener());
 
         
         setMinesCommands( new MinesCommands() );
         Prison.get().getCommandHandler().registerCommands( getMinesCommands() );
-        //Prison.get().getCommandHandler().registerCommands(new PowertoolCommands());
-
-        
-        // This is obsolete and was part of converting from pre-v3.0:
-        // ConversionManager.getInstance().registerConversionAgent(new MinesConversionAgent());
     }
 
 
@@ -142,8 +127,8 @@ public class PrisonMines extends Module {
      */
     @Override
 	public void deferredStartup() {
-    	// Load the mines at this time.
-    	getMineManager().loadFromDbCollection(this);
+	    	// Load the mines at this time.
+	    	getMineManager().loadFromDbCollection(this);
     	
 	}
     
@@ -160,8 +145,8 @@ public class PrisonMines extends Module {
     @Override
 	public void disable() {
     	
-    	// Shutdown the mines by saving any unsaved block stats:
-    	getMineManager().saveMinesIfUnsavedBlockCounts();
+	    	// Shutdown the mines by saving any unsaved block stats:
+	    	getMineManager().saveMinesIfUnsavedBlockCounts();
     }
 	
 	
@@ -190,14 +175,12 @@ public class PrisonMines extends Module {
         File configFile = new File(getModuleDataFolder(), "config.json");
         
         if (!configFile.exists()) {
-        	getJsonFileIO().saveJsonFile( configFile, config );
-        } else {
-        	config = (MinesConfig) getJsonFileIO().readJsonFile( configFile, config );
+	        	getJsonFileIO().saveJsonFile( configFile, config );
+	        } else {
+	        	config = (MinesConfig) getJsonFileIO().readJsonFile( configFile, config );
         }
         
     }
-
-    
     
     
     /**
@@ -238,11 +221,8 @@ public class PrisonMines extends Module {
 		
 		String uuid = player.getUUID().toString();
 		
-//		Long playerUUIDLSB = Long.valueOf( player.getUUID().getLeastSignificantBits() );
-		
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( uuid );
-//		Mine mine = getPlayerCache().get( playerUUIDLSB );
 		
 		if ( mine != null && mine.isInMineIncludeTopBottomOfMine( player.getLocation() )) {
 			results = mine;
@@ -276,12 +256,6 @@ public class PrisonMines extends Module {
 
 		return results;
 	}
-
-//    private void initMines() {
-////        mines = MineManager.fromDb();
-////        player = new PlayerManager();
-////        Prison.get().getPlatform().getScheduler().runTaskTimer(mines.getTimerTask(), 20, 20);
-//    }
 
 
 	/**
@@ -328,13 +302,13 @@ public class PrisonMines extends Module {
      * @return
      */
     public int getElementCount() {
-    	int results = isEnabled() ? 0 : -1;
-    	
-    	if ( isEnabled() ) {
-    		results = getMines().size();
-    	}
-    	
-    	return results;
+	    	int results = isEnabled() ? 0 : -1;
+	    	
+	    	if ( isEnabled() ) {
+	    		results = getMines().size();
+	    	}
+	    	
+	    	return results;
     }
     
 	
@@ -342,7 +316,6 @@ public class PrisonMines extends Module {
 	{
 		return jsonFileIO;
 	}
-
 
     public MinesConfig getConfig() {
         return config;
@@ -372,20 +345,11 @@ public class PrisonMines extends Module {
         return localeManager;
     }
 
-//    public List<String> getWorlds() {
-//        return worlds;
-//    }
-
-//    public PlayerManager getPlayerManager() {
-//        return player;
-//    }
-
 	public MinesCommands getMinesCommands() {
 		return minesCommands;
 	}
 	public void setMinesCommands( MinesCommands minesCommands ) {
 		this.minesCommands = minesCommands;
 	}
-
 
 }

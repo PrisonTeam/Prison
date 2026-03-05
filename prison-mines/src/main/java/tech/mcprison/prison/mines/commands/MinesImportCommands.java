@@ -31,30 +31,17 @@ public class MinesImportCommands
 		super( cmdGroup );
 	}
 	
-	
-
     
     public void importJetsPrisonMines( CommandSender sender,
     			String options ) {
-
-    	boolean save = false;
-    	boolean addLiner = false;
-    	
-    	String path = "JetsPrisonMines//mines//";
-
-    	String worldForced = "";
-				
-//		if ( options.contains( "testImport" ) ) {
-//			testImport = true;
-//			list = true;
-//			options = options.replace( "testImport", "" ).trim();
-//		}
-//		
-//		if ( options.contains( "list" ) ) {
-//			testImport = false;
-//			list = true;
-//			options = options.replace( "list", "" ).trim();
-//		}
+	
+	    	boolean save = false;
+	    	boolean addLiner = false;
+	    	
+	    	String path = "JetsPrisonMines//mines//";
+	
+	    	String worldForced = "";
+					
 		
 		if ( options.contains( "save" ) ) {
 			save = true;
@@ -158,22 +145,21 @@ public class MinesImportCommands
 	    	
 			mines.addAll( pMines.getMines() );
 	    	
-	    	for ( Mine mine : mines )
-			{
-	    		if ( !mine.isVirtual() ) {
-	    			
-	    			for (Edges edge : Edges.values() ) {
-						
-	    				LinerPatterns linerPattern = LinerPatterns.fromString( 
-	    							mine.getLinerData().getEdge(edge) );
-	    				
-	    				boolean force = mine.getLinerData().getForce(edge);
-	    				boolean useTracer = false;
-	    				
-	    				new MineLinerBuilder( mine, edge, linerPattern, force, useTracer );
+		    	for ( Mine mine : mines ) {
+		    		if ( !mine.isVirtual() ) {
+		    			
+		    			for (Edges edge : Edges.values() ) {
+							
+		    				LinerPatterns linerPattern = LinerPatterns.fromString( 
+		    							mine.getLinerData().getEdge(edge) );
+		    				
+		    				boolean force = mine.getLinerData().getForce(edge);
+		    				boolean useTracer = false;
+		    				
+		    				new MineLinerBuilder( mine, edge, linerPattern, force, useTracer );
 					}
-	    			
-	    		}
+		    			
+		    		}
 			}
 		}
 

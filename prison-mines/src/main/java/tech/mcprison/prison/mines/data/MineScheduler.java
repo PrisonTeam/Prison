@@ -46,7 +46,6 @@ public abstract class MineScheduler
 	 */
 	private transient List<MineJob> jobWorkflow;
 	private transient Stack<MineJob> jobStack;
-//	private transient MineJob currentJob;
 	private transient Integer taskId = null;
 	
 	private transient long mineResetStartTimestamp;
@@ -69,11 +68,11 @@ public abstract class MineScheduler
      */
 	@Override
 	protected void initialize() {
-    	super.initialize();
-    	
-    	// need to rebuild JobWorkflow if reset time ever changes:
-    	setJobWorkflow( initializeJobWorkflow() );
-    	resetJobStack();
+	    	super.initialize();
+	    	
+	    	// need to rebuild JobWorkflow if reset time ever changes:
+	    	setJobWorkflow( initializeJobWorkflow() );
+	    	resetJobStack();
     }
 	
 	public enum JobType {
@@ -280,7 +279,6 @@ public abstract class MineScheduler
 		
 		if ( includeMessages ) {
 			// Need to ensure that the reset warning times are sorted in ascending order:
-//			ArrayList<Integer> rwTimes = PrisonMines.getInstance().getConfig().resetWarningTimes;
 			Collections.sort( resetWarningTimes );
 			
 			double total = 0;
@@ -352,10 +350,10 @@ public abstract class MineScheduler
 			return;
 		}
 		
-    	boolean skip = !forced && 
-    			isSkipResetEnabled() && 
-    				getPercentRemainingBlockCount() >= getSkipResetPercent() &&
-    				getSkipResetBypassCount() < getSkipResetBypassLimit();
+	    	boolean skip = !forced && 
+	    			isSkipResetEnabled() && 
+	    				getPercentRemainingBlockCount() >= getSkipResetPercent() &&
+	    				getSkipResetBypassCount() < getSkipResetBypassLimit();
     	
 //    	Output.get().logInfo( "Mine Reset: Run: Mine= %s action= %s skip= %s forced= %s ", 
 //    			this.getName(), getCurrentJob().getAction().name(),
@@ -395,9 +393,8 @@ public abstract class MineScheduler
 					MinePagedResetAsyncTask resetTask = 
 								new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions, resetScheduleType );
 					
-		    		resetTask.submitTaskAsync();
+		    			resetTask.submitTaskAsync();
 		    		
-//					resetAsynchonously();
 				} 
 				else {
 					incrementSkipResetBypassCount();
@@ -406,35 +403,11 @@ public abstract class MineScheduler
 				
 				break;
 				
-//			case RESET_SYNC:
-//				// synchronous reset.  Will be phased out in the future?
-//				if ( !skip ) {
-//
-//					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
-//					
-//					MinePagedResetAsyncTask resetTask = 
-//							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
-//					
-//					resetTask.submitTaskAsync();
-//					
-////					resetSynchonously();
-//				} else {
-//					incrementSkipResetBypassCount();
-//				}
-//				
-//				break;
 				
 			default:
 				break;
 		}
 		
-//		if ( getCurrentJob().getAction() == MineJobAction.RESET ) {
-//			resetSynchonously();
-//		} else {
-//			// Send reset message:
-//			broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), MINE_RESET_BROADCAST_RADIUS_BLOCKS );
-//		}
-//		
 		
 		// this may be an issue for disabled resetTimes... may still need to be submitted?
 		// disabled resets may not need to be submitted at all.
@@ -466,9 +439,9 @@ public abstract class MineScheduler
 	            		"This is serious. &aworldName= " + getWorldName() );
 	        }
 	        else {
-	        	World world = worldOptional.get();
-	        	
-	        	setWorld( world );
+		        	World world = worldOptional.get();
+		        	
+		        	setWorld( world );
 	        }
 		}
 	}
@@ -585,34 +558,6 @@ public abstract class MineScheduler
 		return blockEventsRan;
 	}
 
-	
-//	/**
-//	 * <p>This function checks if the block break event should execute a 
-//	 * given command or not. If it needs to, then it will submit them to run as 
-//	 * a task instead of running them in this thread.
-//	 * </p>
-//	 * 
-//	 * @param blockCount
-//	 * @param player 
-//	 */
-//	@Deprecated
-//	public void processBlockBreakEventCommands( int blockCount, Player player, 
-//							BlockEventType eventType, String triggered ) {
-//		
-//		if ( getBlockEvents().size() > 0 ) {
-//			Random random = new Random();
-//			
-//			for ( int i = 0; i < blockCount; i ++ ) {
-//				
-//				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
-//					double chance = random.nextDouble() * 100;
-//					
-//					processBlockEventDetails( player, null, eventType, chance, blockEvent, triggered );
-//				}
-//				
-//			}
-//		}
-//	}
 
 	private int processBlockEventDetails( Player player, PrisonBlock prisonBlock,
 							MineTargetPrisonBlock targetBlock, BlockEventType eventType, 
@@ -694,60 +639,6 @@ public abstract class MineScheduler
 				
 				cmdTasks.add( cmdTask );
 				
-				
-//				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
-					
-//				{
-//					
-//					String formatted = blockEvent.getCommand()
-//							.replace( "{msg}", "prison utils msg {player} " )
-//							.replace( "{broadcast}", "prison utils broadcast " )
-//							.replace("{player}", player.getName())
-//							.replace("{player_uid}", player.getUUID().toString());
-//					
-//					// Split multiple commands in to a List of individual tasks:
-//					List<String> tasks = new ArrayList<>( 
-//							Arrays.asList( formatted.split( ";" ) ));
-//					
-//					
-//					if ( tasks.size() > 0 ) {
-//						
-//						String errorMessage = "BlockEvent: Player: " + player.getName();
-//						
-//						boolean playerTask = blockEvent.getTaskMode() == TaskMode.inlinePlayer || 
-//											 blockEvent.getTaskMode() == TaskMode.syncPlayer;
-//						
-//						PrisonDispatchCommandTask task = 
-//								new PrisonDispatchCommandTask( tasks, errorMessage, 
-//												player, playerTask );
-//						
-//						
-//						switch ( blockEvent.getTaskMode() )
-//						{
-//							case inline:
-//							case inlinePlayer:
-//								// Don't submit, but run it here within this thread:
-//								task.run();
-//								break;
-//								
-//							case sync:
-//							case syncPlayer:
-//							//case "async": // async will cause failures so run as sync:
-//								
-//								// submit task: 
-//								@SuppressWarnings( "unused" ) 
-//								int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
-//								break;
-//								
-//							default:
-//								break;
-//						}
-//						
-//					}
-//					
-//					
-////					PrisonAPI.dispatchCommand(formatted);
-//				}
 			}
 		}
 		
@@ -787,9 +678,6 @@ public abstract class MineScheduler
 	 * triggered by a player.
 	 * 
 	 */
-//	public void manualReset() {
-//		manualReset( MineResetScheduleType.FORCED );
-//	}
 	public void manualReset( MineResetScheduleType resetType ) {
 		
 		if ( !isVirtual() ) {
@@ -861,40 +749,6 @@ public abstract class MineScheduler
 			setMineResetStartTimestamp( System.currentTimeMillis() );
 
 			
-//			// Lock the mine's mutex if it's still minable.  Otherwise skip it since the
-//			// state has been incremented by one already.
-//			if ( getMineStateMutex().isMinable() ) {
-//				
-//				getMineStateMutex().setMineStateResetStart();
-//			}
-//			else if ( getMineStateMutex().getMineStateSn() > 1 ) {
-//				
-//				// synchronizing on the mutex this will allow only one thread to be
-//				// processed at a time, which will weed out extra threads from being 
-//				// wrongfully shutdown. Based upon this "technique" the last thread to
-//				// be paused by this synchronized block will be the one that will actually
-//				// initiate the reset.
-//				if ( getMineStateMutex().getMineStateSn() > 1 ) {
-//					
-//					// This may be a double submission sinc the mineStateSn should only be 1 at this 
-//					// point.  So release this lock and shutdown this duplicate submission.
-//					getMineStateMutex().setMineStateResetFinished();
-//					
-//					// duplicate reset request, so exit...
-//					return;
-//				}
-//				
-//			}
-			
-			
-			
-			// cancel existing job:
-			// Warning... do not cancel current tasks.  It may be breaking the 
-			// last block. If another thread is initiating a reset then it won't make it to 
-			// this part of the code.
-//			if ( getTaskId() != null ) {
-//				PrisonTaskSubmitter.cancelTask( getTaskId() );
-//			}
 			
 			// Clear jobStack and set currentJob to run the RESET with zero delay:
 			getJobStack().clear();

@@ -86,36 +86,36 @@ public class Mine
 	}
 
     public enum MineNotificationMode {
-    	disabled,
-    	disable,
-    	within,
-    	radius,
-    	world,
-    	server,
-    	
-    	displayOptions
-    	;
-    	
-    	public static MineNotificationMode fromString(String mode) {
-    		return fromString(mode, radius);
-    	}
-    	public static MineNotificationMode fromString(String mode, MineNotificationMode defaultValue) {
-    		MineNotificationMode results = defaultValue;
-    		
-    		if ( mode != null && mode.trim().length() > 0 ) {
-    			for ( MineNotificationMode mnm : values() ) {
-    				if ( mnm.name().equalsIgnoreCase( mode )) {
-    					results = mnm;
-    				}
-    			}
-    		}
-    		
-    		if ( results == disable ) {
-    			results = disabled;
-    		}
-    		
-    		return results;
-    	}
+	    	disabled,
+	    	disable,
+	    	within,
+	    	radius,
+	    	world,
+	    	server,
+	    	
+	    	displayOptions
+	    	;
+	    	
+	    	public static MineNotificationMode fromString(String mode) {
+	    		return fromString(mode, radius);
+	    	}
+	    	public static MineNotificationMode fromString(String mode, MineNotificationMode defaultValue) {
+	    		MineNotificationMode results = defaultValue;
+	    		
+	    		if ( mode != null && mode.trim().length() > 0 ) {
+	    			for ( MineNotificationMode mnm : values() ) {
+	    				if ( mnm.name().equalsIgnoreCase( mode )) {
+	    					results = mnm;
+	    				}
+	    			}
+	    		}
+	    		
+	    		if ( results == disable ) {
+	    			results = disabled;
+	    		}
+	    		
+	    		return results;
+	    	}
     }
 
     /**
@@ -137,12 +137,9 @@ public class Mine
      * @param unitTestUsage
      */
     public Mine( MineUnitTestUsage unitTestUsage, String mineName ) {
-    	super();
+    		super();
 		
 		setName( mineName );
-		
-		// Kick off the initialize:
-		//initialize();
     }
 
     
@@ -154,35 +151,35 @@ public class Mine
      * @param selection
      */
     public Mine(String name, Selection selection) {
-    	this( name, selection, MineType.primary );
+    		this( name, selection, MineType.primary );
     }
     
     public Mine(String name, Selection selection, MineType mineType, boolean logInfo ) {
-    	super();
-    	
-    	setName(name);
-    	
-    	setMineType( mineType );
-    	
-    	if ( selection == null ) {
-    		setVirtual( true );
-    	}
-    	else {
-    		
-    		setBounds(selection.asBounds(), logInfo );
-    		
-    		setWorldName( getBounds().getMin().getWorld().getName());
-    		
-    		setEnabled( true );
-    	}
-        
-        // Kick off the initialize:
-        initialize();
-    }
-    
-    public Mine(String name, Selection selection, MineType mineType) {
-    	this( name, selection, mineType, true );
-		
+	    	super();
+	    	
+	    	setName(name);
+	    	
+	    	setMineType( mineType );
+	    	
+	    	if ( selection == null ) {
+	    		setVirtual( true );
+	    	}
+	    	else {
+	    		
+	    		setBounds(selection.asBounds(), logInfo );
+	    		
+	    		setWorldName( getBounds().getMin().getWorld().getName());
+	    		
+	    		setEnabled( true );
+	    	}
+	        
+	        // Kick off the initialize:
+	        initialize();
+	    }
+	    
+	    public Mine(String name, Selection selection, MineType mineType) {
+	    	this( name, selection, mineType, true );
+			
     }
     
     /**
@@ -224,7 +221,7 @@ public class Mine
      * @throws MineException If the mine couldn't be loaded from the document.
      */
     public Mine(Document document) throws MineException {
-    	super();
+    		super();
     	
         loadFromDocument( document );
         
@@ -243,7 +240,7 @@ public class Mine
      */
 	@Override
 	protected void initialize() {
-    	super.initialize();
+    		super.initialize();
     	
     }
 
@@ -297,13 +294,13 @@ public class Mine
         String accessPerm = (String) document.get("accessPermission");
         setAccessPermission( (accessPerm == null || accessPerm.trim().isEmpty() ? null : accessPerm) );
         
-               
-    	setTpAccessByRank( document.get("tpAccessByRank") == null ? false : (boolean) document.get("tpAccessByRank") );
-    	setMineAccessByRank( document.get("mineAccessByRank") == null ? false : (boolean) document.get("mineAccessByRank") );
-
-    	
-    	setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
-        
+	               
+	    	setTpAccessByRank( document.get("tpAccessByRank") == null ? false : (boolean) document.get("tpAccessByRank") );
+	    	setMineAccessByRank( document.get("mineAccessByRank") == null ? false : (boolean) document.get("mineAccessByRank") );
+	
+	    	
+	    	setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
+	        
         
         Double sortOrder = (Double) document.get( "sortOrder" );
         setSortOrder( sortOrder == null ? 0 : sortOrder.intValue() );
@@ -454,10 +451,6 @@ public class Mine
 						
 						totalBlockCount += block.getBlockCountTotal();
 								
-//						BlockOld block = new BlockOld(blockType, chance, blockCount);
-//						block.setConstraintMin( constraintMin );
-//						block.setConstraintMax( constraintMax );
-
 						getBlocks().add(block);
 					}
 					else {
@@ -543,46 +536,6 @@ public class Mine
 					}
 					
 					
-					
-//					String[] split = docBlock.split("-");
-//					String blockTypeName = split[0];
-//					double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
-//					long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
-//					int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
-//					int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
-//					int constraintExcludeTopLayers = split.length > 5 ? Integer.parseInt(split[5]) : 0;
-//					int constraintExcludeBottomLayers = split.length > 6 ? Integer.parseInt(split[6]) : 0;
-//
-//					if ( blockTypeName != null ) {
-//						// The new way to get the PrisonBlocks:  
-//						//   The blocks return are cloned so they have their own instance:
-//						PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
-//						
-//						if ( prisonBlock != null && !validateBlockNames.contains( blockTypeName )) {
-//							prisonBlock.setChance( chance );
-//							prisonBlock.setBlockCountTotal( blockCount );
-//							prisonBlock.setConstraintMin( constraintMin );
-//							prisonBlock.setConstraintMax( constraintMax );
-//							prisonBlock.setConstraintExcludeTopLayers( constraintExcludeTopLayers );
-//							prisonBlock.setConstraintExcludeBottomLayers( constraintExcludeBottomLayers );
-//
-//							
-//							if ( prisonBlock.isLegacyBlock() ) {
-//								dirty = true;
-//							}
-//							addPrisonBlock( prisonBlock );
-//							
-//							validateBlockNames.add( blockTypeName );
-//						}
-//						else if (validateBlockNames.contains( blockTypeName ) ) {
-//							// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
-//							dirty = true;
-//							inconsistancy = true;
-//						}
-//						
-//					}
-					
-					
 				}
 			}
 			
@@ -626,7 +579,8 @@ public class Mine
             		dirty = true;
             	}
         		
-			}
+		}
+        	
         	Output.get().logInfo( "Notice: Mine: " + getName() + ": Existing prison block model has " +
         			"been converted to the new block model and will be saved." );
         }
@@ -636,27 +590,23 @@ public class Mine
         setResetCommands( commands == null ? new ArrayList<>() : commands );
         
         
-//        Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
-//        setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
-
-        
         List<String> mineBlockEvents = (List<String>) document.get("mineBlockEvents");
         if ( mineBlockEvents != null ) {
-        	for ( String blockEvent : mineBlockEvents ) {
-        		if ( blockEvent != null ) {
-        			
-        			MineBlockEvent bEvent = MineBlockEvent.fromSaveString( blockEvent, this.getName() );
-        			
-        			if ( bEvent != null ) {
-        				
-        				getBlockEvents().add( bEvent );
-        			}
-        			else {
-        				Output.get().logInfo( "Notice: Mine: " + getName() + ": Error trying to parse a blockEvent. "
-        						+ "BlockEvent is lost: raw BlockEvent= [" + blockEvent + "]" );
-        			}
-        		}
-        	}
+	        	for ( String blockEvent : mineBlockEvents ) {
+	        		if ( blockEvent != null ) {
+	        			
+	        			MineBlockEvent bEvent = MineBlockEvent.fromSaveString( blockEvent, this.getName() );
+	        			
+	        			if ( bEvent != null ) {
+	        				
+	        				getBlockEvents().add( bEvent );
+	        			}
+	        			else {
+	        				Output.get().logInfo( "Notice: Mine: " + getName() + ": Error trying to parse a blockEvent. "
+	        						+ "BlockEvent is lost: raw BlockEvent= [" + blockEvent + "]" );
+	        			}
+	        		}
+	        	}
         }
         
         
@@ -669,26 +619,26 @@ public class Mine
         
         if ( dirty ) {
 			
-        	// Resave the mine data since an update to the mine format was detected and
-        	// needs to be saved. Otherwise the bad data will always need to be converted
-        	// every time the mine is loaded which may lead to other issues.
-        	
-        	// This is enabled since the original is not modified.
-        	
-        	// If dirty, then make a backup since these are automatic changes:
-        	PrisonMines.getInstance().getMineManager().backupMine( this );
-
-        	PrisonMines.getInstance().getMineManager().saveMine( this );
-        	
-        	if ( inconsistancy ) {
-        		
-        		Output.get().logInfo( "Notice: Mine: " + getName() + ": During the loading of this mine an " +
-        				"inconsistancy was detected and was fixed then saved." );
-        	}
-        	else {
-        		Output.get().logInfo( "Notice: Mine: " + getName() + ": Updated mine data was successfully saved." );
-        		
-        	}
+	        	// Resave the mine data since an update to the mine format was detected and
+	        	// needs to be saved. Otherwise the bad data will always need to be converted
+	        	// every time the mine is loaded which may lead to other issues.
+	        	
+	        	// This is enabled since the original is not modified.
+	        	
+	        	// If dirty, then make a backup since these are automatic changes:
+	        	PrisonMines.getInstance().getMineManager().backupMine( this );
+	
+	        	PrisonMines.getInstance().getMineManager().saveMine( this );
+	        	
+	        	if ( inconsistancy ) {
+	        		
+	        		Output.get().logInfo( "Notice: Mine: " + getName() + ": During the loading of this mine an " +
+	        				"inconsistancy was detected and was fixed then saved." );
+	        	}
+	        	else {
+	        		Output.get().logInfo( "Notice: Mine: " + getName() + ": Updated mine data was successfully saved." );
+	        		
+	        	}
         }
 	}
 
@@ -699,11 +649,12 @@ public class Mine
         // If world name is not set, try to get it from the bounds:
         String worldName = getWorldName();
         if ( (worldName == null || worldName.trim().length() == 0 ||
-        		"Virtually-Undefined".equalsIgnoreCase( worldName )) &&
-        		getBounds() != null && getBounds().getMin() != null &&
-        		getBounds().getMin().getWorld() != null ) {
-        	worldName = getBounds().getMin().getWorld().getName();
-        	setWorldName( worldName );
+	        		"Virtually-Undefined".equalsIgnoreCase( worldName )) &&
+	        		getBounds() != null && getBounds().getMin() != null &&
+	        		getBounds().getMin().getWorld() != null ) {
+        	
+	        	worldName = getBounds().getMin().getWorld().getName();
+	        	setWorldName( worldName );
         }
         ret.put("world", worldName );
         ret.put("name", getName());
@@ -763,15 +714,15 @@ public class Mine
         // originally.  In a future release, these may be purged.
         List<String> blockStrings = new ArrayList<>();
         for (BlockOld block : getBlocks()) {
-        	if ( !validateBlockNames.contains( block.getType().name() )) {
-        		
-        		blockStrings.add( block.toSaveFileFormat() );
-        		
-//        		// Use the BlockType.name() to save the block type to the file:
-//        		blockStrings.add(block.getType().name() + "-" + block.getChance());
-//            blockStrings.add(block.getType().getId() + "-" + block.getChance());
-        		validateBlockNames.add( block.getType().name() );
-        	}
+	        	if ( !validateBlockNames.contains( block.getType().name() )) {
+	        		
+	        		blockStrings.add( block.toSaveFileFormat() );
+	        		
+	//        		// Use the BlockType.name() to save the block type to the file:
+	//        		blockStrings.add(block.getType().name() + "-" + block.getChance());
+	//            blockStrings.add(block.getType().getId() + "-" + block.getChance());
+	        		validateBlockNames.add( block.getType().name() );
+	        	}
         }
         
         ret.put("blocks", blockStrings);
@@ -781,21 +732,18 @@ public class Mine
         
         List<String> prisonBlockStrings = new ArrayList<>();
         for (PrisonBlock pBlock : getPrisonBlocks() ) {
-        	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
-        		
-        		prisonBlockStrings.add( pBlock.toSaveFileFormat() );
-        		
-//        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
-        		validateBlockNames.add( pBlock.getBlockNameFormal() );
-        	}
+	        	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
+	        		
+	        		prisonBlockStrings.add( pBlock.toSaveFileFormat() );
+	        		
+	//        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
+	        		validateBlockNames.add( pBlock.getBlockNameFormal() );
+	        	}
         }
         
         ret.put("prisonBlocks", prisonBlockStrings);
 
         ret.put("commands", getResetCommands());
-        
-        
-//        ret.put( "usePagingOnReset", isUsePagingOnReset() );
         
         
         if ( getRank() != null ) {
@@ -822,7 +770,7 @@ public class Mine
 
     @Override
     public String toString() {
-    	return getName() + "  " + getTotalBlocksMined();
+    		return getName() + "  " + getTotalBlocksMined();
     }
     
     /**
@@ -839,40 +787,36 @@ public class Mine
      * @return
      */
     private Location getLocation(Document doc, World world, String x, String y, String z) {
-    	Location results = null;
-    	
-//    	if ( world != null ) {
-//    		
-//    		
-//    	}
-    	Object xD = doc.get(x);
-    	Object yD = doc.get(y);
-    	Object zD = doc.get(z);
-    	
-    	if ( xD != null && yD != null && zD != null ) {
-    		
-    		results = new Location(world, (double) xD, (double) yD, (double) zD );
-    	}
-    	
-    	return results;
+	    	Location results = null;
+	    	
+	    	Object xD = doc.get(x);
+	    	Object yD = doc.get(y);
+	    	Object zD = doc.get(z);
+	    	
+	    	if ( xD != null && yD != null && zD != null ) {
+	    		
+	    		results = new Location(world, (double) xD, (double) yD, (double) zD );
+	    	}
+	    	
+	    	return results;
     }
     
     private Location getLocation(Document doc, World world, String x, String y, String z, String pitch, String yaw) {
-    	Location loc = getLocation(doc, world, x, y, z);
-    	
-    	Object pitchD = doc.get(pitch);
-    	Object yawD = doc.get(yaw);
-    	
-    	if ( pitchD != null ) {
-    		
-    		loc.setPitch( ((Double) pitchD ).floatValue() );
-    	}
-    	
-    	if ( yawD != null ) {
-    		
-    		loc.setYaw( ((Double) yawD ).floatValue() );
-    	}
-    	return loc;
+	    	Location loc = getLocation(doc, world, x, y, z);
+	    	
+	    	Object pitchD = doc.get(pitch);
+	    	Object yawD = doc.get(yaw);
+	    	
+	    	if ( pitchD != null ) {
+	    		
+	    		loc.setPitch( ((Double) pitchD ).floatValue() );
+	    	}
+	    	
+	    	if ( yawD != null ) {
+	    		
+	    		loc.setYaw( ((Double) yawD ).floatValue() );
+	    	}
+	    	return loc;
     }
     
     
