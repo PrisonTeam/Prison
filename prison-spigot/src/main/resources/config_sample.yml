@@ -1,0 +1,115 @@
+
+
+# ladder-features helps define the server's environment for both ladders and their ranks.
+#
+# The ladder name is defined by: 'ladder-features.<ladderName>'
+#
+# - active: [true false] Only active ladders will be generated via command `/ranks autoConfigure`
+# - extendable: [true false] If enabled, more ranks can be added from in-game command at any time: `/ranks addRanks <ladder> <number>`.
+#                If using `rank-name-details.name-list` then this has to be false since there is no pattern to generate more ranks.
+# - ladder-commands: An array of Strings that represents one or more commands to run when a player ranks up on this ladder
+#   For a list of placeholders, see command: `/ranks ladder command add placeholders` 
+# - rank-name-details: There are a few ways you can define names or the ranks.  You can only use one method per ladder.
+#   - method-pattern: 
+#     - range-low: required. Def [A]. The first rank of the ladder. Must be single digit (A Java char).
+#     - range-high: Optional if range-count is used. Def [Z]. The last rank name. Must be a single digit (A Java char).
+#     - range-count: Optional if range-high is used. Number of ranks. This is the starting number of ranks that will be generated
+#        with the `/ranks autoConfigure` command. In game extensions will exceed this value, so do not use this to guess how many
+#        ranks are on a ladder. If a letter range is less than the intended extended range, then the letter range will be 
+#        repeated with using the pass-count number as a unique identifier.  See example in next item.
+#     - suppress-first-pass-number: Optional. [true false] If the method-pattern contains a placeholder {number}, then a 
+#        value of true will not include the number on the first pass of ranks. Ignored if `replace-first-pass-number` is used.
+#        Ex: A, B, C, ... Z, A2, B2, C2, ... Z2.
+#     - replace-first-pass-number: Optional. String value. Def [+]. If specified then it will suppress the 
+#       first range value as if: `suppress-first-pass-number: true`
+#   - name-list: An array of Rank names to be used.  They will be added in the order list, with the first becoming 
+#      the default rank for the ladder. If using this name-list, then the other modifiers are ignored and are invalid.
+# - rank-tag-pattern: Required. Used to generate the rank tag. Color placeholders appearing multiple times in the pattern
+#                      will be the same color. Color placeholders ending with "-pass" will have the same color for the
+#                      whole pass through the ranks. Random colors will chosen fresh each time ranks are generated so 
+#                      use carefully with the "-pass" colors (generate a full pass on each occurance).
+#                      Valid placeholders: {rank-name}{rnd-color}{seq-color}{rnd-color-pass}{seq-color-pass}
+# - 
+# - 
+#
+ladder-features:
+  default:
+    active: true
+    extendable: false
+    ladder-commands: 
+      - {msg}Congratulations on your new prestige rank {targetRankTag};{broadcast}{player} just prestiged to {targetRankTag}!!
+      - mines tp {player}
+    rank-commands:
+      A:
+      - {firstJoin}{actionBar}Welcome to Prison!;{msg}Start your adventure by going to your first mine with the command: /mine tp a;{msg}Use the command /rankup to climb the ladder and reach higher ranks!
+      Z:
+      - {msg}Congratulations! You made it to the top rank Z!;{msg}Now the race is on to prestige! When you've ready use the command: /prestige
+    rank-name-details:
+      method-pattern: "{rank}{number}"
+        range-low: 'A'
+        range-high: 'Z'
+        range-count: 26
+        suppress-first-pass-number: true
+    rank-tag-pattern: "&7[{rnd-color}{rank-name}&7]"
+    rank-cost:
+      enable-rankup: true
+      enable-rankupmax: true
+      initial: 0
+      per-rank: 50000
+      multiplier: 1.5
+      multiplier-method: compound
+      decimal-pattern: 0
+    rank-cost-multiplier:
+      percent: 0
+      apply-to-this-ladder: true
+    create-and-link-mines: true
+  prestiges:
+    active: true
+    extendable: true
+    ladder-commands:
+    rank-commands:
+      P+:
+      - {actionBar}Congrats on your first prestige! 
+    rank-name-details:
+      method-pattern: "p{number}"
+      range-count: 20
+      replace-first-pass-number: "+"
+    rank-name-pattern: "p{number}"
+    rank-tag-pattern: "&7[{random-color}{rank-name}&7]"
+    rank-cost:y
+      enable-rankup: true
+      enable-rankupmax: true
+      initial: 2500000000
+      per-rank: 2500000000
+      multiplier: 2
+      multiplier-method: linear
+      decimal-pattern: 0
+    rank-cost-multiplier:
+      percent: 0.1000
+      apply-to-this-ladder: false
+    create-and-link-mines: false
+  donors:
+    active: true
+    extendable: false
+    rank-name-details:
+      name-list:
+      - "Vip"
+      - "Premium"
+      - "Supreme"
+      - "Tourist"
+      - "Royalty"
+    rank-tag-pattern: "&7[{random-color}{rank-name}&7]"
+    rank-cost:
+      enable-rankup: false
+      enable-rankupmax: false
+      initial: 0
+      per-rank: 0
+      multiplier: 0
+      multiplier-method: "none"
+      decimal-pattern: 0
+    rank-cost-multiplier:
+      percent: 0
+      apply-to-this-ladder: false
+    create-and-link-mines: false
+
+    
