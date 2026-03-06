@@ -31,16 +31,9 @@ import java.util.Map;
  */
 public class CollectionUtil {
 
-    /*
-     * Constructor
-     */
-
     private CollectionUtil() {
     }
 
-    /*
-     * Methods
-     */
 
     /**
      * Creates a map out of an infinite amount of parameters. Every odd parameter (1, 3, 5, etc.) is a

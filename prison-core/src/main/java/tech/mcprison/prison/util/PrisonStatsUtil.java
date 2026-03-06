@@ -341,13 +341,6 @@ public class PrisonStatsUtil {
 		text.append(Prison.get().getPlatform().getRanksListString());
 		printFooter(text);
 		
-//		List<File> files = listFiles("data_storage/ranksDb/ladders/", ".json");
-//		files.addAll(listFiles("data_storage/ranksDb/ranks/", ".json"));
-//		for (File file : files) {
-//			
-//			addFileToText(file, text);
-//		}
-			
 		return text;
 	}
 
@@ -368,8 +361,6 @@ public class PrisonStatsUtil {
 	}
 
 	public StringBuilder getSupportSubmitMinesData() {
-//		List<File> files = listFiles("data_storage/mines/mines/", ".json");
-//		Collections.sort(files);
 
 		StringBuilder text = new StringBuilder();
 
@@ -383,13 +374,6 @@ public class PrisonStatsUtil {
 		// Display a list of all mines, then display the /mines info <mineName> all for
 		// each:
 		text.append(Prison.get().getPlatform().getMinesListString());
-//		printFooter(text);
-
-//		// get all the file details for each mine:
-//		for (File file : files) {
-//
-//			addFileToText(file, text);
-//		}
 		
 		return text;
 	}
@@ -419,48 +403,42 @@ public class PrisonStatsUtil {
 			listenerType = "all";
 		}
 		
-    	if ( "blockBreak".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
-    		
-    		sb.append( "||Listeners blockBreak||" );
-    		sb.append( Prison.get().getPlatform().dumpEventListenersBlockBreakEvents() );
-    	}
-    	
-    	if ( "blockPlace".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
-    		
-    		sb.append( "||Listeners blockPlace||" );
-    		sb.append( Prison.get().getPlatform().dumpEventListenersBlockPlaceEvents() );
-    	}
-    	
-    	if ( "chat".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
-    		
-    		sb.append( "||Listeners chat||" );
-    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerChatEvents() );
-    	}
-    	
-//    	if ( "traceBlockBreak".equalsIgnoreCase( listenerType ) ) {
-//    		
-//    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
-//    		
-//    	}
-    	
-    	if ( "playerInteract".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
-    		
-    		sb.append( "||Listeners playerInteract||" );
-    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents() );
-    	}
-
-    	if ( "playerDropItem".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
-    		
-    		sb.append( "||Listeners playerDropItem||" );
-    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerDropItemEvents() );
-    	}
-    	
-    	if ( "playerPickupItem".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
-    		
-    		sb.append( "||Listeners playerPickupItem||" );
-    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerPickupItemEvents() );
-    	}
-    	
+	    	if ( "blockBreak".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+	    		
+	    		sb.append( "||Listeners blockBreak||" );
+	    		sb.append( Prison.get().getPlatform().dumpEventListenersBlockBreakEvents() );
+	    	}
+	    	
+	    	if ( "blockPlace".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+	    		
+	    		sb.append( "||Listeners blockPlace||" );
+	    		sb.append( Prison.get().getPlatform().dumpEventListenersBlockPlaceEvents() );
+	    	}
+	    	
+	    	if ( "chat".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+	    		
+	    		sb.append( "||Listeners chat||" );
+	    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerChatEvents() );
+	    	}
+	    	
+	    	if ( "playerInteract".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+	    		
+	    		sb.append( "||Listeners playerInteract||" );
+	    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents() );
+	    	}
+	
+	    	if ( "playerDropItem".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+	    		
+	    		sb.append( "||Listeners playerDropItem||" );
+	    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerDropItemEvents() );
+	    	}
+	    	
+	    	if ( "playerPickupItem".equalsIgnoreCase( listenerType ) || "all".equalsIgnoreCase( listenerType ) ) {
+	    		
+	    		sb.append( "||Listeners playerPickupItem||" );
+	    		sb.append( Prison.get().getPlatform().dumpEventListenersPlayerPickupItemEvents() );
+	    	}
+	    	
     	
 		return sb;
 	}
@@ -474,9 +452,9 @@ public class PrisonStatsUtil {
 		List<String> cmds = getCommandStats();
 		cmds.add( 1,  "||CommandStats List||" );
 		
-    	for (String cmd : cmds) {
-			
-    		sb.append( cmd ).append( "\n" );
+	    	for (String cmd : cmds) {
+				
+	    		sb.append( cmd ).append( "\n" );
 		}
 		
 		return sb;
@@ -497,41 +475,41 @@ public class PrisonStatsUtil {
 		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 		
-    	TreeSet<RegisteredCommand> allCmds = Prison.get().getCommandHandler().getAllRegisteredCommands();
-    	
-    	results.add( "Prison Command Stats:" );
-    	results.add( 
-    			Output.stringFormat( "    &a&n%-40s&r  &a&n%7s&r  &a&n%-11s&r", 
-    					" Commands     ", " Usage ", "  Avg ms  ") );
-    	
-    	int count = 0;
-    	int totals = 0;
-    	double totalDuration = 0d;
-    	for (RegisteredCommand cmd : allCmds) {
-			
-    		if ( cmd.getUsageCount() > 0 ) {
-    			
-    			double duration = cmd.getUsageRunTimeNanos() / (double) cmd.getUsageCount() / 1000000.0d;
-    			
-    			results.add( Output.stringFormat( "    &2%-40s  &2%7s  &2%11s",
-    					cmd.getCompleteLabel(), 
-    					iFmt.format( cmd.getUsageCount() ),
-    					dFmt.format( duration )
-    					) );
-    			count++;
-    			totals += cmd.getUsageCount();
-    			totalDuration += cmd.getUsageRunTimeNanos();
-    		}
+	    	TreeSet<RegisteredCommand> allCmds = Prison.get().getCommandHandler().getAllRegisteredCommands();
+	    	
+	    	results.add( "Prison Command Stats:" );
+	    	results.add( 
+	    			Output.stringFormat( "    &a&n%-40s&r  &a&n%7s&r  &a&n%-11s&r", 
+	    					" Commands     ", " Usage ", "  Avg ms  ") );
+	    	
+	    	int count = 0;
+	    	int totals = 0;
+	    	double totalDuration = 0d;
+	    	for (RegisteredCommand cmd : allCmds) {
+				
+	    		if ( cmd.getUsageCount() > 0 ) {
+	    			
+	    			double duration = cmd.getUsageRunTimeNanos() / (double) cmd.getUsageCount() / 1000000.0d;
+	    			
+	    			results.add( Output.stringFormat( "    &2%-40s  &2%7s  &2%11s",
+	    					cmd.getCompleteLabel(), 
+	    					iFmt.format( cmd.getUsageCount() ),
+	    					dFmt.format( duration )
+	    					) );
+	    			count++;
+	    			totals += cmd.getUsageCount();
+	    			totalDuration += cmd.getUsageRunTimeNanos();
+	    		}
 		}
-    	
-    	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", iFmt.format( allCmds.size() )) );
-    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", iFmt.format( count )) );
-    	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", iFmt.format( totals )) );
-    	
-    	double avgDuration = totalDuration / (double) count / 1000000.0d;
-    	results.add( Output.stringFormat("  &3Average Command Duration ms:      &7%9s", dFmt.format( avgDuration )) );
-    	
-    	results.add( "  &d&oNOTE: Async Commands like '/mines reset' will not show actual runtime values. " );
+	    	
+	    	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", iFmt.format( allCmds.size() )) );
+	    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", iFmt.format( count )) );
+	    	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", iFmt.format( totals )) );
+	    	
+	    	double avgDuration = totalDuration / (double) count / 1000000.0d;
+	    	results.add( Output.stringFormat("  &3Average Command Duration ms:      &7%9s", dFmt.format( avgDuration )) );
+	    	
+	    	results.add( "  &d&oNOTE: Async Commands like '/mines reset' will not show actual runtime values. " );
 
     	
 		return results;
@@ -541,13 +519,13 @@ public class PrisonStatsUtil {
 	public StringBuilder getPrisonBackupLogsData() {
 		StringBuilder sb = new StringBuilder();
 		
-    	// Include Prison backup logs:
+    		// Include Prison backup logs:
 		sb.append( "\n\n" );
 		sb.append( "Prison Backup Logs:" ).append( "\n" );
-    	List<String> backupLogs = getPrisonBackupLogs();
-    	
-    	for (String log : backupLogs) {
-    		sb.append( Output.decodePercentEncoding(log) ).append( "\n" );
+	    	List<String> backupLogs = getPrisonBackupLogs();
+	    	
+	    	for (String log : backupLogs) {
+	    		sb.append( Output.decodePercentEncoding(log) ).append( "\n" );
 		}
     	
 		return sb;
@@ -555,9 +533,9 @@ public class PrisonStatsUtil {
 	
 	
     public List<String> getPrisonBackupLogs() {
-    	PrisonBackups prisonBackup = new PrisonBackups();
-    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
-    	return backupLogs;
+	    	PrisonBackups prisonBackup = new PrisonBackups();
+	    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
+	    	return backupLogs;
     }
     
     

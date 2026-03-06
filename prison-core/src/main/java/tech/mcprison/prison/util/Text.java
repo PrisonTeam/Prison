@@ -113,13 +113,13 @@ public class Text
 	private static DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
 
     static {
-    	if ( Prison.get() != null ) {
-    		
-    	}
+	    	if ( Prison.get() != null ) {
+	    		
+	    	}
     }
     
     protected Text() {
-    	super();
+    		super();
     	
     }
     
@@ -352,7 +352,7 @@ public class Text
      * @return The translated string.
      */
     public static String translateColorCodes(String text, char prefix) {
-    	return translateColorCodes( text, prefix, COLOR_CHAR, COLOR_CHAR );
+    		return translateColorCodes( text, prefix, COLOR_CHAR, COLOR_CHAR );
     }
     
     
@@ -435,7 +435,7 @@ public class Text
      * @return
      */
     public static String translateAmpColorCodesAltHexCode(String text) {
-    	return translateColorCodes( text, '&', COLOR_CHAR, '&' );
+    		return translateColorCodes( text, '&', COLOR_CHAR, '&' );
     }
     
     // NOTE: It's not needed to remove the '&'
@@ -475,40 +475,40 @@ public class Text
      * @return
      */
     protected static String translateHexColorCodes( String text, char targetColorCode ) {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	if ( text != null && !text.trim().isEmpty() ) {
-    		
-    		int idxStart = text.indexOf( "\\Q" );
-    		int idxEnd = -1;
-    		
-    		if ( idxStart == -1 ) {
-    			sb.append( translateHexColorCodesCore( text, targetColorCode ) );
-    		}
-    		else {
-    			while ( idxStart >= 0 ) {
-    				sb.append( translateHexColorCodesCore( 
-    						text.substring( idxEnd + (idxEnd == -1 ? 1 : 0), idxStart ), targetColorCode) );
-    				
-    				idxEnd = text.indexOf( "\\E", idxStart );
-    				
-    				if ( idxEnd == -1 ) {
-    					sb.append( text.substring( idxStart ) );
-    					idxStart = -1;
-    				}
-    				else {
-    					sb.append( text.substring( idxStart, idxEnd ) );
-    					
-    					idxStart = text.indexOf( "\\Q", idxEnd );
-    				}
-    			}
-    			if ( idxStart == -1 && idxEnd >= 0 && (idxEnd) < text.length() ) {
-    				sb.append( text.substring( idxEnd  ) );
-    			}
-    		}
-    	}
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	if ( text != null && !text.trim().isEmpty() ) {
+	    		
+	    		int idxStart = text.indexOf( "\\Q" );
+	    		int idxEnd = -1;
+	    		
+	    		if ( idxStart == -1 ) {
+	    			sb.append( translateHexColorCodesCore( text, targetColorCode ) );
+	    		}
+	    		else {
+	    			while ( idxStart >= 0 ) {
+	    				sb.append( translateHexColorCodesCore( 
+	    						text.substring( idxEnd + (idxEnd == -1 ? 1 : 0), idxStart ), targetColorCode) );
+	    				
+	    				idxEnd = text.indexOf( "\\E", idxStart );
+	    				
+	    				if ( idxEnd == -1 ) {
+	    					sb.append( text.substring( idxStart ) );
+	    					idxStart = -1;
+	    				}
+	    				else {
+	    					sb.append( text.substring( idxStart, idxEnd ) );
+	    					
+	    					idxStart = text.indexOf( "\\Q", idxEnd );
+	    				}
+	    			}
+	    			if ( idxStart == -1 && idxEnd >= 0 && (idxEnd) < text.length() ) {
+	    				sb.append( text.substring( idxEnd  ) );
+	    			}
+	    		}
+	    	}
+	    	
+	    	return sb.toString();
     }
     
     /**
@@ -521,44 +521,44 @@ public class Text
      * @return
      */
     private static String translateHexColorCodesCore(String message, char targetColorCode) {
-    	String results = "";
-    	
-    	if ( message != null ) {
-    		
-    		// NOTE: if '&#' is used, then it will convert the hex codes, but it will also
-    		//       leave the leading '&' there.  So remove the '&' prefix.
-        	if ( message != null && message.contains( "&#" ) ) {
-        		message = message.replace( "&#", "#" );
-	    	}    		
-    		
-//        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
-    		
-    		Matcher matcher = HEX_PATTERN.matcher(message);
-    		StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-    		while (matcher.find()) {
-    			String group = matcher.group(1);
-    			matcher.appendReplacement(buffer, targetColorCode + "x"
-    					+ targetColorCode + group.charAt(0) + targetColorCode + group.charAt(1)
-    					+ targetColorCode + group.charAt(2) + targetColorCode + group.charAt(3)
-    					+ targetColorCode + group.charAt(4) + targetColorCode + group.charAt(5)
-    					);
-    		}
-    		results = matcher.appendTail(buffer).toString();
-    	}
-    	
-    	return results;
+	    	String results = "";
+	    	
+	    	if ( message != null ) {
+	    		
+	    		// NOTE: if '&#' is used, then it will convert the hex codes, but it will also
+	    		//       leave the leading '&' there.  So remove the '&' prefix.
+	        	if ( message != null && message.contains( "&#" ) ) {
+	        		message = message.replace( "&#", "#" );
+		    	}    		
+	    		
+	//        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
+	    		
+	    		Matcher matcher = HEX_PATTERN.matcher(message);
+	    		StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+	    		while (matcher.find()) {
+	    			String group = matcher.group(1);
+	    			matcher.appendReplacement(buffer, targetColorCode + "x"
+	    					+ targetColorCode + group.charAt(0) + targetColorCode + group.charAt(1)
+	    					+ targetColorCode + group.charAt(2) + targetColorCode + group.charAt(3)
+	    					+ targetColorCode + group.charAt(4) + targetColorCode + group.charAt(5)
+	    					);
+	    		}
+	    		results = matcher.appendTail(buffer).toString();
+	    	}
+	    	
+	    	return results;
     }
     	      
     
     private static String convertToAmpColorCodes( String textEncoded ) {
     	
-    	String results = textEncoded;
-    	
-    	if ( textEncoded != null && textEncoded.contains( COLOR_ ) ) {
-    		results = textEncoded.replaceAll( COLOR_, "&" );
-    	}
-    	
-    	return results;
+	    	String results = textEncoded;
+	    	
+	    	if ( textEncoded != null && textEncoded.contains( COLOR_ ) ) {
+	    		results = textEncoded.replaceAll( COLOR_, "&" );
+	    	}
+	    	
+	    	return results;
     }
     
     /**
@@ -573,7 +573,7 @@ public class Text
      * @return
      */
     public static String escapeAmpCodes( String textEncoded ) {
-    	return convertToAmpColorCodes(textEncoded).replaceAll("&", "U+0026");
+    		return convertToAmpColorCodes(textEncoded).replaceAll("&", "U+0026");
     }
 
     /**
@@ -649,17 +649,17 @@ public class Text
      * @return The human-readable string.
      */
     public static String getTimeUntilString(long millis) {
-    	return getTimeUntilString( millis, unitMillis, unitPrefixSpacer, null );
+    		return getTimeUntilString( millis, unitMillis, unitPrefixSpacer, null );
     }
     public static String getTimeUntilString(long millis, String spaces ) {
-    	return getTimeUntilString( millis, unitMillis, spaces, null );
+    		return getTimeUntilString( millis, unitMillis, spaces, null );
     }
     public static String getTimeUntilShortString(long millis, String spaces ) {
-    	return getTimeUntilString( millis, unitMillisShort, spaces, null );
+    		return getTimeUntilString( millis, unitMillisShort, spaces, null );
     }
     public static String getTimeUntilColonsString(long millis, String spaces ) {
-    	DecimalFormat dFmt = new DecimalFormat( "00" );
-    	return getTimeUntilString( millis, unitMillisColons, spaces, dFmt );
+	    	DecimalFormat dFmt = new DecimalFormat( "00" );
+	    	return getTimeUntilString( millis, unitMillisColons, spaces, dFmt );
     }
     private static String getTimeUntilString(long millis, Map<String,Long> units, 
     		String unitSpacer, DecimalFormat dFmt ) {
@@ -725,16 +725,16 @@ public class Text
     
     public static String formatTimeDaysHhMmSs( long timeMs ) {
     	
-    	DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
-    	DecimalFormat tFmt = Prison.getDecimalFormatStatic("00");
+	    	DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
+	    	DecimalFormat tFmt = Prison.getDecimalFormatStatic("00");
 //    	SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
     	
 //    	long _sec = 1000;
 //    	long _min = _sec * 60;
 //    	long _hour = _min * 60;
 //    	long _day = _hour * 24;
-
-    	long ms = timeMs;
+    	
+    		long ms = timeMs;
 		long days = millisPerDay < ms ? ms / millisPerDay : 0;
 		
 		ms -= (days * millisPerDay);
@@ -760,22 +760,18 @@ public class Text
     
     public static List<String> formatTreeMapStats( TreeMap<String,?> statMap,  
     		int columns ) {
-    	return formatTreeMapStats( statMap, columns, false );
+    		return formatTreeMapStats( statMap, columns, false );
     }
     
     public static List<String> formatTreeMapStats( TreeMap<String,?> statMap,  
     		int columns, boolean timeFormat ) {
     	
-    	List<String> msgs = new ArrayList<>();
+    		List<String> msgs = new ArrayList<>();
     	
 		Set<String> keys = statMap.keySet();
 		
 		
 		List<String> values = new ArrayList<>();
-//		List<Integer> valueMaxLen = new ArrayList<>();
-		
-//		StringBuilder sb = new StringBuilder();
-//		int count = 0;
 		
 		for ( String earningKey : keys )
 		{
@@ -804,84 +800,31 @@ public class Text
 			
 			String msg = String.format( "&3%s&8: &b%s", earningKey, value ).trim();
 			
-//			String msgNoColor = Text.stripColor( msg );
-//			int lenMNC = msgNoColor.length();
-//			
-//		
-//			int col = values.size() % columns;
 			values.add( msg );
 			
-//			if ( col >= valueMaxLen.size() || lenMNC > valueMaxLen.get( col ) ) {
-//				
-//				if ( col > valueMaxLen.size() - 1 ) {
-//					valueMaxLen.add( lenMNC );
-//				}
-//				else {
-//					
-//					valueMaxLen.set( col, lenMNC );
-//				}
-//			}
 		}
 		
 		msgs = formatColumnsFromList( values, columns );
-		
-//		for ( int j = 0; j < values.size(); j++ )
-//		{
-//			String msg = values.get( j );
-//			
-//			int col = j % columns;
-//			
-//			int maxColumnWidth = col > valueMaxLen.size() - 1 ?
-//							msg.length() :
-//								valueMaxLen.get( col );
-//		
-//			sb.append( msg );
-//			
-//			// Pad the right of all content with spaces to align columns, up to a 
-//			// given maxLength:
-//			String msgNoColor = Text.stripColor( msg );
-//			int lenMNC = msgNoColor.length();
-//			for( int i = lenMNC; i < maxColumnWidth; i++ ) {
-//				sb.append( " " );
-//			}
-//
-//			// The spacer:
-//			sb.append( "   " );
-//			
-//			if ( ++count % columns == 0 ) {
-//				msgs.add( String.format( 
-//						"      " + sb.toString() ) );
-//				sb.setLength( 0 );
-//				
-//			}
-//		}
-//		
-//		if ( sb.length() > 0 ) {
-//			
-//			msgs.add( String.format( 
-//					"      " + sb.toString() ) );
-//		}
 
-    	return msgs;
+		return msgs;
     }
 
     
     public static List<String> formatColumnsFromList( List<String> textItems,  
     		int columns ) {
     	
-    	List<String> msgs = new ArrayList<>();
-    	
-    	List<Integer> valueMaxLen = new ArrayList<>();
-    	
-    	StringBuilder sb = new StringBuilder();
-		int count = 0;
-    	
-    	// Find the maxLenght value for each column that will be generated:
-    	for ( int i = 0; i < textItems.size(); i++ )
-		{
-    		String msg = textItems.get( i );
-    		
-    		String msgNoColor = Text.stripColor( msg );
+	    	List<String> msgs = new ArrayList<>();
+	    	
+	    	List<Integer> valueMaxLen = new ArrayList<>();
+	    	
+	    	StringBuilder sb = new StringBuilder();
+			int count = 0;
+	    	
+	    	// Find the maxLenght value for each column that will be generated:
+	    	for ( int i = 0; i < textItems.size(); i++ ) {
+	    		String msg = textItems.get( i );
+	    		
+	    		String msgNoColor = Text.stripColor( msg );
 			int lenMNC = msgNoColor.length();
 			
 			
@@ -898,7 +841,7 @@ public class Text
 				}
 			}
 		}
-    	
+	    	
 		
 		for ( int j = 0; j < textItems.size(); j++ )
 		{
@@ -930,14 +873,14 @@ public class Text
 				
 			}
 		}
-		
+			
 		if ( sb.length() > 0 ) {
 			
 			msgs.add( String.format( 
 					"      " + sb.toString() ) );
 		}
-
-    	return msgs;
+	
+	    	return msgs;
     }
 
 }

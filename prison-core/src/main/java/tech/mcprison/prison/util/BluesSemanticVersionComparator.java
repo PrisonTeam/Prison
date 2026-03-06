@@ -2,9 +2,6 @@ package tech.mcprison.prison.util;
 
 import tech.mcprison.prison.Prison;
 
-//import org.bukkit.Bukkit;
-//import org.inventivetalent.update.spiget.comparator.VersionComparator;
-
 /**
  * <p>This class provides a <i>real</i> comparator for semantic versioning 
  * for spiget.  This addresses issues seen with incorrect notifications.
@@ -39,7 +36,7 @@ import tech.mcprison.prison.Prison;
  */
 public class BluesSemanticVersionComparator
 //		extends VersionComparator 
-		{
+{
 	
 	public boolean isNewer(String currentVersion, String checkVersion) {
 		return performComparisons( currentVersion, checkVersion);
@@ -143,7 +140,6 @@ public class BluesSemanticVersionComparator
 	
 	private String getBukkitVersionRaw() {
 		return Prison.get().getMinecraftVersion();
-//		return Bukkit.getVersion();
 	}
 	
 	public String getBukkitVersion( String currentVersion ) {
@@ -157,10 +153,6 @@ public class BluesSemanticVersionComparator
 				results = currentVersion.substring( i + 4, len - 1 ).trim();
 			}
 		}
-		
-//		if ( results !=  null && "1.17".equals( results ) ) {
-//			results = "1.17.0";
-//		}
 		
 		return results;
 	}

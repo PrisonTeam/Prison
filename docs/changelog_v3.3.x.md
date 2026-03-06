@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19j 2026-03-06
 
 
+* **Prison Cleanup: prison-core: Removed obsolete and unneeded comments and fix indentation where needed.** First part.
+
+
 * **Removed some uses of the old block model. Breaking change: This removal should not actually break anything, but if upgrading from a version using the old block models, upgrade to an earlier release first to take advantage of the automatic conversion.**
 
 * **Removed a few other unused source related to the old non-functional troubleshooting.**

@@ -14,8 +14,6 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 
 public class PrisonCommandTaskData {
 	
-	private boolean fail = false;
-	
 	private RankLadder ladder;
 	private PlayerRank rankTarget;
 	private PlayerRank rankOriginal;
@@ -437,26 +435,6 @@ public class PrisonCommandTaskData {
 	
 	public void runCommandTask( Player player ) {
 		
-//		if ( command.contains( "{inline}" ) ) {
-//			taskMode = TaskMode.inline;
-//			command = command.replace( "{inline}", "" );
-//		}
-//		
-//		if ( command.contains( "{inlinePlayer}" ) ) {
-//			taskMode = TaskMode.inlinePlayer;
-//			command = command.replace( "{inlinePlayer}", "" );
-//		}
-//		
-//		if ( command.contains( "{sync}" ) ) {
-//			taskMode = TaskMode.sync;
-//			command = command.replace( "{sync}", "" );
-//		}
-//		
-//		if ( command.contains( "{syncPlayer}" ) ) {
-//			taskMode = TaskMode.syncPlayer;
-//			command = command.replace( "{syncPlayer}", "" );
-//		}
-//		
 		String commandTranslated = translateCommand( player, getCmd() );
 		
 		// Split multiple commands in to a List of individual tasks:
@@ -472,37 +450,6 @@ public class PrisonCommandTaskData {
 			this.tasks = tasks;
 			
 			runTask( player );
-			
-//			PrisonDispatchCommandTask task = 
-//					new PrisonDispatchCommandTask( tasks, errorMessage, 
-//									player, taskMode.isPlayerTask() );
-			
-			
-			// Ignore taskMode since it's already running in a new sync task:
-//			task.run();
-			
-			
-			// NOTE: taskMode is no longer used, since all tasks are being ran 
-			//       within a sync task that has already been submitted.
-//			switch ( taskMode )
-//			{
-//				case inline:
-//				case inlinePlayer:
-//					// Don't submit, but run it here within this thread:
-//					task.run();
-//					break;
-//					
-//				case sync:
-//				case syncPlayer:
-//				//case "async": // async will cause failures so run as sync:
-//					
-//					// submit task: 
-//					setTaskId( PrisonTaskSubmitter.runTaskLater(task, 0) );
-//					break;
-//					
-//				default:
-//					break;
-//			}
 			
 		}
 

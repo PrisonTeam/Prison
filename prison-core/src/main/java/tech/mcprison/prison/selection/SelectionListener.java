@@ -38,7 +38,6 @@ public class SelectionListener {
     public void onPlayerInteract(PrisonPlayerInteractEvent e) {
         ItemStack ourItem = e.getItemInHand();
         ItemStack toolItem = ItemStack.SELECTION_WAND;
-//        ItemStack toolItem = SelectionManager.SELECTION_TOOL;
 
         if ( ourItem == null || !ourItem.equals(toolItem)) {
             return;

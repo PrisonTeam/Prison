@@ -8,7 +8,7 @@ public class ConversionUtil
     }
     
     public static long doubleToLong(Object d) {
-    	return d == null ? -1 : Math.round((double) d);
+    		return d == null ? -1 : Math.round((double) d);
     }
     
 }

@@ -50,30 +50,31 @@ public class Location {
     private boolean isCorner;
 
     public Location(World world, double x, double y, double z, float pitch, float yaw, Vector direction) {
-    	this.world = world;
-    	this.worldName = world == null ? null : world.getName();
-    	
-    	this.x = x;
-    	this.y = y;
-    	this.z = z;
-    	this.pitch = pitch;
-    	this.yaw = yaw;
-    	this.direction = direction;
+	    	this.world = world;
+	    	this.worldName = world == null ? null : world.getName();
+	    	
+	    	this.x = x;
+	    	this.y = y;
+	    	this.z = z;
+	    	this.pitch = pitch;
+	    	this.yaw = yaw;
+	    	this.direction = direction;
     }
+    
     public Location(World world, double x, double y, double z, float pitch, float yaw) {
-    	this( world, x, y, z, pitch, yaw, new Vector() );
+    		this( world, x, y, z, pitch, yaw, new Vector() );
     }
 
     public Location(World world, double x, double y, double z) {
-    	this( world, x, y, z, 0.0f, 0.0f);
+    		this( world, x, y, z, 0.0f, 0.0f);
     }
 
     public Location(String worldName, int x, int y, int z) {
-    	this( Prison.get().getPlatform().getWorld( worldName ).orElse( null ), (double) x, (double) y, (double) z );
+    		this( Prison.get().getPlatform().getWorld( worldName ).orElse( null ), (double) x, (double) y, (double) z );
     }
     
     public Location(Location clone) {
-    	this( clone.getWorld(), clone.getX(), clone.getY(), clone.getZ(), 
+    		this( clone.getWorld(), clone.getX(), clone.getY(), clone.getZ(), 
     			clone.getPitch(), clone.getYaw(), clone.getDirection());
     }
     
@@ -81,7 +82,7 @@ public class Location {
     }
 
     public Location clone() {
-    	return new Location( this );
+    		return new Location( this );
     }
     
     
@@ -202,11 +203,11 @@ public class Location {
     }
     
     public Block getBlockAt( boolean containsCustomBlocks ) {
-    	return world.getBlockAt( this, containsCustomBlocks );
+    		return world.getBlockAt( this, containsCustomBlocks );
     }
     
     public void setBlockAsync( PrisonBlock prisonBlock ) {
-    	world.setBlockAsync( prisonBlock, this );
+    		world.setBlockAsync( prisonBlock, this );
     }
 
     /**
@@ -287,12 +288,6 @@ public class Location {
         	   location.getBlockY() == getBlockY() &&
         	   location.getBlockZ() == getBlockZ();
 
-//        return Double.compare(location.x, x) == 0 && Double.compare(location.y, y) == 0
-//            && Double.compare(location.z, z) == 0 && Float.compare(location.pitch, pitch) == 0
-//            && Float.compare(location.yaw, yaw) == 0 && (world != null ?
-//            world.getName().equals(location.world.getName()) :
-//            location.world == null);
-
     }
 
     @Override 
@@ -314,7 +309,7 @@ public class Location {
     @Override 
     public String toString() {
     	
-    	DecimalFormat dFmt = new DecimalFormat( "0.00" );
+    		DecimalFormat dFmt = new DecimalFormat( "0.00" );
     	
         return "Location{" + "world=" + world.getName() + ", "
         		+ "x=" + dFmt.format(x) + ", "

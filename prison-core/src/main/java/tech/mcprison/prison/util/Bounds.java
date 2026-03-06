@@ -390,11 +390,11 @@ public class Bounds {
     }
 
     public boolean within(Location location) {
-    	return within( location, false, false );
+    		return within( location, false, false );
     }
     
     public boolean withinIncludeTopBottomOfMine(Location location) {
-    	return within( location, true, true );
+    		return within( location, true, true );
     }
     
     /**
@@ -409,27 +409,27 @@ public class Bounds {
      * @return true if the location is within the bounds, false otherwise.
      */
     private boolean within(Location location, boolean includeTopOfMine, boolean includeOneBelowMine ) {
-    	boolean results = false;
-    	
-    	if ( withinSameWorld( location )) {
-
-    		double ourX = Math.floor(location.getX());
-    		double ourY = Math.floor(location.getY());
-    		double ourZ = Math.floor(location.getZ());
-    		
-    		results = ourX >= getxMin() && ourX <= getxMax() // Within X
-    				&& ourY >= (getyMin() - (includeOneBelowMine ? 1 : 0)) && 
-    					ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
-    				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
-    	}
+	    	boolean results = false;
+	    	
+	    	if ( withinSameWorld( location )) {
+	
+	    		double ourX = Math.floor(location.getX());
+	    		double ourY = Math.floor(location.getY());
+	    		double ourZ = Math.floor(location.getZ());
+	    		
+	    		results = ourX >= getxMin() && ourX <= getxMax() // Within X
+	    				&& ourY >= (getyMin() - (includeOneBelowMine ? 1 : 0)) && 
+	    					ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
+	    				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
+	    	}
 
         return results;
     }
     
     public boolean withinSameWorld(Location location) {
-    	return getCenter().getWorld() != null && location.getWorld() != null &&
-    			getCenter().getWorld().getName().equalsIgnoreCase( 
-    						location.getWorld().getName() );
+	    	return getCenter().getWorld() != null && location.getWorld() != null &&
+	    			getCenter().getWorld().getName().equalsIgnoreCase( 
+	    						location.getWorld().getName() );
     	}	
     
     /**
@@ -448,17 +448,17 @@ public class Bounds {
      * @return
      */
     public boolean within(Location location, long radius) {
-    	boolean results = false;
-    	
-    	if ( withinSameWorld( location ) ) {
+	    	boolean results = false;
+	    	
+	    	if ( withinSameWorld( location ) ) {
     		
-    		// Ignore y since this is radius from the center axis of the mine:
-    		double distance = getDistance(location);
-    		
-    		results = distance <= radius;
-    	}
+	    		// Ignore y since this is radius from the center axis of the mine:
+	    		double distance = getDistance(location);
+	    		
+	    		results = distance <= radius;
+	    	}
     	
-    	return results;
+	    	return results;
     }
 
     /**
@@ -467,38 +467,38 @@ public class Bounds {
      * @return
      */
     public double getDistance() {
-    	double deltaX = getMin().getX() - getMax().getX();
-    	double deltaZ = getMin().getZ() - getMax().getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
-    	return Math.round( distance );
+	    	double deltaX = getMin().getX() - getMax().getX();
+	    	double deltaZ = getMin().getZ() - getMax().getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+	    	return Math.round( distance );
     }
     
     public double getDistance3d() {
-    	double deltaX = getMin().getX() - getMax().getX();
-    	double deltaY = getMin().getY() - getMax().getY();
-    	double deltaZ = getMin().getZ() - getMax().getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
-    	return Math.round( distance );
+	    	double deltaX = getMin().getX() - getMax().getX();
+	    	double deltaY = getMin().getY() - getMax().getY();
+	    	double deltaZ = getMin().getZ() - getMax().getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
+	    	return Math.round( distance );
     }
   
     public double getDistance(Location location) {
-    	double deltaX = getCenter().getX() - location.getX();
-    	double deltaZ = getCenter().getZ() - location.getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+	    	double deltaX = getCenter().getX() - location.getX();
+	    	double deltaZ = getCenter().getZ() - location.getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
 		return Math.round( distance );
     }    	
     
     public double getDistance3d(Location location) {
-    	double deltaX = getCenter().getX() - location.getX();
-    	double deltaY = getCenter().getY() - location.getY();
-    	double deltaZ = getCenter().getZ() - location.getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
-    	return distance;
+	    	double deltaX = getCenter().getX() - location.getX();
+	    	double deltaY = getCenter().getY() - location.getY();
+	    	double deltaZ = getCenter().getZ() - location.getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
+	    	return distance;
     }    	
 
     public String getDimensions() {
-    	return "&7" + Math.round(getWidth()) + "&8x&7" +
-                Math.round(getHeight()) + "&8x&7" + Math.round(getLength());
+	    	return "&7" + Math.round(getWidth()) + "&8x&7" +
+	                Math.round(getHeight()) + "&8x&7" + Math.round(getLength());
     }
     
     public Location getMin() {
@@ -547,15 +547,12 @@ public class Bounds {
         // If any point is null, then this must return false:
         if ( getMin() == null || getMax() == null || 
         		bounds.getMin() == null || bounds.getMax() == null ) {
-        	return false;
+        		return false;
         }
         
         return getMin().equals(bounds.getMin()) &&
         		getMax().equals(bounds.getMax());
         
-//        return min != null ?
-//        		min.equals(bounds.min) :
-//        			bounds.min == null && (max != null ? max.equals(bounds.max) : bounds.max == null);
     }
 
     @Override public int hashCode() {

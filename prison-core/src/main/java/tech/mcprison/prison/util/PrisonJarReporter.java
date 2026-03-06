@@ -257,16 +257,6 @@ public class PrisonJarReporter {
 				// These are not our plugins, so if there is a problem, then it really does not matter
 				
 			}
-//			catch ( ZipException e )
-//			{
-//				e.printStackTrace();
-//			}
-//			catch ( IOException e )
-//			{
-//				e.printStackTrace();
-//			}
-			
-			
 		}
 		
 	}

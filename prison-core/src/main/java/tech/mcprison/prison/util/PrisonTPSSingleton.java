@@ -339,72 +339,63 @@ public class PrisonTPSSingleton
 	 * @return
 	 */
     public double getAverageTPS() {
-    	double avg = 0d;
-    	
-    	int cnt = 0;
-    	
-    	// Start collecting readings from the tail-end of the tpsHistory collection
-    	// since that is the most recent reading:
-    	synchronized ( tpsLock ) {
-    		
-    		for ( int i = tpsHistory.size(); i > 0; i-- ) {
-    			double reading = tpsHistory.get( i - 1 );
-    			
-    			// Ignore readings above TPS_THRESHOLD_TO_RECORD
-    			if ( reading <= TPS_THRESHOLD_TO_RECORD ) {
-    				avg += reading;
-    				
-    				// Once we get our target count, then break out of the for loop:
-    				if ( cnt++ < TPS_AVERAGE_READINGS_TO_INCLUDE ) {
-    					break;
-    				}
-    			}
-    		}
-    	}
-
-    	// Do not divide avg by count if zero or one:
-    	if ( cnt > 1 ) {
-    		avg /= cnt;
-    	}
-    	return avg;
-
-    	// The following was averaging all counts in the history, including very high values.
-    	// This is no longer favorable.
-//        for (final Double f : tpsHistory) {
-//            if (f != null) {
-//                avg += f;
-//            }
-//        }
-//        return tpsHistory.size() == 0 ? 0 : avg / tpsHistory.size();
+	    	double avg = 0d;
+	    	
+	    	int cnt = 0;
+	    	
+	    	// Start collecting readings from the tail-end of the tpsHistory collection
+	    	// since that is the most recent reading:
+	    	synchronized ( tpsLock ) {
+	    		
+	    		for ( int i = tpsHistory.size(); i > 0; i-- ) {
+	    			double reading = tpsHistory.get( i - 1 );
+	    			
+	    			// Ignore readings above TPS_THRESHOLD_TO_RECORD
+	    			if ( reading <= TPS_THRESHOLD_TO_RECORD ) {
+	    				avg += reading;
+	    				
+	    				// Once we get our target count, then break out of the for loop:
+	    				if ( cnt++ < TPS_AVERAGE_READINGS_TO_INCLUDE ) {
+	    					break;
+	    				}
+	    			}
+	    		}
+	    	}
+	
+	    	// Do not divide avg by count if zero or one:
+	    	if ( cnt > 1 ) {
+	    		avg /= cnt;
+	    	}
+	    	return avg;
     }
     
     
     public String getAverageTPSFormatted() {
-    	return tpsFmt.format( getAverageTPS() );
+    		return tpsFmt.format( getAverageTPS() );
     }
     
     public String getTPSMinFormatted() {
-    	return tpsFmt.format( getTpsMin() );
+    		return tpsFmt.format( getTpsMin() );
     }
     
     public String getTPSMaxFormatted() {
-    	return tpsFmt.format( getTpsMax() );
+    		return tpsFmt.format( getTpsMax() );
     }
     
     
     public String getLastFewTPS() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	int cnt = 0;
-    	
-    	synchronized ( tpsLock ) {
-    		
-    		for ( int i = tpsHistory.size(); i > 0 && cnt++ < 15; i-- ) {
-    			sb.append( tpsFmt.format( tpsHistory.get( i - 1 ) ) ).append( "  " );
-    		}
-    	}
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	int cnt = 0;
+	    	
+	    	synchronized ( tpsLock ) {
+	    		
+	    		for ( int i = tpsHistory.size(); i > 0 && cnt++ < 15; i-- ) {
+	    			sb.append( tpsFmt.format( tpsHistory.get( i - 1 ) ) ).append( "  " );
+	    		}
+	    	}
+	    	
+	    	return sb.toString();
     }
 
 

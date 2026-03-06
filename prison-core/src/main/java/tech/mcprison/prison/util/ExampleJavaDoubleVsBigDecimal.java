@@ -55,7 +55,6 @@ public class ExampleJavaDoubleVsBigDecimal {
 		sb.append( ".111111" );
 		
 		DecimalFormat dFmt = new DecimalFormat( "#,##0.000000" );
-//		DecimalFormat iFmt = new DecimalFormat( "#,##0.00000" );
 		
 		for ( int i = 1; i < 35; i++ ) {
 			sb.insert( 0, "1" );

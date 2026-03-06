@@ -1,13 +1,16 @@
 package tech.mcprison.prison.spatial;
 
-import java.util.NavigableMap;
-
+/**
+ * @deprecated
+ */
 public class SpatialIndex
 {
-	public static final int SPATIAL_INDEX_GRANULARIT = 25;
+	// NOTE: This class is not used.  Contents has been commented out before removal.
 	
-	private NavigableMap<Integer, String> idxX;
-	private NavigableMap<Integer, String> idxY;
-	private NavigableMap<Integer, String> idxZ;
+//	public static final int SPATIAL_INDEX_GRANULARIT = 25;
+//	
+//	private NavigableMap<Integer, String> idxX;
+//	private NavigableMap<Integer, String> idxY;
+//	private NavigableMap<Integer, String> idxZ;
 
 }

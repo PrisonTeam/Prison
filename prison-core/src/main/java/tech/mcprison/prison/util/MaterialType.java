@@ -2,11 +2,14 @@ package tech.mcprison.prison.util;
 
 public enum MaterialType
 {
-	BLOCK,
-	ITEM,
+	// NOTE: This is no longer used. This was used with the old block system.
+	not_used;
 	
-	NOT_SET,
-	
-	INVALID;
+//	BLOCK,
+//	ITEM,
+//	
+//	NOT_SET,
+//	
+//	INVALID;
 	
 }
