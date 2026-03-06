@@ -10,7 +10,7 @@ public class PlayerSuffocationEvent
     private boolean canceled = false;
 
     public PlayerSuffocationEvent( Player player ) {
-    	this.player = player;
+    		this.player = player;
     }
 
 	public Player getPlayer() {

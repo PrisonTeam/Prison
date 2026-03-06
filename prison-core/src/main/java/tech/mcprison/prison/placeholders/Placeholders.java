@@ -9,9 +9,6 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 public interface Placeholders {
 	
 	
-//	public void initializePlaceholderManagers();
-	
-	
 	public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts();
 	
 	
@@ -22,9 +19,6 @@ public interface Placeholders {
 	
 	
 	public String placeholderTranslate(UUID playerUuid, String playerName, String identifier);
-	
-	
-//	pu-blic String placeholderTranslateText( String text);
 	
 	
 	public String placeholderTranslateText( UUID playerUuid, String playerName, String text);

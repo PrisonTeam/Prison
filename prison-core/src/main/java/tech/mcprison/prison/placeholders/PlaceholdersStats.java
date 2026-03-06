@@ -73,7 +73,6 @@ public class PlaceholdersStats {
 				// Else create a new cache entry:
 				
 				results = new PlaceholderStatsData( key );
-//				getPlaceholders().put( key, results );
 				
 				// Store this new stats object in the cache.  If there is a placeholder fail, then
 				// this will help prevent going through all of the calculations for future

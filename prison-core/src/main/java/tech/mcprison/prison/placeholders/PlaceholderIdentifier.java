@@ -180,26 +180,6 @@ public class PlaceholderIdentifier {
 		
 		player = Prison.get().getPlatform().getRankPlayer( playerUuid, playerName );
 			
-//		if ( playerUuid != null ) {
-//			player = Prison.get().getPlatform().getPlayer( playerUuid ).orElse( null );
-//		}
-//		
-//		if ( player == null && playerName != null ) {
-//			
-//			player = Prison.get().getPlatform().getPlayer( playerName ).orElse( null );
-//		}
-//		
-//		if ( player == null && playerUuid != null ) {
-//			
-//			player = Prison.get().getPlatform().getOfflinePlayer( playerUuid ).orElse( null );
-//		}
-//		
-//		if ( player == null && playerName != null ) {
-//			
-//			player = Prison.get().getPlatform().getOfflinePlayer( playerName ).orElse( null );
-//		}
-		
-		
 		if ( player != null ) {
 			setPlayer(player);
 		}

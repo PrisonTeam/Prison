@@ -43,30 +43,30 @@ public class PrisonCustomPlaceholders
 	
     
     public String getTranslateCustomPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
-    	String results = null;
-
-    	if ( playerUuid != null ) {
-    		
-    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
-    		
-    		
-    		PlaceholderIdentifier phIdentifier = new PlaceholderIdentifier( identifier );
-    		phIdentifier.setPlayer(playerUuid, playerName);
-    		
-    		
-    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
-    			
-    			if ( phIdentifier.checkPlaceholderKey(placeHolderKey) ) {
-    				
-    				results = placeHolderKey.getData();
-    				
-    				break;
-    			}
-    			
-    		}
-    	}
-    	
-    	return results;
+	    	String results = null;
+	
+	    	if ( playerUuid != null ) {
+	    		
+	    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+	    		
+	    		
+	    		PlaceholderIdentifier phIdentifier = new PlaceholderIdentifier( identifier );
+	    		phIdentifier.setPlayer(playerUuid, playerName);
+	    		
+	    		
+	    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+	    			
+	    			if ( phIdentifier.checkPlaceholderKey(placeHolderKey) ) {
+	    				
+	    				results = placeHolderKey.getData();
+	    				
+	    				break;
+	    			}
+	    			
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
     /**
@@ -95,48 +95,40 @@ public class PrisonCustomPlaceholders
 	public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
 		
 		if ( translatedPlaceHolderKeys == null ) {
-    		translatedPlaceHolderKeys = new ArrayList<>();
-    		
-//    		FileConfiguration config = SpigotPrison.getInstance().getConfig();
-    		
-    		Platform pf = Prison.get().getPlatform();
-    		
-    		if ( pf.isConfigSection(CUSTOM_PLACEHOLDER_CONFIG_PATH) ) {
-    			
-    			
-    			
-    			PrisonPlaceHolders customPlaceholder = PrisonPlaceHolders.custom_placeholder__;
-    			
-    			
-    			List<String> keys = pf.getConfigHashKeys(CUSTOM_PLACEHOLDER_CONFIG_PATH);
-    			
-//    			ConfigurationSection cpConfigs = config.getConfigurationSection(CUSTOM_PLACEHOLDER_CONFIG_PATH);
-//    			
-//    			Set<String> keys = cpConfigs.getKeys( false );
-    			
-    			for (String key : keys) {
-    				
-    				String keyPath = CUSTOM_PLACEHOLDER_CONFIG_PATH + "." + key;
-    				
-    				String custExpandedPlaceholderKey = keyPath + ".placeholder";
-    				String custExpandedPapiExpansionKey = keyPath + ".papi_expansion";
-    				String custExpandedDescriptionKey = keyPath + ".description";
-    				
-    				String cePlaceholder = pf.getConfigString( custExpandedPlaceholderKey );
-    				boolean cePapiExpansion = pf.getConfigBooleanFalse( custExpandedPapiExpansionKey );
-    				String ceDescription = pf.getConfigString( custExpandedDescriptionKey );
-    				
-    				String customPlaceholderStr = 
-    							cePlaceholder != null ? 
-    									cePlaceholder : pf.getConfigString( keyPath );
-    				
-    				PlaceHolderKey placeholder = new PlaceHolderKey(key, customPlaceholder, customPlaceholderStr );
-    				placeholder.setPapiExpansion( cePapiExpansion );
-    				placeholder.setDescription( ceDescription );
-    				
-    				translatedPlaceHolderKeys.add(placeholder);
-    			}
-    		}
+	    		translatedPlaceHolderKeys = new ArrayList<>();
+	    		
+	    		Platform pf = Prison.get().getPlatform();
+	    		
+	    		if ( pf.isConfigSection(CUSTOM_PLACEHOLDER_CONFIG_PATH) ) {
+	    			
+	    			PrisonPlaceHolders customPlaceholder = PrisonPlaceHolders.custom_placeholder__;
+	    			
+	    			List<String> keys = pf.getConfigHashKeys(CUSTOM_PLACEHOLDER_CONFIG_PATH);
+	    			
+	    			
+	    			for (String key : keys) {
+	    				
+	    				String keyPath = CUSTOM_PLACEHOLDER_CONFIG_PATH + "." + key;
+	    				
+	    				String custExpandedPlaceholderKey = keyPath + ".placeholder";
+	    				String custExpandedPapiExpansionKey = keyPath + ".papi_expansion";
+	    				String custExpandedDescriptionKey = keyPath + ".description";
+	    				
+	    				String cePlaceholder = pf.getConfigString( custExpandedPlaceholderKey );
+	    				boolean cePapiExpansion = pf.getConfigBooleanFalse( custExpandedPapiExpansionKey );
+	    				String ceDescription = pf.getConfigString( custExpandedDescriptionKey );
+	    				
+	    				String customPlaceholderStr = 
+	    							cePlaceholder != null ? 
+	    									cePlaceholder : pf.getConfigString( keyPath );
+	    				
+	    				PlaceHolderKey placeholder = new PlaceHolderKey(key, customPlaceholder, customPlaceholderStr );
+	    				placeholder.setPapiExpansion( cePapiExpansion );
+	    				placeholder.setDescription( ceDescription );
+	    				
+	    				translatedPlaceHolderKeys.add(placeholder);
+	    			}
+	    		}
 		}
 		return translatedPlaceHolderKeys;
 	}

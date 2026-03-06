@@ -74,15 +74,6 @@ public class PlaceholderAttributeTime
 
 	private TimeTransformationUnitTypes timeUnitType;
 	
-//	private ArrayList<String> parts;
-//	private String raw;
-//	
-//	private boolean hex = false;
-//	private boolean hex2 = false;
-//	private boolean debug = false;
-//	
-//	private String player = null;
-	
 	
 	/**
 	 * <p>The constructor parameters are exactly the same as the nFormat.

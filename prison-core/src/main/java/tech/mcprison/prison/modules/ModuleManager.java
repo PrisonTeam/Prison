@@ -73,20 +73,20 @@ public class ModuleManager {
      */
     public void registerModule(Module module) {
     	
-    	if ( module != null ) {
-    		
-    		// If module already exists, remove it so it can be added:
-    		if ( getModule(module.getName()) != null ) {
-    			removeModule( module.getName() );
-    		}
-    		
-    		if ( getModule(module.getName()) == null ) {
-    			// Module does not exist, so add it:
-    			modules.add(module);
-    			enableModule(module);
-//            return; // Already added
-    		}
-    	}
+	    	if ( module != null ) {
+	    		
+	    		// If module already exists, remove it so it can be added:
+	    		if ( getModule(module.getName()) != null ) {
+	    			removeModule( module.getName() );
+	    		}
+	    		
+	    		if ( getModule(module.getName()) == null ) {
+	    			// Module does not exist, so add it:
+	    			modules.add(module);
+	    			enableModule(module);
+	//            return; // Already added
+	    		}
+	    	}
     }
 
     private void validateVersion(Module module) {
@@ -138,7 +138,6 @@ public class ModuleManager {
         disableModule(module);
         
         getModules().remove(module);
-//        getModule(module.getName()).ifPresent(modules::remove);
     }
 
     /**
@@ -168,19 +167,16 @@ public class ModuleManager {
      * Returns the {@link Module} with the specified name.
      */
     public Module getModule(String name) {
-    	Module results = null;
-    	
-    	for (Module module : getModules() ) {
-			
-    		if ( module.getName().equalsIgnoreCase(name) ) {
-    			results = module;
-    			break;
-    		}
+	    	Module results = null;
+	    	
+	    	for (Module module : getModules() ) {
+				
+	    		if ( module.getName().equalsIgnoreCase(name) ) {
+	    			results = module;
+	    			break;
+	    		}
 		}
-    	return results;
-    	
-//        return modules.stream().filter(module -> module.getName().equalsIgnoreCase(name))
-//            .findFirst();
+	    	return results;
     }
     
     /**
@@ -190,36 +186,33 @@ public class ModuleManager {
      * @return
      */
     public boolean removeModule( String name ) {
-    	Module results = null;
-    	
-    	for (Module module : getModules() ) {
-			
-    		if ( module.getName().equalsIgnoreCase(name) ) {
-    			results = module;
-    			break;
-    		}
+	    	Module results = null;
+	    	
+	    	for (Module module : getModules() ) {
+				
+	    		if ( module.getName().equalsIgnoreCase(name) ) {
+	    			results = module;
+	    			break;
+	    		}
 		}
-    	
-    	return results == null ? false : getModules().remove( results );
+	    	
+	    	return results == null ? false : getModules().remove( results );
     }
 
     /**
      * Returns the {@link Module} with the specified package name.
      */
     public Module getModuleByPackageName(String name) {
-    	Module results = null;
-    	
-    	for (Module module : getModules() ) {
-			
-    		if ( module.getPackageName().equalsIgnoreCase(name) ) {
-    			results = module;
-    			break;
-    		}
+	    	Module results = null;
+	    	
+	    	for (Module module : getModules() ) {
+				
+	    		if ( module.getPackageName().equalsIgnoreCase(name) ) {
+	    			results = module;
+	    			break;
+	    		}
 		}
-    	return results;
-    	
-//        return modules.stream().filter(module -> module.getPackageName().equalsIgnoreCase(name))
-//            .findFirst();
+	    	return results;
     }
 
     /**
@@ -237,40 +230,6 @@ public class ModuleManager {
         return moduleRoot;
     }
 
-//    /**
-//     * Returns the status of a module (enabled or error message), in the form of a color-coded string.
-//     * This is meant to show to users.
-//     *
-//     * @deprecated Use {@link Module#getStatus()} instead.
-//     */
-//    @Deprecated public String getStatus(String moduleName) {
-//        Optional<Module> moduleOptional = getModule(moduleName);
-//        return moduleOptional.map(module -> module.getStatus().getMessage()).orElse(null);
-//    }
-
-//    /**
-//     * Set the status of a module.
-//     *
-//     * @param moduleName The name of the module.
-//     * @param newStatus  The module's status. May include color codes, amp-prefixed.
-//     * @deprecated Use {@link Module#getStatus()} instead.
-//     */
-//    @Deprecated public void setStatus(String moduleName, String newStatus) {
-//        Optional<Module> moduleOptional = getModule(moduleName);
-//        if (!moduleOptional.isPresent()) {
-//            return;
-//        }
-//        Module module = moduleOptional.get();
-//
-//        if (newStatus.toLowerCase().contains("enabled")) {
-//            module.getStatus().toEnabled();
-//        } else if (newStatus.toLowerCase().contains("disabled")) {
-//            module.getStatus().toDisabled();
-//        } else {
-//            module.getStatus().toFailed(newStatus);
-//        }
-//
-//    }
 
 	public boolean isModuleActive(String moduleName) {
 		boolean results = false;

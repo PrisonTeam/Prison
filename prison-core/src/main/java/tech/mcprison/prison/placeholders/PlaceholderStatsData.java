@@ -5,7 +5,6 @@ public class PlaceholderStatsData {
 	private String placeholderId;
 	
 	private PlaceHolderKey placeholderKey;
-//	private PrisonPlaceHolders placeholder;
 	
 	private int hits = 0;
 	private int failHits = 0;
@@ -149,16 +148,10 @@ public class PlaceholderStatsData {
 	public int getHits() {
 		return hits;
 	}
-//	private void setHits(int hits) {
-//		this.hits = hits;
-//	}
 
 	public int getFailHits() {
 		return failHits;
 	}
-//	private void setFailHits(int failHits) {
-//		this.failHits = failHits;
-//	}
 
 	public long getTotalDurationNanos() {
 		return totalDurationNanos;
@@ -167,13 +160,8 @@ public class PlaceholderStatsData {
 		this.totalDurationNanos = totalDurationNanos;
 	}
 
-
 	public boolean isFailedMatch() {
 		return failedMatch;
 	}
-//	private void setFailedMatch(boolean failedMatch) {
-//		this.failedMatch = failedMatch;
-//	}
-
 
 }

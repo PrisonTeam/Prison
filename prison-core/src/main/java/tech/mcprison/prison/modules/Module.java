@@ -32,20 +32,12 @@ import tech.mcprison.prison.error.ErrorManager;
  */
 public abstract class Module implements PluginEntity {
 
-    /*
-     * Fields & Constants
-     */
-
     private String name, version;
     private File moduleDataFolder;
     
     private int apiTarget;
     private ModuleStatus status;
     private ErrorManager errorManager;
-
-    /*
-     * Constructor
-     */
 
     /**
      * Initialize your module.
@@ -93,9 +85,6 @@ public abstract class Module implements PluginEntity {
      * @return
      */
     abstract public String getBaseCommands();
-    /*
-     * Methods, to be overridden
-     */
 
     /**
      * Called when the module is to be enabled.
@@ -126,9 +115,6 @@ public abstract class Module implements PluginEntity {
         getStatus().toFailed(reason);
     }
 
-    /*
-     * Getters & Setters
-     */
 
     public String getName() {
         return name;

@@ -41,20 +41,19 @@ public class PrisonPlayerInteractEvent implements Cancelable {
     public enum Action {
         LEFT_CLICK_BLOCK, RIGHT_CLICK_BLOCK;
     	
-    	public static Action fromString( String value ) {
-    		Action results = null;
-    		
-    		if ( value != null ) {
-    			for ( Action action : values() )
-				{
+	    	public static Action fromString( String value ) {
+	    		Action results = null;
+	    		
+	    		if ( value != null ) {
+	    			for ( Action action : values() ) {
 					if ( action.name().equalsIgnoreCase( value.trim() ) ) {
 						results = action;
 					}
 				}
-    		}
-    		
-    		return results;
-    	}
+	    		}
+	    		
+	    		return results;
+	    	}
     }
     
     public PrisonPlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
@@ -81,11 +80,13 @@ public class PrisonPlayerInteractEvent implements Cancelable {
         return clicked;
     }
 
-    @Override public boolean isCanceled() {
+    @Override 
+    public boolean isCanceled() {
         return canceled;
     }
 
-    @Override public void setCanceled(boolean canceled) {
+    @Override 
+    public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 

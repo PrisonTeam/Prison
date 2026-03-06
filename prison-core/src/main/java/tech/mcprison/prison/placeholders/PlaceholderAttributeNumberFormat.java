@@ -229,9 +229,6 @@ public class PlaceholderAttributeNumberFormat
 					break;
 			}
 			
-//			if ( results.contains( "^|^" ) ) {
-//				//results = results.replace( "^|^", "&" );
-//			}
 			
 		}
 		catch (Exception e ) {

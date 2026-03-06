@@ -26,19 +26,11 @@ package tech.mcprison.prison.modules;
  */
 public class ModuleStatus {
 
-  /*
-   * Enums
-   */
-
     public enum Status {
         ENABLED, DISABLED, FAILED
     }
 
     private Status status;
-
-  /*
-   * Fields & Constants
-   */
 
     private String message;
 
@@ -50,10 +42,6 @@ public class ModuleStatus {
         setStatus(Status.ENABLED);
         setMessage("&aEnabled");
     }
-
-    /*
-     * Methods
-     */
 
     /**
      * Quickly set a module to the {@link Status#DISABLED} status, and set the message to "Disabled"
@@ -93,10 +81,6 @@ public class ModuleStatus {
     }
 
 
-    /*
-     * Getters & Setters
-     */
-
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -110,11 +94,11 @@ public class ModuleStatus {
     }
     
     public void addMessage(String message) {
-    	if ( this.message == null ) {
-    		setMessage(message);
-    	} else {
-    		setMessage( getMessage() + ". " + message);
-    	}
+	    	if ( this.message == null ) {
+	    		setMessage(message);
+	    	} else {
+	    		setMessage( getMessage() + ". " + message);
+	    	}
     }
 
 
