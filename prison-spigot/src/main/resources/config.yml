@@ -112,7 +112,7 @@ prestige:
 # added to prison upon demand.  It's been reported that adding new players can take a few
 # seconds (2 to 5 seconds) per player, which has not been confirmed.  But if true, then
 # existing servers switching over to Prison could take a long time to setup all players
-# at startup. So this setting may make sense in those conditions.
+# at startup. So then disabling this setting may make sense in those conditions.
 # NOTE: Its not possible to test all situations where new players are bypassed when starting
 #       Prison. Therefore disabling this setting is at your own risk. But if any issues are
 #       encountered, then PLEASE contact support on our discord server ASAP and we will 
@@ -133,12 +133,12 @@ prestige:
 # of choice, and they mmay not cache the updates to prevent so many updates.
 # If the 3 second delay is too long, and you're wanting something a little quicker, try
 # reducing the number of ticks to like 30, 20, or 10.  Becareful of going too low.  If 
-# you notice potential server deplays, trying incrasing the delays. You can use
+# you notice potential server delays, trying increasing the delays. You can use
 # `/timings` to confirm where the lag is occuring.
 
 ranks:
   startup:
-    add-new-players-on-startup: true
+    add-new-players-on-startup: false
   gui-default-include-rankup-button: true
   gui-prestiges-include-rankup-button: true
   gui-others-include-rankup-button: true
@@ -172,7 +172,7 @@ ranks:
 # automatically. Once converted, the files cannot be reverted back to the old names.
 prison-ranks:
   startup:
-    add-new-players-on-startup: true
+    add-new-players-on-startup: false
   use-friendly-user-file-names: false
 
 
@@ -257,7 +257,7 @@ prison-block-compatibility-report: false
 
 
 
-# NEW: Placeholder progress bar.  
+# Placeholder progress bar.  
 # Can control how many segments are generated.  The more segments that
 # are displayed the better reactive it will appear to the players.
 # Also what is used for the postive and negative parts of the status bar,

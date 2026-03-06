@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19j 2026-03-06
 
 
+* **config.yml: change the default setting on adding new players on startup.  This is a major problem on large servers.**
+
+
 * **Design documents: Starting to create some of the design and planning documents that will be needed in the next few phrases of Prison.**
 
 
