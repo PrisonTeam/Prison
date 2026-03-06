@@ -17,6 +17,11 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19j 2026-03-06
 
 
+* **Removed some uses of the old block model. Breaking change: This removal should not actually break anything, but if upgrading from a version using the old block models, upgrade to an earlier release first to take advantage of the automatic conversion.**
+
+* **Removed a few other unused source related to the old non-functional troubleshooting.**
+
+
 * **Renamed an enum to BlockEventCustomPlaceholders since it was not clear it was related to block events and that this has nothing to do with the standard placeholders.**
 
 

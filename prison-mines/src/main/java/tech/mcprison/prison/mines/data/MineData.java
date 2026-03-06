@@ -645,16 +645,16 @@ public abstract class MineData
 
     public void resetResetBlockCounts() {
 
-	    	for ( PrisonBlockStatusData block : getBlocks() ) {
-				
-	    		// Reset the block count for the reset event since the mine will be regenerated:
-	    		block.setBlockPlacedCount( 0 );
-	    		block.setRangeBlockCountLow( -1 );
-	    		block.setRangeBlockCountHigh( -1 );
-	    		block.setRangeBlockCountLowLimit( -1 );
-	    		block.setRangeBlockCountHighLimit( -1 );
-	//    		block.setIncludeInLayerCalculations( true );
-			}
+//	    	for ( PrisonBlockStatusData block : getBlocks() ) {
+//				
+//	    		// Reset the block count for the reset event since the mine will be regenerated:
+//	    		block.setBlockPlacedCount( 0 );
+//	    		block.setRangeBlockCountLow( -1 );
+//	    		block.setRangeBlockCountHigh( -1 );
+//	    		block.setRangeBlockCountLowLimit( -1 );
+//	    		block.setRangeBlockCountHighLimit( -1 );
+//	//    		block.setIncludeInLayerCalculations( true );
+//			}
 	    	
 	    	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
 	    		

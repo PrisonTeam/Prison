@@ -41,7 +41,6 @@ import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.ObsoleteBlockType;
 
 /**
  * @author Dylan M. Perks
@@ -390,86 +389,88 @@ public class Mine
         Set<String> validateBlockNames = new HashSet<>();
         getBlocks().clear();
 
-        List<String> docBlocks = (List<String>) document.get("blocks");
-		for (String docBlock : docBlocks) {
-			
-			// If the file is manually edited and a comma is added to the end of the block list,
-			// then docBlock could be null.  Skip processing if null.
-			if ( docBlock != null ) {
-				
-				String[] split = docBlock.split("-");
-				String blockTypeName = split[0];
-//				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
-//				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
-//				int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
-//				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
-				
-				if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
-					// Use the BlockType.name() load the block type:
-					ObsoleteBlockType blockType = ObsoleteBlockType.getBlock(blockTypeName);
-					if ( blockType != null ) {
-						
-						/**
-						 * <p>The following is code to correct the use of items being used as a
-						 * block in a mine, which will cause a failure in trying to place an 
-						 * item as a block.
-						 * </p>
-						 * 
-						 * <p>This is intended for the old block model and is temp code to ensure 
-						 * that there are less errors the end user will experience.
-						 * </p>
-						 */
-						String errorMessage = "Warning! An invalid block type of %s was " +
-								"detect when loading blocks for " +
-								"mine %s. %s is not a valid block type. Using " +
-								"%s instead. If this is incorrect please fix manually.";
-						
-						if ( blockType == ObsoleteBlockType.REDSTONE ) {
-							ObsoleteBlockType itemType = blockType;
-							blockType = ObsoleteBlockType.REDSTONE_ORE;
-							
-							Output.get().logError( 
-									String.format( errorMessage, itemType.name(), getName(), 
-											"Redstone dust", blockType.name()) );
-							
-							dirty = true;
-						}
-						else if ( blockType == ObsoleteBlockType.NETHER_BRICK ) {
-							ObsoleteBlockType itemType = blockType;
-							blockType = ObsoleteBlockType.DOUBLE_NETHER_BRICK_SLAB;
-							
-							Output.get().logError( 
-									String.format( errorMessage, itemType.name(), getName(), 
-											"Individual nether brick", blockType.name()) );
-							
-							dirty = true;
-						}
-						
-						BlockOld block = new BlockOld(blockType);
-
-						block.parseFromSaveFileFormatStats( docBlock );
-						
-						totalBlockCount += block.getBlockCountTotal();
-								
-						getBlocks().add(block);
-					}
-					else {
-						String message = String.format( "Failure in loading block type from %s mine's " +
-								"save file. Block type %s has no mapping.", getName(),
-								blockTypeName );
-						Output.get().logError( message );
-					}
-					
-					validateBlockNames.add( blockTypeName );
-				}
-				else if (validateBlockNames.contains( blockTypeName ) ) {
-					// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
-					dirty = true;
-					inconsistancy = true;
-				}
-			}
-			
-        }
+        
+        // Obsolete block model:
+//        List<String> docBlocks = (List<String>) document.get("blocks");
+//		for (String docBlock : docBlocks) {
+//			
+//			// If the file is manually edited and a comma is added to the end of the block list,
+//			// then docBlock could be null.  Skip processing if null.
+//			if ( docBlock != null ) {
+//				
+//				String[] split = docBlock.split("-");
+//				String blockTypeName = split[0];
+////				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
+////				long blockCount = split.length > 2 ? Long.parseLong(split[2]) : 0;
+////				int constraintMin = split.length > 3 ? Integer.parseInt(split[3]) : 0;
+////				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
+//				
+//				if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
+//					// Use the BlockType.name() load the block type:
+//					ObsoleteBlockType blockType = ObsoleteBlockType.getBlock(blockTypeName);
+//					if ( blockType != null ) {
+//						
+//						/**
+//						 * <p>The following is code to correct the use of items being used as a
+//						 * block in a mine, which will cause a failure in trying to place an 
+//						 * item as a block.
+//						 * </p>
+//						 * 
+//						 * <p>This is intended for the old block model and is temp code to ensure 
+//						 * that there are less errors the end user will experience.
+//						 * </p>
+//						 */
+//						String errorMessage = "Warning! An invalid block type of %s was " +
+//								"detect when loading blocks for " +
+//								"mine %s. %s is not a valid block type. Using " +
+//								"%s instead. If this is incorrect please fix manually.";
+//						
+//						if ( blockType == ObsoleteBlockType.REDSTONE ) {
+//							ObsoleteBlockType itemType = blockType;
+//							blockType = ObsoleteBlockType.REDSTONE_ORE;
+//							
+//							Output.get().logError( 
+//									String.format( errorMessage, itemType.name(), getName(), 
+//											"Redstone dust", blockType.name()) );
+//							
+//							dirty = true;
+//						}
+//						else if ( blockType == ObsoleteBlockType.NETHER_BRICK ) {
+//							ObsoleteBlockType itemType = blockType;
+//							blockType = ObsoleteBlockType.DOUBLE_NETHER_BRICK_SLAB;
+//							
+//							Output.get().logError( 
+//									String.format( errorMessage, itemType.name(), getName(), 
+//											"Individual nether brick", blockType.name()) );
+//							
+//							dirty = true;
+//						}
+//						
+//						BlockOld block = new BlockOld(blockType);
+//
+//						block.parseFromSaveFileFormatStats( docBlock );
+//						
+//						totalBlockCount += block.getBlockCountTotal();
+//								
+//						getBlocks().add(block);
+//					}
+//					else {
+//						String message = String.format( "Failure in loading block type from %s mine's " +
+//								"save file. Block type %s has no mapping.", getName(),
+//								blockTypeName );
+//						Output.get().logError( message );
+//					}
+//					
+//					validateBlockNames.add( blockTypeName );
+//				}
+//				else if (validateBlockNames.contains( blockTypeName ) ) {
+//					// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+//					dirty = true;
+//					inconsistancy = true;
+//				}
+//			}
+//			
+//        }
         
         
 		// Reset validation checks:
@@ -552,38 +553,38 @@ public class Mine
         
 		// Using the Obsolete old block model for conversion to the new block model
 		// NOTE: This is the ONLY place were we are allowed to use the old block model! ;)
-        if ( // isUseNewBlockModel() && 
-        		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
-        	// Need to perform the initial conversion: 
-        	
-        	for ( BlockOld blockOld : getBlocks() ) {
-        		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockOld.getType().name() );
-
-        		if ( prisonBlock == null ) {
-        			for ( String altName : blockOld.getType().getXMaterialAltNames() ) {
-        				
-        				prisonBlock = Prison.get().getPlatform().getPrisonBlock( altName );
-        				if ( prisonBlock != null ) {
-        					break;
-        				}
-        			}
-        		}
-        		
-        		if ( prisonBlock != null ) {
-            		
-            		// This transfers all the stats over so none are lost.
-            		prisonBlock.transferStats( blockOld );
-            		
-            		addPrisonBlock( prisonBlock );
-
-            		dirty = true;
-            	}
-        		
-		}
-        	
-        	Output.get().logInfo( "Notice: Mine: " + getName() + ": Existing prison block model has " +
-        			"been converted to the new block model and will be saved." );
-        }
+//        if ( // isUseNewBlockModel() && 
+//        		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
+//        		// Need to perform the initial conversion: 
+//        	
+//	        	for ( BlockOld blockOld : getBlocks() ) {
+//	        		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockOld.getType().name() );
+//	
+//	        		if ( prisonBlock == null ) {
+//	        			for ( String altName : blockOld.getType().getXMaterialAltNames() ) {
+//	        				
+//	        				prisonBlock = Prison.get().getPlatform().getPrisonBlock( altName );
+//	        				if ( prisonBlock != null ) {
+//	        					break;
+//	        				}
+//	        			}
+//	        		}
+//	        		
+//	        		if ( prisonBlock != null ) {
+//	            		
+//	            		// This transfers all the stats over so none are lost.
+//	            		prisonBlock.transferStats( blockOld );
+//	            		
+//	            		addPrisonBlock( prisonBlock );
+//	
+//	            		dirty = true;
+//	            	}
+//	        		
+//			}
+//        	
+//	        	Output.get().logInfo( "Notice: Mine: " + getName() + ": Existing prison block model has " +
+//	        			"been converted to the new block model and will be saved." );
+//        }
         
         
         List<String> commands = (List<String>) document.get("commands");
@@ -712,20 +713,20 @@ public class Mine
         // This is the ONLY SECOND place where we can use the old block model!
         // We want to "preserve" the old blocks that may have been setup up in the mines
         // originally.  In a future release, these may be purged.
-        List<String> blockStrings = new ArrayList<>();
-        for (BlockOld block : getBlocks()) {
-	        	if ( !validateBlockNames.contains( block.getType().name() )) {
-	        		
-	        		blockStrings.add( block.toSaveFileFormat() );
-	        		
-	//        		// Use the BlockType.name() to save the block type to the file:
-	//        		blockStrings.add(block.getType().name() + "-" + block.getChance());
-	//            blockStrings.add(block.getType().getId() + "-" + block.getChance());
-	        		validateBlockNames.add( block.getType().name() );
-	        	}
-        }
+//        List<String> blockStrings = new ArrayList<>();
+//        for (BlockOld block : getBlocks()) {
+//	        	if ( !validateBlockNames.contains( block.getType().name() )) {
+//	        		
+//	        		blockStrings.add( block.toSaveFileFormat() );
+//	        		
+//	//        		// Use the BlockType.name() to save the block type to the file:
+//	//        		blockStrings.add(block.getType().name() + "-" + block.getChance());
+//	//            blockStrings.add(block.getType().getId() + "-" + block.getChance());
+//	        		validateBlockNames.add( block.getType().name() );
+//	        	}
+//        }
         
-        ret.put("blocks", blockStrings);
+//        ret.put("blocks", blockStrings);
 
         // reset validation for next block list:
         validateBlockNames.clear();

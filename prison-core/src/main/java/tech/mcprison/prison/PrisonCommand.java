@@ -504,18 +504,18 @@ public class PrisonCommand
             return;
         }
 
-        TroubleshootResult result =
-            PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
-        if (result == null) {
-            Output.get().sendError(sender, "The troubleshooter %s doesn't exist.", name);
-            return;
-        }
-
-        ChatDisplay display = new ChatDisplay("Result Summary");
-        display.addText("&7Troubleshooter name: &b%s", name.toLowerCase()) //
-            .addText("&7Result type: &b%s", result.getResult().name()) //
-            .addText("&7Result details: &b%s", result.getDescription()) //
-            .send(sender);
+//        TroubleshootResult result =
+//            PrisonAPI.getTroubleshootManager().invokeTroubleshooter(name, sender);
+//        if (result == null) {
+//            Output.get().sendError(sender, "The troubleshooter %s doesn't exist.", name);
+//            return;
+//        }
+//
+//        ChatDisplay display = new ChatDisplay("Result Summary");
+//        display.addText("&7Troubleshooter name: &b%s", name.toLowerCase()) //
+//            .addText("&7Result type: &b%s", result.getResult().name()) //
+//            .addText("&7Result details: &b%s", result.getDescription()) //
+//            .send(sender);
 
     }
 
@@ -525,15 +525,15 @@ public class PrisonCommand
         ChatDisplay display = new ChatDisplay("Troubleshooters");
         display.addText("&8Type /prison troubleshoot <name> to run a troubleshooter.");
 
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-        for (Troubleshooter troubleshooter : PrisonAPI.getTroubleshootManager()
-            .getTroubleshooters()) {
-            builder.add("&b%s &8- &7%s", troubleshooter.getName(), troubleshooter.getDescription());
-        }
-        display.addComponent(builder.build());
-
-        display.send(sender);
+//        BulletedListComponent.BulletedListBuilder builder =
+//            new BulletedListComponent.BulletedListBuilder();
+//        for (Troubleshooter troubleshooter : PrisonAPI.getTroubleshootManager()
+//            .getTroubleshooters()) {
+//            builder.add("&b%s &8- &7%s", troubleshooter.getName(), troubleshooter.getDescription());
+//        }
+//        display.addComponent(builder.build());
+//
+//        display.send(sender);
     }
 
     

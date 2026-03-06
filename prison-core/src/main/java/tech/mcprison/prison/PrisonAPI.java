@@ -127,9 +127,9 @@ public class PrisonAPI {
         return Prison.get().getPlatform().getScoreboardManager();
     }
 
-    public static TroubleshootManager getTroubleshootManager() {
-        return Prison.get().getTroubleshootManager();
-    }
+//    public static TroubleshootManager getTroubleshootManager() {
+//        return Prison.get().getTroubleshootManager();
+//    }
 
     public static IntegrationManager getIntegrationManager() {
         return Prison.get().getIntegrationManager();
