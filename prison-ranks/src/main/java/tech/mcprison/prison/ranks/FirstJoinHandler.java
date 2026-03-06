@@ -31,29 +31,16 @@ import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 public class FirstJoinHandler
 		extends FirstJoinHandlerMessages {
 
-    /*
-     * Constructor
-     */
-
     public FirstJoinHandler() {
         Prison.get().getEventBus().register(this);
     }
 
-    /*
-     * Listeners
-     */
 
-    @Subscribe public void onFirstJoin(FirstJoinEvent event) {
+    @Subscribe 
+    public void onFirstJoin(FirstJoinEvent event) {
         RankPlayer player = event.getPlayer();
         
         PrisonRanks.getInstance().getPlayerManager().checkPlayerDefaultRank(player);
-
-//        // Try to perform the first join processing to give them the default rank:
-//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-//        rankPlayerFactory.firstJoin( player );
-//
-//        PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
-
     }
 
 }

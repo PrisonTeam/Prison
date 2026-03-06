@@ -108,7 +108,6 @@ public class PlayerNewFileNameCheckAsyncTask
 					
 					oldPlayerFile.renameTo(newPlayerFile);
 					
-//						Files.move( oldPlayerFile, newPlayerFile );
 					changedPlayRankFiles++;
 				}
 			}
@@ -127,7 +126,6 @@ public class PlayerNewFileNameCheckAsyncTask
 					File newCacheFile = new File( playerCachePath, newFilename );
 					
 					oldCacheFile.renameTo(newCacheFile);
-//						Files.move( oldCacheFile, newCacheFile );
 					changedCacheFiles++;
 					
 					// The player's cache data object contains a File object pointing to
@@ -153,110 +151,9 @@ public class PlayerNewFileNameCheckAsyncTask
 						changedPlayRankFiles,
 						changedCacheFiles );
 		
-//		if ( changedCacheFiles > 0 || changedCacheFiles > 0 ) {
-//			saveStatusDetailLog( changedPlayRankFiles, changedCacheFiles );
-//		}
-//		else if ( players.size() > 0 ) {
-//			Output.get().logInfo( 
-//					"&3PlayerFileNameCheck Task: It appears as if all player files have "
-//					+ "already been converted." );
-//		}
-		
-//		List<String> msgs = getStatusDetails();
-//		
-//		for (String msg : msgs) {
-//			
-//			Output.get().logInfo( msg );
-//		}
-		
 	}
 	
-//	public void saveStatusDetailLog( int changedPlayRankFiles, int changedCacheFiles ) {
-//		// Need to log it:
-//		TreeMap<String, Object> settings = PrisonSystemSettings.getInstance()
-//									.getRootSetting( SystemSettingsKey.PlayerFileNameUpdate );
-//		
-//		if ( !settings.containsKey( "converted") ) {
-//			settings.put("converted", Boolean.TRUE );
-//		}
-//		
-//		if ( !settings.containsKey( "logs") ) {
-//			settings.put("logs", new ArrayList<Object>() );
-//		}
-//		
-//		@SuppressWarnings("unchecked")
-//		ArrayList<Object> logs = (ArrayList<Object>) settings.get("logs");
-//		
-//		TreeMap<String,Object> log = new TreeMap<>();
-//		
-//		SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-//		log.put("run-date", sdFmt.format(new Date()) );
-//		log.put("player-cache-files-changed", Integer.valueOf(changedPlayRankFiles) );
-//		log.put("player-rank-files-changed", Integer.valueOf(changedCacheFiles) );
-//				
-//		logs.add( log );
-//		
-//		// Save the update:
-//		PrisonSystemSettings.getInstance().save();
-//		
-//		// Unload the data:
-////		PrisonSystemSettings.getInstance().unload();
-//		
-//
-//	}
 	
-//	public List<String> getStatusDetails() {
-//		List<String> msg = new ArrayList<>();
-//
-//		String msgFmt = "  %-22s  %7s  %7s";
-//		
-//    	boolean useNewFormat = Prison.get().getPlatform()
-//				.getConfigBooleanFalse( PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES );
-//    	
-//    	TreeMap<String, Object> pfnUpdate = 
-//    			PrisonSystemSettings.getInstance().getRootSetting( SystemSettingsKey.PlayerFileNameUpdate );
-//
-//		// Unload the data:
-////		PrisonSystemSettings.getInstance().unload();
-//    	
-//    	boolean converted = !pfnUpdate.containsKey("converted") ?
-//    						false : (Boolean) pfnUpdate.get("converted");
-//    	
-//    	msg.add( "PlayerFileNameUpdate: status: " );
-//    	msg.add( "  '" + PrisonSystemSettings.PRISON_SYSTEM_SETTING_FRIENDLY_PLAYER_FILE_NAMES + "': " + 
-//    						Boolean.toString(useNewFormat) );
-//    	msg.add( "  converted: " + Boolean.toString(converted) );
-//    	
-//    	if ( converted ) {
-//
-//			@SuppressWarnings("unchecked")
-//			ArrayList<Object> logs = (ArrayList<Object>) pfnUpdate.get("logs");
-//			
-//			msg.add( String.format(msgFmt, "", "Changed", "Changed"));
-//			msg.add( String.format(msgFmt, "Date", "P-Ranks", "P-Cache"));
-//			msg.add( String.format(msgFmt, "-----------------", "-------", "-------"));
-//			
-//			for (Object logObj : logs) {
-//				@SuppressWarnings("unchecked")
-//				TreeMap<String,Object> log = (TreeMap<String,Object>) logObj;
-//				
-//				String runDate = (String) log.get("run-date");
-//				int changedPlayRankFiles = (Integer) log.get("player-cache-files-changed");
-//				int changedCacheFiles = (Integer) log.get("player-rank-files-changed");
-//				
-//				msg.add( String.format(msgFmt, 
-//								runDate, 
-//								Integer.toString(changedCacheFiles), 
-//								Integer.toString(changedPlayRankFiles)));
-//			}
-//			
-//    	}
-//
-//    	// msg.add( "" );
-//
-//    	
-//    	return msg;
-//	}
 
 	
 	/**

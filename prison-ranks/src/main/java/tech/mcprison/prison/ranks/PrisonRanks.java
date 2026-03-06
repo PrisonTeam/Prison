@@ -56,10 +56,6 @@ public class PrisonRanks
 	extends PrisonRanksMessages {
 	
 	public static final String MODULE_NAME = ModuleManager.MODULE_NAME_RANKS;
-//	public static final String MODULE_NAME = "Ranks";
-    /*
-     * Fields & Constants
-     */
 
     private static PrisonRanks instance;
     private RankManager rankManager;
@@ -73,10 +69,6 @@ public class PrisonRanks
     private LocaleManager localeManager;
     
 
-    /*
-     * Constructor
-     */
-
     public PrisonRanks(String version) {
         super(MODULE_NAME, version, 3);
         
@@ -86,22 +78,19 @@ public class PrisonRanks
 
     @Override
     public String getBaseCommands() {
-    	return "/ranks /rankup /rankupMax /prestige /prestiges";
+    		return "/ranks /rankup /rankupMax /prestige /prestiges";
     }
     
-    /*
-     * Methods
-     */
 
     public static PrisonRanks getInstance() {
-    	if ( instance == null ) {
-    		synchronized (PrisonRanks.class) {
-    			if ( instance == null ) {
-    				instance = new PrisonRanks( "disabled" );
-    				instance.setEnabled( false );
-    			}
+	    	if ( instance == null ) {
+	    		synchronized (PrisonRanks.class) {
+	    			if ( instance == null ) {
+	    				instance = new PrisonRanks( "disabled" );
+	    				instance.setEnabled( false );
+	    			}
 			}
-    	}
+	    	}
         return instance;
     }
 
@@ -146,7 +135,7 @@ public class PrisonRanks
             rankManager.loadRanks();
         } 
         catch (IOException e) {
-        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+      	 	getStatus().setStatus(ModuleStatus.Status.FAILED);
         	
             getStatus().setMessage( prisonRanksFailureLoadingRankStatusMsg( e.getMessage() ) );
 
@@ -154,14 +143,12 @@ public class PrisonRanks
         }
 
         // Load up the ladders
-
-
         ladderManager = new LadderManager(initCollection("ladders"), this);
         try {
             ladderManager.loadLadders( getRankManager() );
         } 
         catch (IOException e) {
-        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+        		getStatus().setStatus(ModuleStatus.Status.FAILED);
         	
             getStatus().setMessage( prisonRanksFailureLoadingLadderStatusMsg( e.getMessage() ) );
 
@@ -170,45 +157,27 @@ public class PrisonRanks
         ladderManager.createDefaultLadder();
 
         
-//        // Set the rank relationships:
-//        rankManager.connectRanks();
-
-        
-        
-        // NOTE: The following is not needed since the ladders are already hooked up to the ranks.
-//        for ( Rank rank : rankManager.getRanks() ) {
-//        	
-//        	if ( rank.getLadder() == null ) {
-//    			// Hook up the ladder if it has not been setup yet:
-//    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( rank );
-//    			
-//    			rank.setLadder( ladder );
-//        	}
-//        }
-        
         
         // Verify that all ranks that use currencies have valid currencies:
         rankManager.identifyAllRankCurrencies( getPrisonStartupDetails() );
         
         
         // Load up the players
-
-
         playerManager = new PlayerManager(initCollection("players"));
         
         
         try {
-        	playerManager.loadAllPlayers();
+        		playerManager.loadAllPlayers();
         } 
         catch (IOException e) {
-        	getStatus().setStatus(ModuleStatus.Status.FAILED);
+        		getStatus().setStatus(ModuleStatus.Status.FAILED);
         	
             getStatus().setMessage( prisonRanksFailureLoadingPlayersStatusMsg( e.getMessage() ) );
 
             logStartupMessageError( prisonRanksFailureLoadingPlayersMsg( e.getMessage() ) );
 
-        	getStatus().addMessage( prisonRanksFailedLoadingPlayersMsg( e.getMessage() ));
-        	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
+	        	getStatus().addMessage( prisonRanksFailedLoadingPlayersMsg( e.getMessage() ));
+	        	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
   
         
@@ -259,8 +228,6 @@ public class PrisonRanks
         for (String msg : rankDetails) {
 			Output.get().logInfo(msg);
 		}
-//    	boolean includeAll = true;
-//    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
         
         
         
@@ -274,52 +241,51 @@ public class PrisonRanks
         
         // Check all players to see if any need to join:
         RanksStartupPlayerValidationsAsyncTask.submitTaskSync( this );
-//        checkAllPlayersForJoin();
     
         
     }
 
     
     public boolean reloadRanksAndLadders() {
-    	boolean success = false;
-    	
-    	try {
-    		
-    		// New temp RankManager to reload ranks:
-    		RankManager rManager = new RankManager(initCollection("ranks"));
-    		
-    		rManager.reloadAllRanks();
-
-            // Load up the ladders
-
-    		// New temp LadderManager to reload ladders:
-            LadderManager lManager = new LadderManager(initCollection("ladders"), this);
-            
-            // NOTE: This instance of the LadderManager requires the new temp instance of the rank manager:
-            lManager.reloadAllLadders( rManager );
-           
-            
-            // Now replace all rank data and ladder data with the newly loaded data:
-            getRankManager().setLoadedRanks( rManager.getRanks() );
-            getRankManager().setRanksByName( rManager.getRanksByName() );
-            getRankManager().setRanksById( rManager.getRanksById() );
-            
-            getLadderManager().setLoadedLadders( lManager.getLoadedLadders() );
-			
-            
-            // Must reload all players now, so they are properly aligned with the ranks and ladders:
-            getPlayerManager().reloadAllPlayers();
-            
-            
-		} catch (IOException e) {
-			String msg = String.format(
-					"PrisonRanks: reloadRanksAndLadders: Failed. [%s]",
-					e.getMessage());
-			
-			Output.get().logInfo( msg );
-		}
-    	
-    	return success;
+	    	boolean success = false;
+	    	
+	    	try {
+	    		
+	    		// New temp RankManager to reload ranks:
+	    		RankManager rManager = new RankManager(initCollection("ranks"));
+	    		
+	    		rManager.reloadAllRanks();
+	
+	            // Load up the ladders
+	
+	    		// New temp LadderManager to reload ladders:
+	            LadderManager lManager = new LadderManager(initCollection("ladders"), this);
+	            
+	            // NOTE: This instance of the LadderManager requires the new temp instance of the rank manager:
+	            lManager.reloadAllLadders( rManager );
+	           
+	            
+	            // Now replace all rank data and ladder data with the newly loaded data:
+	            getRankManager().setLoadedRanks( rManager.getRanks() );
+	            getRankManager().setRanksByName( rManager.getRanksByName() );
+	            getRankManager().setRanksById( rManager.getRanksById() );
+	            
+	            getLadderManager().setLoadedLadders( lManager.getLoadedLadders() );
+				
+	            
+	            // Must reload all players now, so they are properly aligned with the ranks and ladders:
+	            getPlayerManager().reloadAllPlayers();
+	            
+	            
+			} catch (IOException e) {
+				String msg = String.format(
+						"PrisonRanks: reloadRanksAndLadders: Failed. [%s]",
+						e.getMessage());
+				
+				Output.get().logInfo( msg );
+			}
+	    	
+	    	return success;
     }
 
     /**
@@ -347,7 +313,6 @@ public class PrisonRanks
 			// If there is a default rank on the default ladder, then
 			// check to see if there are any players not in prison: add them:
 			RankLadder defaultLadder = getLadderManager().getLadderDefault();
-//        RankLadder defaultLadder = getLadderManager().getLadder( LadderManager.LADDER_DEFAULT );
 			
 			if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
 				int addedPlayers = 0;
@@ -358,28 +323,9 @@ public class PrisonRanks
 				// NOTE: The Platform.getOfflinePlayers() only returns the playerManager.getPlayers() because
 				//       bukkit can seriously lag the server and kill it.
 //				List<Player> players = Prison.get().getPlatform().getOfflinePlayers();
-//				
-//				String msg = String.format(
-//						"PrisonRanks: checkAllPlayersForJoin: Prison has %s players.  Bukkit has %s.  "
-//						+ "Any player who is not in Prison will have to join prison to be added to prison.",
-//						Prison.get().getDecimalFormatInt().format( rPlayers.size() ),
-//						Prison.get().getDecimalFormatInt().format( players.size() )
-//						);
-//				
-//				Output.get().logInfo( msg );
+
 				
-				// Prison will no longer add offline players.  They must join to be added.
-//				for ( Player player : players ) {
-//					
-//					// getPlayer() will add a player who does not exist:
-//					RankPlayer rPlayer = playerManager.getPlayer( player );
-//					if ( rPlayer != null ) {
-//						if ( rPlayer.checkName( player.getName() ) ) {
-//							playerManager.savePlayer( rPlayer );
-//							addedPlayers++;
-//						}
-//					}
-//				}
+				// Prison will no longer add offline players.  They must join to be added. Causes massive lag on huge servers!
 				
 				
 				RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
@@ -400,25 +346,9 @@ public class PrisonRanks
 				
 				for ( RankPlayer rPlayer : rPlayers ) {
 					
-//        		@SuppressWarnings( "unused" )
-//				String rp = rPlayer.toString();
-					
-//					Rank rankOnDefault = null;
 					
 					PlayerRank pRank = rankPlayerFactory.getRank( rPlayer, defaultLadder );
 					
-//					if ( pRank != null ) {
-//						
-//						rankOnDefault = pRank.getRank();
-//						
-////        			Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
-////        					rPlayer.getName(),
-////        					defaultLadder.getName(), 
-////        					(rankOnDefault == null ? "true" : "false"), (rankOnDefault == null ? "null" : rankOnDefault.getName()),
-////        					(rankOnDefaultStr == null ? "true" : "false"), (rankOnDefaultStr == null ? "null" : rankOnDefaultStr.getName()),
-////        					rp );
-//						
-//					}
 					if ( pRank == null || pRank.getRank() == null ) {
 						
 						rankupCommands.setPlayerRank( rPlayer, defaultRank );
@@ -471,7 +401,7 @@ public class PrisonRanks
      */
     @Override 
     public void disable() {
-    	setEnabled( false );
+    		setEnabled( false );
     }
     
 
@@ -485,85 +415,38 @@ public class PrisonRanks
         return collectionOptional.orElseThrow(RuntimeException::new);
     }
 
-//    /**
-//     * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
-//     */
-//    private void createDefaultLadder() {
-//        if ( ladderManager.getLadder(LadderManager.LADDER_DEFAULT) == null ) {
-//            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_DEFAULT);
-//
-//            if ( rankLadder == null ) {
-//            	
-//            	String failureMsg = prisonRanksFailureCreateDefaultLadderMsg();
-//            	
-//            	Output.get().logError( failureMsg );
-//                super.getStatus().toFailed( failureMsg );
-//                return;
-//            }
-//
-//            if ( !ladderManager.save( rankLadder ) ) {
-//            	
-//            	String failureMsg = prisonRanksFailureSavingDefaultLadderMsg();
-//            	
-//            	Output.get().logError( failureMsg );
-//                super.getStatus().toFailed( failureMsg );
-//            }
-//        }
-//
-//        if ( ladderManager.getLadder(LadderManager.LADDER_PRESTIGES) == null ) {
-//            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_PRESTIGES);
-//
-//            if ( rankLadder == null ) {
-//
-//            	String failureMsg = prisonRanksFailureCreatePrestigeLadderMsg();
-//            	
-//            	Output.get().logError( failureMsg );
-//                super.getStatus().toFailed( failureMsg );
-//                return;
-//            }
-//
-//            if ( !ladderManager.save( rankLadder ) ) {
-//
-//            	String failureMsg = prisonRanksFailureSavingPrestigeLadderMsg();
-//            	
-//            	Output.get().logError( failureMsg );
-//                super.getStatus().toFailed( failureMsg );
-//            }
-//        }
-//
-//    }
-//
 
 
     private void logStartupMessageError( String message ) {
-    	logStartupMessage( LogLevel.ERROR, message );
+    		logStartupMessage( LogLevel.ERROR, message );
     
     }
 
     private void logStartupMessage( String message ) {
-    	logStartupMessage( LogLevel.INFO, message );
+    		logStartupMessage( LogLevel.INFO, message );
     	
     }
+    
     private void logStartupMessage( LogLevel logLevel, String message ) {
     	
-    	Output.get().log( message, logLevel );
-    	
-    	getPrisonStartupDetails().add( message );
+	    	Output.get().log( message, logLevel );
+	    	
+	    	getPrisonStartupDetails().add( message );
     }
     
     public List<String> getPrisonStartupDetails() {
-    	return prisonStartupDetails;
+    		return prisonStartupDetails;
     }
     public void setPrisonStartupDetails( List<String> prisonStartupDetails ){
-    	this.prisonStartupDetails = prisonStartupDetails;
+    		this.prisonStartupDetails = prisonStartupDetails;
     }
 
     
 
     public RankManager getRankManager() {
-    	if ( rankManager == null && !isEnabled() ) {
-    		rankManager = new RankManager();
-    	}
+	    	if ( rankManager == null && !isEnabled() ) {
+	    		rankManager = new RankManager();
+	    	}
         return rankManager;
     }
 
@@ -573,9 +456,9 @@ public class PrisonRanks
 
     public PlayerManager getPlayerManager() {
     	
-    	if ( playerManager == null && !isEnabled() ) {
-    		playerManager = new PlayerManager( null );
-    	}
+	    	if ( playerManager == null && !isEnabled() ) {
+	    		playerManager = new PlayerManager( null );
+	    	}
         return playerManager;
     }
 
@@ -584,7 +467,7 @@ public class PrisonRanks
     }
     
     public RankLadder getPrestigesLadder() {
-    	return getLadderManager().getLadder(LadderManager.LADDER_PRESTIGES);
+    		return getLadderManager().getLadder(LadderManager.LADDER_PRESTIGES);
     }
 
     public Database getDatabase() {
@@ -592,41 +475,41 @@ public class PrisonRanks
     }
 
     public int getRankCount() {
-    	int rankCount = getRankManager() == null ||getRankManager().getRanks() == null ? 0 : 
+    		int rankCount = getRankManager() == null ||getRankManager().getRanks() == null ? 0 : 
     		getRankManager().getRanks().size();
-    	return rankCount;
+    		return rankCount;
     }
     
     private int getLadderRankCount( String ladderName ) {
-    	int rankCount = 0;
-    	
-    	if ( getLadderManager() != null && getLadderManager().getLadders() != null ) {
-    		RankLadder ladder = getLadderManager().getLadder( ladderName );
-    		if ( ladder != null ) {
-    			rankCount = ladder.getRanks().size();
-    		}
-    	}
-    	return rankCount;
+	    	int rankCount = 0;
+	    	
+	    	if ( getLadderManager() != null && getLadderManager().getLadders() != null ) {
+	    		RankLadder ladder = getLadderManager().getLadder( ladderName );
+	    		if ( ladder != null ) {
+	    			rankCount = ladder.getRanks().size();
+	    		}
+	    	}
+	    	return rankCount;
     }
     
     public int getDefaultLadderRankCount() {
-    	return getLadderRankCount( LadderManager.LADDER_DEFAULT );
+    		return getLadderRankCount( LadderManager.LADDER_DEFAULT );
     }
     
     public int getPrestigesLadderRankCount() {
-    	return getLadderRankCount( LadderManager.LADDER_PRESTIGES );
+    		return getLadderRankCount( LadderManager.LADDER_PRESTIGES );
     }
     
     public int getladderCount() {
-    	int ladderCount = getLadderManager() == null || getLadderManager().getLadders() == null ? 0 : 
+    		int ladderCount = getLadderManager() == null || getLadderManager().getLadders() == null ? 0 : 
     		getLadderManager().getLadders().size();
-    	return ladderCount;
+    		return ladderCount;
     }
     
     public int getPlayersCount() {
-    	int playersCount = getPlayerManager() == null || getPlayerManager().getPlayers() == null ? 0 : 
+    		int playersCount = getPlayerManager() == null || getPlayerManager().getPlayers() == null ? 0 : 
     		getPlayerManager().getPlayers().size();
-    	return playersCount;
+    		return playersCount;
     }
     
     public LocaleManager getRanksMessages() {
@@ -645,12 +528,12 @@ public class PrisonRanks
      * @return
      */
     public int getElementCount() {
-    	int results = isEnabled() ? 0 : -1;
-    	
-    	if ( isEnabled() ) {
-    		results = getRankCount();
-    	}
-    	
-    	return results;
+	    	int results = isEnabled() ? 0 : -1;
+	    	
+	    	if ( isEnabled() ) {
+	    		results = getRankCount();
+	    	}
+	    	
+	    	return results;
     }
 }

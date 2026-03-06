@@ -80,8 +80,6 @@ public class RankLadderFactory
 	    	
 	    	rankLadder = new RankLadder( id, name );
 	    	
-//	    	RankManager rankManager = prisonRanks.getRankManager();
-	    	
 	    	if ( rankManager == null ) {
 
 	    		RankMessages rMessages = new RankMessages();
@@ -90,28 +88,25 @@ public class RankLadderFactory
 	    		return null;
 	    	}
 	        
-	        List<LinkedTreeMap<String, Object>> ranksLocal =
-	                (List<LinkedTreeMap<String, Object>>) document.get("ranks");
+        List<LinkedTreeMap<String, Object>> ranksLocal =
+                (List<LinkedTreeMap<String, Object>>) document.get("ranks");
 
-			rankLadder.getRankUpCommands().clear();
-			Object cmds = document.get("commands");
-			if ( cmds != null ) {
+		rankLadder.getRankUpCommands().clear();
+		Object cmds = document.get("commands");
+		if ( cmds != null ) {
 
-				List<String> commands = (List<String>) cmds;
-				for ( String cmd : commands ) {
-					if ( cmd != null ) {
-						rankLadder.getRankUpCommands().add( cmd );
-					}
+			List<String> commands = (List<String>) cmds;
+			for ( String cmd : commands ) {
+				if ( cmd != null ) {
+					rankLadder.getRankUpCommands().add( cmd );
 				}
-				
-				// This was allowing nulls to be added to the live commands... 
-//				this.rankUpCommands = (List<String>) cmds;
 			}
+			
+		}
 
 	        
-//	        rankLadder.ranks = new ArrayList<>(); // already initialized
-	        for (LinkedTreeMap<String, Object> rank : ranksLocal) {
-	        	
+        for (LinkedTreeMap<String, Object> rank : ranksLocal) {
+        	
 	        	if ( rank == null ) {
 	        		
 	        		// Force a resave to "fix" the problem?
@@ -125,7 +120,7 @@ public class RankLadderFactory
 	        		
 	        		continue;
 	        	}
-	        	
+		        	
 	        	// The only real field that is important here is rankId to tie the 
 	        	// rank back to this ladder.  Name helps clarify the contents of the 
 	        	// Ladder file. 
@@ -138,7 +133,7 @@ public class RankLadderFactory
 	        		// the file was saved with rankIds, so resave to remove them:
 	        		isDirty = true;
 	        	}
-	        	
+		        	
 	        	if ( rRankName == null || rRankName.trim().length() == 0 ) {
 	        		
 	        		// NOTICE: Loading an older save file that has not been converted
@@ -154,8 +149,8 @@ public class RankLadderFactory
 	        		rankPrison = rankManager.getRank( rRankName );
 	        		
 	        	}
-	        	
-	        	
+		        	
+		        	
 	        	if ( rankPrison != null && rankPrison.getLadder() != null ) {
 	        		
 	        		if ( rankPrison.getLadder().equals( rankLadder ) ) {
@@ -174,27 +169,17 @@ public class RankLadderFactory
 	        			
 	        		}
 	        		
-//	        		RankMessages rMessages = new RankMessages();
-//	        		rMessages.rankFailureLoadingDuplicateRankMsg( 
-//	        				rankPrison.getName(), 
-//	        				rankPrison.getLadder().getName(), 
-//	        				rankLadder.getName() );
-
+	
 	        		isDirty = true;
 	        	}
 	        	else if ( rankPrison != null) {
-
+	
 	        		rankLadder.addRank( rankPrison );
-
-//	        		Output.get().logInfo( "RankLadder load : " + getName() + 
-//	        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
-//	        				 );
+	
+	//	        		Output.get().logInfo( "RankLadder load : " + getName() + 
+	//	        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
+	//	        				 );
 	        		
-//	        		// if null look it up from loaded ranks:
-//	        		if ( rRankName == null  ) {
-//	        			rRankName = rankPrison.getName();
-//	        			dirty = true;
-//	        		}
 	        	}
 	        	else {
 	        		// Rank not found. Try to create it? The name maybe wrong.
@@ -208,60 +193,37 @@ public class RankLadderFactory
 	        		
 	        		rankLadder.addRank( newRank );
 	        		
-//	        		String message = String.format( 
-//	        				"Loading RankLadder Error: A rank for %s was not found so it was " +
-//	        				"fabricated: %s  id=%d  tag=%s  cost=%d", getName(), newRank.getName(), newRank.getId(),
-//	        				newRank.getTag(), newRank.getCost() );
-//	        		Output.get().logError( message );
+	//	        		String message = String.format( 
+	//	        				"Loading RankLadder Error: A rank for %s was not found so it was " +
+	//	        				"fabricated: %s  id=%d  tag=%s  cost=%d", getName(), newRank.getName(), newRank.getId(),
+	//	        				newRank.getTag(), newRank.getCost() );
+	//	        		Output.get().logError( message );
 	        	}
-	        	
-	        }
-	        
-//	        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
+		        	
+    		}
 	        
 	        
-	        Double rankCostMultiplier = (Double) document.get( "rankCostMultiplierPerRank" );
-	        rankLadder.setRankCostMultiplierPerRank( rankCostMultiplier == null ? 0 : rankCostMultiplier );
 	        
-			Boolean applyRankCostMultiplierToLadder = (Boolean) document.get( "applyRankCostMultiplierToLadder" );
-			if ( applyRankCostMultiplierToLadder != null ) {
-				
-				rankLadder.setApplyRankCostMultiplierToLadder( applyRankCostMultiplierToLadder );
-			}
-			else {
-				rankLadder.setApplyRankCostMultiplierToLadder( true );
-				isDirty = true;
-			}
+        Double rankCostMultiplier = (Double) document.get( "rankCostMultiplierPerRank" );
+        rankLadder.setRankCostMultiplierPerRank( rankCostMultiplier == null ? 0 : rankCostMultiplier );
+        
+		Boolean applyRankCostMultiplierToLadder = (Boolean) document.get( "applyRankCostMultiplierToLadder" );
+		if ( applyRankCostMultiplierToLadder != null ) {
 			
+			rankLadder.setApplyRankCostMultiplierToLadder( applyRankCostMultiplierToLadder );
+		}
+		else {
+			rankLadder.setApplyRankCostMultiplierToLadder( true );
+			isDirty = true;
+		}
 	        
 	        
-//			getPermissions().clear();
-//			Object perms = document.get( "permissions" );
-//			if ( perms != null ) {
-//				List<String> permissions = (List<String>) perms;
-//				for ( String permission : permissions ) {
-//					getPermissions().add( permission );
-//				}
-//			}
-//	        
-//			
-//			getPermissionGroups().clear();
-//			Object permsGroups = document.get( "permissionGroups" );
-//			if ( perms != null ) {
-//				List<String> permissionGroups = (List<String>) permsGroups;
-//				for ( String permissionGroup : permissionGroups ) {
-//					getPermissionGroups().add( permissionGroup );
-//				}
-//			}
-			
-			
-			
-			if ( isDirty ) {
-				PrisonRanks.getInstance().getLadderManager().save( rankLadder );
-			}
+		if ( isDirty ) {
+			PrisonRanks.getInstance().getLadderManager().save( rankLadder );
+		}
 
-			return rankLadder;
-	    }
+		return rankLadder;
+    }
 
 
 }

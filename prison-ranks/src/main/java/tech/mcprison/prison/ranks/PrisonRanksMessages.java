@@ -14,8 +14,8 @@ public abstract class PrisonRanksMessages
 	protected String prisonRanksFailureNoEconomyStatusMsg() {
 		
 		return PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_prisonRanks__failure_no_economy_status" )
-    			.localize();
+	    			.getLocalizable( "ranks_prisonRanks__failure_no_economy_status" )
+	    			.localize();
 	}
 	
 	protected String prisonRanksFailureNoEconomyMsg( String integrationDebug ) {
@@ -137,7 +137,7 @@ public abstract class PrisonRanksMessages
 		String msgCreate = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_create" )
     			.localize();
-    	String msgDefault = PrisonRanks.getInstance().getRanksMessages()
+		String msgDefault = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_default" )
     			.localize();
     	
@@ -176,11 +176,11 @@ public abstract class PrisonRanksMessages
 		String msgCreate = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_create" )
     			.localize();
-    	String msgDefault = PrisonRanks.getInstance().getRanksMessages()
+		String msgDefault = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_prestiges" )
     			.localize();
     	
-    	return PrisonRanks.getInstance().getRanksMessages()
+    		return PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_prisonRanks__failure_with_ladder" )
     			.withReplacements( 
     					msgCreate,

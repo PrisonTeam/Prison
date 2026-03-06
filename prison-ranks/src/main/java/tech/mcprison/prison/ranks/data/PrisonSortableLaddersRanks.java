@@ -11,7 +11,6 @@ import tech.mcprison.prison.sorting.PrisonSorter;
 public class PrisonSortableLaddersRanks
 		extends PrisonSorter {
 
-
 	@Override
 	public Set<Rank> getSortedSet()
 	{
@@ -39,16 +38,11 @@ public class PrisonSortableLaddersRanks
 		for ( RankLadder rankLadder : ladders ) {
 			List<Rank> rankList = rankLadder.getRanks();
 			
-			// Perform the sort of the ranks:
-//			ranksSorted.addAll( rankList );
-			
 			// Add the ranks to the result set in sorted order:
 			results.addAll( rankList );
-//			results.addAll( ranksSorted );
 			
 			// Remove from the unsortedRanks list, all ranks that were used:
 			unsortedRanks.removeAll( rankList );
-//			unsortedRanks.removeAll( ranksSorted );
 		}
 		
 		

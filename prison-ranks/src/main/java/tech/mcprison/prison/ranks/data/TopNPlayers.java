@@ -93,8 +93,6 @@ public class TopNPlayers
 				if ( instance == null ) {
 					instance = new TopNPlayers();
 					
-//					instance.loadSaveFile();
-					
 					instance.launchTopNPlayerUpdateAsyncTask();
 				}
 			}
@@ -292,8 +290,6 @@ public class TopNPlayers
 			
 			setStatsBuildDataNanoSec( end - start );
 			
-//			saveToJson();
-			
 		}
 		
 	}
@@ -474,10 +470,6 @@ public class TopNPlayers
 			
 			addPlayerData( topN, PlayerState.online );
 			
-			// Add player will always set the PlayerState to offline, so need to set it to
-			// online after addPlayerData() is called;
-//			topN.setPlayerState( PlayerState.online );
-			
 			
 			setDirty( true );
 
@@ -500,9 +492,6 @@ public class TopNPlayers
 		
 		setTopNList(newTopNList);
 		setArchivedList(newArchivedList);
-		
-//		// sort:
-//		sortTopN();
 		
 		// If there has been any changes since the last save, then 
 		// save it:
@@ -626,35 +615,35 @@ public class TopNPlayers
 	}
 	
     public String getTopNStats() {
-    	
-    	int topNSize = getTopNSize();
-    	int archivedSize = getArchivedSize();
-    	
-    	
-    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.000");
-    	DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
-    	
-    	String statsBuildMs = dFmt.format( 
-    			getStatsBuildDataNanoSec() / 1_000_000 );
-    	String statsRefreshMs = dFmt.format( 
-    			getStatsRefreshDataNanoSec() / 1_000_000 );
-    	String statsSaveMs = dFmt.format( 
-    			getStatsSaveDataNanoSec() / 1_000_000 );
-    	String statsLoadMs = dFmt.format( 
-    			getStatsLoadDataNanoSec() / 1_000_000 );
-    	
-    	String msg = String.format(
-    			"&7topNstats:&3 topNs: %s  archives: %s  buildMs: %s  refreshMs: %s  " +
-    					"saveMs: %s  loadMs: %s ",
-    					iFmt.format(topNSize),
-    					iFmt.format(archivedSize),
-    					statsBuildMs,
-    					statsRefreshMs,
-    					statsSaveMs,
-    					statsLoadMs
-    			);
-    		
-    	return msg;
+	    	
+	    	int topNSize = getTopNSize();
+	    	int archivedSize = getArchivedSize();
+	    	
+	    	
+	    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.000");
+	    	DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
+	    	
+	    	String statsBuildMs = dFmt.format( 
+	    			getStatsBuildDataNanoSec() / 1_000_000 );
+	    	String statsRefreshMs = dFmt.format( 
+	    			getStatsRefreshDataNanoSec() / 1_000_000 );
+	    	String statsSaveMs = dFmt.format( 
+	    			getStatsSaveDataNanoSec() / 1_000_000 );
+	    	String statsLoadMs = dFmt.format( 
+	    			getStatsLoadDataNanoSec() / 1_000_000 );
+	    	
+	    	String msg = String.format(
+	    			"&7topNstats:&3 topNs: %s  archives: %s  buildMs: %s  refreshMs: %s  " +
+	    					"saveMs: %s  loadMs: %s ",
+	    					iFmt.format(topNSize),
+	    					iFmt.format(archivedSize),
+	    					statsBuildMs,
+	    					statsRefreshMs,
+	    					statsSaveMs,
+	    					statsLoadMs
+	    			);
+	    		
+	    	return msg;
     }
 	
 	public int getTopNSize() {
@@ -687,44 +676,44 @@ public class TopNPlayers
      * @return
      */
     private RankPlayer getTopNRankPlayer( int rankPosition, boolean archived ) {
-    	RankPlayer rPlayer = null;
-    	
-    	if (  PrisonRanks.getInstance() != null && 
-				PrisonRanks.getInstance().isEnabled() &&
-				PrisonRanks.getInstance().getPlayerManager() != null ) {
-    		
-    		ArrayList<TopNPlayersData> tList = 
-    				archived ? 
-    						getArchivedList() :
-    							getTopNList();
-    		
-    		if ( rankPosition >= 0 && tList.size() > rankPosition ) {
-    			
-    			TopNPlayersData topN = tList.get( rankPosition );
-    			
-    			rPlayer = topN.getrPlayer();
-    			
-    			if ( rPlayer == null && PrisonRanks.getInstance().getPlayerManager() != null ) {
-    				
-    				UUID nullUuid = null;
-    				rPlayer = PrisonRanks.getInstance().getPlayerManager()
-    						.getPlayer( nullUuid, topN.getName() );
-    			}
-    			
-    			// The topN has the last extracted values, so copy them to the rPlayer if 
-    			// it has not been updated.  This would be good for the archives.
-    			if ( rPlayer != null && topN.getRankScore() != 0 && rPlayer.getRankScore() == 0 ) {
-    				
-    				rPlayer.setRankScore( topN.getRankScore() );
-    				rPlayer.setRankScorePenalty( topN.getRankScorePenalty() );
-    				
-    				rPlayer.setRankScoreBalance( topN.getBalance() );
-    				rPlayer.setRankScoreCurrency( topN.getBalanceCurrency() );
-    				
-    			}
-    			
-    		}
-    	}
+	    	RankPlayer rPlayer = null;
+	    	
+	    	if (  PrisonRanks.getInstance() != null && 
+					PrisonRanks.getInstance().isEnabled() &&
+					PrisonRanks.getInstance().getPlayerManager() != null ) {
+	    		
+	    		ArrayList<TopNPlayersData> tList = 
+	    				archived ? 
+	    						getArchivedList() :
+	    							getTopNList();
+	    		
+	    		if ( rankPosition >= 0 && tList.size() > rankPosition ) {
+	    			
+	    			TopNPlayersData topN = tList.get( rankPosition );
+	    			
+	    			rPlayer = topN.getrPlayer();
+	    			
+	    			if ( rPlayer == null && PrisonRanks.getInstance().getPlayerManager() != null ) {
+	    				
+	    				UUID nullUuid = null;
+	    				rPlayer = PrisonRanks.getInstance().getPlayerManager()
+	    						.getPlayer( nullUuid, topN.getName() );
+	    			}
+	    			
+	    			// The topN has the last extracted values, so copy them to the rPlayer if 
+	    			// it has not been updated.  This would be good for the archives.
+	    			if ( rPlayer != null && topN.getRankScore() != 0 && rPlayer.getRankScore() == 0 ) {
+	    				
+	    				rPlayer.setRankScore( topN.getRankScore() );
+	    				rPlayer.setRankScorePenalty( topN.getRankScorePenalty() );
+	    				
+	    				rPlayer.setRankScoreBalance( topN.getBalance() );
+	    				rPlayer.setRankScoreCurrency( topN.getBalanceCurrency() );
+	    				
+	    			}
+	    			
+	    		}
+	    	}
     	
     	
 		return rPlayer;

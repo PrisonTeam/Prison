@@ -79,18 +79,9 @@ public class TopNPlayersData
 		
 		this.name = rPlayer.getName();
 		this.uuid = rPlayer.getUUID().toString();
-//		this.playerFileName = rPlayer.getPlayerFileName();
-		
-//		// Note: the nextPlayer rank could be in either the default ladder, 
-//		//       or the next prestige rank if at end of default ladder.
-//		PlayerRank nextRank = rPlayer.getNextPlayerRank();
-		
 		
 		// This may be expensive getting lastSeen from the player's cache data:
 		setLastSeen( rPlayer.getLastSeenDateTemp() );
-//		setLastSeen( rPlayer.getPlayerCachePlayerData().getLastSeenDate() );
-		
-//		this.lastSeenFormatted = sdFmt.format( new Date( this.lastSeen ) );
 		
 		updateRankPlayer( rPlayer );
 		
@@ -111,8 +102,6 @@ public class TopNPlayersData
 		setBlocks( rPlayer.getTotalBlocksTemp() );
 		setTokens( rPlayer.getTotalTokensTemp() );
 		
-//		setTimeMining( rPlayer.getPlayerCachePlayerData().getOnlineMiningTimeTotal() );
-//		setTimeOnline( rPlayer.getPlayerCachePlayerData().getOnlineTimeTotal() );
 		
 	}
 	

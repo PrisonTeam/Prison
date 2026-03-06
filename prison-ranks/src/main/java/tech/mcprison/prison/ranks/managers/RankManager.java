@@ -68,10 +68,6 @@ import tech.mcprison.prison.store.Document;
 public class RankManager 
 	implements ManagerPlaceholders {
 
-    /*
-     * Fields & Constants
-     */
-
     private Collection collection;
     
     private List<Rank> loadedRanks;
@@ -88,62 +84,55 @@ public class RankManager
     private transient boolean enabled;
     
     public enum RanksByLadderOptions {
-    	playersOnly("players"),
-    	allRanks("all"),
-    	full;
-    	
-    	
-    	private final String altName;
-    	
-    	private RanksByLadderOptions() {
-    		this.altName = null;
-    	}
-    	
-    	private RanksByLadderOptions( String altName ) {
-    		this.altName = altName;
-    	}
-    	
-    	public static RanksByLadderOptions fromString( String value ) {
-    		RanksByLadderOptions results = null;
-    		
-    		for ( RanksByLadderOptions opt : values() ) {
-				if ( opt.name().equalsIgnoreCase( value ) || 
-						opt.getAltName() != null && opt.getAltName().equalsIgnoreCase( value )) {
-					results = opt;
-					break;
+	    	playersOnly("players"),
+	    	allRanks("all"),
+	    	full;
+	    	
+	    	
+	    	private final String altName;
+	    	
+	    	private RanksByLadderOptions() {
+	    		this.altName = null;
+	    	}
+	    	
+	    	private RanksByLadderOptions( String altName ) {
+	    		this.altName = altName;
+	    	}
+	    	
+	    	public static RanksByLadderOptions fromString( String value ) {
+	    		RanksByLadderOptions results = null;
+	    		
+	    		for ( RanksByLadderOptions opt : values() ) {
+					if ( opt.name().equalsIgnoreCase( value ) || 
+							opt.getAltName() != null && opt.getAltName().equalsIgnoreCase( value )) {
+						results = opt;
+						break;
+					}
 				}
-			}
-    		
-    		return results;
-    	}
+	    		
+	    		return results;
+	    	}
 
 		public String getAltName() {
 			return altName;
 		}
     	
     }
-    /*
-     * Constructor
-     */
-
     
     public RankManager() {
-    	this.collection = null;
-    	
-    	this.loadedRanks = new ArrayList<>();
-    	this.ranksByName = new TreeMap<>();
-    	this.ranksById = new TreeMap<>();
-    	
-    	this.enabled = false;
+	    	this.collection = null;
+	    	
+	    	this.loadedRanks = new ArrayList<>();
+	    	this.ranksByName = new TreeMap<>();
+	    	this.ranksById = new TreeMap<>();
+	    	
+	    	this.enabled = false;
     }
     
-    /**
-     * Instantiate this {@link RankManager}.
-     */
     public RankManager(Collection collection) {
-    	this();
-    	
-    	this.enabled = true;
+	    	this();
+	    	
+	    	this.enabled = true;
     	
         this.collection = collection;
         
@@ -156,48 +145,48 @@ public class RankManager
     
 
 	private void addRank( Rank rank ) {
-    	if ( rank != null ) {
-    		getLoadedRanks().add( rank );
-    		String rankName = rank.getName();
-    		getRanksByName().put( rankName.toLowerCase(), rank );
-    		
-    		if ( rank.getId() != -1 ) {
-    			getRanksById().put( rank.getId(), rank );
-    		}
-    		
-    		// Do not have to reset position number since the new rank is 
-    		// added to the end of the ladder's rank List, and therefore 
-    		// no other rank is impacted.
-    	}
+	    	if ( rank != null ) {
+	    		getLoadedRanks().add( rank );
+	    		String rankName = rank.getName();
+	    		getRanksByName().put( rankName.toLowerCase(), rank );
+	    		
+	    		if ( rank.getId() != -1 ) {
+	    			getRanksById().put( rank.getId(), rank );
+	    		}
+	    		
+	    		// Do not have to reset position number since the new rank is 
+	    		// added to the end of the ladder's rank List, and therefore 
+	    		// no other rank is impacted.
+	    	}
     }
     
     private void removeRankFromCollections( Rank rank ) {
-    	if ( rank != null ) {
-    		getLoadedRanks().remove( rank );
-    		getRanksByName().remove( rank.getName().toLowerCase() );
-    		
-    		if ( rank.getId() != -1 && getRanksById().containsKey( rank.getId() ) ) {
-    			
-    			getRanksById().remove( rank.getId() );
-    		}
-    		
-    		// Since the removal of a rank could shift the position of
-    		// more than one rank, then all positions should be reset.
-    		
-    		resetRankPositions( rank );
-    	}
+	    	if ( rank != null ) {
+	    		getLoadedRanks().remove( rank );
+	    		getRanksByName().remove( rank.getName().toLowerCase() );
+	    		
+	    		if ( rank.getId() != -1 && getRanksById().containsKey( rank.getId() ) ) {
+	    			
+	    			getRanksById().remove( rank.getId() );
+	    		}
+	    		
+	    		// Since the removal of a rank could shift the position of
+	    		// more than one rank, then all positions should be reset.
+	    		
+	    		resetRankPositions( rank );
+	    	}
     	
     }
 
     
     private void resetRankPositions( Rank rank ) {
     	
-    	if ( rank != null && rank.getLadder() != null ) {
-    		
-    		for ( Rank r : rank.getLadder().getRanks() ) {
-    			r.resetPosition();
-    		}
-    	}
+	    	if ( rank != null && rank.getLadder() != null ) {
+	    		
+	    		for ( Rank r : rank.getLadder().getRanks() ) {
+	    			r.resetPosition();
+	    		}
+	    	}
     }
     
     
@@ -214,7 +203,6 @@ public class RankManager
         RankFactory rankFactory = new RankFactory();
         
         addRank( rankFactory.createRank( document ) );
-//        loadedRanks.add(new Rank(document));
     }
 
     /**
@@ -230,19 +218,17 @@ public class RankManager
         
         for ( Document rankDocument : ranks ) {
         	
-        	Rank rank = rankFactory.createRank( rankDocument );
-        	addRank( rank );
-        	
-        	// If old file exists, then set dirty so it can be saved and update the file name:
-        	checkIfOldFileExists( rank );
-
-        	if ( rank.isDirty() ) {
-        		saveRank(rank);
-        	}
+	        	Rank rank = rankFactory.createRank( rankDocument );
+	        	addRank( rank );
+	        	
+	        	// If old file exists, then set dirty so it can be saved and update the file name:
+	        	checkIfOldFileExists( rank );
+	
+	        	if ( rank.isDirty() ) {
+	        		saveRank(rank);
+	        	}
    		}
         
-//        ranks.forEach(document -> addRank(new Rank(document)));
-//        ranks.forEach(document -> loadedRanks.add(new Rank(document)));
     }
 
 
@@ -253,9 +239,9 @@ public class RankManager
      * @param ladder
      */
     private void checkIfOldFileExists(Rank rank) {
-    	if ( collection.exists( rank.filenameOld() )) {
-    		rank.setDirty( true );
-    	}
+	    	if ( collection.exists( rank.filenameOld() )) {
+	    		rank.setDirty( true );
+	    	}
 	}
     
     /**
@@ -266,9 +252,9 @@ public class RankManager
      */
     public void saveRank(Rank rank, String saveFileNew, String saveFileOld ) {
 
-    	RankFactory rankFactory = new RankFactory();
-        
-    	collection.save(saveFileNew, rankFactory.toDocument( rank ), saveFileOld, "Ranks" );
+	    	RankFactory rankFactory = new RankFactory();
+	        
+	    	collection.save(saveFileNew, rankFactory.toDocument( rank ), saveFileOld, "Ranks" );
     }
 
     /**
@@ -304,16 +290,12 @@ public class RankManager
     public Optional<Rank> createRank(String name, String tag, double cost) {
     	
         // Set the default values...
-    	// rank id is no longer used, so use -1:
+    		// rank id is no longer used, so use -1:
         Rank newRank = new Rank( -1, name, tag, cost );
-//        Rank newRank = new Rank( getNextAvailableId(), name, tag, cost );
 
         // ... add it to the list...
         addRank(newRank);
         
-//        // Reset the rank relationships:
-//        connectRanks();
-
         // ...and return it.
         return Optional.of(newRank);
     }
@@ -327,32 +309,15 @@ public class RankManager
     @SuppressWarnings("unused")
 	private int getNextAvailableId() {
     	
-    	int current = -1;
-    	
-    	for (Rank rank : loadedRanks) {
+	    	int current = -1;
+	    	
+	    	for (Rank rank : loadedRanks) {
 			if ( rank.getId() != -1 && rank.getId() > current ) {
 				current = rank.getId();
 			}
 		}
-    	
-    	return current + 1;
-
-//    	current = (getRanksById().size() == 0 ?
-//    				-1 : getRanksById().lastKey().intValue());
-//    	
-//    	return current + 1;
-    	
-//        // Set the highest to -1 for now, since we'll add one at the end
-//        int highest = -1;
-//
-//        // If anything's higher, it's now the highest...
-//        for (Rank rank : loadedRanks) {
-//            if (highest < rank.id) {
-//                highest = rank.id;
-//            }
-//        }
-//
-//        return highest + 1;
+	    	
+	    	return current + 1;
     }
 
     /**
@@ -378,20 +343,11 @@ public class RankManager
      * @return
      */
     public Rank getRank(String name) {
-    	return name == null || !isEnabled() ? 
-    			null : 
-    				getRanksByName().get( name.toLowerCase() );
+	    	return name == null || !isEnabled() ? 
+	    			null : 
+	    				getRanksByName().get( name.toLowerCase() );
     }
     
-    
-// Not used anywhere... 
-//    /**
-//     * Returns the first rank that has an escaped name that has the & replaced with -.
-//     */
-//    public Rank getRankEscaped(String name) {
-//    	return loadedRanks.stream().filter(rank -> 
-//    					rank.getName().replace( "&", "-" ).equals(name)).findFirst().orElse( null );
-//    }
 
     /**
      * Removes the provided rank. This will go through the process of removing the rank from the loaded
@@ -405,108 +361,86 @@ public class RankManager
     public boolean removeRank(Rank rank) {
         // ... remove it from each user, bumping them down to the next lowest rank...
     	
-    	final Rank newRank = ( rank.getRankPrior() != null ? 
-    								rank.getRankPrior() : 
-    									rank.getRankNext() );
-    	if ( newRank == null ) {
-        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankManager__remove_rank_warning" );
-        	
-        	Output.get().logError( localManagerLog.localize() );
-    	}
-
-    	
-    	boolean success = true;
-    	
-    	RankLadder ladder = rank.getLadder();
+	    	final Rank newRank = ( rank.getRankPrior() != null ? 
+	    								rank.getRankPrior() : 
+	    									rank.getRankNext() );
+	    	if ( newRank == null ) {
+	        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	        			.getLocalizable( "ranks_rankManager__remove_rank_warning" );
+	        	
+	        	Output.get().logError( localManagerLog.localize() );
+	    	}
+	
+	    	
+	    	boolean success = true;
+	    	
+	    	RankLadder ladder = rank.getLadder();
     	
 //        for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager() .getLadder( rank )) 
         {
         	
-        	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
-            	PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
-            	if ( pRank != null && pRank.getRank() != null ) {
-            		
-            		Rank curRank = pRank.getRank();
-            		if ( curRank != null && rank.equals( curRank ) ) {
-            			rankPlayer.removeRank(curRank);
-            			if ( newRank != null ) {
-            				rankPlayer.addRank(newRank);
-            			}
-            			
-            			rankPlayer.setDirty( true );
-            			
-            			PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
-            			
-            			
-//                    try {
-//                    } catch (IOException e) {
-//                    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-//                    			.getLocalizable( "ranks_rankManager__cannot_save_player_file" );
-//                    	
-//                    	Output.get().logError( localManagerLog.localize() );
-//                    }
-            			
-            			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            					.getLocalizable( "ranks_rankManager__cannot_save_player_file" )
-            					.withReplacements( 
-            							rankPlayer.getName(),
-            							newRank.getName() );
-            			PrisonAPI.debug( localManagerLog.localize() );
-            		}
-            	}
+	            	PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
+	            	if ( pRank != null && pRank.getRank() != null ) {
+	            		
+	            		Rank curRank = pRank.getRank();
+	            		if ( curRank != null && rank.equals( curRank ) ) {
+	            			rankPlayer.removeRank(curRank);
+	            			if ( newRank != null ) {
+	            				rankPlayer.addRank(newRank);
+	            			}
+	            			
+	            			rankPlayer.setDirty( true );
+	            			
+	            			PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
+	            			
+	            			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	            					.getLocalizable( "ranks_rankManager__cannot_save_player_file" )
+	            					.withReplacements( 
+	            							rankPlayer.getName(),
+	            							newRank.getName() );
+	            			PrisonAPI.debug( localManagerLog.localize() );
+	            		}
+	            	}
             });
             
             
             // ... remove it from each ladder it was in...
             ladder.removeRank( rank );
-//            ladder.removeRank(ladder.getPositionOfRank(rank));
             if ( !PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 
-            	success = false;
-            	
-            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_rankManager__cannot_save_ladder_file" )
-            			.withReplacements( ladder.getName() );
-            	
-            	Output.get().logError( localManagerLog.localize() );
+	            	success = false;
+	            	
+	            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	            			.getLocalizable( "ranks_rankManager__cannot_save_ladder_file" )
+	            			.withReplacements( ladder.getName() );
+	            	
+	            	Output.get().logError( localManagerLog.localize() );
             }
             
         }
 
         if( success ) {
 
-        	// Remove it from the list...
-        	removeRankFromCollections( rank );
-        	
-        	// Reset the rank relationships:
-        	// connectRanks();
-        	
-        	// ... and remove the rank's save files.
-        	// try both the old and new names:
-        	collection.delete(rank.filenameNew());
-        	collection.delete(rank.filenameOld());
+	        	// Remove it from the list...
+	        	removeRankFromCollections( rank );
+	        	
+	        	
+	        	// ... and remove the rank's save files.
+	        	// try both the old and new names:
+	        	collection.delete(rank.filenameNew());
+	        	collection.delete(rank.filenameOld());
         }
 
         return success;
     }
 
-//    /**
-//     * Returns the rank with the specified ID.
-//     *
-//     * @param id The rank's ID.
-//     * @return An optional containing either the {@link Rank} if it could be found, or empty if it does not exist by the specified id.
-//     */
-//    @Deprecated 
-//    public Optional<Rank> getRankOptional(int id) {
-//        return loadedRanks.stream().filter(rank -> rank.getId() == id).findFirst();
-//    }
 
     public Rank getRank( int id ) {
-    	return getRanksById().get( id );
+    		return getRanksById().get( id );
     }
     
     /**
@@ -518,46 +452,6 @@ public class RankManager
         return loadedRanks;
     }
 
-//    /**
-//     * <p>This should be ran after the RanksManager and LadderManger are loaded.  Or any
-//     * time a rank is add, removed, or position changed within a ladder. 
-//     * </p>
-//     * 
-//     * <p>This function will set the temporal rankPrior and rankNext value in 
-//     * each rank based upon each ladder. This will greatly simplify walking the 
-//     * ladder by using the linked ranks without having to perform any expensive
-//     * calculations.
-//     * </p> 
-//     */
-//    public void connectRanks() {
-//    	LadderManager lman = PrisonRanks.getInstance().getLadderManager();
-//    	
-//    	for ( RankLadder rLadder : lman.getLadders() ) {
-//			
-//    		rLadder.getPositionRanks().sort(Comparator.comparingInt(PositionRank::getPosition));
-//    		
-//    		Rank rankLast = null;
-//    		for ( PositionRank pRank : rLadder.getPositionRanks() ) {
-//    			if ( pRank != null && pRank.getPosition() >= 0 ) {
-//    				Optional<Rank> opRank = rLadder.getByPosition(pRank.getPosition());
-//    				if ( opRank.isPresent() ) {
-//    					Rank rank = opRank.get();
-//    					
-//    					// reset the rankPrior and rankNext in case there are no hookups:
-//    					// Important if ranks are removed, or inserted, or moved:
-//    					rank.setRankPrior( null );
-//    					rank.setRankNext( null );
-//    					
-//    					if ( rankLast != null ) {
-//    						rank.setRankPrior( rankLast );
-//    						rankLast.setRankNext( rank );
-//    					}
-//    					rankLast = rank;
-//    				}
-//    			}
-//			}
-//		}
-//    }
     
     /*
      * <p>This function will go through ranks and find ranks that have defined currencies.
@@ -578,7 +472,7 @@ public class RankManager
      * 
      */
     public void identifyAllRankCurrencies( List<String> prisonStartupDetails ) {
-    	for ( Rank rank : loadedRanks ) {
+    		for ( Rank rank : loadedRanks ) {
 			if ( rank.getCurrency() != null ) {
 				EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
 						.getEconomyForCurrency( rank.getCurrency() );
@@ -588,7 +482,7 @@ public class RankManager
 	            			.getLocalizable( "ranks_rankManager__failure_no_economy" )
 	            			.withReplacements( rank.getCurrency(), rank.getName() );
 	            	
-	            	Output.get().logError( localManagerLog.localize() );
+					Output.get().logError( localManagerLog.localize() );
 					
 					prisonStartupDetails.add( localManagerLog.localize() );
 				}
@@ -600,68 +494,58 @@ public class RankManager
     
     
     public String listAllRanks( String ladderName, List<Rank> ranks, RanksByLadderOptions option ) {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	sb.append( "&7  " );
-    	sb.append( ladderName );
-    	sb.append( ": " );
- 
-//    	PlayerManager playerManager = PrisonRanks.getInstance().getPlayerManager();
-    	
-    	int count = 0;
-    	for (Rank rank : ranks ) {
-    		
-    		int players = rank.getPlayers().size();
-    		
-    		// Get the players per rank!!
-//			List<RankPlayer> playersList =
-//                    playerManager.getPlayers().stream()
-//                        .filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
-//                        .collect(Collectors.toList());
-//    		int players = playersList.size();
-    		
-    		if ( option == RanksByLadderOptions.allRanks || 
-    					option == RanksByLadderOptions.full || players > 0 ) {
-    			if ( count++ > 0 ) {
-    				sb.append( ", " );
-    				
-        			if ( count >= 10 && (count - 1) % 15 == 0 ) {
-        				sb.append( "{br}      " );
-        			}
-    			}
-    			
-    			
-    			sb.append( " " ).append( rank.getName() );
-    			
-    			if ( players > 0 ) {
-    				
-    				sb.append( " (" ).append( players ).append( ")" );
-    				
-    				if ( option == RanksByLadderOptions.full ) {
-    					sb.append( "[" );
-    					
-    					for ( RankPlayer rankPlayer : rank.getPlayers() )
-						{
-    						if ( rankPlayer.getName() != null ) {
-    							
-    							sb.append( rankPlayer.getName() ).append( " " );
-    						}
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	sb.append( "&7  " );
+	    	sb.append( ladderName );
+	    	sb.append( ": " );
+	 
+	    	int count = 0;
+	    	for (Rank rank : ranks ) {
+	    		
+	    		int players = rank.getPlayers().size();
+	    		
+	    		if ( option == RanksByLadderOptions.allRanks || 
+	    					option == RanksByLadderOptions.full || players > 0 ) {
+	    			if ( count++ > 0 ) {
+	    				sb.append( ", " );
+	    				
+	        			if ( count >= 10 && (count - 1) % 15 == 0 ) {
+	        				sb.append( "{br}      " );
+	        			}
+	    			}
+	    			
+	    			
+	    			sb.append( " " ).append( rank.getName() );
+	    			
+	    			if ( players > 0 ) {
+	    				
+	    				sb.append( " (" ).append( players ).append( ")" );
+	    				
+	    				if ( option == RanksByLadderOptions.full ) {
+	    					sb.append( "[" );
+	    					
+	    					for ( RankPlayer rankPlayer : rank.getPlayers() ) {
+	    						if ( rankPlayer.getName() != null ) {
+	    							
+	    							sb.append( rankPlayer.getName() ).append( " " );
+	    						}
 						}
-    					
-    					// if last character is a space, then remove it:
-    					if ( sb.charAt( sb.length() - 1 ) == ' ' ) {
-    						sb.setLength( sb.length() - 1 );
-    					}
-    					sb.append( "]" );
-    				}
-    				
-    			}
-    			
-
-    		}
+	    					
+	    					// if last character is a space, then remove it:
+	    					if ( sb.charAt( sb.length() - 1 ) == ' ' ) {
+	    						sb.setLength( sb.length() - 1 );
+	    					}
+	    					sb.append( "]" );
+	    				}
+	    				
+	    			}
+	    			
+	
+	    		}
 		}
-    	
-    	return sb.toString();
+	    	
+	    	return sb.toString();
     }
     
     
@@ -672,13 +556,13 @@ public class RankManager
      * @param includeAll If true then includes all ranks, otherwise just ranks within one more players
      */
     public List<String> ranksByLadders() {
-    	return ranksByLadders( "all", RanksByLadderOptions.allRanks );
+    		return ranksByLadders( "all", RanksByLadderOptions.allRanks );
     }
     
     public void ranksByLadders( CommandSender sender, RanksByLadderOptions option ) {
-    	List<String> results = ranksByLadders( "all", option );
-    	for (String msg : results) {
-    		rankByLadderOutput( sender, msg );
+	    	List<String> results = ranksByLadders( "all", option );
+	    	for (String msg : results) {
+	    		rankByLadderOutput( sender, msg );
 		}
     }
     
@@ -691,46 +575,46 @@ public class RankManager
     }
     
     private List<String> ranksByLadders( String ladderName, RanksByLadderOptions option ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	
-    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_rankManager__ranks_by_ladders" );
-    	
-    	results.add( localManagerLog.localize() );
-    	
-    	// Track which ranks were included in the ladders listed:
-    	List<Rank> ranksIncluded = new ArrayList<>();
-    	
-    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
-    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.getName() ) ) {
-    			
-    			List<Rank> ladderRanks = ladder.getRanks();
-    			ranksIncluded.addAll( ladderRanks );
-    			
-    			String ranksByLadder = listAllRanks( ladder.getName(), ladderRanks, option );
-    			
-    			results.add( ranksByLadder );
-    		}
-    	}
-    	
-    	if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( "none" ) ) {
-
-    		// Next we need to get a list of all ranks that were not included. Use set 
-    		List<Rank> ranksExcluded = new ArrayList<>( loadedRanks );
-    		ranksExcluded.removeAll( ranksIncluded );
-    		
-    		// Next generate a list of ranks that are not associated with any ladder:
-    		// NOTE: No players should be associated with ranks that are not tied to a ladder,
-    		//       so enable "true" for includeAll to list all ranks that are not tied to ladders
-    		//       since player count will always be zero.
-    		// Update: Set the RanksByLadderOptions to full
-    		String ranksByLadder = listAllRanks( "(*no-ladder*)", ranksExcluded, RanksByLadderOptions.full );
-    		
-    		results.add( ranksByLadder );
-    	}
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	
+	    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	    			.getLocalizable( "ranks_rankManager__ranks_by_ladders" );
+	    	
+	    	results.add( localManagerLog.localize() );
+	    	
+	    	// Track which ranks were included in the ladders listed:
+	    	List<Rank> ranksIncluded = new ArrayList<>();
+	    	
+	    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+	    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.getName() ) ) {
+	    			
+	    			List<Rank> ladderRanks = ladder.getRanks();
+	    			ranksIncluded.addAll( ladderRanks );
+	    			
+	    			String ranksByLadder = listAllRanks( ladder.getName(), ladderRanks, option );
+	    			
+	    			results.add( ranksByLadder );
+	    		}
+	    	}
+	    	
+	    	if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( "none" ) ) {
+	
+	    		// Next we need to get a list of all ranks that were not included. Use set 
+	    		List<Rank> ranksExcluded = new ArrayList<>( loadedRanks );
+	    		ranksExcluded.removeAll( ranksIncluded );
+	    		
+	    		// Next generate a list of ranks that are not associated with any ladder:
+	    		// NOTE: No players should be associated with ranks that are not tied to a ladder,
+	    		//       so enable "true" for includeAll to list all ranks that are not tied to ladders
+	    		//       since player count will always be zero.
+	    		// Update: Set the RanksByLadderOptions to full
+	    		String ranksByLadder = listAllRanks( "(*no-ladder*)", ranksExcluded, RanksByLadderOptions.full );
+	    		
+	    		results.add( ranksByLadder );
+	    	}
+	    	
+	    	return results;
     }
 
 	private void rankByLadderOutput( CommandSender sender, String ranksByLadder ) {
@@ -766,12 +650,12 @@ public class RankManager
     public String getTranslateRanksPlaceHolder( PlaceholderIdentifier identifier ) {
     	
     	
-    	Player player = identifier.getPlayer();
+    		Player player = identifier.getPlayer();
     	
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		RankPlayer rankPlayer = pm.getPlayer( player );
     	
-    	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
+		PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
     	
     	
 		String rankName = placeHolderKey.getData();
@@ -779,10 +663,10 @@ public class RankManager
 
     	
     	
-    	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
-    	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
-    	PlaceholderAttributeText attributeText = identifier.getAttributeText();
-    	@SuppressWarnings("unused")
+	    	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
+	    	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
+	    	PlaceholderAttributeText attributeText = identifier.getAttributeText();
+	    	@SuppressWarnings("unused")
 		PlaceholderAttributeTime attributeTime = identifier.getAttributeTime();
 		
 		int sequence = identifier.getSequence();
@@ -802,11 +686,6 @@ public class RankManager
 			rank != null && rankPlayer != null
 				
 				) {
-			
-//		if ( !( isStatsPlayers ) &&
-//				rank != null && 
-//				( rankPlayer != null || 
-//				  rankPlayer == null && isStatsRank ) ) {
 			
 			identifier.setFoundAMatch( true );
 			
@@ -836,7 +715,7 @@ public class RankManager
 						if ( attributeNFormat != null ) {
 
 							results = attributeNFormat.format( cost );
-    					}
+    						}
 						else {
 							
 							results = PlaceholdersUtil.formattedMetricSISize( cost );
@@ -850,18 +729,17 @@ public class RankManager
 					{
 						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
-//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						double remaining = cost - balance;
 						
 						if ( remaining < 0 ) {
-    						remaining = 0;
-    					}
+	    						remaining = 0;
+	    					}
 						
 						if ( attributeNFormat != null ) {
 
 							results = attributeNFormat.format( remaining );
-    					}
+    						}
 						else {
 							
 							results = dFmt.format( remaining );
@@ -874,18 +752,17 @@ public class RankManager
 					{
 						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
-//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						double remaining = cost - balance;
 						
 						if ( remaining < 0 ) {
     						remaining = 0;
-    					}
+						}
 						
 						if ( attributeNFormat != null ) {
 
 							results = attributeNFormat.format( remaining );
-    					}
+						}
 						else {
 							
 							results = PlaceholdersUtil.formattedMetricSISize( remaining );
@@ -902,13 +779,12 @@ public class RankManager
 					{
 						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
-//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						double percent = (balance < 0 ? 0 : 
     						(cost == 0.0d || balance > cost ? 100.0 : 
     							balance / cost * 100.0 )
     							);
-    					results = dFmt.format( percent );
+    						results = dFmt.format( percent );
 					}
 					break;
 					
@@ -917,7 +793,6 @@ public class RankManager
 					{
 						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
-//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						results = PlaceholderManagerUtils.getInstance().
 										getProgressBar( balance, cost, false, attributeBar );
@@ -1091,7 +966,7 @@ public class RankManager
 						if ( attributeNFormat != null ) {
 
 							results = attributeNFormat.format( rankScore );
-    					}
+    						}
 						else {
 							results = dFmt.format(rankScore);
 						}
@@ -1141,7 +1016,7 @@ public class RankManager
 						if ( attributeNFormat != null ) {
 
 							results = attributeNFormat.format( rsPenalty );
-    					}
+						}
 						else if ( placeHolder == PrisonPlaceHolders.prison_top_player_penalty_formatted_nnn_tp ||
 								  placeHolder == PrisonPlaceHolders.prison_tppf_nnn_tp ) {
 
@@ -1275,9 +1150,6 @@ public class RankManager
 					
 					PlayerRank pRank = rankPlayer.calculateTargetPlayerRank( rank );
 
-//					RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-//					PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
-					
 					if ( pRank == null ) {
 						results = "";
 					}
@@ -1379,7 +1251,7 @@ public class RankManager
     
     private RankPlayer getTopNRankPlayer( int rankPosition ) {
     	
-    	return TopNPlayers.getInstance().getTopNRankPlayer( rankPosition );
+    		return TopNPlayers.getInstance().getTopNRankPlayer( rankPosition );
     }
   
 
@@ -1429,42 +1301,6 @@ public class RankManager
 			
 		}
 		
-//		PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, targetRank.getLadder() );
-
-				
-//		if ( playerRank != null ) {
-//			
-//			
-////			List<Rank> 
-//			
-//			
-//			// If the player is at a higher rank, or the same rank, then the cost will be 
-//			// zero for the rank that is being passed in, since the player has
-//			// already paid for that rank.
-//			if ( rank.getPosition() <= playerRank.getRank().getPosition() ) {
-//				cost = 0;
-//			}
-//			else {
-//				//cost = playerRank.getRankCost();
-//				Rank nextRank = playerRank.getRank();
-//				
-//				while ( nextRank != null &&
-//						nextRank.getPosition() <= targetRank.getPosition() ) {
-//					
-//					// Need to calculate the next PlayerRank value for the next rank:
-//					
-//					// This calculates the target rank, and takes in to consideration the player's existing rank:
-//					playerRank = playerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
-//					
-//					
-////					playerRank = rankPlayerFactory.createPlayerRank( nextRank );
-////					playerRank = new PlayerRank(nextRank);
-//					
-//					cost += playerRank.getRankCost();
-//					nextRank = nextRank.getRankNext();
-//				}
-//			}
-//		}
 		return cost;
 	}
 
@@ -1577,68 +1413,68 @@ public class RankManager
     
 	@Override
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
-    	if ( translatedPlaceHolderKeys == null ) {
-    		translatedPlaceHolderKeys = new ArrayList<>();
-    		
-    		// This generates all the placeholders for all ranks:
-    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKS );
-
-    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKPLAYERS ) );
-    		
-    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSRANKS ) );
-    		
-    		
-    		List<Rank> ranks = PrisonRanks.getInstance().getRankManager().getRanks();
-    		for ( Rank rank : ranks ) {
-    			for ( PrisonPlaceHolders ph : placeHolders ) {
-    				
-    				String rankName = rank.getName().toLowerCase();
-    				
-    				String key = ph.name().replace( 
-    						PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rankName ).
-    							toLowerCase();
-    				
-    				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, rankName );
-    				if ( ph.getAlias() != null ) {
-    					String aliasName = ph.getAlias().name().replace( 
-    							PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rankName ).
-    								toLowerCase();
-    					placeholder.setAliasName( aliasName );
-    				}
-    				translatedPlaceHolderKeys.add( placeholder );
-    				
-    			}
-    			
-    		}
-    		
-    		
-    		// This generates all the placeholders for all ranks:
-    		List<PrisonPlaceHolders> placeHolders2 = PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSPLAYERS );
-
-    		for ( PrisonPlaceHolders ph : placeHolders2 ) {
-    			String key = ph.name();
-    			
-    			PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
-				if ( ph.getAlias() != null ) {
-					String aliasName = ph.getAlias().name();
-					placeholder.setAliasName( aliasName );
-				}
-				translatedPlaceHolderKeys.add( placeholder );
-    		}
-    		
-    	}
-    	
-    	return translatedPlaceHolderKeys;
+	    	if ( translatedPlaceHolderKeys == null ) {
+	    		translatedPlaceHolderKeys = new ArrayList<>();
+	    		
+	    		// This generates all the placeholders for all ranks:
+	    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKS );
+	
+	    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKPLAYERS ) );
+	    		
+	    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSRANKS ) );
+	    		
+	    		
+	    		List<Rank> ranks = PrisonRanks.getInstance().getRankManager().getRanks();
+	    		for ( Rank rank : ranks ) {
+	    			for ( PrisonPlaceHolders ph : placeHolders ) {
+	    				
+	    				String rankName = rank.getName().toLowerCase();
+	    				
+	    				String key = ph.name().replace( 
+	    						PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rankName ).
+	    							toLowerCase();
+	    				
+	    				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, rankName );
+	    				if ( ph.getAlias() != null ) {
+	    					String aliasName = ph.getAlias().name().replace( 
+	    							PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rankName ).
+	    								toLowerCase();
+	    					placeholder.setAliasName( aliasName );
+	    				}
+	    				translatedPlaceHolderKeys.add( placeholder );
+	    				
+	    			}
+	    			
+	    		}
+	    		
+	    		
+	    		// This generates all the placeholders for all ranks:
+	    		List<PrisonPlaceHolders> placeHolders2 = PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSPLAYERS );
+	
+	    		for ( PrisonPlaceHolders ph : placeHolders2 ) {
+	    			String key = ph.name();
+	    			
+	    			PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
+					if ( ph.getAlias() != null ) {
+						String aliasName = ph.getAlias().name();
+						placeholder.setAliasName( aliasName );
+					}
+					translatedPlaceHolderKeys.add( placeholder );
+	    		}
+	    		
+	    	}
+	    	
+	    	return translatedPlaceHolderKeys;
     }
     
     @Override
     public void reloadPlaceholders() {
-    	
-    	// clear the class variable so they will regenerate:
-    	translatedPlaceHolderKeys = null;
-    	
-    	// Regenerate the translated placeholders:
-    	getTranslatedPlaceHolderKeys();
+	    	
+	    	// clear the class variable so they will regenerate:
+	    	translatedPlaceHolderKeys = null;
+	    	
+	    	// Regenerate the translated placeholders:
+	    	getTranslatedPlaceHolderKeys();
     }
 	
     

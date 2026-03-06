@@ -4,8 +4,8 @@ public class FirstJoinHandlerMessages {
 
 	public String firstJoinWarningNoRanksOnServer() {
 		return PrisonRanks.getInstance().getRanksMessages()
-		    			.getLocalizable( "ranks_firstJoinHandler__no_ranks_on_server" )
-		    			.localize();
+			    			.getLocalizable( "ranks_firstJoinHandler__no_ranks_on_server" )
+			    			.localize();
 	}
 	
 	protected String firstJoinErrorCouldNotSavePlayer() {

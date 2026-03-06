@@ -45,18 +45,10 @@ public class LadderManager
 	public static final String LADDER_DEFAULT = "default";
 	public static final String LADDER_PRESTIGES = "prestiges";
 
-    /*
-     * Fields & Constants
-     */
-
     private Collection collection;
     private List<RankLadder> loadedLadders;
     
     private PrisonRanks prisonRanks;
-
-    /*
-     * Constructor
-     */
 
     /**
      * Instantiate this {@link LadderManager}.
@@ -69,9 +61,6 @@ public class LadderManager
         this.prisonRanks = prisonRanks;
     }
 
-    /*
-     * Methods & Getters & Setters
-     */
 
     /**
      * Loads a ladder from a file into the loaded ladders list.
@@ -91,7 +80,7 @@ public class LadderManager
         
         // Will be dirty if load a ladder and the rank name does not exist and it adds them:
         if ( ladder.isDirty() ) {
-        	saveLadder(ladder);
+        		saveLadder(ladder);
         }
     }
 
@@ -111,13 +100,13 @@ public class LadderManager
         
         for ( RankLadder ladder : loadedLadders ) {
         	
-        	// If old file exists, then set dirty so it can be saved and update the file name:
-        	checkIfOldFileExists( ladder );
-
-        	// Will be dirty if load a ladder and the rank name does not exist and it adds them:
-        	if ( ladder.isDirty() ) {
-        		saveLadder(ladder);
-        	}
+	        	// If old file exists, then set dirty so it can be saved and update the file name:
+	        	checkIfOldFileExists( ladder );
+	
+	        	// Will be dirty if load a ladder and the rank name does not exist and it adds them:
+	        	if ( ladder.isDirty() ) {
+	        		saveLadder(ladder);
+	        	}
 		}
     }
 
@@ -128,9 +117,9 @@ public class LadderManager
      * @param ladder
      */
     private void checkIfOldFileExists(RankLadder ladder) {
-    	if ( collection.exists( getLadderNameOld(ladder) )) {
-    		ladder.setDirty( true );
-    	}
+	    	if ( collection.exists( getLadderNameOld(ladder) )) {
+	    		ladder.setDirty( true );
+	    	}
 	}
 
 	/**
@@ -153,14 +142,14 @@ public class LadderManager
      */
     private void saveLadder(RankLadder ladder) throws IOException {
     	
-    	String fileLadderNameNew = getLadderNameNew(ladder);
-    	String fileLadderNameOld = getLadderNameOld(ladder);
-    	
+	    	String fileLadderNameNew = getLadderNameNew(ladder);
+	    	String fileLadderNameOld = getLadderNameOld(ladder);
+	    	
         this.saveLadder(ladder, fileLadderNameNew, fileLadderNameOld);
     }
 
     private String getLadderNameNew( RankLadder ladder ) {
-    	return "ladder_" + ladder.getName();
+    		return "ladder_" + ladder.getName();
     }
     
     /**
@@ -173,7 +162,7 @@ public class LadderManager
      * @return
      */
     private String getLadderNameOld( RankLadder ladder ) {
-    	return ladder.getId() == -1 ? null : "ladder_" + ladder.getId();
+    		return ladder.getId() == -1 ? null : "ladder_" + ladder.getId();
     }
     
     /**
@@ -192,20 +181,20 @@ public class LadderManager
      * @return success or failure.  A value of true indicates the save was successful.
      */
     public boolean save( RankLadder ladder ) {
-    	boolean success = false;
-    	
-    	try {
-    		saveLadder( ladder );
-    		success = true;
-    	}
-    	catch ( IOException e ) {
-    		
-    		String errorMessage = cannotSaveLadderFile( ladder.getName(), e.getMessage() );
-    		
-    		Output.get().logError( errorMessage, e );
-    	}
-    	
-    	return success;
+	    	boolean success = false;
+	    	
+	    	try {
+	    		saveLadder( ladder );
+	    		success = true;
+	    	}
+	    	catch ( IOException e ) {
+	    		
+	    		String errorMessage = cannotSaveLadderFile( ladder.getName(), e.getMessage() );
+	    		
+	    		Output.get().logError( errorMessage, e );
+	    	}
+	    	
+	    	return success;
     }
     
     /**
@@ -229,7 +218,7 @@ public class LadderManager
      */
     public RankLadder createLadder(String name) {
         // Set the default values...
-    	// ladder id is no longer used, so use -1:
+    		// ladder id is no longer used, so use -1:
         RankLadder newLadder = new RankLadder( -1, name );
 //        RankLadder newLadder = new RankLadder( getNextAvailableId(), name );
 
@@ -291,16 +280,15 @@ public class LadderManager
         collection.delete( getLadderNameNew(ladder) );
         collection.delete( getLadderNameOld(ladder) );
         
-//        collection.remove("ladder_" + ladder.id);
         return true;
     }
 
     public RankLadder getLadderDefault() {
-    	return getLadder( RankLadder.DEFAULT );
+    		return getLadder( RankLadder.DEFAULT );
     }
     
     public RankLadder getLadderPrestiges() {
-    	return getLadder( RankLadder.PRESTIGES );
+    		return getLadder( RankLadder.PRESTIGES );
     }
     
     /**
@@ -310,14 +298,14 @@ public class LadderManager
      * @return An optional containing either the {@link RankLadder} if it could be found, or empty if it does not exist by the specified name.
      */
     public RankLadder getLadder(String name) {
-    	RankLadder results = null;
-    	for ( RankLadder rankLadder : loadedLadders ) {
-			if ( rankLadder.getName().equalsIgnoreCase( name ) ) {
-				results = rankLadder;
-				break;
+	    	RankLadder results = null;
+	    	for ( RankLadder rankLadder : loadedLadders ) {
+				if ( rankLadder.getName().equalsIgnoreCase( name ) ) {
+					results = rankLadder;
+					break;
+				}
 			}
-		}
-    	return results;
+	    	return results;
     }
 
     /**
@@ -327,14 +315,14 @@ public class LadderManager
      * @return the {@link RankLadder} if it could be found, or null if it does not exist by the specified id.
      */
     public RankLadder getLadder(int id) {
-    	RankLadder results = null;
-    	for ( RankLadder rankLadder : loadedLadders ) {
-			if ( rankLadder.getId() == id ) {
-				results = rankLadder;
-				break;
+	    	RankLadder results = null;
+	    	for ( RankLadder rankLadder : loadedLadders ) {
+				if ( rankLadder.getId() == id ) {
+					results = rankLadder;
+					break;
+				}
 			}
-		}
-    	return results;
+	    	return results;
     }
 
     /**
@@ -399,18 +387,18 @@ public class LadderManager
 		
 		int rankCount = ladder.getRanks() == null ? 0 : ladder.getRanks().size();
     	
-    	Rank firstRank = rankCount == 0 ? null : ladder.getRanks().get(0);
-    	Rank lastRank = rankCount == 0 ? null : ladder.getRanks().get( rankCount - 1 );
-    	
-    	String ladderInfo = String.format(
-    			"&7%-12s   %16s   %5d   %-12s   %-12s", 
-    			ladder.getName(),
-    			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
-    			rankCount,
-    			(firstRank == null ? "" : firstRank.getName()),
-    			(lastRank == null ? "" : lastRank.getName())
-    			);
-		
+	    	Rank firstRank = rankCount == 0 ? null : ladder.getRanks().get(0);
+	    	Rank lastRank = rankCount == 0 ? null : ladder.getRanks().get( rankCount - 1 );
+	    	
+	    	String ladderInfo = String.format(
+	    			"&7%-12s   %16s   %5d   %-12s   %-12s", 
+	    			ladder.getName(),
+	    			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
+	    			rankCount,
+	    			(firstRank == null ? "" : firstRank.getName()),
+	    			(lastRank == null ? "" : lastRank.getName())
+	    			);
+			
 		return ladderInfo;
 	}
 
@@ -448,19 +436,19 @@ public class LadderManager
 
             if ( rankLadder == null ) {
             	
-            	String failureMsg = prisonRanks.prisonRanksFailureCreateDefaultLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
+	            	String failureMsg = prisonRanks.prisonRanksFailureCreateDefaultLadderMsg();
+	            	
+	            	Output.get().logError( failureMsg );
                 prisonRanks.getStatus().toFailed( failureMsg );
                 return;
             }
 
             if ( !save( rankLadder ) ) {
             	
-            	String failureMsg = prisonRanks.prisonRanksFailureSavingDefaultLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
-                prisonRanks.getStatus().toFailed( failureMsg );
+	            	String failureMsg = prisonRanks.prisonRanksFailureSavingDefaultLadderMsg();
+	            	
+	            	Output.get().logError( failureMsg );
+	                prisonRanks.getStatus().toFailed( failureMsg );
             }
         }
 
@@ -469,18 +457,18 @@ public class LadderManager
 
             if ( rankLadder == null ) {
 
-            	String failureMsg = prisonRanks.prisonRanksFailureCreatePrestigeLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
+	            	String failureMsg = prisonRanks.prisonRanksFailureCreatePrestigeLadderMsg();
+	            	
+	            	Output.get().logError( failureMsg );
                 prisonRanks.getStatus().toFailed( failureMsg );
                 return;
             }
 
             if ( !save( rankLadder ) ) {
 
-            	String failureMsg = prisonRanks.prisonRanksFailureSavingPrestigeLadderMsg();
-            	
-            	Output.get().logError( failureMsg );
+	            	String failureMsg = prisonRanks.prisonRanksFailureSavingPrestigeLadderMsg();
+	            	
+	            	Output.get().logError( failureMsg );
                 prisonRanks.getStatus().toFailed( failureMsg );
             }
         }

@@ -18,8 +18,9 @@ These change logs represent the work that has been going on within prison.
 
 
 
+* **Prison Cleanup: prison-ranks: Removed obsolete and unneeded comments and fix indentation where needed.**
 
-* **Prison Cleanup: Mines: Removed obsolete and unneeded comments and fix indentation where needed.**
+* **Prison Cleanup: prison-mines: Removed obsolete and unneeded comments and fix indentation where needed.**
 
 
 * **General cleanup: these are works in progress (wip) that have not been finalized.** If it's source, its been moved to a package with .wip.in the name.  These may be deleted in the future or they could be used.

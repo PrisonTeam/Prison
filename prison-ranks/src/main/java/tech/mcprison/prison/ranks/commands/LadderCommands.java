@@ -32,7 +32,7 @@ public class LadderCommands
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if ( ladder != null ) {
         			
-        	ladderAddAlreadyExistsMsg( sender, ladderName );
+        		ladderAddAlreadyExistsMsg( sender, ladderName );
             return;
         }
 
@@ -40,7 +40,7 @@ public class LadderCommands
 
         if ( rankLadder == null ) {
         	
-        	ladderAddCreationErrorMsg( sender, ladderName );
+        		ladderAddCreationErrorMsg( sender, ladderName );
         	
             return;
         }
@@ -48,17 +48,17 @@ public class LadderCommands
         if ( PrisonRanks.getInstance().getLadderManager().save(rankLadder) ) {
 
         	
-        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
-        	
-        	
-        	ladderAddCreatedMsg( sender, ladderName );
+	        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+	        	
+	        	
+	        	ladderAddCreatedMsg( sender, ladderName );
             
         }
         else {
         	
-        	ladderAddCreationErrorMsg( sender, ladderName );
-
-        	ladderAddCouldNotSaveMsg( sender );
+	        	ladderAddCreationErrorMsg( sender, ladderName );
+	
+	        	ladderAddCouldNotSaveMsg( sender );
         }
     }
 
@@ -68,30 +68,30 @@ public class LadderCommands
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         if ( ladder == null ) {
-        	ladderDoesNotExistsMsg( sender, ladderName );
+        		ladderDoesNotExistsMsg( sender, ladderName );
             return;
         }
         
         if (ladder.getName().equalsIgnoreCase( LadderManager.LADDER_DEFAULT )) {
-        	ladderDeleteCannotDeleteDefaultMsg( sender );
-        	return;
+	        	ladderDeleteCannotDeleteDefaultMsg( sender );
+	        	return;
         }
 
         if (ladder.getName().equalsIgnoreCase( LadderManager.LADDER_PRESTIGES )) {
-        	ladderDeleteCannotDeletePrestigesMsg( sender );
-        	return;
+	        	ladderDeleteCannotDeletePrestigesMsg( sender );
+	        	return;
         }
         
         if ( ladder.getRanks().size() > 0 ) {
-        	ladderDeleteCannotDeleteWithRanksMsg( sender );
-        	return;
+	        	ladderDeleteCannotDeleteWithRanksMsg( sender );
+	        	return;
         }
         
         if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder) ) {
-        	ladderDeletedMsg( sender, ladderName );
+        		ladderDeletedMsg( sender, ladderName );
 
         } else {
-        	ladderErrorMsg( sender );
+        		ladderErrorMsg( sender );
         }
     }
 
@@ -99,49 +99,8 @@ public class LadderCommands
     								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderList(CommandSender sender) {
         
-    	ChatDisplay display = getLadderList();
+    		ChatDisplay display = getLadderList();
     	
-//    	ChatDisplay display = new ChatDisplay("Ladders");
-//
-//    	display.addSupportHyperLinkData( "Ladder List" );
-//        
-//        BulletedListComponent.BulletedListBuilder list =
-//        					new BulletedListComponent.BulletedListBuilder();
-//        
-////        DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
-//        
-////        String header = String.format( 
-////        		"&d%-12s   %16s   %5s   %12s   %12s",
-////        		"Ladder",
-////        		"Rank Cost Mult",
-////        		"Ranks",
-////        		"First Rank",
-////        		"Last Rank"
-////        		);
-//        
-//        list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoHeader() );
-//        
-//        for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders()) {
-//        	
-////        	int rankCount = ladder.getRanks() == null ? 0 : ladder.getRanks().size();
-////        	
-////        	Rank firstRank = rankCount == 0 ? null : ladder.getRanks().get(0);
-////        	Rank lastRank = rankCount == 0 ? null : ladder.getRanks().get( rankCount - 1 );
-////        	
-////        	String ladderInfo = String.format(
-////        			"&7%-12s   %16s   %4d   %-12s   %-12s", 
-////        			ladder.getName(),
-////        			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
-////        			rankCount,
-////        			firstRank.getName(),
-////        			lastRank.getName()
-////        			);
-//        	
-//            list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoDetail( ladder ) );
-//        }
-//        
-//        display.addComponent(list.build());
-
         display.send(sender);
     }
     
@@ -187,69 +146,9 @@ public class LadderCommands
         
         display.addComponent(list.build());
     
-    	return display;
+        return display;
     }
 
-//    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
-//    								onlyPlayers = false, permissions = "ranks.ladder")
-//    public void ladderInfo(
-//    		CommandSender sender, 
-//    		@Arg(name = "ladderName", def = "default", 
-//    		description = "The ladder name to display the ranks on. " +
-//    				"Defaults to the default ladder") String ladderName
-//    		
-//    		) {
-//        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-//
-//        if ( ladder == null ) {
-//        	ladderDoesNotExistsMsg( sender, ladderName );
-//            return;
-//        }
-//
-//        ChatDisplay display = new ChatDisplay(ladder.getName());
-//        display.addText( ladderHasRankMsg() );
-//
-//        BulletedListComponent.BulletedListBuilder builder =
-//            new BulletedListComponent.BulletedListBuilder();
-//        
-//        boolean first = true;
-//        for (Rank rank : ladder.getRanks()) {
-////        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
-//        	if ( rank == null ) {
-//        		continue;
-//        	}
-//        	
-////            Optional<Rank> rankOptional =
-////                PrisonRanks.getInstance().getRankManager().getRankOptional(rankPos.getRankId());
-////            if(!rankOptional.isPresent()) {
-////                continue; // Skip it
-////            }
-//            
-//            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
-//            
-//            String defaultRankValue = ladderDefaultRankMsg();
-//
-//            builder.add("&3(#%s) &8- &3%s (rankId: %s%s%s) %s", 
-//            		Integer.toString( rank.getPosition() ),
-//            		rank.getName(),
-//            		
-//            		Integer.toString( rank.getId() ),
-//            		(rank.getRankPrior() == null ? "" : " -"),
-//            		(rank.getRankNext() == null ? "" : " +"),
-//            		
-//                (defaultRank ? defaultRankValue : "")
-//            	);
-//            first = false;
-//        }
-//
-//        String seeRanksList = ladderSeeRanksListMsg();
-//        
-//        builder.add( seeRanksList );
-//        
-//        display.addComponent(builder.build());
-//        
-//        display.send(sender);
-//    }
     
     @Command(identifier = "ranks ladder moveRank", description = "Moves a rank to a new " +
     		"ladder position or a new ladder.", 
@@ -263,16 +162,16 @@ public class LadderCommands
 				description = "Position where you want the rank to be moved to. " +
 						"0 is the first position in the ladder.") int position) {
     	
-    	ladderMoveRankNoticeMsg( sender );
-    	
-    	ladderRemoveRank( sender, rankName );
-    	
-    	// If '*no-ladder*' then don't try to reassign it to another ladder:
-    	if ( !ladderName.equalsIgnoreCase( "*no-ladder*" ) ) {
-    		
-    		ladderAddRank(sender, ladderName, rankName, position );
-    	}
-    	
+	    	ladderMoveRankNoticeMsg( sender );
+	    	
+	    	ladderRemoveRank( sender, rankName );
+	    	
+	    	// If '*no-ladder*' then don't try to reassign it to another ladder:
+	    	if ( !ladderName.equalsIgnoreCase( "*no-ladder*" ) ) {
+	    		
+	    		ladderAddRank(sender, ladderName, rankName, position );
+	    	}
+	    	
     }
 
 //    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder, or move a rank.", 
@@ -286,19 +185,19 @@ public class LadderCommands
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         
         if ( ladder == null ) {
-        	ladderDoesNotExistsMsg( sender, ladderName );
+        		ladderDoesNotExistsMsg( sender, ladderName );
             return;
         }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
 //        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
         if ( rank == null ) {
-        	ladderRankDoesNotExistMsg( sender, rankName );
+        		ladderRankDoesNotExistMsg( sender, rankName );
             return;
         }
 
         if (ladder.containsRank( rank )) {
-        	ladderAlreadyHasRankMsg( sender, ladderName, rankName );
+        		ladderAlreadyHasRankMsg( sender, ladderName, rankName );
             return;
         }
 
@@ -310,7 +209,7 @@ public class LadderCommands
 
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
             
-        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        		Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
         	
         	
             // Recalculate the ladder's base rank cost multiplier:
@@ -321,9 +220,9 @@ public class LadderCommands
         } 
         else {
         	
-        	ladderErrorAddingMsg( sender );
-        	
-        	ladderErrorSavingMsg( sender );
+	        	ladderErrorAddingMsg( sender );
+	        	
+	        	ladderErrorSavingMsg( sender );
         }
     }
 
@@ -334,31 +233,23 @@ public class LadderCommands
 //    			"But note, this is ignored and the real ladder used is the ladder tied to the rank.") String ladderName,
 //        @Arg(name = "rankName") 
     		String rankName) {
-//        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-        
-//        if ( ladder == null ) {
-//        	ladderDoesNotExistsMsg( sender, ladderName );
-//            return;
-//        }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-//        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
         if ( rank == null ) {
-        	ladderRankDoesNotExistMsg( sender, rankName );
+        		ladderRankDoesNotExistMsg( sender, rankName );
             return;
         }
 
         RankLadder ladder = rank.getLadder();
         
         if ( ladder == null ) {
-        	Output.get().logInfo(
-        			"The rank %s has no ladder, so ladder cannot be removed.",
-        			rank.getName() );
-        	return;
+	        	Output.get().logInfo(
+	        			"The rank %s has no ladder, so ladder cannot be removed.",
+	        			rank.getName() );
+	        	return;
         }
         ladder.removeRank( rank );
         
-//        ladder.removeRank(ladder.getPositionOfRank(rank));
 
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 
@@ -377,8 +268,8 @@ public class LadderCommands
             ladderRemovedRankFromLadderMsg( sender, rankName, ladder.getName() );
         } 
         else {
-        	ladderErrorRemovingingMsg( sender );
-        	ladderErrorSavingMsg( sender );
+	        	ladderErrorRemovingingMsg( sender );
+	        	ladderErrorSavingMsg( sender );
         }
 
     }
@@ -453,11 +344,6 @@ public class LadderCommands
 			return;
 		}
 
-//		if ( rankCostMultiplier < -100d || rankCostMultiplier > 100d ) {
-//			
-//			ladderSetRankCostMultiplierOutOfRangeMsg( sender, rankCostMultiplier );
-//			return;
-//		}
 		
 		double oldRankCostMultiplier = ladder.getRankCostMultiplierPerRank() * 100;
 		
@@ -581,73 +467,56 @@ public class LadderCommands
         RankLadder ladder = lm.getLadder(ladderName);
         
         if ( ladder == null ) {
-        	ladderDoesNotExistsMsg( sender, ladderName );
+        		ladderDoesNotExistsMsg( sender, ladderName );
             return;
         }
 
         
         if ( exponent <= 0 ) {
-        	sender.sendMessage("Error: ranks ladder resetRankCosts: Exponent parameter must be greater than zero.");
-        	return;
+	        	sender.sendMessage("Error: ranks ladder resetRankCosts: Exponent parameter must be greater than zero.");
+	        	return;
         }
         
         // Force a backup:
-    	PrisonBackups prisonBackup = new PrisonBackups();
-    	
-    	String backupComment = String.format( 
-    							"Resetting all rank costs on ladder %s.", 
-    							ladder.getName() );
-    	String message = prisonBackup.startBackup( BackupTypes.auto, backupComment );
-    	
-    	sender.sendMessage( message );
-    	sender.sendMessage( "Forced a Backup of prison configs prior to changing rank costs." );
-
+	    	PrisonBackups prisonBackup = new PrisonBackups();
+	    	
+	    	String backupComment = String.format( 
+	    							"Resetting all rank costs on ladder %s.", 
+	    							ladder.getName() );
+	    	String message = prisonBackup.startBackup( BackupTypes.auto, backupComment );
+	    	
+	    	sender.sendMessage( message );
+	    	sender.sendMessage( "Forced a Backup of prison configs prior to changing rank costs." );
         
         int ranksChanged = 0;
         
         int i = 1;
         for (Rank rank : ladder.getRanks() ) {
 			
-        	double cost = Math.pow(initialCost * i++ * addMult, exponent );
-        	
-        	if ( rank.getRawRankCost() != cost ) {
-        		rank.setRawRankCost( cost );
-        		
-        		rm.saveRank( rank );
-        		
-        		ranksChanged++;
-        	}
+	        	double cost = Math.pow(initialCost * i++ * addMult, exponent );
+	        	
+	        	if ( rank.getRawRankCost() != cost ) {
+	        		rank.setRawRankCost( cost );
+	        		
+	        		rm.saveRank( rank );
+	        		ranksChanged++;
+	        	}
         	
 		}
 
         if ( ranksChanged > 0 ) {
-        	// Reload the placeholders: 
-        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
-        	
-        	String msg = String.format(
-        			"Done resetting all rank costs on the '%s' ladder. "
-        			+ "There were %d ranks that had cost changes.", 
-        			ladder.getName(),
-        			ranksChanged );
-        	
-        	Output.get().logInfo( msg );
+	        	// Reload the placeholders: 
+	        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+	        	
+	        	String msg = String.format(
+	        			"Done resetting all rank costs on the '%s' ladder. "
+	        			+ "There were %d ranks that had cost changes.", 
+	        			ladder.getName(),
+	        			ranksChanged );
+	        	
+	        	Output.get().logInfo( msg );
         }
-        
-//        for ( int i = 0; i < prestigeRanks; i++ ) {
-//			String name = "P" + (i + 1);
-//			String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
-//			double cost = prestigeCost * (i + 1) * prestigeMult;
-//			
-//			// Only add prestige ranks if they do not already exist:
-//			if ( PrisonRanks.getInstance().getRankManager().getRank( name ) == null ) {
-//				
-//				createRank(sender, name, cost, LadderManager.LADDER_PRESTIGES, tag, "noPlaceholderUpdate");
-//				prestigesCount++;
-//			}
-//		}
-
 
     }
 
-	
 }

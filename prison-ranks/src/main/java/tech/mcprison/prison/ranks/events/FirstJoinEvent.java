@@ -27,23 +27,11 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
  */
 public class FirstJoinEvent {
 
-    /*
-     * Fields & Constants
-     */
-
     private RankPlayer player;
-
-    /*
-     * Constructors
-     */
 
     public FirstJoinEvent(RankPlayer player) {
         this.player = player;
     }
-
-    /*
-     * Getters & Setters
-     */
 
     public RankPlayer getPlayer() {
         return player;

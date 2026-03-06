@@ -35,8 +35,8 @@ public class RankUpCommandMessages
 	
 	protected String rankupCannotRunFromConsoleMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_rankup__cannot_run_from_console" )
-    			.localize();
+	    			.getLocalizable( "ranks_rankup__cannot_run_from_console" )
+	    			.localize();
 	}
 	
 	protected void rankupInvalidPlayerNameMsg(CommandSender sender, String playerName) {
@@ -66,24 +66,24 @@ public class RankUpCommandMessages
 	
 	protected void rankupErrorNoLadderMsg( CommandSender sender, String ladderName ) {
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankup__error_no_ladder" )
-		.withReplacements( ladderName )
-		.sendTo( sender );
+				.getLocalizable( "ranks_rankup__error_no_ladder" )
+				.withReplacements( ladderName )
+				.sendTo( sender );
 	}
 	
 	protected void rankupErrorNoRankOnLadderMsg( CommandSender sender, String ladderName ) {
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankup__error_no_lower_rank_on_ladder" )
-		.withReplacements( ladderName )
-		.sendTo( sender );
+				.getLocalizable( "ranks_rankup__error_no_lower_rank_on_ladder" )
+				.withReplacements( ladderName )
+				.sendTo( sender );
 	}
 	
 	protected void rankupErrorPlayerNotOnDefaultLadder( CommandSender sender, 
 							RankPlayer rankPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankup__error_player_not_on_default_ladder" )
-		.withReplacements( rankPlayer.getName() )
-		.sendTo( sender );
+				.getLocalizable( "ranks_rankup__error_player_not_on_default_ladder" )
+				.withReplacements( rankPlayer.getName() )
+				.sendTo( sender );
 	}
 	
 	protected void rankupNotAtLastRankMsg( CommandSender sender, 
@@ -96,8 +96,8 @@ public class RankUpCommandMessages
 	protected void rankupAtLastRankMsg( CommandSender sender, 
 			RankPlayer rPlayer  ) {
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankup__at_last_rank" )
-		.sendTo( sender, rPlayer );
+				.getLocalizable( "ranks_rankup__at_last_rank" )
+				.sendTo( sender, rPlayer );
 	}
 	
 	protected void rankupNotAbleToPrestigeMsg( CommandSender sender, 
@@ -134,9 +134,9 @@ public class RankUpCommandMessages
 	protected void prestigePlayerSucessfulBroadcastMsg( CommandSender sender, String tag, 
 			RankPlayer rPlayer ) {
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankup__prestige_successful_broadcast" )
-		.withReplacements( tag )
-		.sendTo( sender, rPlayer );
+				.getLocalizable( "ranks_rankup__prestige_successful_broadcast" )
+				.withReplacements( tag )
+				.sendTo( sender, rPlayer );
 	}
 	
 	protected void prestigePlayerFailureMsg( CommandSender sender, String tag, 
@@ -233,7 +233,7 @@ public class RankUpCommandMessages
 			.sendTo( sender, rPlayer );
 		
 		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
-		.withReplacements( 
+			.withReplacements( 
 				dFmt.format( balance),
 				currency == null || currency.trim().length() == 0 ? 
 						"" : " " + currency )
@@ -275,7 +275,7 @@ public class RankUpCommandMessages
 		LocaleManager rMsg = PrisonRanks.getInstance().getRanksMessages();
 		
 		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
-		.withReplacements( 
+			.withReplacements( 
 				dFmt.format( balance),
 				currency == null || currency.trim().length() == 0 ? 
 						"" : " " + currency )
@@ -334,7 +334,6 @@ public class RankUpCommandMessages
 		
 		RankPlayer rPlayer = results.getRankPlayer();
 		
-//		PlayerRank tpRank = results.getPlayerRankTarget();
 		Rank tRank = results.getTargetRank();
 		
 		
@@ -350,108 +349,96 @@ public class RankUpCommandMessages
        					"ranks_rankup__demote_success" :
        					"ranks_rankup__rankup_success" ;
 
-    	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
-    	
-    	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( messageId )
-    			.withReplacements(
-    					
-    					(playerName == null ? messagNoPlayerName : playerName),
-    					(tRank == null ? "" : tRank.getTag() ), 
-    					(results.getMessage() != null ? results.getMessage() : "")
-    				);
-    	
-    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_rankup__log_rank_change" )
-    			.withReplacements(
-    					
-    					sender.getName(), localManager.localize()
-    				);           	
-    	Output.get().logInfo( 
-    			rPlayer.convertStringPlaceholders( 
-    					localManagerLog.localize() ));
+	    	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
+	    			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
+	    	
+	    	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
+	    			.getLocalizable( messageId )
+	    			.withReplacements(
+	    					
+	    					(playerName == null ? messagNoPlayerName : playerName),
+	    					(tRank == null ? "" : tRank.getTag() ), 
+	    					(results.getMessage() != null ? results.getMessage() : "")
+	    				);
+	    	
+	    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	    			.getLocalizable( "ranks_rankup__log_rank_change" )
+	    			.withReplacements(
+	    					
+	    					sender.getName(), localManager.localize()
+	    				);           	
+	    	Output.get().logInfo( 
+	    			rPlayer.convertStringPlaceholders( 
+	    					localManagerLog.localize() ));
 
     	
-    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
-    		String messagNoPlayerNameBroadcast = PrisonRanks.getInstance().getRanksMessages()
-    				.getLocalizable( "ranks_rankup__rankup_no_player_name_broadcast" ).localize();
-    		
-    		PrisonRanks.getInstance().getRanksMessages()
-        		.getLocalizable( messageId )
-        		.withReplacements(
-    				
-    				(playerName == null ? messagNoPlayerNameBroadcast : playerName),
-    				(tRank == null ? "" : tRank.getTag() ), 
-    				(results.getMessage() != null ? results.getMessage() : "")
-    			)
-        		.broadcast( rPlayer );
-    	}
-    	else {
-    		localManager.sendTo( sender, rPlayer );
-    	}
+	    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+	    		String messagNoPlayerNameBroadcast = PrisonRanks.getInstance().getRanksMessages()
+	    				.getLocalizable( "ranks_rankup__rankup_no_player_name_broadcast" ).localize();
+	    		
+	    		PrisonRanks.getInstance().getRanksMessages()
+	        		.getLocalizable( messageId )
+	        		.withReplacements(
+	    				
+	    				(playerName == null ? messagNoPlayerNameBroadcast : playerName),
+	    				(tRank == null ? "" : tRank.getTag() ), 
+	    				(results.getMessage() != null ? results.getMessage() : "")
+	    			)
+	        		.broadcast( rPlayer );
+	    	}
+	    	else {
+	    		localManager.sendTo( sender, rPlayer );
+	    	}
 	}
 
 	protected void ranksRankupMaxSuccessMsg( CommandSender sender, StringBuilder ranks, 
 			RankPlayer rPlayer ) {
 		
-    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_rankup__log_rank_change" )
-    			.withReplacements(
-    					
-    					sender.getName(), ranks.toString()
-    				);
-    	
-    	// Print to console for record:
-    	Output.get().logInfo( localManagerLog.localize() );
-    	
-    	String messageId = "ranks_rankup__rankup_success" ;
-    	
-//    	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
-//    			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
-    	
+	    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	    			.getLocalizable( "ranks_rankup__log_rank_change" )
+	    			.withReplacements(
+	    					
+	    					sender.getName(), ranks.toString()
+	    				);
+	    	
+	    	// Print to console for record:
+	    	Output.get().logInfo( localManagerLog.localize() );
+	    	
+	    	String messageId = "ranks_rankup__rankup_success" ;
+	    	
+	    	
 
+	
+	    	String messagNoPlayerNameBroadcast = PrisonRanks.getInstance().getRanksMessages()
+	    			.getLocalizable( "ranks_rankup__rankup_no_player_name_broadcast" ).localize();
+	    	
+	    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+	    		
+	    		PrisonRanks.getInstance().getRanksMessages()
+	        		.getLocalizable( messageId )
+	        		.withReplacements(
+	    				
+	    				(rPlayer.getName() == null ? messagNoPlayerNameBroadcast : rPlayer.getName() ),
+	    				ranks.toString(), 
+	    				""  // no message - do not have anything configured for rankupmax on this?
+	    			)
+	        		.broadcast( rPlayer );
+	    	}
+	    	else {
+	    		
+	        	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
+	        			.getLocalizable( messageId )
+	        			.withReplacements(
+	        					
+	        	  				(rPlayer.getName() == null ? messagNoPlayerNameBroadcast : rPlayer.getName() ),
+	            				ranks.toString(), 
+	            				""  // no message - do not have anything configured for rankupmax on this?
+	          
+	        				);
+	        	
+	    		localManager.sendTo( sender, rPlayer );
+	    	}
 
-    	String messagNoPlayerNameBroadcast = PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_rankup__rankup_no_player_name_broadcast" ).localize();
-    	
-    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
-    		
-    		PrisonRanks.getInstance().getRanksMessages()
-        		.getLocalizable( messageId )
-        		.withReplacements(
-    				
-    				(rPlayer.getName() == null ? messagNoPlayerNameBroadcast : rPlayer.getName() ),
-    				ranks.toString(), 
-    				""  // no message - do not have anything configured for rankupmax on this?
-    			)
-        		.broadcast( rPlayer );
-    	}
-    	else {
-    		
-        	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( messageId )
-        			.withReplacements(
-        					
-        	  				(rPlayer.getName() == null ? messagNoPlayerNameBroadcast : rPlayer.getName() ),
-            				ranks.toString(), 
-            				""  // no message - do not have anything configured for rankupmax on this?
-          
-        				);
-        	
-    		localManager.sendTo( sender, rPlayer );
-    	}
-
-    	
-//    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
-//    		
-//    		localManagerLog.broadcast( rPlayer );
-//    		
-//    	}
-//    	else {
-//    		
-//    		localManagerLog.sendTo( sender, rPlayer );
-//    	}
 	}
 	
 	protected void ranksRankupCannotAffordMsg( CommandSender sender, 
@@ -470,15 +457,15 @@ public class RankUpCommandMessages
     	
 		Rank tRank = tpRank.getRank();
 		
-    	PrisonRanks.getInstance().getRanksMessages()
-	    		.getLocalizable( "ranks_rankup__rankup_cant_afford" )
-	    		.withReplacements(
-				
-    				dFmt.format( tpRank == null ? 0 : tpRank.getRankCost()), 
-    				tRank == null || tRank.getCurrency() == null ? "" : 
-    					" " +tRank.getCurrency()
-				)
-	    		.sendTo( sender, rPlayer );
+	    	PrisonRanks.getInstance().getRanksMessages()
+		    		.getLocalizable( "ranks_rankup__rankup_cant_afford" )
+		    		.withReplacements(
+					
+	    				dFmt.format( tpRank == null ? 0 : tpRank.getRankCost()), 
+	    				tRank == null || tRank.getCurrency() == null ? "" : 
+	    					" " +tRank.getCurrency()
+					)
+		    		.sendTo( sender, rPlayer );
 	}
 
 	protected void ranksRankupLowestRankMsg( CommandSender sender, String playerName,
@@ -545,8 +532,8 @@ public class RankUpCommandMessages
 			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankup__rankup_failed_to_assign_rank_with_refund" )
-		.sendTo( sender, rPlayer );
+			.getLocalizable( "ranks_rankup__rankup_failed_to_assign_rank_with_refund" )
+			.sendTo( sender, rPlayer );
 	}
 	
 	protected void ranksRankupFailureCouldNotSavePlayerFileMsg( CommandSender sender, 
@@ -598,8 +585,8 @@ public class RankUpCommandMessages
 			RankPlayer rPlayer ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankup__rankup_economy_failed" )
-		.sendTo( sender, rPlayer );
+			.getLocalizable( "ranks_rankup__rankup_economy_failed" )
+			.sendTo( sender, rPlayer );
 	}
 	
 	protected void ranksRankupFailureLadderRemovedMsg( CommandSender sender, 

@@ -50,29 +50,29 @@ public class CommandCommands
         }
 
         if ( command.contains( "%" ) ) {
-        	ranksCommandAddCannotUsePercentSymbols( sender );
-        	return;
+	        	ranksCommandAddCannotUsePercentSymbols( sender );
+	        	return;
         }
         
         if ( rankName != null && "placeholders".equalsIgnoreCase( rankName ) ) {
         	
-        	String placeholders = 
-        			
-        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
-        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
-        			
-        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTaskData.CommandEnvironment.rank_commands );
-        	
-        	String message = ranksCommandAddPlaceholdersMsg( placeholders );
-        	
-        	sender.sendMessage( message );
-        	return;
+	        	String placeholders = 
+	        			
+	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
+	        			
+	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+										PrisonCommandTaskData.CommandEnvironment.rank_commands );
+	        	
+	        	String message = ranksCommandAddPlaceholdersMsg( placeholders );
+	        	
+	        	sender.sendMessage( message );
+	        	return;
         }
         
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
-        	rankDoesNotExistMsg( sender, rankName );
+        		rankDoesNotExistMsg( sender, rankName );
             return;
         }
 
@@ -108,13 +108,13 @@ public class CommandCommands
     					Integer row) {
     	
         if ( row == null || row <= 0 ) {
-        	rankRowNumberMustBeGreaterThanZero( sender, row );
-        	return;        	
+	        	rankRowNumberMustBeGreaterThanZero( sender, row );
+	        	return;        	
         }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null) {
-        	rankDoesNotExistMsg( sender, rankName );
+        		rankDoesNotExistMsg( sender, rankName );
             return;
         }
 
@@ -123,20 +123,20 @@ public class CommandCommands
         }
 
         if ( row > rank.getRankUpCommands().size() ) {
-        	rankRowNumberTooHigh( sender, rank.getRankUpCommands().size(), row );
-        	return;        	
+	        	rankRowNumberTooHigh( sender, rank.getRankUpCommands().size(), row );
+	        	return;        	
         }
         
         String oldCommand = rank.getRankUpCommands().remove( (int) row - 1 );
         
         if ( oldCommand != null ) {
-        	
-        	PrisonRanks.getInstance().getRankManager().saveRank( rank );
-        	
-        	ranksCommandRemoveSuccessMsg( sender, oldCommand, rank.getName() );
+	        	
+	        	PrisonRanks.getInstance().getRankManager().saveRank( rank );
+	        	
+	        	ranksCommandRemoveSuccessMsg( sender, oldCommand, rank.getName() );
 
         } else {
-        	ranksCommandRemoveFailedMsg( sender );
+        		ranksCommandRemoveFailedMsg( sender );
         }
         
         // Redisplay the the rank command list:
@@ -152,12 +152,12 @@ public class CommandCommands
     	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
-        	rankDoesNotExistMsg( sender, rankName );
+        		rankDoesNotExistMsg( sender, rankName );
             return;
         }
 
         if (rank.getRankUpCommands() == null || rank.getRankUpCommands().size() == 0) {
-        	ranksCommandListContainsNoneMsg( sender, rank.getName() );
+        		ranksCommandListContainsNoneMsg( sender, rank.getName() );
             return;
         }
         
@@ -176,7 +176,7 @@ public class CommandCommands
 		ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( title ));
         if ( !noRemoves ) {
         	
-        	display.addText( ranksCommandListClickCmdToRemoveMsg() );
+        		display.addText( ranksCommandListClickCmdToRemoveMsg() );
         }
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -184,18 +184,18 @@ public class CommandCommands
         int rowNumber = 1;
         for (String command : rank.getRankUpCommands()) {
         	
-        	RowComponent row = new RowComponent();
-        	
-        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+	        	RowComponent row = new RowComponent();
+	        	
+	        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
         	
             FancyMessage msg = new FancyMessage("&3/" + command);
             row.addFancy( msg );
             
             if ( !noRemoves ) {
-            	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-            			.suggest("/ranks command remove " + rank.getName() + " " + (rowNumber - 1) )
-            			.tooltip( ranksCommandListClickToRemoveMsg() );
-            	row.addFancy( msgRemove );
+	            	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+	            			.suggest("/ranks command remove " + rank.getName() + " " + (rowNumber - 1) )
+	            			.tooltip( ranksCommandListClickToRemoveMsg() );
+	            	row.addFancy( msgRemove );
             }
 	
             builder.add( row );
@@ -224,37 +224,38 @@ public class CommandCommands
     			@Arg(name = "command", 
     				description = "The command to add without / prefix. Will be ran as a console command.") 
     					@Wildcard String command) {
+    	
         if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
         }
         
         if ( command.contains( "%" ) ) {
-        	ranksCommandAddCannotUsePercentSymbols( sender );
-        	return;
+	        	ranksCommandAddCannotUsePercentSymbols( sender );
+	        	return;
         }
 
         if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
         	
-        	String placeholders = PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
-											PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
-        			
-									PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
-											PrisonCommandTaskData.CommandEnvironment.rank_commands );
-        	
-        	String message = ladderCommandAddPlaceholdersMsg( placeholders );
-        	
-        	sender.sendMessage( message );
-        	return;
+	        	String placeholders = PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+												PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
+	        			
+										PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+												PrisonCommandTaskData.CommandEnvironment.rank_commands );
+	        	
+	        	String message = ladderCommandAddPlaceholdersMsg( placeholders );
+	        	
+	        	sender.sendMessage( message );
+	        	return;
         }
         
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
         if ( ladder == null ) {
-        	ladderDoesNotExistMsg( sender, ladderName );
+        		ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
         if (ladder.getRankUpCommands() == null) {
-        	ladder.setRankUpCommands( new ArrayList<>() );
+        		ladder.setRankUpCommands( new ArrayList<>() );
         }
         
         
@@ -286,13 +287,13 @@ public class CommandCommands
     					Integer row) {
     	
         if ( row == null || row <= 0 ) {
-        	rankRowNumberMustBeGreaterThanZero( sender, row );
-        	return;        	
+	        	rankRowNumberMustBeGreaterThanZero( sender, row );
+	        	return;        	
         }
 
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if ( ladder == null) {
-        	ladderDoesNotExistMsg( sender, ladderName );
+        		ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
@@ -301,20 +302,20 @@ public class CommandCommands
         }
 
         if ( row > ladder.getRankUpCommands().size() ) {
-        	rankRowNumberTooHigh( sender, ladder.getRankUpCommands().size(), row );
-        	return;        	
+	        	rankRowNumberTooHigh( sender, ladder.getRankUpCommands().size(), row );
+	        	return;        	
         }
         
         String oldCommand = ladder.getRankUpCommands().remove( (int) row - 1 );
         
         if ( oldCommand != null ) {
         	
-        	PrisonRanks.getInstance().getLadderManager().save( ladder );
-        	
-        	ladderCommandRemoveSuccessMsg( sender, oldCommand, ladder.getName() );
+	        	PrisonRanks.getInstance().getLadderManager().save( ladder );
+	        	
+	        	ladderCommandRemoveSuccessMsg( sender, oldCommand, ladder.getName() );
 
         } else {
-        	ladderCommandRemoveFailedMsg( sender );
+        		ladderCommandRemoveFailedMsg( sender );
         }
         
         // Redisplay the the rank command list:
@@ -329,12 +330,12 @@ public class CommandCommands
     	
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
         if ( ladder == null ) {
-        	ladderDoesNotExistMsg( sender, ladderName );
+        		ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
         if (ladder.getRankUpCommands() == null || ladder.getRankUpCommands().size() == 0) {
-        	ladderCommandListContainsNoneMsg( sender, ladder.getName() );
+        		ladderCommandListContainsNoneMsg( sender, ladder.getName() );
             return;
         }
         
@@ -350,7 +351,7 @@ public class CommandCommands
 	{
 		ChatDisplay display = new ChatDisplay( ladderCommandListCmdHeaderMsg( ladder.getName() ));
         if ( !noRemoves ) {
-        	display.addText( ranksCommandListClickCmdToRemoveMsg() );
+        		display.addText( ranksCommandListClickCmdToRemoveMsg() );
         }
         
         BulletedListComponent.BulletedListBuilder builder =
@@ -358,20 +359,20 @@ public class CommandCommands
 
         int rowNumber = 1;
         for (String command : ladder.getRankUpCommands()) {
-        	
-        	RowComponent row = new RowComponent();
-        	
-        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+	        	
+	        	RowComponent row = new RowComponent();
+	        	
+	        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
         	
             FancyMessage msg = new FancyMessage("&3/" + command);
             row.addFancy( msg );
             
             if ( !noRemoves ) {
             	
-            	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-            			.suggest("/ranks ladder command remove " + ladder.getName() + " " + (rowNumber - 1) )
-            			.tooltip( ranksCommandListClickToRemoveMsg() );
-            	row.addFancy( msgRemove );
+	            	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+	            			.suggest("/ranks ladder command remove " + ladder.getName() + " " + (rowNumber - 1) )
+	            			.tooltip( ranksCommandListClickToRemoveMsg() );
+	            	row.addFancy( msgRemove );
             }
 	
             builder.add( row );
