@@ -167,6 +167,137 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
+tasks.register('zipSource', Zip) {
+    group = 'prison'
+    description = 'Creates a versioned ZIP of source, resources, and all Gradle/AI metadata.'
+
+    archiveBaseName = "Prison-Context"
+    archiveVersion = project.version
+    destinationDirectory = file("$rootDir/zip_snapshots")
+
+    // 1. Root Orchestration Files
+    from(rootDir) {
+        include 'build.gradle'
+        include 'settings.gradle'
+        include 'gradle.properties'
+        include 'gradle/libs.versions.toml'
+    }
+
+    // 2. The "Brain" Folder (Your AI metadata)
+    from("$rootDir/zipDocs") {
+        into('metadata') 
+    }
+
+    // 3. Sub-project Source, Resources, and their specific build.gradle
+    subprojects.each { sub ->
+        from(sub.projectDir) {
+            include 'src/main/java/**'
+            include 'src/main/resources/**'
+            include 'build.gradle' // Each module's specific build file
+            
+            into(sub.name) 
+        }
+    }
+
+    // Exclusions to keep the "Millionaire" tokens focused
+    exclude '**/build/**'
+    exclude '**/.gradle/**'
+    exclude '**/.settings/**'
+    exclude '**/bin/**'
+    exclude '**/out/**'
+}
+
+
+tasks.register('concatSource') {
+    group = 'prison'
+    description = 'Concatenates source, resources, and metadata into a single AI-friendly text file.'
+
+    // Set the output directory and filename
+    def outputDir = file("$rootDir/zip_snapshots")
+    def outputFile = new File(outputDir, "Prison-Context-${project.version}.txt")
+
+    // The actual work must happen in the execution phase (doLast)
+    doLast {
+        outputDir.mkdirs()
+        
+        // Clear the file if it already exists from a previous run
+        if (outputFile.exists()) {
+            outputFile.text = ''
+        } else {
+            outputFile.createNewFile()
+        }
+
+        println "Generating AI context file at: ${outputFile.absolutePath}"
+
+        // Helper closure to process a file tree and append to the text file
+        def processTree = { FileTree tree ->
+            tree.matching {
+                // Your standard exclusions
+                exclude '**/build/**'
+                exclude '**/.gradle/**'
+                exclude '**/.settings/**'
+                exclude '**/bin/**'
+                exclude '**/out/**'
+                // Added safeguards: prevent sneaky binary files in resources from turning to gibberish
+                exclude '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.ico', '**/*.jar', '**/*.zip'
+            }.each { File f ->
+                if (f.isFile()) {
+                    // Calculate the relative path from the root directory
+                    def relativePath = rootDir.toPath().relativize(f.toPath()).toString()
+                    
+                    // Normalize separators so Windows backslashes become standard forward slashes
+                    relativePath = relativePath.replace('\\', '/')
+
+                    // Append the header and file contents
+                    outputFile.append("================================================================\n")
+                    outputFile.append("File: ${relativePath}\n")
+                    outputFile.append("================================================================\n")
+                    outputFile.append(f.text + "\n\n")
+                }
+            }
+        }
+
+		// 0. The Prime Directives (Force these to the absolute top)
+        //    The "Brain" Folder
+        def brainFilesSI = fileTree(dir: "$rootDir/zipDocs",
+        			includes: ['SYSTEM_INSTRUCTIONS.md'])
+        processTree(brainFilesSI)
+
+        def brainFiles = fileTree(dir: "$rootDir/zipDocs",
+        			excludes: ['SYSTEM_INSTRUCTIONS.md'])
+        processTree(brainFiles)
+
+        
+        // 1. Root Orchestration Files
+        def rootFiles = fileTree(dir: rootDir, includes: [
+            'build.gradle',
+            'settings.gradle',
+            'gradle.properties',
+            'gradle/libs.versions.toml'
+        ])
+        processTree(rootFiles)
+
+		// 2. Sub-project Source, Resources, and specific build scripts
+        // Define the sub-projects you want to skip
+        def excludedProjects = ['prison-spigot-alt', 'prison-worldguard7']
+
+        subprojects.each { sub ->
+            // Only process the sub-project if its name is NOT in the excluded list
+            if (!excludedProjects.contains(sub.name)) {
+                def subFiles = fileTree(dir: sub.projectDir, includes: [
+                    'src/main/java/**',
+                    'src/main/resources/**',
+                    'build.gradle'
+                ])
+                processTree(subFiles)
+            }
+        }
+        
+        println "Successfully concatenated Millionaire tokens into ${outputFile.name}"
+    }
+}
+
+
 def getCurrentTimestamp()
 {
   SimpleDateFormat df = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss")

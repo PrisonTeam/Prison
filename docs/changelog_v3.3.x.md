@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19j 2026-03-06
 
 
+* **Design documents: Starting to create some of the design and planning documents that will be needed in the next few phrases of Prison.**
+
+
 * **Prison Cleanup: prison-core: Removed obsolete and unneeded comments and fix indentation where needed.** First part.
 
 
