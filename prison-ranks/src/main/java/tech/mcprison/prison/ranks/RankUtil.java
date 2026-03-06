@@ -37,7 +37,7 @@ import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
-import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.BlockEventCustomPlaceholders;
 
 /**
  * Utilities for changing the ranks of players.
@@ -654,25 +654,25 @@ public class RankUtil
 				cmdTask.setRankOriginal( opRank );
 				
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceInitial, Double.toString( results.getBalanceInitial()) );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceFinal, Double.toString( results.getBalanceFinal()) );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.currency, results.getCurrency() );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.balanceInitial, Double.toString( results.getBalanceInitial()) );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.balanceFinal, Double.toString( results.getBalanceFinal()) );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.currency, results.getCurrency() );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.originalRankCost, 
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.originalRankCost, 
 								opRank == null ? "" : Double.toString( opRank.getRankCost() ) );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankupCost, 
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.rankupCost, 
 								tpRank == null ? "" : Double.toString( tpRank.getRankCost() ) );
 				
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.ladder, results.getLadderName() );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.ladder, results.getLadderName() );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.rank,
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.rank,
 									(oRank == null ? "none" : oRank.getName()) );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankTag, 
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.rankTag, 
 									(oRank == null ? "none" : oRank.getTag()) );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRank, 
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.targetRank, 
 									(tRank == null ? "none" : tRank.getName()) );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, 
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.targetRankTag, 
 									(tRank == null ? "none" : tRank.getTag()) );
 				
 				

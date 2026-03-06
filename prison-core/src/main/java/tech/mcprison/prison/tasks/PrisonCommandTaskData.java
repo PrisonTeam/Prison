@@ -84,7 +84,12 @@ public class PrisonCommandTaskData {
 		;
 	}
 	
-	public enum CustomPlaceholders {
+	
+	/**
+	 * <p>These are placeholders used within Block Events.
+	 * </p>
+	 */
+	public enum BlockEventCustomPlaceholders {
 		
 		player(CommandEnvironment.all_commands, 
 				"{player} provides a player's name."),
@@ -221,17 +226,17 @@ public class PrisonCommandTaskData {
 		private final String description;
 		private final String exampleUsage;
 		
-		private CustomPlaceholders( CommandEnvironment environment ) {
+		private BlockEventCustomPlaceholders( CommandEnvironment environment ) {
 			this.environment = environment;
 			this.description = null;
 			this.exampleUsage = null;
 		}
-		private CustomPlaceholders( CommandEnvironment environment, String description ) {
+		private BlockEventCustomPlaceholders( CommandEnvironment environment, String description ) {
 			this.environment = environment;
 			this.description = description;
 			this.exampleUsage = null;
 		}
-		private CustomPlaceholders( CommandEnvironment environment, String description,
+		private BlockEventCustomPlaceholders( CommandEnvironment environment, String description,
 				String exampleUsage ) {
 			this.environment = environment;
 			this.description = description;
@@ -243,7 +248,7 @@ public class PrisonCommandTaskData {
 			
 			if ( environment != null ) {
 				
-				for ( CustomPlaceholders cp : values() ) {
+				for ( BlockEventCustomPlaceholders cp : values() ) {
 					if ( environment.equals( cp.getEnvironment() ) ) {
 						
 						if ( sb.length() > 0 ) {
@@ -618,7 +623,7 @@ public class PrisonCommandTaskData {
 	 * 						characters.
 	 * @param value The value that is used to replace the placeholder.
 	 */
-	public void addCustomPlaceholder( CustomPlaceholders placeholder, String value ) {
+	public void addCustomPlaceholder( BlockEventCustomPlaceholders placeholder, String value ) {
 		PrisonCommandTaskPlaceholderData cph = new PrisonCommandTaskPlaceholderData( placeholder, value);
 		getCustomPlaceholders().add( cph );
 	}

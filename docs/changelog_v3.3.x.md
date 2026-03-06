@@ -14,8 +14,10 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19j 2026-03-04
+# 3.3.0-alpha.19j 2026-03-06
 
+
+* **Renamed an enum to BlockEventCustomPlaceholders since it was not clear it was related to block events and that this has nothing to do with the standard placeholders.**
 
 
 * **Prison Cleanup: prison-ranks: Removed obsolete and unneeded comments and fix indentation where needed.**

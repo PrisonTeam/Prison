@@ -1,13 +1,13 @@
 package tech.mcprison.prison.tasks;
 
-import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.BlockEventCustomPlaceholders;
 
 public class PrisonCommandTaskPlaceholderData {
 
-	private CustomPlaceholders placeholder;
+	private BlockEventCustomPlaceholders placeholder;
 	private String value;
 	
-	public PrisonCommandTaskPlaceholderData( CustomPlaceholders placeholder, String value ) {
+	public PrisonCommandTaskPlaceholderData( BlockEventCustomPlaceholders placeholder, String value ) {
 		super();
 		
 		this.placeholder = placeholder;
@@ -27,10 +27,10 @@ public class PrisonCommandTaskPlaceholderData {
 		
 		return results;
 	}
-	public CustomPlaceholders getPlaceholder() {
+	public BlockEventCustomPlaceholders getPlaceholder() {
 		return placeholder;
 	}
-	public void setPlaceholder( CustomPlaceholders placeholder ) {
+	public void setPlaceholder( BlockEventCustomPlaceholders placeholder ) {
 		this.placeholder = placeholder;
 	}
 

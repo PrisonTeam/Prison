@@ -3788,10 +3788,10 @@ public class MinesCommands
         	
 	        	String placeholders = 
 	        			
-	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        			PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 	        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
 	        			
-	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        			PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 										PrisonCommandTaskData.CommandEnvironment.blockevent_commands );
 	        	
 	        	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
@@ -4835,10 +4835,10 @@ public class MinesCommands
         	
 	        	String placeholders = 
 	        			
-	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        			PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 	        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
 	        			
-	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        			PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 										PrisonCommandTaskData.CommandEnvironment.mine_commands );
 	        	
 	        	String message = String.format( "Valid Placeholders that can be used with mine commands: [%s]", 

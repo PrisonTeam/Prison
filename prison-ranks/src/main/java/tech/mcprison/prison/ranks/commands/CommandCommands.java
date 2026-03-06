@@ -58,10 +58,10 @@ public class CommandCommands
         	
 	        	String placeholders = 
 	        			
-	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        			PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 	        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
 	        			
-	        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        			PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 										PrisonCommandTaskData.CommandEnvironment.rank_commands );
 	        	
 	        	String message = ranksCommandAddPlaceholdersMsg( placeholders );
@@ -236,10 +236,10 @@ public class CommandCommands
 
         if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
         	
-	        	String placeholders = PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+	        	String placeholders = PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 												PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
 	        			
-										PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+										PrisonCommandTaskData.BlockEventCustomPlaceholders.listPlaceholders(
 												PrisonCommandTaskData.CommandEnvironment.rank_commands );
 	        	
 	        	String message = ladderCommandAddPlaceholdersMsg( placeholders );
