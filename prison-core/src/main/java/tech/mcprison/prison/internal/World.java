@@ -82,8 +82,6 @@ public interface World {
 
 	
 
-//	public Entity spawnEntity(EntityType entityType);
-
 	public Entity spawnEntity( Location loc, EntityType entityType);
 
 	

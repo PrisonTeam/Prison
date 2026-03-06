@@ -97,8 +97,6 @@ public abstract class FileIO
 		if ( file != null && data != null )
 		{
 			File tempFile = getTempFile( file );
-//			String tempFileName = file.getName() + "." + getTimestampFormat() + ".tmp";
-//			File tempFile = new File(file.getParentFile(), tempFileName);
 			
 			boolean disableAdvancedSaves = 
 					Prison.get().getPlatform().getConfigBooleanFalse( 
@@ -115,8 +113,6 @@ public abstract class FileIO
 					
 					// Write as an UTF-8 stream:
 					Files.write( tempFile.toPath(), lines, StandardCharsets.UTF_8 );
-					
-//				Files.write( tempFile.toPath(), data.getBytes() );
 					
 					// If original target exists, then delete it:
 					if ( file.exists() )
@@ -160,17 +156,6 @@ public abstract class FileIO
 					Files.write( file.toPath(), lines, StandardCharsets.UTF_8, sooW, sooTe );
 					
 					
-//				Files.write( tempFile.toPath(), data.getBytes() );
-					
-					// If original target exists, then delete it:
-//					if ( file.exists() )
-//					{
-//						file.delete();
-//					}
-//					
-//					tempFile.renameTo( file );
-					
-					
 					if ( !keepTempFiles ) {
 						tempFile.delete();
 					}
@@ -189,7 +174,6 @@ public abstract class FileIO
 	protected String readFile( File file )
 	{
 		StringBuilder results = new StringBuilder();
-//		String results = null;
 		
 		if ( file.exists() ) {
 			
@@ -200,9 +184,6 @@ public abstract class FileIO
 				for ( String line : lines ) {
 					results.append( line ).append( "\n" );
 				}
-				
-//			byte[] bytes = Files.readAllBytes( file.toPath() );
-//			results = new String(bytes);
 			}
 			catch ( IOException e )
 			{
@@ -296,37 +277,13 @@ public abstract class FileIO
 						: uuidTmp;
 		}
 		return uuid;
-		
-//		String uuid = player.getUUID().toString();
-//		return uuid.substring( 0, 9 ) + 
-//				uuid.substring( 25 );
 	}
 	
-//	/**
-//     * <p>This is a helper function to ensure that the given file name is 
-//     * always generated correctly and consistently.
-//     * </p>
-//     * 
-//     * @return "player_" plus the least significant bits of the UID
-//     */
-//    public static String filenamePlayer( Player player )
-//    {
-//    	boolean useNewFormat = useFriendlyUserFileNames();
-//    	
-//    	return useNewFormat ? filenamePlayerNew( player ) : filenamePlayerOld( player );
-//    }
-    
-//    public static String filenameCache( Player player )
-//    {
-//    	boolean useNewFormat = useFriendlyUserFileNames();
-//    	
-//    	return useNewFormat ? filenameCacheNew( player ) : filenameCacheOld( player );
-//    }
     
     public String filenamePrefix( String filename, String prefixDeliminator ) {
-    	int idx = filename.lastIndexOf( prefixDeliminator ) + 1;
-    	String prefix = idx > 0 ? filename.substring(0, idx) : null;
-    	return prefix;
+	    	int idx = filename.lastIndexOf( prefixDeliminator ) + 1;
+	    	String prefix = idx > 0 ? filename.substring(0, idx) : null;
+	    	return prefix;
     }
     
     /**
@@ -345,74 +302,60 @@ public abstract class FileIO
      * @return
      */
     public File checkFile( File path, String filename, String prefixDeliminator ) {
-    	
-    	String prefix = filenamePrefix( filename, prefixDeliminator );
-    	
-    	List<File> files = getFilesFromPrefix( prefix, path );
-    	
-    	return files.size() > 0 ? files.get(0) : new File( path, filename );
+	    	
+	    	String prefix = filenamePrefix( filename, prefixDeliminator );
+	    	
+	    	List<File> files = getFilesFromPrefix( prefix, path );
+	    	
+	    	return files.size() > 0 ? files.get(0) : new File( path, filename );
     }
     
     public static File filePlayer( Player player ) {
-    	FileIO fIO = new FileIO() {};
-    	return fIO.checkFiles( filenamePlayerNew( player ), filenamePlayerOld( player ), PLAYER_PATH );
+	    	FileIO fIO = new FileIO() {};
+	    	return fIO.checkFiles( filenamePlayerNew( player ), filenamePlayerOld( player ), PLAYER_PATH );
     }
     
     public static File fileCache( Player player ) {
-    	FileIO fIO = new FileIO() {};
-    	return fIO.checkFiles( filenameCacheNew( player ), filenameCacheOld( player ), CACHE_PATH );
+	    	FileIO fIO = new FileIO() {};
+	    	return fIO.checkFiles( filenameCacheNew( player ), filenameCacheOld( player ), CACHE_PATH );
     }
     
     private File checkFiles( String newFileName, String oldFileName, String pathName )
     {
-    	File results = null;
-    	
-    	File path = new File( Prison.get().getDataFolder(), pathName );
-    	
-    	File newPlayerFile = checkFile( path, newFileName, "_" );
-    	
-    	if ( newPlayerFile.exists() ) {
-    		results = newPlayerFile;
-    	}
-    	else {
-    		File oldPlayerFile = checkFile( path, oldFileName, "." );
-    		
-    		if ( oldPlayerFile.exists() ) {
-    			results = oldPlayerFile;
-    		}
-    	}
-    	
-    	if ( results == null ) {
-    		// Did not find a new format file, or an old file format, so use the new format:
-    		results = newPlayerFile;
-    	}
-    	
-    	// If the file chosen is not equal to the newFileName, then rename it:
-    	else if ( !newFileName.equals(results.getName()) ) {
-    		File newFile = new File( path, newFileName );
-    		results.renameTo(newFile);
-    		
-    		// Rename does not change the original file path in results so have to reassign it:
-    		results = newFile;
-    	}
-
-    	return results;
+	    	File results = null;
+	    	
+	    	File path = new File( Prison.get().getDataFolder(), pathName );
+	    	
+	    	File newPlayerFile = checkFile( path, newFileName, "_" );
+	    	
+	    	if ( newPlayerFile.exists() ) {
+	    		results = newPlayerFile;
+	    	}
+	    	else {
+	    		File oldPlayerFile = checkFile( path, oldFileName, "." );
+	    		
+	    		if ( oldPlayerFile.exists() ) {
+	    			results = oldPlayerFile;
+	    		}
+	    	}
+	    	
+	    	if ( results == null ) {
+	    		// Did not find a new format file, or an old file format, so use the new format:
+	    		results = newPlayerFile;
+	    	}
+	    	
+	    	// If the file chosen is not equal to the newFileName, then rename it:
+	    	else if ( !newFileName.equals(results.getName()) ) {
+	    		File newFile = new File( path, newFileName );
+	    		results.renameTo(newFile);
+	    		
+	    		// Rename does not change the original file path in results so have to reassign it:
+	    		results = newFile;
+	    	}
+	
+	    	return results;
     }
     
-    
-//    /**
-//     * <p>This function will check two things.  First will be the config settings within 
-//     * 'config.yml' to see if the new format is enabled. Secondly, it checks to see if 
-//     * the PrisonSystemSettings has recorded if the conversion has taken place.
-//     * Both have to be true in order for this function to return a value of true.,
-//     * </p>
-//     * 
-//     * @return
-//     */
-//    public static boolean useFriendlyUserFileNames() {
-//    	
-//    	return PrisonSystemSettings.useFriendlyUserFileNames();
-//    }
     
     /**
      * Do not use.  Use 'filenameCache( player )'.
@@ -422,7 +365,7 @@ public abstract class FileIO
      */
     public static String filenameCacheNew( Player player ) {
     	
-    	return "cache_" + getPlayerFileNameNewVersion( player );
+    		return "cache_" + getPlayerFileNameNewVersion( player );
     }
     /**
      * Do not use.  Use 'filenameCache( player )'.
@@ -432,7 +375,7 @@ public abstract class FileIO
      */
     public static String filenameCacheOld( Player player ) {
     	
-    	return getPlayerFileNameShortVersion( player );
+    		return getPlayerFileNameShortVersion( player );
     }
     
     /**
@@ -443,7 +386,7 @@ public abstract class FileIO
      */
     public static String filenamePlayerNew( Player player )
     {
-    	return "player_" + getPlayerFileNameNewVersion( player );
+    		return "player_" + getPlayerFileNameNewVersion( player );
     }
     /**
      * Do not use.  Use 'filenamePlayer( player )'.
@@ -453,7 +396,7 @@ public abstract class FileIO
      */
     public static String filenamePlayerOld( Player player )
     {
-    	return "player_" + player.getUUID().getLeastSignificantBits() + FILE_SUFFIX_JSON;
+    		return "player_" + player.getUUID().getLeastSignificantBits() + FILE_SUFFIX_JSON;
     }
     
 	
@@ -479,7 +422,7 @@ public abstract class FileIO
 	@Deprecated
     public static String getPlayerFileNameShortVersion( Player player ) {
     	
-    	String UUIDString = player.getUUID().toString();
+		String UUIDString = player.getUUID().toString();
 		String uuidFragment = getFileNamePrefixObsolete( UUIDString );
 		
 		return uuidFragment + "_" + player.getName() + FILE_SUFFIX_JSON;
@@ -507,18 +450,18 @@ public abstract class FileIO
 	public List<File> getFilesFromPrefix( String filePrefix, File path ) {
 		List<File> results = new ArrayList<>();
     	
-    	FileFilter fFilter = getFilePrefixFilter( filePrefix );
-    	
-    	
-    	File[] collectionFiles = path.listFiles( fFilter );
-    	if ( collectionFiles != null ) {
-    		
-    		for (File file : collectionFiles ) {
-    			results.add(file);
-    		}
-    	}
-
-    	return results;
+	    	FileFilter fFilter = getFilePrefixFilter( filePrefix );
+	    	
+	    	
+	    	File[] collectionFiles = path.listFiles( fFilter );
+	    	if ( collectionFiles != null ) {
+	    		
+	    		for (File file : collectionFiles ) {
+	    			results.add(file);
+	    		}
+	    	}
+	
+	    	return results;
 	}
 	
 	

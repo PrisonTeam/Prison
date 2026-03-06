@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class InventoryDragEvent extends InventoryInteractEvent {

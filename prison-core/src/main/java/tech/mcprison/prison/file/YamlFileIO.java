@@ -98,35 +98,6 @@ public abstract class YamlFileIO {
 				break;
 			}
 			
-//			if ( value.isNullNode() ) {
-//				// skip nulls
-//				set( key, null );
-//			}
-//			else if ( value.isBooleanNode() ) {
-//				set( key, ((BooleanNode) value).getValue() );
-//			}
-//			else if ( value.isTextNode() ) {
-//				set( key, ((TextNode) value).getValue() );
-//			}
-//			else if ( value.isDoubleNode() ) {
-//				set( key, ((DoubleNode) value).getValue() );
-//			}
-//			else if ( value.isLongNode() ) {
-//				set( key, ((LongNode) value).getValue() );
-//			}
-//			else if ( value.isIntegerNode() ) {
-//				set( key, ((IntegerNode) value).getValue() );
-//			}
-//			else if ( value.isStringListNode() ) {
-//				set( key, ((StringListNode) value).getValue() );
-//			}
-//			else if ( value.isBlockConverterNode() ) {
-//				set( key, ((BlockConvertersNode) value).t );
-//			}
-//			else {
-//				// invalid type... not supported.
-////				set( key, value );
-//			}
 		}
 		
 		return saveYaml();

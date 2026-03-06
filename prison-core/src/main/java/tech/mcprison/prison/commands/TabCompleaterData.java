@@ -74,11 +74,6 @@ public class TabCompleaterData
 				getData().put( key, tcd );
 			}
 			
-//			else {
-//				TabCompleaterData tcd = getData().get( key );
-//				tcd.addCommand( registeredCommand, subArray );
-//			}
-			
 			TabCompleaterData tcd = getData().get( key );
 			tcd.addCommand( registeredCommand, subArray );
 
@@ -111,20 +106,6 @@ public class TabCompleaterData
 		String[] usage = usageStr.split( " " );
 		
 		addCommand( registeredCommand, usage );
-		
-//		if ( usage.length > 0 ) {
-//			String key = usage[0];
-//			
-//			String[] subArray = Arrays.copyOfRange( usage, 1, usage.length );
-//			
-//			if ( !getData().containsKey( key ) ) {
-//				TabCompleterData tcd = new TabCompleterData( key, subArray );
-//				getData().put( key, tcd );
-//			}
-//			else {
-//				getData().get( key ).add( subArray );
-//			}
-//		}
 		
 	}
 	
@@ -181,9 +162,7 @@ public class TabCompleaterData
 			}
 
 		}
-		else if ( args.length > 1  
-//				|| args.length == 1 && getData().containsKey( args[0] ) 
-				) {
+		else if ( args.length > 1 ) {
 			
 			// if length is greater than 1 then that means that we need to 
 			// traverse to the next level of depth if we have a hit for

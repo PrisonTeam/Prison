@@ -25,9 +25,11 @@ import tech.mcprison.prison.commands.TransformError;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 
-public class BlockArgumentHandler extends ArgumentHandler<PrisonBlock> {
+public class BlockArgumentHandler 
+	extends ArgumentHandler<PrisonBlock> {
 
     public BlockArgumentHandler() {
+    	
     }
 
     @Override
@@ -36,50 +38,13 @@ public class BlockArgumentHandler extends ArgumentHandler<PrisonBlock> {
         PrisonBlock b = null;
 
         if ( value != null ) {
-        	b = new PrisonBlock( value );
-
-        	if ( b != null ) {
-        		return b;
-        	}
+	        	b = new PrisonBlock( value );
+	
+	        	if ( b != null ) {
+	        		return b;
+	        	}
         }
         	
-//        // Try block legacy (numerical) ID first
-//        try {
-//            m = BlockType.getBlock(Integer.parseInt(value));
-//        } catch (NumberFormatException ignored) {
-//        }
-//
-//        if (m != null) {
-//            return m;
-//        }
-//
-//        // Now try new block IDs
-//
-//        m = BlockType.getBlock(value);
-//
-//        if (m != null) {
-//            return m;
-//        }
-//
-//        // Now try id:data format
-//        if (value.contains(":")) {
-//            int id;
-//            short data;
-//            try {
-//                id = Integer.parseInt(value.split(":")[0]);
-//                data = Short.parseShort(value.split(":")[1]);
-//            } catch (NumberFormatException ignored) {
-//                throw new TransformError(
-//                    Prison.get().getLocaleManager().getLocalizable("blockParseError")
-//                        .withReplacements(value).localizeFor(sender));
-//            }
-//            m = BlockType.getBlockWithData(id, data);
-//        }
-//
-//        if (m != null) {
-//            return m;
-//        }
-
         // No more checks, just fail
 
         throw new TransformError(Prison.get().getLocaleManager().getLocalizable("blockParseError")

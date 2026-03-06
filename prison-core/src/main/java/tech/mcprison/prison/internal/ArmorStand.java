@@ -3,12 +3,6 @@ package tech.mcprison.prison.internal;
 public interface ArmorStand 
 		extends Entity {
 
-	
-	//public ArmorStand spawn(Location location);
-	
-//	public void setupArmorStand(String itemType);
-//	public void setupArmorStand( ItemStack item );
-
 	public boolean isVisible();
 	public void setVisible( boolean visible );
 	

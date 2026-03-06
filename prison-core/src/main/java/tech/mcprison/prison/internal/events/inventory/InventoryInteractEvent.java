@@ -23,8 +23,6 @@ import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class InventoryInteractEvent extends InventoryEvent implements Cancelable {
@@ -35,11 +33,13 @@ public class InventoryInteractEvent extends InventoryEvent implements Cancelable
         super(transaction);
     }
 
-    @Override public boolean isCanceled() {
+    @Override 
+    public boolean isCanceled() {
         return cancel;
     }
 
-    @Override public void setCanceled(boolean canceled) {
+    @Override 
+    public void setCanceled(boolean canceled) {
         cancel = canceled;
     }
 

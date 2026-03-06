@@ -42,9 +42,6 @@ public class BlockBreakEvent
     public BlockBreakEvent( PrisonBlock block, Location blockLocation, Player player) {
         this(block,blockLocation,player,0);
     }
-//    public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
-//    	this(block,blockLocation,player,0);
-//    }
 
     public BlockBreakEvent( PrisonBlock block, Location blockLocation, Player player, int xp ) {
         this.block = block;
@@ -53,11 +50,13 @@ public class BlockBreakEvent
         this.exp = xp;
     }
 
-    @Override public boolean isCanceled() {
+    @Override 
+    public boolean isCanceled() {
         return canceled;
     }
 
-    @Override public void setCanceled(boolean canceled) {
+    @Override 
+    public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 

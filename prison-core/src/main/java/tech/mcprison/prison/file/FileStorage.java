@@ -47,23 +47,23 @@ public class FileStorage
      *  </p>
      */
     public void refresh() {
-    	databaseMap.clear();
-    	
-    	// Each folder in the root directory is its own database.
-    	// We'll initialize each of them here.
-    	File[] databaseFiles = this.rootDir.listFiles(File::isDirectory);
-    	if (databaseFiles != null) {
-    		for (File dbFile : databaseFiles) {
-    			if ( isDeleted( dbFile ) ) {
-    				String message = "FileStorage.refresh skipping logically deleted FileDatabase: " + 
-    							dbFile.getAbsolutePath();
-    				Output.get().logInfo( message );
-    			} else {
-    				databaseMap.put(dbFile.getName(), new FileDatabase(dbFile));
-    				
-    			}
-    		}
-    	}
+	    	databaseMap.clear();
+	    	
+	    	// Each folder in the root directory is its own database.
+	    	// We'll initialize each of them here.
+	    	File[] databaseFiles = this.rootDir.listFiles(File::isDirectory);
+	    	if (databaseFiles != null) {
+	    		for (File dbFile : databaseFiles) {
+	    			if ( isDeleted( dbFile ) ) {
+	    				String message = "FileStorage.refresh skipping logically deleted FileDatabase: " + 
+	    							dbFile.getAbsolutePath();
+	    				Output.get().logInfo( message );
+	    			} else {
+	    				databaseMap.put(dbFile.getName(), new FileDatabase(dbFile));
+	    				
+	    			}
+	    		}
+	    	}
     }
 
 
@@ -86,15 +86,15 @@ public class FileStorage
      */
     @Override 
     public Optional<Database> getDatabase(String name) {
-    	Database results = databaseMap.get(name);
-    	
-    	if ( results == null ) 
-    	{
-    		// try to create the FileDatabase:
-    		createDatabase(name);
-    		results = databaseMap.get(name);
-    	}
-    	
+	    	Database results = databaseMap.get(name);
+	    	
+	    	if ( results == null ) 
+	    	{
+	    		// try to create the FileDatabase:
+	    		createDatabase(name);
+	    		results = databaseMap.get(name);
+	    	}
+	    	
         return Optional.ofNullable(results);
     }
 
@@ -109,15 +109,15 @@ public class FileStorage
      */
     @Override 
     public boolean createDatabase(String name) {
-    	boolean results = false;
+    		boolean results = false;
     	
         File directory = new File(rootDir, name);
         if (!directory.exists()) {
-        	results = directory.mkdirs();
+        		results = directory.mkdirs();
         } 
         else {
-        	// directory already exists, so use it:
-        	results = true;
+	        	// directory already exists, so use it:
+	        	results = true;
         }
         databaseMap.put(name, new FileDatabase(directory));
         
@@ -148,24 +148,24 @@ public class FileStorage
      */
     @Override
     public boolean deleteDatabase(String name) {
-    	boolean results = false;
+    		boolean results = false;
     	
         File directory = new File(rootDir, name);
         Database db = databaseMap.get(name);
 
         if (directory.exists() && db != null) {
-        	// Perform a logical delete on the database so it can be manually recovered if this is an error:
-        	virtualDelete( directory );
-        	
-        	// This dispose just removes the entries from the collection and deletes nothing from the file system:
-        	db.dispose();
-        	//directory.delete();
-        	databaseMap.remove(name);
-        	results = true;
+	        	// Perform a logical delete on the database so it can be manually recovered if this is an error:
+	        	virtualDelete( directory );
+	        	
+	        	// This dispose just removes the entries from the collection and deletes nothing from the file system:
+	        	db.dispose();
+	        	//directory.delete();
+	        	databaseMap.remove(name);
+	        	results = true;
         } else {
-        	String message = "The attempt to delete a FileDatabase named " + name + 
-        			" failed because either the directory does not exist or it was not in the databaseMap.";
-        	Output.get().logWarn( message );
+	        	String message = "The attempt to delete a FileDatabase named " + name + 
+	        			" failed because either the directory does not exist or it was not in the databaseMap.";
+	        	Output.get().logWarn( message );
         }
         
         return results;

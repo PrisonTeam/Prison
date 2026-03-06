@@ -31,12 +31,7 @@ public class PrisonBlock
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
-//	private PrisonBlockType blockType;
 	private boolean useBlockTypeAsPrefix = false;
-	
-//	private String blockName;
-	
-//	private double chance;
 	
 	private boolean valid = true;
 	private boolean block = true;
@@ -133,11 +128,6 @@ public class PrisonBlock
 	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
 		super( blockType, blockName, chance, blockCountTotal );
 
-//		this.blockType = blockType;
-		
-//		this.blockName = blockName.toLowerCase();
-//		this.chance = chance;
-		
 	}
 	
 	public PrisonBlock( PrisonBlock clonable ) {
@@ -170,34 +160,14 @@ public class PrisonBlock
 		
 		sb.append( getBlockNameSearch() );
 		
-//		sb.append( getBlockType().name() )
-//			.append( ":" )
-//			.append( getBlockName() );
-		
 		if ( getChance() > 0 ) {
 			sb.append( " " )
 				.append( Double.toString( getChance()) );
 		}
 		
 		return sb.toString();
-		
-//		return getBlockType().name() + ": " + getBlockName() +
-//				( getChance() > 0 ? " " + Double.toString( getChance()) : "");
 	}
 	
-//	public PrisonBlockType getBlockType() {
-//		return blockType;
-//	}
-//	public void setBlockType( PrisonBlockType blockType ) {
-//		this.blockType = blockType;
-//	}
-
-//	public String getBlockName() {
-//		return blockName;
-//	}
-//	public void setBlockName( String blockName ) {
-//		this.blockName = blockName;
-//	}
 	
 	/**
 	 * <p>This function always prefixes the block name with the BlockType.
@@ -324,13 +294,6 @@ public class PrisonBlock
 		this.useBlockTypeAsPrefix = useBlockTypeAsPrefix;
 	}
 	
-//	public double getChance() {
-//		return chance;
-//	}
-//	public void setChance( double chance ) {
-//		this.chance = chance;
-//	}
-
 	public boolean isValid() {
 		return valid;
 	}
@@ -476,9 +439,6 @@ public class PrisonBlock
 				if ( results == 0 && getBlockNameSearch() != null && block.getBlockNameSearch() != null ) {
 					results = getBlockNameSearch().compareToIgnoreCase( block.getBlockNameSearch() );
 				}
-//				if ( results == 0 && getDisplayName() != null && block.getDisplayName() != null ) {
-//					results = getDisplayName().compareToIgnoreCase( block.getDisplayName() );
-//				}
 			}
 		}
 			
@@ -569,16 +529,6 @@ public class PrisonBlock
 		if ( relativeBlock != null && relativeBlock instanceof PrisonBlock ) {
 
 			(( PrisonBlock ) relativeBlock).setPrisonBlock( this );
-			
-//			PrisonBlock cloned = this.clone();
-//			
-//			(( PrisonBlock ) relativeBlock).getLocation().setBlockAsync( cloned );
-//			
-//			PrisonBlockType blockType = getBlockType();
-//			
-//			// Set that block with this block's type:
-//			(( PrisonBlock ) relativeBlock).setBlockType( blockType );
-//			(( PrisonBlock ) relativeBlock).setBlockName( getBlockName() );
 			
 		}
 	}

@@ -18,7 +18,6 @@ public class MineTargetPrisonBlock
 	private boolean mined = false;
 	private Block minedBlock;
 	
-//	private boolean blockEvent = false;
 	private boolean counted = false;
 	
 	private boolean ignoreAllBlockEvents = false;
@@ -123,7 +122,6 @@ public class MineTargetPrisonBlock
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append( getPrisonBlock().getBlockName() );
-//		sb.append( getPrisonBlock().getBlockNameFormal() );
 		
 		if ( getLocation() != null ) {
 			sb.append( "::" );
@@ -179,13 +177,6 @@ public class MineTargetPrisonBlock
 	public void setMined( boolean mined ) {
 		this.mined = mined;
 	}
-
-//	public boolean isBlockEvent() {
-//		return blockEvent;
-//	}
-//	public void setBlockEvent( boolean blockEvent ) {
-//		this.blockEvent = blockEvent;
-//	}
 
 	public boolean isCounted() {
 		return counted;

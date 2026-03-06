@@ -55,8 +55,6 @@ public class CommandHandler {
 
     private String rootCommmand;
     private String commandFallback;
-//	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
-//	public static final String COMMAND_FALLBACK_PREFIX = "prison";
 	public static final String COMMAND_HELP_TEXT = "help";
 
 	
@@ -71,12 +69,8 @@ public class CommandHandler {
     private Map<PluginCommand, RootCommand> rootCommands = new HashMap<>();
 
 
-//	private List<PluginCommand> commands = new ArrayList<>();
-	
-	
 	private TabCompleaterData tabCompleaterData;
 	
-//  private String helpSuffix = "help";
 
   public CommandHandler() {
       this.plugin = Prison.get();
@@ -106,13 +100,9 @@ public class CommandHandler {
       
       Output.get().logInfo( "&3Root command: &7/%s   &3fallback-prefix: &7%s",
     		  rootCommmand, commandFallback );
-//      Output.get().logInfo( "&3Root command: &7/%s   &3fallback-prefix: &7%s",
-//    		  DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND, DefaultSettings.COMMAND_FALLBACK_PREFIX );
   }
 
 	   
-
-      
     public String getRootCommmand() {
     	return rootCommmand;
 	}
@@ -120,8 +110,6 @@ public class CommandHandler {
 	public String getCommandFallback() {
 		return commandFallback;
 	}
-
-
 
 
 	private PermissionHandler permissionHandler = (sender, permissions) -> {
@@ -134,6 +122,7 @@ public class CommandHandler {
     };
 
     private HelpHandler helpHandler = new HelpHandler() {
+    	
         private String formatArgument(CommandArgument argument) {
             String def = argument.getDefault();
             if (def.equals(" ")) {
@@ -157,30 +146,30 @@ public class CommandHandler {
         @Override 
         public ChatDisplay getHelpMessage(CommandSender sender, RegisteredCommand command) {
         	
-        	if ( !hasCommandAccess(sender, command, command.getLabel(), new String[0] ) ) {
-        		return null;
-        	}
-        	
+	        	if ( !hasCommandAccess(sender, command, command.getLabel(), new String[0] ) ) {
+	        		return null;
+	        	}
+	        	
             ChatDisplay chatDisplay = new ChatDisplay(
             		String.format( "Cmd: &7%s", 
             					getUsageNoParameters(command)) );
 
             if (command.isSet() && command.getDescription() != null && !command.getDescription().isEmpty()) {
-            	chatDisplay.addText(ChatColor.DARK_AQUA + command.getDescription());
+            		chatDisplay.addText(ChatColor.DARK_AQUA + command.getDescription());
             }
 
             chatDisplay.addText(getUsage(command));
 
             if (command.isSet()) {
                 for (CommandArgument argument : command.getArguments()) {
-                	chatDisplay.addText(formatArgument(argument));
+                		chatDisplay.addText(formatArgument(argument));
                 }
                 if (command.getWildcard() != null) {
-                	chatDisplay.addText(formatArgument(command.getWildcard()));
+               		chatDisplay.addText(formatArgument(command.getWildcard()));
                 }
                 List<Flag> flags = command.getFlags();
                 if (flags.size() > 0) {
-                	chatDisplay.addText(ChatColor.DARK_AQUA + "Flags:");
+                		chatDisplay.addText(ChatColor.DARK_AQUA + "Flags:");
                     for (Flag flag : flags) {
                         StringBuilder args = new StringBuilder();
                         for (FlagArgument argument : flag.getArguments()) {
@@ -188,88 +177,79 @@ public class CommandHandler {
                         }
                         chatDisplay.addText("-" + flag.getIdentifier() + ChatColor.AQUA + args.toString());
                         for (FlagArgument argument : flag.getArguments()) {
-                        	chatDisplay.addText(formatArgument(argument));
+                        		chatDisplay.addText(formatArgument(argument));
                         }
                     }
                 }
                 if ( command.getPermissions() != null && command.getPermissions().length > 0 ||
                 	 command.getAltPermissions() != null && command.getAltPermissions().length > 0 ) {
                 	
-                	StringBuilder sb = new StringBuilder();
-                	
-                	if ( command.getPermissions() != null && command.getPermissions().length > 0 ) {
-                		for ( String perm : command.getPermissions() ) {
-                			if ( sb.length() > 0 ) {
-                				sb.append( " " );
-                			}
-                			sb.append( perm );
-                		}
-                	}
-            		if ( command.getAltPermissions() != null && command.getAltPermissions().length > 0 ) {
-            			for ( String altPerm : command.getAltPermissions() ) {
-            				if ( sb.length() > 0 ) {
-            					sb.append( " " );
-            				}
-            				sb.append( altPerm );
-            			}
-            		}
-            		
-            		if ( sb.length() > 0 ) {
-            			chatDisplay.addText(ChatColor.DARK_AQUA + "Permissions:");
-            			
-            			sb.insert( 0, ChatColor.AQUA );
-            			sb.insert( 0, "   " );
-            			chatDisplay.addText( sb.toString() );
-            		}
+	                	StringBuilder sb = new StringBuilder();
+	                	
+	                	if ( command.getPermissions() != null && command.getPermissions().length > 0 ) {
+	                		for ( String perm : command.getPermissions() ) {
+	                			if ( sb.length() > 0 ) {
+	                				sb.append( " " );
+	                			}
+	                			sb.append( perm );
+	                		}
+	                	}
+	            		if ( command.getAltPermissions() != null && command.getAltPermissions().length > 0 ) {
+	            			for ( String altPerm : command.getAltPermissions() ) {
+	            				if ( sb.length() > 0 ) {
+	            					sb.append( " " );
+	            				}
+	            				sb.append( altPerm );
+	            			}
+	            		}
+	            		
+	            		if ( sb.length() > 0 ) {
+	            			chatDisplay.addText(ChatColor.DARK_AQUA + "Permissions:");
+	            			
+	            			sb.insert( 0, ChatColor.AQUA );
+	            			sb.insert( 0, "   " );
+	            			chatDisplay.addText( sb.toString() );
+	            		}
                 	
                 }
                 if ( command.getAliases() != null && command.getAliases().length > 0 ) {
                 	
-                	StringBuilder sb = new StringBuilder();
-                	
-                	if ( command.getAliases() != null && command.getAliases().length > 0 ) {
-                		for ( String perm : command.getAliases() ) {
-                			if ( sb.length() > 0 ) {
-                				sb.append( " " );
-                			}
-                			sb.append( ChatColor.DARK_BLUE ).append( "[" )
-                				.append( ChatColor.AQUA ).append( perm )
-                				.append( ChatColor.DARK_BLUE ).append( "]" );
-                		}
-                	}
-                	
-                	if ( sb.length() > 0 ) {
-                		chatDisplay.addText(ChatColor.DARK_AQUA + "Aliases:");
-                		
-                		sb.insert( 0, "   " );
-                		chatDisplay.addText( sb.toString() );
-                	}
+	                	StringBuilder sb = new StringBuilder();
+	                	
+	                	if ( command.getAliases() != null && command.getAliases().length > 0 ) {
+	                		for ( String perm : command.getAliases() ) {
+	                			if ( sb.length() > 0 ) {
+	                				sb.append( " " );
+	                			}
+	                			sb.append( ChatColor.DARK_BLUE ).append( "[" )
+	                				.append( ChatColor.AQUA ).append( perm )
+	                				.append( ChatColor.DARK_BLUE ).append( "]" );
+	                		}
+	                	}
+	                	
+	                	if ( sb.length() > 0 ) {
+	                		chatDisplay.addText(ChatColor.DARK_AQUA + "Aliases:");
+	                		
+	                		sb.insert( 0, "   " );
+	                		chatDisplay.addText( sb.toString() );
+	                	}
                 	
                 }
                 if ( command.getDocURLs() != null && command.getDocURLs().length > 0 ) {
                 	
-                	chatDisplay.addText(ChatColor.DARK_AQUA + "Documentation:");
-
-                	for ( String docURL : command.getDocURLs() ) {
-                		RowComponent row = new RowComponent();
-                		
-                		row.addTextComponent( "    " );
-                		FancyMessage fMessage = new FancyMessage( docURL ).link( docURL )
-                				.tooltip( "Click to open link" );
-                		row.addFancy( fMessage );
-                		
-                		chatDisplay.addComponent( row );
-                		
-                		
-                		
-//                		StringBuilder sb = new StringBuilder();
-//                		
-//                		sb.append( "    " ).append( ChatColor.DARK_BLUE ).append( "[" )
-//                					.append( ChatColor.AQUA ).append( docURL )
-//                					.append( ChatColor.DARK_BLUE ).append( "]" );
-//
-//                		chatDisplay.addText( sb.toString() );
-                	}
+	                	chatDisplay.addText(ChatColor.DARK_AQUA + "Documentation:");
+	
+	                	for ( String docURL : command.getDocURLs() ) {
+	                		RowComponent row = new RowComponent();
+	                		
+	                		row.addTextComponent( "    " );
+	                		FancyMessage fMessage = new FancyMessage( docURL ).link( docURL )
+	                				.tooltip( "Click to open link" );
+	                		row.addFancy( fMessage );
+	                		
+	                		chatDisplay.addComponent( row );
+	                		
+	                	}
                 	
                 }
             }
@@ -281,73 +261,65 @@ public class CommandHandler {
                 TreeSet<String> subCommandSet = new TreeSet<>();
                 for (RegisteredCommand scommand : subcommands) {
                 	
-                	String sLabel = scommand.getCompleteLabel();
-                	
-                	if ( hasCommandAccess(sender, scommand, sLabel, new String[0] ) ) {
-                		
-                		String subCmd = scommand.getUsage();
-                		
-                		int subCmdSubCnt = scommand.getSuffixes().size();
-                		String subCommands = (subCmdSubCnt == 0 ? "" : 
-                			ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
-                		
-                		String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
-                		
-                		subCommandSet.add(  
-                				String.format( "%s %s %s", subCmd, subCommands, isAlias ));
-                	}
+	                	String sLabel = scommand.getCompleteLabel();
+	                	
+	                	if ( hasCommandAccess(sender, scommand, sLabel, new String[0] ) ) {
+	                		
+	                		String subCmd = scommand.getUsage();
+	                		
+	                		int subCmdSubCnt = scommand.getSuffixes().size();
+	                		String subCommands = (subCmdSubCnt == 0 ? "" : 
+	                			ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
+	                		
+	                		String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
+	                		
+	                		subCommandSet.add(  
+	                				String.format( "%s %s %s", subCmd, subCommands, isAlias ));
+	                	}
                 	
                 }
 
                 // Only if there are entries to show, then include the header and the details
                 if ( subCommandSet.size() > 0 ) {
-                	chatDisplay.addText(ChatColor.DARK_AQUA + "Subcommands:");
-                	
-                	for (String subCmd : subCommandSet) {
-                		chatDisplay.addText(subCmd);
-                	}
+	                	chatDisplay.addText(ChatColor.DARK_AQUA + "Subcommands:");
+	                	
+	                	for (String subCmd : subCommandSet) {
+	                		chatDisplay.addText(subCmd);
+	                	}
                 }
             }
             
             
             if ( command.getLabel().equalsIgnoreCase( getRootCommmand() ) && 
             									rootCommands.size() > 1 ) {
-//            	if ( command.getLabel().equalsIgnoreCase( DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND ) && 
-//            			rootCommands.size() > 1 ) {
             	
-            	ArrayList<String> rootCommandsMessages = buildHelpRootCommands();
-            	if ( rootCommandsMessages.size() > 1 ) {
-            		for ( String rootCmd : rootCommandsMessages )
-					{
-            			chatDisplay.addText( rootCmd );
+	            	ArrayList<String> rootCommandsMessages = buildHelpRootCommands();
+	            	if ( rootCommandsMessages.size() > 1 ) {
+	            		for ( String rootCmd : rootCommandsMessages ) {
+	            			chatDisplay.addText( rootCmd );
 					}
-            		
-            	}
-
-            	ArrayList<String> aliasesMessages = buildHelpAliases();
-            	if ( aliasesMessages.size() > 1 ) {
-            		for ( String alias : aliasesMessages )
-					{
-            			chatDisplay.addText( alias );
+	            		
+	            	}
+	
+	            	ArrayList<String> aliasesMessages = buildHelpAliases();
+	            	if ( aliasesMessages.size() > 1 ) {
+	            		for ( String alias : aliasesMessages ) {
+	            			chatDisplay.addText( alias );
 					}
-            		
-            	}
-            	
-            	ArrayList<String> excludedWorlds = buildExcludedWorlds();
-            	if ( excludedWorlds.size() > 1 ) {
-            		for ( String excludedWorld : excludedWorlds )
-            		{
-            			chatDisplay.addText( excludedWorld );
-            		}
-            		
-            	}
-            	
-            	
+	            		
+	            	}
+	            	
+	            	ArrayList<String> excludedWorlds = buildExcludedWorlds();
+	            	if ( excludedWorlds.size() > 1 ) {
+	            		for ( String excludedWorld : excludedWorlds ) {
+	            			chatDisplay.addText( excludedWorld );
+	            		}
+	            		
+	            	}
             }
             
 
             return chatDisplay;
-//            return message.toArray(new String[0]);
         }
 
         private ArrayList<String> buildExcludedWorlds() {
@@ -393,42 +365,27 @@ public class CommandHandler {
 			// Force a sorting by use of a TreeSet. Collections.sort() would not work.
             TreeSet<String> rootCommandSet = new TreeSet<>();
 
-        	// Try adding in all other root commands:
+            // Try adding in all other root commands:
             Set<PluginCommand> rootKeys = getRootCommands().keySet();
         	
-        	for ( PluginCommand rootKey : rootKeys ) {
-			StringBuilder sbAliases = new StringBuilder();
-			
-			// Do not list aliases:
-			if ( !(rootKey.getRegisteredCommand().isAlias() && rootKey.getRegisteredCommand().getParentOfAlias() != null) ) {
-//					String isAlias = rootKey.getRegisteredCommand().isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
-        		
-//					if ( rootKey.getRegisteredCommand().getRegisteredAliases().size() > 0 ) {
-//						for ( RegisteredCommand alias : rootKey.getRegisteredCommand().getRegisteredAliases() ) {
-//							
-//							sbAliases.append( ChatColor.DARK_BLUE ).append( "[" ).append( ChatColor.AQUA ).append( "/" )
-//							.append( getRootCommandRegisteredLabel(alias) )
-//							.append( ChatColor.DARK_BLUE ).append( "] " );
-//						}
-//						sbAliases.insert( 0, 
-//								new StringBuilder().append( ChatColor.DARK_AQUA ).
-//								append( "Aliases: " ).append( ChatColor.AQUA ));
-//					}
-				String rootCmd = 
-						String.format( "%s  %s", 
-								rootKey.getUsage(), sbAliases.toString() );
+	        	for ( PluginCommand rootKey : rootKeys ) {
+				StringBuilder sbAliases = new StringBuilder();
 				
-        		rootCommandSet.add( rootCmd );
-			}
-
-        		
-        	}
+				// Do not list aliases:
+				if ( !(rootKey.getRegisteredCommand().isAlias() && rootKey.getRegisteredCommand().getParentOfAlias() != null) ) {
+					String rootCmd = 
+							String.format( "%s  %s", 
+									rootKey.getUsage(), sbAliases.toString() );
+					
+		        		rootCommandSet.add( rootCmd );
+				}
+	        	}
         	
-        	for (String rootCmd : rootCommandSet) {
-        		message.add(rootCmd);
-        	}
-		
-		return message;
+	        	for (String rootCmd : rootCommandSet) {
+	        		message.add(rootCmd);
+	        	}
+			
+			return message;
         }
             
 		/**
@@ -447,19 +404,8 @@ public class CommandHandler {
 			
 			for ( RegisteredCommand regCmd : getAllRegisteredCommands() ) {
 				buildHelpAliasMessage( regCmd, aliasesSet );
-//				plugin.logDebug( "### CommandHandler.buildHelpAliases ### test: %s ", regCmd.toString() );
 			}
 			
-			
-//			// Try adding in all other root commands:
-//			Set<PluginCommand> rootKeys = getRootCommands().keySet();
-//			for ( PluginCommand rootKey : rootKeys ) {
-//				
-//				plugin.logDebug( "### CommandHandler.buildHelpAliases ### rootCommands: %s ", rootKey.toString() );
-//				RegisteredCommand registeredCommand = rootKey.getRegisteredCommand();
-//				
-//				buildHelpAliases( registeredCommand,  aliasesSet );
-//			}
 			
 			// Sorted results, add to the List:
 			for (String rootCmd : aliasesSet) {
@@ -469,17 +415,6 @@ public class CommandHandler {
 			return message;
 		}
 		
-//		private void buildHelpAliases( RegisteredCommand registeredCommand, TreeSet<String> aliasesSet ) {
-//			buildHelpAliasMessage( registeredCommand, aliasesSet );
-//			
-//			plugin.logDebug( "### CommandHandler.buildHelpAliases ### : %s ", registeredCommand.toString() );
-//
-//			for ( RegisteredCommand suffixRegCmd : registeredCommand.getSuffixes() ) {
-//				
-//				buildHelpAliases( suffixRegCmd,  aliasesSet );
-//			}
-//			
-//		}
 
 		private void buildHelpAliasMessage( RegisteredCommand registeredCommand, TreeSet<String> aliasesSet ) {
 			if ( registeredCommand.isAlias() && registeredCommand.getParentOfAlias() != null) {
@@ -511,14 +446,14 @@ public class CommandHandler {
          * @return 
          */
         private String getRootCommandRegisteredLabel(RegisteredCommand command ) {
-        	String commandLabel = command.getLabel();
-        	if ( command instanceof RootCommand ) {
-        		RootCommand rootCommand = (RootCommand) command;
-        		if ( rootCommand.getBukkitCommand().getLabelRegistered() != null ) {
-        			commandLabel = rootCommand.getBukkitCommand().getLabelRegistered();
-        		}
-        	}
-        	return commandLabel;
+	        	String commandLabel = command.getLabel();
+	        	if ( command instanceof RootCommand ) {
+	        		RootCommand rootCommand = (RootCommand) command;
+	        		if ( rootCommand.getBukkitCommand().getLabelRegistered() != null ) {
+	        			commandLabel = rootCommand.getBukkitCommand().getLabelRegistered();
+	        		}
+	        	}
+	        	return commandLabel;
         }
         
         @Override
@@ -618,46 +553,43 @@ public class CommandHandler {
     }
     
     public Object getRegisteredCommandClass( @SuppressWarnings( "rawtypes" ) Class commandClass ) {
-    	Object results = null;
-    	
-    	String key = commandClass.getSimpleName();
-    	if ( key != null && getRegisteredCommands().containsKey( key ) ) {
-    		results = getRegisteredCommands().get( key );
-    	}
-    	
-    	return results;
+	    	Object results = null;
+	    	
+	    	String key = commandClass.getSimpleName();
+	    	if ( key != null && getRegisteredCommands().containsKey( key ) ) {
+	    		results = getRegisteredCommands().get( key );
+	    	}
+	    	
+	    	return results;
     }
 
     public void registerCommands(Object methodInstance) {
 
-    	// Keep a reference to the registered command object so it can be 
-    	// accessed in the future if needed for other uses.
-    	getRegisteredCommands().put( methodInstance.getClass().getSimpleName(), methodInstance );
-    	
-    	for (Method method : methodInstance.getClass().getDeclaredMethods()) {
-            Command commandAnno = method.getAnnotation(Command.class);
-            if (commandAnno == null) {
-                continue;
-            }
-
-            RegisteredCommand mainCommand = commandRegisterConfig( method, commandAnno, methodInstance );
-            
-            
-            String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
-
-            if ( aliases.length > 0 ) {
-//            	if ( commandAnno.aliases() != null && commandAnno.aliases().length > 0 ) {
-            	
-            	
-            	for ( String alias : aliases )
-//            		for ( String alias : commandAnno.aliases() )
-				{
-					RegisteredCommand aliasCommand = commandRegisterConfig( method, commandAnno, methodInstance, alias );
-            		
-					// Add the alias to the primary RegisteredCommand to track it's own aliases:
-            		mainCommand.getRegisteredAliases().add( aliasCommand );
-            		aliasCommand.setParentOfAlias( mainCommand );
-				}
+	    	// Keep a reference to the registered command object so it can be 
+	    	// accessed in the future if needed for other uses.
+	    	getRegisteredCommands().put( methodInstance.getClass().getSimpleName(), methodInstance );
+	    	
+	    	for (Method method : methodInstance.getClass().getDeclaredMethods()) {
+	            Command commandAnno = method.getAnnotation(Command.class);
+	            if (commandAnno == null) {
+	                continue;
+	            }
+	
+	            RegisteredCommand mainCommand = commandRegisterConfig( method, commandAnno, methodInstance );
+	            
+	            
+	            String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
+	
+	            if ( aliases.length > 0 ) {
+	            	
+	            	
+		            	for ( String alias : aliases ) {
+						RegisteredCommand aliasCommand = commandRegisterConfig( method, commandAnno, methodInstance, alias );
+	            		
+						// Add the alias to the primary RegisteredCommand to track it's own aliases:
+		            		mainCommand.getRegisteredAliases().add( aliasCommand );
+		            		aliasCommand.setParentOfAlias( mainCommand );
+					}
             	
             }
            
@@ -665,7 +597,7 @@ public class CommandHandler {
     }
 
     private RegisteredCommand commandRegisterConfig( Method method, Command commandAnno, Object methodInstance ) {
-    	return commandRegisterConfig( method, commandAnno, methodInstance, null );
+    		return commandRegisterConfig( method, commandAnno, methodInstance, null );
     }
     
 	private RegisteredCommand commandRegisterConfig( Method method, Command commandAnno, 
@@ -686,30 +618,25 @@ public class CommandHandler {
 
         if ( rootPluginCommand == null ) {
         	
-        	String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
-        	rootPluginCommand = new PluginCommand(label, 
-        						commandAnno.description(),
-        						"/" + label,
-        						aliases );
-//        	rootPluginCommand = new PluginCommand(label, 
-//			        			commandAnno.description(),
-//			        			"/" + label,
-//			        			commandAnno.aliases() );
-        	plugin.getPlatform().registerCommand(rootPluginCommand);
+	        	String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
+	        	rootPluginCommand = new PluginCommand(label, 
+	        						commandAnno.description(),
+	        						"/" + label,
+	        						aliases );
+	        	plugin.getPlatform().registerCommand(rootPluginCommand);
         }
 
 
         // If getRootCommands() does not contain the rootPCommand then add it:
         if ( !getRootCommands().containsKey( rootPluginCommand ) ) {
-        	RootCommand rootRegisteredCommand = new RootCommand( rootPluginCommand, this );
-        	rootRegisteredCommand.setAlias( alias != null );
-        	
-        	// Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
-        	// getTabCompleterData().
-        	getAllRegisteredCommands().add( rootRegisteredCommand );
-        	getTabCompleaterData().add( rootRegisteredCommand );
-        	
-        	getRootCommands().put( rootPluginCommand, rootRegisteredCommand );
+	        	RootCommand rootRegisteredCommand = new RootCommand( rootPluginCommand, this );
+	        	rootRegisteredCommand.setAlias( alias != null );
+	        	
+	        	// Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
+	        	getAllRegisteredCommands().add( rootRegisteredCommand );
+	        	getTabCompleaterData().add( rootRegisteredCommand );
+	        	
+	        	getRootCommands().put( rootPluginCommand, rootRegisteredCommand );
         }
         
         RegisteredCommand mainCommand = getRootCommands().get( rootPluginCommand );
@@ -739,11 +666,11 @@ public class CommandHandler {
         rootPluginCommand.setRegisteredCommand( mainCommand );
         
 
-            // Validate that the first parameter, if it exists, is actually a CommandSender:
-            if ( method.getParameterCount() > 0 ) {
-            	
-        	// The first parameter "should" always be CommandSender or there will be difficult
-        	// to trace failures at runtime:
+        // Validate that the first parameter, if it exists, is actually a CommandSender:
+        if ( method.getParameterCount() > 0 ) {
+        	
+	        	// The first parameter "should" always be CommandSender or there will be difficult
+	        	// to trace failures at runtime:
             	Class<?> cmdSender = method.getParameterTypes()[0];
             	
             	if ( !cmdSender.getSimpleName().equalsIgnoreCase( "CommandSender") ) {
@@ -757,59 +684,59 @@ public class CommandHandler {
             				cmdSender.getSimpleName()
             					));
             	}
-            	
-            }
-            
-            mainCommand.set(methodInstance, method);
+        	
+        }
+        
+        mainCommand.set(methodInstance, method);
         return mainCommand;
 	}
 
 
     public static String remapRootCmdIdentifiers(String identifier) {
     	
-    	if ( identifier != null ) {
-
-    		int idx = identifier.indexOf( " " );
-    		String root = idx == -1 ? identifier : identifier.substring( 0, idx );
-    		
-    		String key = "prisonCommandHandler.command-roots." + root;
-    		
-    		String newRoot = Prison.get().getPlatform().getConfigString( key );
-    		
-    		if ( newRoot != null && !root.equals(newRoot) ) {
-
-    			identifier = newRoot +
-    					(idx == -1 ? "" : identifier.substring(idx));
-    		}
-    	}
+	    	if ( identifier != null ) {
+	
+	    		int idx = identifier.indexOf( " " );
+	    		String root = idx == -1 ? identifier : identifier.substring( 0, idx );
+	    		
+	    		String key = "prisonCommandHandler.command-roots." + root;
+	    		
+	    		String newRoot = Prison.get().getPlatform().getConfigString( key );
+	    		
+	    		if ( newRoot != null && !root.equals(newRoot) ) {
+	
+	    			identifier = newRoot +
+	    					(idx == -1 ? "" : identifier.substring(idx));
+	    		}
+	    	}
     	
 		return identifier;
 	}
 
 	public static String[] addConfigAliases( String label, String[] aliases )
 	{
-    	String[] results = aliases;
-    	
-    	String configKey = "prisonCommandHandler.aliases." + label.replace( " ", "." );
-    	
-    	List<?> ca = Prison.get().getPlatform().getConfigStringArray( configKey );
-    	if ( ca != null && ca.size() > 0 && ca.get( 0 ) instanceof String ) {
-    		
-			List<String> configAliases = new ArrayList<>();
-			
-			for ( String alias : aliases ) {
-				configAliases.add( alias );
-			}
-					
-			for ( Object aliasObj : ca ) {
-				if ( aliasObj instanceof String ) {
-					configAliases.add( aliasObj.toString() );
+	    	String[] results = aliases;
+	    	
+	    	String configKey = "prisonCommandHandler.aliases." + label.replace( " ", "." );
+	    	
+	    	List<?> ca = Prison.get().getPlatform().getConfigStringArray( configKey );
+	    	if ( ca != null && ca.size() > 0 && ca.get( 0 ) instanceof String ) {
+	    		
+				List<String> configAliases = new ArrayList<>();
+				
+				for ( String alias : aliases ) {
+					configAliases.add( alias );
 				}
-			}
-			
-    		results = configAliases.toArray( new String[0] );
-    		
-    	}
+						
+				for ( Object aliasObj : ca ) {
+					if ( aliasObj instanceof String ) {
+						configAliases.add( aliasObj.toString() );
+					}
+				}
+				
+	    		results = configAliases.toArray( new String[0] );
+	    		
+	    	}
 		return results;
 	}
     
@@ -825,73 +752,72 @@ public class CommandHandler {
     public boolean hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
     		String label, String[] args ) {
 
-    	CommandAccessResults results = new CommandAccessResults( sender );
+	    	CommandAccessResults results = new CommandAccessResults( sender );
+	    	
+	    	hasCommandAccess( sender, rootCommand, label, args, results );
+	    	
+	    	if ( results.isAccess() ) {
+	    		results.setAccessPermitted();
+	    	}
+	    	
+	    	if ( !results.isAccess() ) {
+	    		// Debug logging if prison is in debug mode:
+	    		results.debugAccess();
+	    	}
     	
-    	hasCommandAccess( sender, rootCommand, label, args, results );
-    	
-    	if ( results.isAccess() ) {
-    		results.setAccessPermitted();
-    	}
-    	
-    	if ( !results.isAccess() ) {
-    		// Debug logging if prison is in debug mode:
-    		results.debugAccess();
-    	}
-    	
-    	return results.isAccess();
+	    	return results.isAccess();
     }
     
     private void hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
     			String label, String[] args,
     			CommandAccessResults results ) {
     		
-//    	boolean results = true;
     	
-    	if ( !sender.isOp() ) {
-    		
-    		boolean hasAccess = rootCommand.testPermission(sender);
-    		
-    		if ( !hasAccess ) {
-    			results.setAccess( false );
-    		}
-    		else {
-    			
-    			String exRAKey = "prisonCommandHandler.exclude-non-ops.exclude-related-aliases";
-    			boolean excludeRelatedAliases = getConfigBoolean( exRAKey );
-    			
-    			String sLabelAlias = !excludeRelatedAliases || rootCommand.getParentOfAlias() == null ? 
-    					null : rootCommand.getParentOfAlias().getCompleteLabel();
-    			
-    			
-    			commandAccessPermChecks( sender, rootCommand, label, results );
-    			
-    			if ( results.isAccess() && sLabelAlias != null ) {
-    				
-    				commandAccessPermChecks( sender, rootCommand.getParentOfAlias(), sLabelAlias, results );
-    			}
-    		}
-    		
-
-    	}
+	    	if ( !sender.isOp() ) {
+	    		
+	    		boolean hasAccess = rootCommand.testPermission(sender);
+	    		
+	    		if ( !hasAccess ) {
+	    			results.setAccess( false );
+	    		}
+	    		else {
+	    			
+	    			String exRAKey = "prisonCommandHandler.exclude-non-ops.exclude-related-aliases";
+	    			boolean excludeRelatedAliases = getConfigBoolean( exRAKey );
+	    			
+	    			String sLabelAlias = !excludeRelatedAliases || rootCommand.getParentOfAlias() == null ? 
+	    					null : rootCommand.getParentOfAlias().getCompleteLabel();
+	    			
+	    			
+	    			commandAccessPermChecks( sender, rootCommand, label, results );
+	    			
+	    			if ( results.isAccess() && sLabelAlias != null ) {
+	    				
+	    				commandAccessPermChecks( sender, rootCommand.getParentOfAlias(), sLabelAlias, results );
+	    			}
+	    		}
+	    		
+	
+	    	}
     	
-    	// If we get to this point, and the result is true (the player has access the
-    	// specified command so far), and there are more args, we need to next
-    	// take the args[0] and append it to the label, and then test it again.
-    	// This needs to continue until the generated command is rejected, or
-    	// it passes it's clean and the player has full access to the command(s).
-    	if ( results.isAccess() && args.length > 0 ) {
-    		String newSuffix = args[0];
-    		String newLabel = label + " " + newSuffix;
-    		String[] newArgs = Arrays.copyOfRange( args, 1, args.length );
-    		
-    		RegisteredCommand newSuffixCommand = rootCommand.getSuffixCommand( newSuffix );
-    		
-    		if ( newSuffixCommand != null ) {
-    			
-    			hasCommandAccess( sender, newSuffixCommand, 
-    					newLabel, newArgs, results );
-    		}
-    	}
+	    	// If we get to this point, and the result is true (the player has access the
+	    	// specified command so far), and there are more args, we need to next
+	    	// take the args[0] and append it to the label, and then test it again.
+	    	// This needs to continue until the generated command is rejected, or
+	    	// it passes it's clean and the player has full access to the command(s).
+	    	if ( results.isAccess() && args.length > 0 ) {
+	    		String newSuffix = args[0];
+	    		String newLabel = label + " " + newSuffix;
+	    		String[] newArgs = Arrays.copyOfRange( args, 1, args.length );
+	    		
+	    		RegisteredCommand newSuffixCommand = rootCommand.getSuffixCommand( newSuffix );
+	    		
+	    		if ( newSuffixCommand != null ) {
+	    			
+	    			hasCommandAccess( sender, newSuffixCommand, 
+	    					newLabel, newArgs, results );
+	    		}
+	    	}
     	
     }
 
@@ -953,10 +879,10 @@ public class CommandHandler {
 	}
 
     private boolean getConfigBoolean( String configKey ) {
-    	return Prison.get().getPlatform().getConfigBooleanFalse( configKey );
+    		return Prison.get().getPlatform().getConfigBooleanFalse( configKey );
     }
     private List<?> getConfigStringArray( String configKey ) {
-    	return Prison.get().getPlatform().getConfigStringArray( configKey );
+    		return Prison.get().getPlatform().getConfigStringArray( configKey );
     }
     
 	public boolean onCommand(CommandSender sender, PluginCommand command, String label,
@@ -964,8 +890,8 @@ public class CommandHandler {
     	
         RootCommand rootCommand = rootCommands.get(command);
         if (rootCommand == null) {
-        	Output.get().logError( "CommandHandler.onCommand(): " + command.getLabel() + 
-        			" : No root command found. " );
+        		Output.get().logError( "CommandHandler.onCommand(): " + command.getLabel() + 
+        					" : No root command found. " );
             return false;
         }
         
@@ -975,44 +901,44 @@ public class CommandHandler {
             
             boolean debug = Output.get().isActiveTarget( DebugTarget.commandHandler );
             if ( debug ) {
-    			String argz = "";
-    			for (String arg : args) {
-    				argz += arg + " ";
-    			}
-    			
-    			String msg = String.format( 
-    					"CommandHandler.onCommand: Sender %s. Command is marked with 'onlyPlayers'. "
-    							+ "Cannot run. : [%s]",
-    					sender.getName(), 
-    					(label + " " + argz).trim()
-    					);
-    			Output.get().logInfo( msg );
-    		}
+	    			String argz = "";
+	    			for (String arg : args) {
+	    				argz += arg + " ";
+	    			}
+	    			
+	    			String msg = String.format( 
+	    					"CommandHandler.onCommand: Sender %s. Command is marked with 'onlyPlayers'. "
+	    							+ "Cannot run. : [%s]",
+	    					sender.getName(), 
+	    					(label + " " + argz).trim()
+	    					);
+	    			Output.get().logInfo( msg );
+	    		}
             
             return true;
         }
         
         else if ( !hasCommandAccess( sender, rootCommand, label, args ) ) {
-        	// The player does not have access to this command.
-        	// Who cares!  Just exit and do nothing. Never log this.
-        	return true;
+	        	// The player does not have access to this command.
+	        	// Who cares!  Just exit and do nothing. Never log this.
+	        	return true;
         }
         
         else {
 
-        	try {
-        		rootCommand.execute( sender, args );
-        	}
-        	catch ( Exception e ) {
-        		String message = "Prison CommandHander: onCommand: " + e.getMessage() + 
-        				" [" + e.getCause() == null ? "cause not reported" : e.getCause() + "]"; 
-        		
-        		Output.get().logError( message );
-        		for ( StackTraceElement ste : e.getStackTrace() ) {
-        			Output.get().logError( ste.toString() );
-				}
-        		
-        	}
+	        	try {
+	        		rootCommand.execute( sender, args );
+	        	}
+	        	catch ( Exception e ) {
+	        		String message = "Prison CommandHander: onCommand: " + e.getMessage() + 
+	        				" [" + e.getCause() == null ? "cause not reported" : e.getCause() + "]"; 
+	        		
+	        		Output.get().logError( message );
+	        		for ( StackTraceElement ste : e.getStackTrace() ) {
+	        			Output.get().logError( ste.toString() );
+					}
+	        		
+	        	}
         }
         
 
@@ -1063,9 +989,6 @@ public class CommandHandler {
 		this.rootCommands = rootCommands;
 	}
 
-//	private List<PluginCommand> getCommands() {
-//		return commands;
-//	}
 
     public TabCompleaterData getTabCompleaterData() {
 		return tabCompleaterData;
@@ -1110,27 +1033,27 @@ public class CommandHandler {
      */
     public String findRegisteredCommand(String command) {
     	
-    	String[] patternParts = command.split( " " );
-    	
-    	if ( patternParts.length > 0 ) {
-    		String rootPattern = patternParts[0];
-    		
-    		for ( RegisteredCommand cmd : allRegisteredCommands ) {
-    			
-    			if ( cmd.getLabel().equalsIgnoreCase( rootPattern ) ) {
-    				
-    				if ( cmd.isRoot() ) {
-    					
-    					RootCommand rootCommand = (RootCommand) cmd;
-    					if ( rootCommand.getBukkitCommand().getLabelRegistered() != null ) {
-
-    						patternParts[0] = rootCommand.getBukkitCommand().getLabelRegistered();
-    					}
-    				}
-    			}
-    		}
-    	}
-    	
-    	return String.join( " ", patternParts );
+	    	String[] patternParts = command.split( " " );
+	    	
+	    	if ( patternParts.length > 0 ) {
+	    		String rootPattern = patternParts[0];
+	    		
+	    		for ( RegisteredCommand cmd : allRegisteredCommands ) {
+	    			
+	    			if ( cmd.getLabel().equalsIgnoreCase( rootPattern ) ) {
+	    				
+	    				if ( cmd.isRoot() ) {
+	    					
+	    					RootCommand rootCommand = (RootCommand) cmd;
+	    					if ( rootCommand.getBukkitCommand().getLabelRegistered() != null ) {
+	
+	    						patternParts[0] = rootCommand.getBukkitCommand().getLabelRegistered();
+	    					}
+	    				}
+	    			}
+	    		}
+	    	}
+	    	
+	    	return String.join( " ", patternParts );
     }
 }

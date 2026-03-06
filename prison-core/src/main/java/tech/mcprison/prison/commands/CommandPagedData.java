@@ -93,11 +93,11 @@ public class CommandPagedData {
         RowComponent row = new RowComponent();
         if ( getCurPage() > 1 )
         {
-        	row.addFancy( 
-        			new ButtonComponent( "&e<-- Prev Page", '-', Style.NEGATIVE)
-        			.runCommand(pageCommand + " " + (getCurPage() - 1) + 
-        					(getPageCommandSuffix() == null ? "" : " " + getPageCommandSuffix()), 
-        					"View the prior page of search results").getFancyMessage() );
+	        	row.addFancy( 
+	        			new ButtonComponent( "&e<-- Prev Page", '-', Style.NEGATIVE)
+	        			.runCommand(pageCommand + " " + (getCurPage() - 1) + 
+	        					(getPageCommandSuffix() == null ? "" : " " + getPageCommandSuffix()), 
+	        					"View the prior page of search results").getFancyMessage() );
         }
         row.addFancy( 
         		new FancyMessage(" &9< &3Page " + curPage + " of " + 
@@ -187,7 +187,5 @@ public class CommandPagedData {
 	public void setPageEnd( int pageEnd ) {
 		this.pageEnd = pageEnd;
 	}
-
-	
 	
 }

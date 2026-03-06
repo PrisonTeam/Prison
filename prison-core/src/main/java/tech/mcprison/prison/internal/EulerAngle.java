@@ -75,8 +75,6 @@ public class EulerAngle {
 		setY( ea.getY() );
 		setZ( ea.getZ() );
 		
-//		Output.get().logInfo( toString() + "  angle: " + angle );
-		
         return this;
     }
 	

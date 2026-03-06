@@ -58,7 +58,6 @@ public class PrisonBlockTypes {
 		
 		// Add in prison's internal block types here:
 		getBlockTypes().add( PrisonBlock.IGNORE );
-//		getBlockTypes().add( PrisonBlock.NULL_BLOCK );
 
 		
 		// Map all available blocks to the blockTypesByName map:
@@ -98,13 +97,8 @@ public class PrisonBlockTypes {
 			
 			
 			getBlockTypesByName().put( blockKey, pb );
-//			getBlockTypesByName().put( pb.getBlockName().toLowerCase(), pb );
 			getBlockTypes().add( pb );
 			
-//			if ( pb.getBlockType() != PrisonBlockType.minecraft || pb.getDisplayName() != null ) {
-//				
-//				getBlockTypesByName().put( blockKey, pb );
-//			}
 		}
 	}
 

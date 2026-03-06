@@ -31,13 +31,6 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 public interface CommandSender 
 					extends PlayerPermissions {
 
-//	/**
-//	 * Returns the UUID for CommandSender if they are a bukkit Player.
-//	 * 
-//	 * @return
-//	 */
-//	public UUID getUUID();
-	
     /**
      * Returns the name of the command sender.
      */
@@ -88,18 +81,6 @@ public interface CommandSender
      */
     public void sendRaw(String json);
     
-    
-//    public boolean isOp();
-//    
-//    public void recalculatePermissions();
-//    
-//    /**
-//     * Returns true if the command sender has access to the permission specified.
-//     *
-//     * @param perm The permission to check.
-//     */
-//    boolean hasPermission(String perm);
-
     
     public boolean isPlayer();
 

@@ -52,7 +52,8 @@ public class CommandArgument implements ExecutableArgument {
         this.argumentClass = argumentClass;
     }
 
-    @Override public Object execute(CommandSender sender, Arguments args) throws CommandError {
+    @Override 
+    public Object execute(CommandSender sender, Arguments args) throws CommandError {
         String arg;
         if (!args.hasNext()) {
             if (def.equals(" ")) {

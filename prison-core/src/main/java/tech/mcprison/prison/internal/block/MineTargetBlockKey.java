@@ -1,7 +1,6 @@
 package tech.mcprison.prison.internal.block;
 
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
 
 public class MineTargetBlockKey
@@ -21,7 +20,6 @@ public class MineTargetBlockKey
 		this.y = 0;
 		this.z = 0;
 		
-//		Output.get().logInfo( "MineTargetBlockKey: World and coordinates need to be set." );
 	}
 	
 	public MineTargetBlockKey( World world, int x, int y, int z ) {
@@ -122,12 +120,7 @@ public class MineTargetBlockKey
 		
 		hash += x * 13 + y * 37 + z * 17;
 				
-//		return super.hashCode();
-		
 		return hash;
 	}
-	
-	
-	
 	
 }

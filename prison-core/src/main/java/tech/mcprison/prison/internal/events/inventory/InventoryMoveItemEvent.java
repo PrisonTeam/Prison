@@ -23,8 +23,6 @@ import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.inventory.Inventory;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class InventoryMoveItemEvent implements Cancelable {

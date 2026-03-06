@@ -1,6 +1,3 @@
-/**
- * 
- */
 package tech.mcprison.prison.file;
 
 import java.io.File;
@@ -12,9 +9,6 @@ import com.google.common.io.Files;
 
 import tech.mcprison.prison.output.Output;
 
-/**
- *
- */
 public abstract class FileVirtualDelete
 {
 	public static final String FILE_LOGICAL_DELETE_PREFIX = ".deleted_";
@@ -55,23 +49,23 @@ public abstract class FileVirtualDelete
      */
     protected File virtualBackup( File source )
     {
-    	SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
-    	String name = FILE_LOGICAL_BACKUP_PREFIX + source.getName() + sdf.format( new Date() ) + ".bu";
-    	File backupFile = new File( source.getParentFile(), name);
-    	
-    	try {
-			Files.copy( source, backupFile );
-		}
-		catch ( IOException e )
-		{
-			Output.get().logError( 
-					String.format( 
-							"Could not create a backup. SourceFile: %s  BackupFile: %s Error: [%s]",
-							source.getAbsolutePath(), backupFile.getAbsolutePath(), e.getMessage() ));
-			e.printStackTrace();
-		}
-    	
-    	return backupFile;
+	    	SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
+	    	String name = FILE_LOGICAL_BACKUP_PREFIX + source.getName() + sdf.format( new Date() ) + ".bu";
+	    	File backupFile = new File( source.getParentFile(), name);
+	    	
+	    	try {
+				Files.copy( source, backupFile );
+			}
+			catch ( IOException e )
+			{
+				Output.get().logError( 
+						String.format( 
+								"Could not create a backup. SourceFile: %s  BackupFile: %s Error: [%s]",
+								source.getAbsolutePath(), backupFile.getAbsolutePath(), e.getMessage() ));
+				e.printStackTrace();
+			}
+	    	
+	    	return backupFile;
     }
     
     /**
@@ -85,9 +79,9 @@ public abstract class FileVirtualDelete
      */
     protected boolean isDeleted( File source )
     {
-    	return 
-    			source.getName().toLowerCase().startsWith( FILE_LOGICAL_DELETE_PREFIX ) ||
-		    	source.getName().toLowerCase().startsWith( FILE_LOGICAL_BACKUP_PREFIX );
+	    	return 
+	    			source.getName().toLowerCase().startsWith( FILE_LOGICAL_DELETE_PREFIX ) ||
+			    	source.getName().toLowerCase().startsWith( FILE_LOGICAL_BACKUP_PREFIX );
     }
 	
 }

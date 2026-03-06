@@ -23,8 +23,6 @@ import tech.mcprison.prison.internal.inventory.AnvilInventory;
 import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class PrepareAnvilEvent extends InventoryEvent {

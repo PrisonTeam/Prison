@@ -46,25 +46,10 @@ public interface Block {
      */
     public Block getRelative(BlockFace face);
 
-//    /**
-//     * Returns the type of this block.
-//     *
-//     * @return The {@link BlockType}.
-//     */
-//    BlockType getType();
-    
     
     public PrisonBlock getPrisonBlock();
     
 
-//    /**
-//     * Sets the block to a different type.
-//     *
-//     * @param type The new {@link BlockType}.
-//     */
-//    void setType(BlockType type);
-    
-    
     public void setPrisonBlock( PrisonBlock prisonBlock );
     
     /**

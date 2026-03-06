@@ -24,8 +24,6 @@ import tech.mcprison.prison.internal.inventory.Recipe;
 import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class CraftItemEvent extends InventoryClickEvent {

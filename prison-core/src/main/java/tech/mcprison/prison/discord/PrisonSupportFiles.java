@@ -85,20 +85,6 @@ public class PrisonSupportFiles {
 				String cc1 = cm.getColorCode();
 				String cc2 = cc1.replace("&", SECTION_CODE);
 
-//				char test = line.charAt(0);
-//				char test2 = '\u0167';
-//				
-//				String t = "Test: " + test + test2;
-//				
-//				String cc2 = cc1.replace("&", "§");
-//				String cc3 = cc1.replace("&", "\u0167"); // Section code: §, &#167; &#xA7; &sect;
-//				String cc4 = cc1.replace("&", Character.toString(test2) ); 
-//
-//				char test3 = cc2.charAt(0);
-				
-//				Character.getType( cc2.charAt(0));
-//				Character. ( cc2.charAt(0));
-				
 				if ( line.toLowerCase().startsWith( cc1 ) || line.startsWith( cc2 ) ) {
 					results = cm;
 					break;
@@ -138,17 +124,6 @@ public class PrisonSupportFiles {
 		
 	}
 	
-//	private void saveSupportDataToFile( StringBuilder text ) {
-//		File file = getSupportFile();
-//		
-//		try {
-//			Files.write( text.toString().getBytes(), file);
-//		} 
-//		catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
 	
 	private void saveSupportDataToFile( StringBuilder text, String supportName ) {
 		File file = getSupportFile();
@@ -183,7 +158,6 @@ public class PrisonSupportFiles {
 			bw.write( "\n\n- = - = - = - = - = - = - = - = - = - = -\n\n");
 			
 			writeBufferedWriter( bw, text );
-//			bw.write( text.toString() );
 			
 		} 
 		catch (IOException e) {
@@ -217,6 +191,7 @@ public class PrisonSupportFiles {
 
 	
 	
+	@SuppressWarnings("unused")
 	private List<String> extractAllHyperlinkPlaceholders( StringBuilder text ) {
 		
 		List<String> hlp = new ArrayList<>();
@@ -383,13 +358,6 @@ public class PrisonSupportFiles {
 		File dir = new File( Prison.get().getDataFolder(), "backups" );
 		
 		File file = createSupportFile( dir, name );
-		
-//		File[] files = dir.listFiles( new FilenameFilter() {
-//			public boolean accept( File dir, String fileName ) {
-//				return fileName.startsWith("prison_support_") && 
-//						fileName.endsWith(".md");
-//			}
-//		});
 		
 		return file;
 	}

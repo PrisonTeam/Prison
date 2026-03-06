@@ -10,7 +10,6 @@ public interface Entity
 		extends CommandSender 
 {
 
-
 	public String getNbtString( String key );
 	public void setNbtString( String key, String value );
 	

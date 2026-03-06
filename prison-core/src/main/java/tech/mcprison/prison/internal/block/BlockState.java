@@ -19,14 +19,16 @@
 package tech.mcprison.prison.internal.block;
 
 /**
- * Represents a captured state of a block, which will not change
+ * <p>Represents a captured state of a block, which will not change
  * automatically.
- * <p>
- * Unlike {@link Block }, which only one object can exist per coordinate, {@link BlockState}
+ * </p>
+ * 
+ * <p>Unlike {@link Block }, which only one object can exist per coordinate, {@link BlockState}
  * can exist multiple times for any given Block. Note that another plugin may
  * change the state of the block and you will not know, or they may change the
  * block to another type entirely, causing your BlockState to become invalid.
- *
+ * </p>
+ * 
  * @author Faizaan A. Datoo
  * @since API 1.0
  */

@@ -9,15 +9,16 @@ public class LongArgumentHandler
 			extends NumberArgumentHandler<Long> {
 
     public LongArgumentHandler() {
+    		super();
     }
 
     @Override 
     public Long transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
     	
-    	if ( value != null ) {
-    		value = value.replaceAll( "$|%", "" );
-    	}
+	    	if ( value != null ) {
+	    		value = value.replaceAll( "$|%", "" );
+	    	}
 
         try {
             return Long.parseLong(value);

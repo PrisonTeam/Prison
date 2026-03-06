@@ -54,16 +54,11 @@ public interface Door extends BlockState {
      */
     default boolean isWoodenDoor() {
     	
-    	String blockName = getBlock().getPrisonBlock().getBlockName();
-    	
-    	return blockName != null && 
-    		   blockName.matches( "ACACIA_DOOR|BIRCH_DOOR|CRIMSON_DOOR|OAK_DOOR|DARK_OAK_DOOR|" +
-    		   		"JUNGLE_DOOR|SPRUCE_DOOR|WARPED_DOOR" );
-    	
-//        BlockType block = getBlock().getType();
-//        return block == BlockType.ACACIA_DOOR_BLOCK || block == BlockType.BIRCH_DOOR_BLOCK
-//            || block == BlockType.DARK_OAK_DOOR_BLOCK || block == BlockType.JUNGLE_DOOR_BLOCK
-//            || block == BlockType.OAK_DOOR_BLOCK || block == BlockType.SPRUCE_DOOR_BLOCK;
+		String blockName = getBlock().getPrisonBlock().getBlockName();
+		
+		return blockName != null && 
+			   blockName.matches( "ACACIA_DOOR|BIRCH_DOOR|CRIMSON_DOOR|OAK_DOOR|DARK_OAK_DOOR|" +
+			   		"JUNGLE_DOOR|SPRUCE_DOOR|WARPED_DOOR" );
     }
 
 }

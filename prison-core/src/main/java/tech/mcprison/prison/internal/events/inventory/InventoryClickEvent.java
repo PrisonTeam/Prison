@@ -23,8 +23,6 @@ import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class InventoryClickEvent extends InventoryInteractEvent {

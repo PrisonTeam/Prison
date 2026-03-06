@@ -14,9 +14,6 @@ import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugTarget;
-
 /**
  * 
  * This class is based upon the github gist of k3kdude:

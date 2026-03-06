@@ -46,8 +46,6 @@ public abstract class PrisonBlockStatusData {
 	private boolean preventDrops = false;
 	
 	
-//	private transient boolean includeInLayerCalculations;
-	
 	
 	private transient String altAlias;
 	private transient String altColorCode;
@@ -100,8 +98,6 @@ public abstract class PrisonBlockStatusData {
 		
 		this.preventDrops = false;
 		
-		
-//		this.includeInLayerCalculations = true;
 	}
 
 	
@@ -187,13 +183,6 @@ public abstract class PrisonBlockStatusData {
 				results.parseFromSaveFileFormatStats( blockString );
 				
 			}
-//			else {
-//				if ( blockTypeName.equalsIgnoreCase( "gold_ore" ) ) {
-//					Output.get().logInfo( "### parseFromSaveFile: no results!? [" + 
-//							String.join( ", ", split ) + "]"
-//							);
-//				}
-//			}
 		}
 		
 		return results;
@@ -208,7 +197,6 @@ public abstract class PrisonBlockStatusData {
 			String[] split = blockString.split("-");
 			
 			if ( split != null && split.length > 0 ) {
-//				String blockTypeName = split[0];
 				// The new way to get the PrisonBlocks:  
 				
 				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
@@ -227,12 +215,6 @@ public abstract class PrisonBlockStatusData {
 				setConstraintExcludeBottomLayers( constraintExcludeBottomLayers );
 				setPreventDrops(preventDrops);
 				
-//				if ( blockTypeName.equalsIgnoreCase( "gold_ore" ) ) {
-//					Output.get().logInfo( "### parseFromSaveFile: [" + 
-//							String.join( ", ", split ) + "]  [" +
-//							block.toSaveFileFormat() + "]"
-//							);
-//				}
 			}
 
 		}
@@ -264,13 +246,11 @@ public abstract class PrisonBlockStatusData {
 
     	String percent = fFmt.format(getChance());
     	
-//    	String spawned = dFmt.format( getResetBlockCount() );
     	String remaining = dFmt.format( getBlockPlacedCount() - getBlockCountUnsaved() );
     	String total = PlaceholdersUtil.formattedKmbtSISize( 1.0d * getBlockCountTotal(), dFmt, "" );
     	
 		sb.append( getBlockName() ).append( " (" )
 			.append( percent ).append( " pct) " )
-//			.append( spawned )
 			.append( "  r: " ).append( remaining )
 			.append( "  T: " ) .append( total )
 			;
@@ -588,14 +568,6 @@ public abstract class PrisonBlockStatusData {
 		this.preventDrops = preventDrops;
 	}
 
-
-	
-//	public boolean isIncludeInLayerCalculations() {
-//		return includeInLayerCalculations;
-//	}
-//	public void setIncludeInLayerCalculations(boolean includeInLayerCalculations) {
-//		this.includeInLayerCalculations = includeInLayerCalculations;
-//	}
 
 
 	/**
