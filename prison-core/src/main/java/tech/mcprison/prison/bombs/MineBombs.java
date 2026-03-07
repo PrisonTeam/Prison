@@ -228,30 +228,6 @@ public class MineBombs
 	}
 	
 	
-//	/**
-//	 * <p>This finds a bomb with the given name, and returns a clone.  The clone is
-//	 * important since individual instances will set the isActivated() variable to 
-//	 * true if the bomb is active.  If it's activated, then that indicates the 
-//	 * bomb will be used and the bomb was removed from the player's inventory.
-//	 * </p>
-//	 * 
-//	 * @param bombName
-//	 * @return
-//	 */
-//	public MineBombData findBomb( String bombName ) {
-//		MineBombData bombOriginal = null;
-//
-//		if ( bombName != null ) {
-//			
-//			// Remove color codes from bomb's name for matching:
-//			bombName = Text.stripColor( bombName );
-//			
-//			bombOriginal = getConfigData().getBombs().get( bombName.toLowerCase() );
-//		}
-//		
-//		return bombOriginal.clone();
-//	}
-	
 	public MineBombData findBombByName( Player player, String bombName )
 			throws MineBombCooldownException
 	{
@@ -322,11 +298,6 @@ public class MineBombs
 			else {
 				// The player is still in a cooldown using minebombs, so 
 				// return a null instead of the bomb.
-				
-				//String message = "A mine bomb with the name of %s does not exist.";
-				
-//				player.sendMessage( String.format( message, bombName ) );
-				
 				
 				dbug.append( "&3 CoolDownIsInEffect: " )
 					.append( cooldownTicks ).append( " ticks remaining" ).append(" &aRejected! &3 " );
@@ -541,24 +512,11 @@ public class MineBombs
 		{
 			MineBombData bomb = config.getBombs().get( key );
 			
-			// bombItemId is the first line of the lore and should id the bomb:
-//			String cleanBombItemId = Text.stripColor( bomb.getBombItemId().replace( " ", "" ));
-//			if ( !cleanBombItemId.equalsIgnoreCase( bomb.getBombItemId() ) ) {
-//				
-//				errors.add( String.format( 
-//						"Invalid bombItemId: was: [%s]  fixed: [%s].",
-//						bomb.getBombItemId(), 
-//						cleanBombItemId ) );
-//				bomb.setBombItemId( cleanBombItemId );
-//				isDirty = true;
-//			}
-			
 			
 			// Bomb names can contain color codes now, but not spaces, since that will 
 			// mess up commands related to bombs, since the commands would require the bomb names
 			// to not have a space.
 			String cleanName = bomb.getName().replace( " ", "_" );
-//			String cleanName = Text.stripColor( bomb.getName().replace( " ", "_" ));
 			if ( !cleanName.equalsIgnoreCase( bomb.getName() ) ) {
 				
 				errors.add( String.format( 

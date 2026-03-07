@@ -20,7 +20,6 @@ import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.store.Storage;
-import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -42,10 +41,6 @@ public class PrisonAPI {
     public static EventBus getEventBus() {
         return Prison.get().getEventBus();
     }
-
-//    public static ItemManager getItemManager() {
-//        return Prison.get().getItemManager();
-//    }
 
     public static Optional<World> getWorld(String name) {
         return Prison.get().getPlatform().getWorld(name);
@@ -88,18 +83,15 @@ public class PrisonAPI {
     }
     
     public static void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
-    	Prison.get().getPlatform().dispatchCommand( sender, cmd);
+    		Prison.get().getPlatform().dispatchCommand( sender, cmd);
     }
 
     public static Scheduler getScheduler() {
         return Prison.get().getPlatform().getScheduler();
     }
 
-//    public static GUI createGUI(String title, int numRows) {
-//        return Prison.get().getPlatform().createGUI(title, numRows);
-//    }
-
-    @Deprecated public static void toggleDoor(Location doorLocation) {
+    @Deprecated 
+    public static void toggleDoor(Location doorLocation) {
         Prison.get().getPlatform().toggleDoor(doorLocation);
     }
 
@@ -126,10 +118,6 @@ public class PrisonAPI {
     public static ScoreboardManager getScoreboardManager() {
         return Prison.get().getPlatform().getScoreboardManager();
     }
-
-//    public static TroubleshootManager getTroubleshootManager() {
-//        return Prison.get().getTroubleshootManager();
-//    }
 
     public static IntegrationManager getIntegrationManager() {
         return Prison.get().getIntegrationManager();

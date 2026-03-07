@@ -50,29 +50,23 @@ public class PlayerCacheEvents
     @Subscribe
     public void onPlayerJoin(PlayerJoinEvent event) {
     	
-    	Player player = event.getPlayer();
-    	
-    	
-    	// Change all player cache references of "Player" to PlayerRank:
-    	
-//    	RankPlayer rPlayer = player.getRankPlayer();
-//    	RankPlayer rPlayer = Prison.get().getPlatform()
-//				.getRankPlayer( player.getUUID(), player.getName() );
-    	
-    	PlayerCache.getInstance().submitAsyncLoadPlayer( player );
+	    	Player player = event.getPlayer();
+	    	
+	    	
+	    	PlayerCache.getInstance().submitAsyncLoadPlayer( player );
     }
 
     @Subscribe
     public void onPlayerQuit(PlayerQuitEvent event) {
     	
      	Player player = event.getPlayer();
-    	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
+     	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
     }
 
     @Subscribe
     public void onPlayerKicked(PlayerKickEvent event) {
     	
-    	Player player = event.getPlayer();
-    	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
+	    	Player player = event.getPlayer();
+	    	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
     }
 }

@@ -96,7 +96,6 @@ public class Prison
     private LocaleManager localeManager;
     private File moduleDataFolder;
     
-//    private ItemManager itemManager;
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
     private IntegrationManager integrationManager;
@@ -115,11 +114,11 @@ public class Prison
     private static boolean dfSymStatic = false;
     
     private Prison() {
-    	super();
-    	
-    	this.serverStartupTime = System.currentTimeMillis();
-    	
-    	this.localeLoadInfo = new ArrayList<>();
+	    	super();
+	    	
+	    	this.serverStartupTime = System.currentTimeMillis();
+	    	
+	    	this.localeLoadInfo = new ArrayList<>();
     }
 
     /**
@@ -136,24 +135,24 @@ public class Prison
     }
 
     public DecimalFormat getDecimalFormat( String format ) {
-    	DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbols() );
-    	return dFmt;
+	    	DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbols() );
+	    	return dFmt;
     }
     public DecimalFormat getDecimalFormatInt() {
-    	return getDecimalFormat("#,##0");
+    		return getDecimalFormat("#,##0");
     }
     public DecimalFormat getDecimalFormatDouble() {
-    	return getDecimalFormat("#,##0.000");
+    		return getDecimalFormat("#,##0.000");
     }
     public static DecimalFormat getDecimalFormatStatic( String format ) {
-    	DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbolsStatic() );
+    		DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbolsStatic() );
     	return dFmt;
     }
     public static DecimalFormat getDecimalFormatStaticInt() {
-    	return getDecimalFormatStatic("#,##0");
+    		return getDecimalFormatStatic("#,##0");
     }
     public static DecimalFormat getDecimalFormatStaticDouble() {
-    	return getDecimalFormatStatic("#,##0.000");
+    		return getDecimalFormatStatic("#,##0.000");
     }
 
     /**
@@ -174,29 +173,29 @@ public class Prison
      * @return
      */
     private DecimalFormatSymbols getDecimalFormatSymbols() {
-    	if ( dfSym == null || dfSymStatic ) {
-    		
-     		String location = getPlatform().getConfigString( "number-format-location", "en_US" );
-    		String[] loc = location.split("_");
-    		
-    		Locale locale = new Locale( 
-    				loc != null && loc.length >= 1 ? loc[0] : "en",
-    						loc != null && loc.length >= 2 ? loc[1] : "US" );
-    		
-//    		Locale locale = new Locale( "en", "US" );
-    		dfSym = new DecimalFormatSymbols( locale );
-    		dfSymStatic = false;
-    	}
-    	return dfSym;
+	    	if ( dfSym == null || dfSymStatic ) {
+	    		
+	     		String location = getPlatform().getConfigString( "number-format-location", "en_US" );
+	    		String[] loc = location.split("_");
+	    		
+	    		Locale locale = new Locale( 
+	    				loc != null && loc.length >= 1 ? loc[0] : "en",
+	    						loc != null && loc.length >= 2 ? loc[1] : "US" );
+	    		
+	//    		Locale locale = new Locale( "en", "US" );
+	    		dfSym = new DecimalFormatSymbols( locale );
+	    		dfSymStatic = false;
+	    	}
+	    	return dfSym;
     }
     private static DecimalFormatSymbols getDecimalFormatSymbolsStatic() {
-    	if ( dfSym == null ) {
-    		
-    		Locale locale = new Locale( "en", "US" );
-    		dfSym = new DecimalFormatSymbols( locale );
-    		dfSymStatic = true;
-    	}
-    	return dfSym;
+	    	if ( dfSym == null ) {
+	    		
+	    		Locale locale = new Locale( "en", "US" );
+	    		dfSym = new DecimalFormatSymbols( locale );
+	    		dfSymStatic = true;
+	    	}
+	    	return dfSym;
     }
     
     /**
@@ -211,16 +210,16 @@ public class Prison
      */
     public LocaleManager getLocaleManager() {
     		
-    	if ( this.localeManager == null ) {
-    		
-    		synchronized ( this ) {
-    			if ( this.localeManager == null ) {
-				
-    				this.localeManager = new LocaleManager(this, "lang/core");
-    			}
+	    	if ( this.localeManager == null ) {
+	    		
+	    		synchronized ( this ) {
+	    			if ( this.localeManager == null ) {
+					
+	    				this.localeManager = new LocaleManager(this, "lang/core");
+	    			}
 			}
-    		
-    	}
+	    		
+	    	}
         return localeManager;
     }
     
@@ -233,20 +232,20 @@ public class Prison
      */
     public File getModuleDataFolder() {
     	
-    	if ( moduleDataFolder == null ) {
-    		if ( this.localeManager == null ) {
-    			if ( moduleDataFolder == null ) {
-    				
-    				this.moduleDataFolder = Module.setupModuleDataFolder( "core" );
-    				
-    			}
-    		}
-    	}
+	    	if ( moduleDataFolder == null ) {
+	    		if ( this.localeManager == null ) {
+	    			if ( moduleDataFolder == null ) {
+	    				
+	    				this.moduleDataFolder = Module.setupModuleDataFolder( "core" );
+	    				
+	    			}
+	    		}
+	    	}
         return moduleDataFolder;
     }
-    
+	    
     public void setupJUnitInstance( Platform platform ) {
-    	this.platform = platform;
+	    	this.platform = platform;
     }
     
     
@@ -259,11 +258,9 @@ public class Prison
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
     public void init(Platform platform, String minecraftVersion ) {
-    	//long startTime = System.currentTimeMillis();
-    	
-    	
-    	this.platform = platform;
-    	this.minecraftVersion = minecraftVersion;
+	    	
+	    	this.platform = platform;
+	    	this.minecraftVersion = minecraftVersion;
     	
     }
     
@@ -277,10 +274,6 @@ public class Prison
     public boolean init( File dataFolder ) {
         long startTime = System.currentTimeMillis();
 
-        
-//        this.platform = platform;
-//        this.minecraftVersion = minecraftVersion;
-        
         this.dataFolder = dataFolder;
         
         if (!initDataFolder()) {
@@ -307,13 +300,12 @@ public class Prison
         Output.get().logInfo("Enabling and starting...");
 
         
-        //getPrisonStatsUtil().checkDirectoryStructures( );
 
         // Initialize various parts of the API. The magic happens here :)
         initManagers();
         if (!initMetaDatabase()) {
-        	Output.get().logInfo("&cFailure: &eInitializing the Prison Database!" );
-        	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
+	        	Output.get().logInfo("&cFailure: &eInitializing the Prison Database!" );
+	        	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
             return false;
         }
         Alerts.getInstance(); // init alerts
@@ -350,31 +342,31 @@ public class Prison
 
     private void sendBanner() {
     	
-    	ChatDisplay display = new ChatDisplay("");
-    	
-    	display.addText("");
-    	display.addText("&6 _____      _                 ");
-    	display.addText("&6|  __ \\    (_)                ");
-    	display.addText("&6| |__) | __ _ ___  ___  _ __  ");
-    	display.addText("&6|  ___/ '__| / __|/ _ \\| '_ \\");
-    	display.addText("&6| |   | |  | \\__ \\ (_) | | | |");
-    	display.addText("&6|_|   |_|  |_|___/\\___/|_| |_|");
-    	display.addText("");
-    	display.addText("&7Loading Prison version: &3%s", PrisonAPI.getPluginVersion());
-    	display.addText("&7Running on platform: &3%s", platform.getClass().getSimpleName());
-    	display.addText("&7Minecraft version: &3%s", getMinecraftVersion());
-    	// display.addText("&7Server runtime: %s", getServerRuntimeFormatted() );
-    	display.addText("");
-    	
-    	displaySystemSettings( display );
-    	displaySystemTPS( display );
-
-    	display.addText("");
-    	
-    	
-    	getPrisonStatsUtil().checkDirectoryStructures( display );
-    	
-    	display.sendtoOutputLogInfo();
+	    	ChatDisplay display = new ChatDisplay("");
+	    	
+	    	display.addText("");
+	    	display.addText("&6 _____      _                 ");
+	    	display.addText("&6|  __ \\    (_)                ");
+	    	display.addText("&6| |__) | __ _ ___  ___  _ __  ");
+	    	display.addText("&6|  ___/ '__| / __|/ _ \\| '_ \\");
+	    	display.addText("&6| |   | |  | \\__ \\ (_) | | | |");
+	    	display.addText("&6|_|   |_|  |_|___/\\___/|_| |_|");
+	    	display.addText("");
+	    	display.addText("&7Loading Prison version: &3%s", PrisonAPI.getPluginVersion());
+	    	display.addText("&7Running on platform: &3%s", platform.getClass().getSimpleName());
+	    	display.addText("&7Minecraft version: &3%s", getMinecraftVersion());
+	    	// display.addText("&7Server runtime: %s", getServerRuntimeFormatted() );
+	    	display.addText("");
+	    	
+	    	displaySystemSettings( display );
+	    	displaySystemTPS( display );
+	
+	    	display.addText("");
+	    	
+	    	
+	    	getPrisonStatsUtil().checkDirectoryStructures( display );
+	    	
+	    	display.sendtoOutputLogInfo();
     }
     
     public void displaySystemSettings( ChatDisplay display ) {
@@ -498,28 +490,17 @@ public class Prison
         String tpsHistory = prisonTPS.getLastFewTPS();
         if ( tpsHistory.length() > 0 ) {
         	
-        	display.addText( "&7TPS History: %s", tpsHistory );
+        		display.addText( "&7TPS History: %s", tpsHistory );
         }
 
     }
     public void getSystemTPS( LinkedHashMap<String, String> fields ) {
     	
-    	//DecimalFormat iFmt = getDecimalFormatInt();
-    	PrisonTPSSingleton prisonTPS = Prison.get().getPrisonTPS();
-    	
-    	fields.put( "tps", prisonTPS.getAverageTPSFormatted() );
-    	fields.put( "tpsMin", prisonTPS.getTPSMinFormatted() );
-//    	fields.put( "tpsMax", ( prisonTPS.getTpsMax() >= 100  ? ">" : "") + prisonTPS.getTPSMaxFormatted() );
-    	//fields.put( "tpsInterval", iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ) );
-    	//fields.put( "tpsSamples", iFmt.format( prisonTPS.getTpsSamples() ) );
-    	
-    	
-//    	String tpsHistory = prisonTPS.getLastFewTPS();
-//    	if ( tpsHistory.length() > 0 ) {
-//    		
-//    		fields.put( "tpsHistory", prisonTPS.getLastFewTPS() );
-//    	}
-    	
+	    	PrisonTPSSingleton prisonTPS = Prison.get().getPrisonTPS();
+	    	
+	    	fields.put( "tps", prisonTPS.getAverageTPSFormatted() );
+	    	fields.put( "tpsMin", prisonTPS.getTPSMinFormatted() );
+	    	
     }
     
     private void getPrisonDiskSpaceUsage( ChatDisplay display,
@@ -549,26 +530,22 @@ public class Prison
     public void getPrisonDiskSpaceUsage( LinkedHashMap<String, String> fields ) {
         File prisonFolder = Prison.get().getDataFolder();
         
-    	PrisonDiskStats diskStats = new PrisonDiskStats();
-    	
-    	// Increment folder count for prison's plugin folder:
-    	diskStats.incrementFolderCount();
-    	
-    	calculatePrisonDiskUsage( diskStats, prisonFolder );
-    	
-    	DecimalFormat dFmt = getDecimalFormatDouble();
-    	DecimalFormat iFmt = getDecimalFormatInt();
-    	
-    	String prisonFileCount = iFmt.format( diskStats.getFileCount() );
-//    	String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );
-    	//String prisonOtherObjectCount = iFmt.format( diskStats.getOtherObjectCount() );
-    	String prisonStorageSize = PlaceholdersUtil.formattedIPrefixBinarySize( 
-    			diskStats.getStorageSize(), dFmt, " " );
-    	
-    	fields.put( "prisonStorageFiles", prisonFileCount );
-//    	fields.put( "prisonStorageFolders", prisonFolderCount );
-    	fields.put( "prisonStorageSize", prisonStorageSize );
-    	//fields.put( "prisonStorageObjects", prisonOtherObjectCount );
+	    	PrisonDiskStats diskStats = new PrisonDiskStats();
+	    	
+	    	// Increment folder count for prison's plugin folder:
+	    	diskStats.incrementFolderCount();
+	    	
+	    	calculatePrisonDiskUsage( diskStats, prisonFolder );
+	    	
+	    	DecimalFormat dFmt = getDecimalFormatDouble();
+	    	DecimalFormat iFmt = getDecimalFormatInt();
+	    	
+	    	String prisonFileCount = iFmt.format( diskStats.getFileCount() );
+	    	String prisonStorageSize = PlaceholdersUtil.formattedIPrefixBinarySize( 
+	    			diskStats.getStorageSize(), dFmt, " " );
+	    	
+	    	fields.put( "prisonStorageFiles", prisonFileCount );
+	    	fields.put( "prisonStorageSize", prisonStorageSize );
     	
     }
 
@@ -596,18 +573,18 @@ public class Prison
 
     public class PrisonDiskStats {
     	
-    	long fileCount = 0L;
-    	long folderCount = 0L;
-    	long otherObjectCount = 0L;
-    	long storageSize = 0L;
+	    	long fileCount = 0L;
+	    	long folderCount = 0L;
+	    	long otherObjectCount = 0L;
+	    	long storageSize = 0L;
     	
-    	public PrisonDiskStats() {
-    		super();
-    	}
-
-    	public void incrementFileCount() {
-    		fileCount++;
-    	}
+	    	public PrisonDiskStats() {
+	    		super();
+	    	}
+	
+	    	public void incrementFileCount() {
+	    		fileCount++;
+	    	}
 		public long getFileCount() {
 			return fileCount;
 		}
@@ -649,7 +626,6 @@ public class Prison
     private boolean initDataFolder() {
         // Creates the /Prison directory, for core configuration.
     	
-//        this.dataFolder = getPlatform().getPluginDirectory();
         return this.dataFolder.exists() || this.dataFolder.mkdirs();
     }
 
@@ -685,15 +661,6 @@ public class Prison
         this.integrationManager = new IntegrationManager();
         this.placeholderManager = new PlaceholderManager();
         
-
-//        try {
-//            this.itemManager = new ItemManager();
-//        } catch (Exception e) {
-//            this.errorManager.throwError(new Error(
-//                    "Error while loading items.csv. Try running /prison troubleshoot item_scan.")
-//                    .appendStackTrace("when loading items.csv", e));
-//            Output.get().logError("Try running /prison troubleshoot item_scan.");
-//        }
     }
 
     private void registerInbuiltTroubleshooters() {
@@ -702,15 +669,10 @@ public class Prison
 
     private void scheduleAlertNagger() {
     	
-    	// Nag the users with the correct perms 5 mins after server starts, and every 
-    	// hour thereafter.
-    	Alerts.getInstance().submitShowAlertsTask();
+	    	// Nag the users with the correct perms 5 mins after server starts, and every 
+	    	// hour thereafter.
+	    	Alerts.getInstance().submitShowAlertsTask();
     	
-//        // Nag the user with alerts every 5 minutes
-//        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
-//                .filter(player -> player.hasPermission("prison.admin")
-//                        && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
-//                .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
     }
 
     // End initialization steps
@@ -723,7 +685,6 @@ public class Prison
         moduleManager.unregisterAll();
     }
 
-    // Getters
 
     public String getMinecraftVersion()
 	{
@@ -731,34 +692,34 @@ public class Prison
 	}
     
     public List<Integer> getMVersionMajMin() {
-    	if ( versionMajMin == null ) {
-			
-    		this.versionMajMin = new ArrayList<>();
-    		
-    		String v = Prison.get().getMinecraftVersion();
-			String versionStr = v.substring( v.indexOf( "(MC:" ) + 4, v.lastIndexOf( ")" ) );
-			String[] vMN = versionStr.split( "\\." );
-			
-			for ( int x = 0; x < vMN.length; x++ ) {
-				String ver = vMN[x];
+	    	if ( versionMajMin == null ) {
 				
-				try {
-					this.versionMajMin.add( 
-							Integer.parseInt( ver.trim() ) );
+	    		this.versionMajMin = new ArrayList<>();
+	    		
+	    		String v = Prison.get().getMinecraftVersion();
+				String versionStr = v.substring( v.indexOf( "(MC:" ) + 4, v.lastIndexOf( ")" ) );
+				String[] vMN = versionStr.split( "\\." );
+				
+				for ( int x = 0; x < vMN.length; x++ ) {
+					String ver = vMN[x];
+					
+					try {
+						this.versionMajMin.add( 
+								Integer.parseInt( ver.trim() ) );
+					}
+					catch ( NumberFormatException e ) {
+						// ignore... just break out:
+						break;
+					}
 				}
-				catch ( NumberFormatException e ) {
-					// ignore... just break out:
-					break;
-				}
-			}
-			
-//			Output.get().logInfo( "#### Prison.getMVersionMajMin() : " + 
-//					( versionMajMin != null && versionMajMin.size() > 0 ? versionMajMin.get(0) : "?" ) + " " +
-//					( versionMajMin != null && versionMajMin.size() > 1 ? versionMajMin.get(1) : "?" ) + " " +
-//					( versionMajMin != null && versionMajMin.size() > 2 ? versionMajMin.get(2) : "?" )
-//					);
-    	}
-    	return versionMajMin;
+				
+	//			Output.get().logInfo( "#### Prison.getMVersionMajMin() : " + 
+	//					( versionMajMin != null && versionMajMin.size() > 0 ? versionMajMin.get(0) : "?" ) + " " +
+	//					( versionMajMin != null && versionMajMin.size() > 1 ? versionMajMin.get(1) : "?" ) + " " +
+	//					( versionMajMin != null && versionMajMin.size() > 2 ? versionMajMin.get(2) : "?" )
+	//					);
+	    	}
+	    	return versionMajMin;
     }
 
 	@Override
@@ -784,7 +745,7 @@ public class Prison
      * @param platform
      */
     public void setPlatform( Platform platform ) {
-    	this.platform = platform; 
+    		this.platform = platform; 
     }
 
     /**
@@ -854,12 +815,6 @@ public class Prison
         return selectionManager;
     }
 
-//    /**
-//     * Returns the item manager, which manages the "friendly" names of items
-//     */
-//    public ItemManager getItemManager() {
-//        return itemManager;
-//    }
 
     /**
      * Returns the meta database, which is used to store data from within the core.
@@ -887,7 +842,7 @@ public class Prison
      * Returns the integration manager, which returns {@link tech.mcprison.prison.integration.Integration}s.
      */
     public PlaceholderManager getPlaceholderManager() {
-    	return placeholderManager;
+    		return placeholderManager;
     }
     
     
@@ -899,9 +854,9 @@ public class Prison
 	}
 
 	public String getServerRuntimeFormatted() {
-    	long currentTime = System.currentTimeMillis();
-    	long runtimeMs = currentTime - getServerStartupTime();
-    	return PlaceholdersUtil.formattedTime( runtimeMs / 1000 );
+	    	long currentTime = System.currentTimeMillis();
+	    	long runtimeMs = currentTime - getServerStartupTime();
+	    	return PlaceholdersUtil.formattedTime( runtimeMs / 1000 );
     }
 
 	public PrisonTPSSingleton getPrisonTPS() {

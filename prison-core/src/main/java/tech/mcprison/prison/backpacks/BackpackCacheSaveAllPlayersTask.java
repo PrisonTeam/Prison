@@ -70,7 +70,7 @@ public class BackpackCacheSaveAllPlayersTask
 			}
 			
 		}
-		
+	
 		synchronized ( bCache.getPlayers() ) {
 			
 			for ( BackpackCachePlayerData playerData : purge ) {

@@ -196,7 +196,6 @@ public class PrisonBackups {
 		
 		
 		// The files in the zip file needs to be placed in a directory:
-//		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_kk-mm" );
 		String zipFilePrefix = "backup_" + sdFmt.format( backupStartDate );
 		this.zipFilePrefix = zipFilePrefix;
 		
@@ -264,13 +263,8 @@ public class PrisonBackups {
 	
 	public String backupReport01() {
 		
-//		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 		long stop = System.nanoTime();
 		double runTimeMs = ( stop - getStartTimeNanos() ) / 1000000.0d;
-		
-//		long size = zipFile.length();
-//		double sizeKb = size / 1024.0;
-		
 		
 		
 		String msg1 = String.format(
@@ -490,8 +484,6 @@ public class PrisonBackups {
 		}
 		
 		String prisonVersion = Prison.get().getPlatform().getPluginVersion();
-		
-//		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_hh-mm" );
 		
 		String fileName = "prison_" + sdFmt.format( new Date() ) + 
 				"_v" + prisonVersion +

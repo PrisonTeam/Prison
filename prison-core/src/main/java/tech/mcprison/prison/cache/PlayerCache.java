@@ -333,8 +333,6 @@ public class PlayerCache {
 				
 				// Save it to the cache:
 				addPlayerData( playerData );
-//			runLoadPlayerNow( player );
-//			submitAsyncLoadPlayer( player );
 			}
 			
 			if ( playerData != null  ) {
@@ -364,29 +362,6 @@ public class PlayerCache {
 		}
 	}
 	
-	
-//	/**
-//	 * <p>This loads the player cache object inline.  It does not run it as a 
-//	 * task in another thread.
-//	 * </p>
-//	 * 
-//	 * <p>This is not used anywhere.
-//	 * </p>
-//	 * 
-//	 * @param player
-//	 */
-//	protected void runLoadPlayerNow( Player player ) {
-//		
-//		if ( player != null ) {
-//			
-//			PlayerCacheLoadPlayerTask task = new PlayerCacheLoadPlayerTask( player );
-//			
-//			task.run();
-////			// Submit task to run right away:
-////			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
-////			task.setTaskId( taskId );
-//		}
-//	}
 	
 	
 	protected void submitAsyncUnloadPlayer( Player player ) {
@@ -429,18 +404,6 @@ public class PlayerCache {
 		
 		PlayerCacheRunnable task = PlayerCacheCheckTimersTask.submitPlayerStatsCacheUpdater();
 		
-//		PlayerCacheCheckTimersTask task = new PlayerCacheCheckTimersTask();
-//		
-//		int repeatTimeTicks = Prison.get().getPlatform()
-//						.getConfigInt( PLAYER_CACHE_UPDATE_PLAYER_STATS_CONFIG_NAME, 
-//									   PLAYER_CACHE_UPDATE_PLAYER_STATS_SEC ) * 20;
-//		
-//		// Submit Timer Task to start running in 30 seconds (600 ticks) and then
-//		// refresh stats every 10 seconds (200 ticks). 
-//		// This does not update any files or interacts with bukkit/spigot.
-//		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, repeatTimeTicks );
-//		task.setTaskId( taskId );
-//		
 		return task;
 	}
 	
@@ -455,19 +418,10 @@ public class PlayerCache {
 		}
 		
 	}
-//	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
-//		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
-//	}
+
+
 	private void addPlayerBlocks( Player player, String mine, String blockName, int quantity ) {
 		PlayerCachePlayerData playerData = getPlayer( player );
-		
-//		Output.get().logInfo( "### addPlayerBlock: mine= " + (mine == null ? "null" : mine) +
-//				" block= " + (block == null ? "null" : block.getBlockName()) + " qty= " + quantity + "  playerData= " +
-//				(playerData == null ? "null" : playerData.toString() ));
-		
-//		if ( playerData != null && playerData.getBlocksTotal() % 20 == 0 ) {
-//			Output.get().logInfo( "#### PlayerCache: " + playerData.toString() );
-//		}
 		
 		playerData.addBlock( mine, blockName, quantity );
 		
@@ -586,12 +540,10 @@ public class PlayerCache {
 		this.stats = stats;
 	}
 	
-	
 
 	protected void log( String message ) {
 		Output.get().logInfo( message );
 	}
-	
 
 	public long getWriteDelay() {
 		return writeDelay;
@@ -608,6 +560,5 @@ public class PlayerCache {
 	public Map<PlayerCacheRunnable, PlayerCachePlayerData> getTasks() {
 		return tasks;
 	}
-
 
 }

@@ -30,7 +30,6 @@ public abstract class CoreCacheFiles {
 	private File cacheDirectory = null;
 	
 	private Gson gson = null;
-//	private TreeMap<String, File> playerFiles;
 
 	
 	public CoreCacheFiles( String cachePath ) {
@@ -153,22 +152,6 @@ public abstract class CoreCacheFiles {
 		
 		File playerCacheFile = JsonFileIO.fileCache(player);
 		
-//		String cacheFilename = JsonFileIO.filenameCache(player);
-////		String playerId = player.getUUID().toString();
-//		
-//		File playerCacheFile = getPlayerFile( cacheFilename );
-		
-//		// This is the "target" file name for the player, based upon their
-//		// current name. The saved cache file may not be named exactly the same,
-//		// and if it's not, then their existing cache file will be renamed 
-//		// within the function getCachedFileMatch()
-//		String playerFileName = getPlayerFileName( player );
-		
-//		String uuidPrefix = JsonFileIO.getFileNameUUIDFragment(playerFileName)
-		
-//		File playerFile = getCachedFileMatch( playerId, cacheFilename );
-
-		
 		if ( playerCacheFile.exists() ) {
 			
 			results = fromJsonFile( playerCacheFile, classOfT );
@@ -223,10 +206,6 @@ public abstract class CoreCacheFiles {
 			
 			File playerFile = cacheData.getPlayerFile();
 			File outTemp = createTempFile( playerFile );
-			
-//			if ( !getPlayerFiles().containsKey( playerFile.getName() )) {
-//				getPlayerFiles().put( playerFile.getName(), playerFile );
-//			}
 			
 			if ( outTemp.getParentFile().mkdirs() ) {
 				Output.get().logInfo( "CoreCacheFiles.toJsonFile(): Created missing directories: %s",
@@ -293,54 +272,7 @@ public abstract class CoreCacheFiles {
 		}
 	}
 
-//	/**
-//	 * <p>Constructs a File object for a specific player.
-//	 * </p>
-//	 * 
-//	 * @param playerFileName
-//	 * @return
-//	 */
-//	protected File getPlayerFile(String playerFileName) {
-//		return new File( getPlayerFilePath(), playerFileName );
-//	}
 
-//	protected TreeMap<String, File> getPlayerFiles() {
-//		// load the player's files:
-//			
-//		TreeMap<String, File> playerFiles = new TreeMap<>();
-//
-//		FileFilter fileFilter = (file) -> {
-//		
-//			String fname = file.getName();
-//			boolean isTemp = fname.startsWith( FILE_PREFIX_BACKUP ) ||
-//							 fname.endsWith( FILE_SUFFIX_BACKUP ) ||
-//							 fname.endsWith( FILE_SUFFIX_TEMP ) ||
-//							 fname.endsWith( FILE_SUFFIX_TXT );
-//			
-//			return !file.isDirectory() && !isTemp &&
-//						fname.endsWith( FILE_SUFFIX_JSON );
-//		};
-//		
-//		
-//		File[] files = getPlayerFilePath().listFiles( fileFilter );
-//		for ( File f : files )
-//		{
-//			String fName = f.getName();
-//				
-//			String fileNamePrefix = JsonFileIO.getFileNameUUIDFragment( fName );
-//			
-//			if ( fileNamePrefix != null && fileNamePrefix.length() > 0 ) {
-//				
-//				playerFiles.put( fileNamePrefix, f );
-//			}
-//		}
-//		
-//	
-//		return playerFiles;
-//	}
-
-	
-	
 	/**
 	 * <p>This function will take the project's data folder and construct the the path
 	 * to the directory, if it does not exist, to where the player cache files are stored.
@@ -358,156 +290,4 @@ public abstract class CoreCacheFiles {
 		return cacheDirectory;
 	}
 	
-//	/**
-//	 * <p>This function returns the file name which is constructed by 
-//	 * using the player's UUID and their name.  The player's name is not
-//	 * used in the selection of a player's file, only the UUID prefix.
-//	 * </p>
-//	 * 
-//	 * <p>The UUID prefix is based upon the HEX representation of the 
-//	 * the UUID, and includes the first 13 characters which includes one
-//	 * hyphen. Since the minecraft UUID is based upon random numbers
-//	 * (type 4 UUID), then odds are great that file name prefixes will
-//	 * be unique, but they don't have to be.
-//	 * </p>
-//	 * 
-//	 * <p>Its a high importance that file names can be found based upon
-//	 * Player information, hence the UUID prefix.  Plus it's very important
-//	 * to be able to have the files human readable so admins can find 
-//	 * specific player files if they need to; hence the player name suffix.
-//	 * </p>
-//	 * 
-//	 * @param player
-//	 * @return
-//	 */
-//	private String getPlayerFileName( Player player ) {
-//		
-//		return JsonFileIO.filenameCache( player );
-//		
-////		String UUIDString = player.getUUID().toString();
-////		String uuidFragment = getFileNamePrefix( UUIDString );
-////		
-////		return uuidFragment + "_" + player.getName() + FILE_SUFFIX_JSON;
-//	}
-	
-//	/**
-//	 * <p>This function returns the first 13 characters of the supplied
-//	 * file name, or UUID String. The hyphen is around the 12 or 13th position, 
-//	 * so it may or may not include it.
-//	 * </p>
-//	 * 
-//	 * @param playerFileName
-//	 * @return
-//	 */
-//	String getFileNamePrefix( String UUIDString ) {
-//		return UUIDString.substring( 0, 14 );
-//	}
-	
-
-
-//	/**
-//	 * <p>This takes a playerId (their UUID) and tries to get their file name from the
-//	 * playerFile collection.  If it does not exist, a new file is created for their
-//	 * user.  If the saved file name does not match the playerFilename, then it indicates
-//	 * there could have been a player name change, so update the saved file on the file
-//	 * system and update what's stored in the playerFiles.
-//	 * </p>
-//	 * 
-//	 * 
-//	 * @param playerFile
-//	 * @param playerFileName
-//	 * @return
-//	 */
-//	private File getCachedFileMatch( String playerId, String playerFileName )
-//	{
-//		File results = null;
-//		
-//		if ( getPlayerFiles().containsKey( playerId ) ) {
-//			
-//			results = getPlayerFiles().get( playerId );
-//		}
-//		else {
-//			// This is the "target" file name for the player, based upon their
-//			// current name. The saved cache file may not be named exactly the same,
-//			// and if it's not, then their existing cache file needs to be 
-//			// renamed.
-//			results = getPlayerFile( playerFileName );
-//			
-//			// NOTE: because the file was NOT found in the directory, then we can assume
-//			//       this is a new player therefore we won't have an issue with the player's
-//			//       name changing.
-//			getPlayerFiles().put( playerId, results );
-//		}
-//		
-//		
-//		if ( results != null && !results.getName().equalsIgnoreCase(playerFileName) ) {
-//			// They player's name changed.  Update the name of the file and save it:
-//			
-//			// File name changed!!! Need to rename the file in the file system, and 
-//			// update what is in the playerFiles map!!
-//			
-//			File newFile = getPlayerFile( playerFileName );
-//
-//			if ( results.exists() )  {
-//				// rename what's on the file system:
-//				results.renameTo( newFile );
-//			}
-//
-//			// Replace what's in the map:
-//			getPlayerFiles().put( playerId, newFile );
-//			
-//			results = newFile;
-//		}
-//		
-		
-//		String fileNamePrefix = JsonFileIO.getFileNameUUIDFragment( playerFileName );
-////		String fileNamePrefix = getFileNamePrefix( playerFileName );
-//		
-//		if ( fileNamePrefix != null && fileNamePrefix.length() > 0 ) {
-//			results = getPlayerFiles().get( fileNamePrefix );
-//		}
-//		
-//		if ( results == null ) {
-//			
-//			// This is the "target" file name for the player, based upon their
-//			// current name. The saved cache file may not be named exactly the same,
-//			// and if it's not, then their existing cache file needs to be 
-//			// renamed.
-//			results = getPlayerFile( playerFileName );
-//			
-//			// NOTE: because the file was NOT found in the directory, then we can assume
-//			//       this is a new player therefore we won't have an issue with the player's
-//			//       name changing.
-//			getPlayerFiles().put( fileNamePrefix, results );
-//		}
-//		else if ( !playerFileName.equalsIgnoreCase( results.getName() )) {
-//			
-//			// File name changed!!! Need to rename the file in the file system, and 
-//			// update what is in the playerFiles map!!
-//			
-//			File newFile = getPlayerFile( playerFileName );
-//
-//			if ( results.exists() )  {
-//				// rename what's on the file system:
-//				results.renameTo( newFile );
-//			}
-//
-//			// Replace what's in the map:
-//			getPlayerFiles().put( fileNamePrefix, newFile );
-//			
-//			results = newFile;
-//		}
-		
-//		NavigableMap<String, File> files = getPlayerFiles().tailMap( fileNamePrefix, true );
-//		Set<String> keys = files.keySet();
-//		for ( String key : keys ) {
-//			if ( !key.startsWith( fileNamePrefix ) ) {
-//				break;
-//			}
-//			
-//			results.add( files.get( key ) );
-//		}
-		
-//		return results;
-//	}
 }

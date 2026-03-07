@@ -115,7 +115,8 @@ public abstract class TextualComponent implements Cloneable {
      * player, or {@code null} if an error occurs during JSON serialization.
      */
     public static TextualComponent objectiveScore(String playerName, String scoreboardObjective) {
-        throwUnsupportedSnapshot(); // Remove this line when the feature is released to non-snapshot versions, in addition to updating ALL THE OVERLOADS documentation accordingly
+        throwUnsupportedSnapshot(); // Remove this line when the feature is released to 
+        			// non-snapshot versions, in addition to updating ALL THE OVERLOADS documentation accordingly
 
         return new ComplexTextTypeComponent("score",
             ImmutableMap.<String, String>builder().put("name", playerName)
@@ -134,12 +135,14 @@ public abstract class TextualComponent implements Cloneable {
      * @return The text component representing the name of the entities captured by the selector.
      */
     public static TextualComponent selector(String selector) {
-        throwUnsupportedSnapshot(); // Remove this line when the feature is released to non-snapshot versions, in addition to updating ALL THE OVERLOADS documentation accordingly
+        throwUnsupportedSnapshot(); // Remove this line when the feature is released to non-snapshot 
+        			// versions, in addition to updating ALL THE OVERLOADS documentation accordingly
 
         return new ArbitraryTextTypeComponent("selector", selector);
     }
 
-    @Override public String toString() {
+    @Override 
+    public String toString() {
         return getReadableString();
     }
 
@@ -157,7 +160,8 @@ public abstract class TextualComponent implements Cloneable {
      * Clones a textual component instance. The returned object should not reference this textual
      * component instance, but should maintain the same key and value.
      */
-    @Override public abstract TextualComponent clone() throws CloneNotSupportedException;
+    @Override 
+    public abstract TextualComponent clone() throws CloneNotSupportedException;
 
     /**
      * Writes the text data represented by this textual component to the specified JSON writer object.
@@ -207,23 +211,27 @@ public abstract class TextualComponent implements Cloneable {
             _value = value;
         }
 
-        @Override public TextualComponent clone() throws CloneNotSupportedException {
+        @Override 
+        public TextualComponent clone() throws CloneNotSupportedException {
             // Since this is a private and final class, we can just reinstantiate this class instead of casting super.clone
             return new ArbitraryTextTypeComponent(getKey(), getValue());
         }
 
-        @Override public void writeJson(JsonWriter writer) throws IOException {
+        @Override 
+        public void writeJson(JsonWriter writer) throws IOException {
             writer.name(getKey()).value(getValue());
         }
 
-        @SuppressWarnings({ "serial", "unused" }) public Map<String, Object> serialize() {
+        @SuppressWarnings("unused") 
+        public Map<String, Object> serialize() {
             return new HashMap<String, Object>() {{
                 put("key", getKey());
                 put("value", getValue());
             }};
         }
 
-        @Override public String getReadableString() {
+        @Override 
+        public String getReadableString() {
             return getValue();
         }
     }
@@ -257,7 +265,8 @@ public abstract class TextualComponent implements Cloneable {
             return new ComplexTextTypeComponent(key, value);
         }
 
-        @Override public String getKey() {
+        @Override 
+        public String getKey() {
             return _key;
         }
 
@@ -276,12 +285,14 @@ public abstract class TextualComponent implements Cloneable {
             _value = value;
         }
 
-        @Override public TextualComponent clone() throws CloneNotSupportedException {
+        @Override 
+        public TextualComponent clone() throws CloneNotSupportedException {
             // Since this is a private and final class, we can just reinstantiate this class instead of casting super.clone
             return new ComplexTextTypeComponent(getKey(), getValue());
         }
 
-        @Override public void writeJson(JsonWriter writer) throws IOException {
+        @Override 
+        public void writeJson(JsonWriter writer) throws IOException {
             writer.name(getKey());
             writer.beginObject();
             for (Map.Entry<String, String> jsonPair : _value.entrySet()) {
@@ -290,7 +301,8 @@ public abstract class TextualComponent implements Cloneable {
             writer.endObject();
         }
 
-        @SuppressWarnings({ "serial", "unused" }) public Map<String, Object> serialize() {
+        @SuppressWarnings("unused") 
+        public Map<String, Object> serialize() {
             return new HashMap<String, Object>() {{
                 put("key", getKey());
                 for (Entry<String, String> valEntry : getValue().entrySet()) {
@@ -299,7 +311,8 @@ public abstract class TextualComponent implements Cloneable {
             }};
         }
 
-        @Override public String getReadableString() {
+        @Override 
+        public String getReadableString() {
             return getKey();
         }
     }

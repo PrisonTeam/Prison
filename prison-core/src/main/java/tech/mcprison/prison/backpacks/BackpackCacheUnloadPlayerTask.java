@@ -15,7 +15,7 @@ public class BackpackCacheUnloadPlayerTask
 		
 		// Remove from the player cache:
 		BackpackCachePlayerData removed = null;
-	
+		
 		synchronized ( bCache.getPlayers() ) {
 			
 			removed = bCache.removePlayerData( getBackpackData() );

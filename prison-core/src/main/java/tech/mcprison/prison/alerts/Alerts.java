@@ -25,17 +25,10 @@ public class Alerts {
 	public static final long DURATION_ONE_HOUR = DURATION_ONE_MINUTE * 60;
 	
 
-    /*
-     * Variables & Constants
-     */
-
     private static Alerts instance;
     private List<Alert> alerts;
 
-    /*
-     * Constructor
-     */
-
+    
     private Alerts() {
         alerts = new ArrayList<>();
 
@@ -43,9 +36,6 @@ public class Alerts {
         Prison.get().getEventBus().register(this);
     }
 
-    /*
-     * Methods
-     */
 
     public static Alerts getInstance() {
         if (instance == null) {
@@ -97,9 +87,6 @@ public class Alerts {
         alerts.clear();
     }
 
-    /*
-     * Listeners
-     */
 
     public void showAlerts(Player player) {
         int alerts = Alerts.getInstance().getAlertsFor(player.getUUID()).size();
@@ -110,9 +97,6 @@ public class Alerts {
         }
     }
 
-    /*
-     * Getters
-     */
 
     @Subscribe
     public void onPlayerJoin(PlayerJoinEvent e) {

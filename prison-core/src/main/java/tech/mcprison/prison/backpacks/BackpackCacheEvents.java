@@ -20,8 +20,8 @@ public class BackpackCacheEvents {
     @Subscribe
     public void onPlayerJoin(PlayerJoinEvent event) {
     	
-    	Player player = event.getPlayer();
-    	BackpackCache.getInstance().submitAsyncLoadPlayer( player );
+	    	Player player = event.getPlayer();
+	    	BackpackCache.getInstance().submitAsyncLoadPlayer( player );
     }
 
     @Subscribe
@@ -34,7 +34,7 @@ public class BackpackCacheEvents {
     @Subscribe
     public void onPlayerKicked(PlayerKickEvent event) {
     	
-    	Player player = event.getPlayer();
-    	BackpackCache.getInstance().submitAsyncUnloadPlayer( player );
+	    	Player player = event.getPlayer();
+	    	BackpackCache.getInstance().submitAsyncUnloadPlayer( player );
     }
 }

@@ -57,7 +57,7 @@ public class BackpackCacheStats {
 			.append( " synchronizeDatabase=" ).append( getSynchronizeBackpacks() )
 			
 			;
-		
+	
 		return sb.toString();
 	}
 

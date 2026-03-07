@@ -55,13 +55,6 @@ public class BombAnimationsTask
 		// existing bomb configs are not messed up.
 		location.setY( Math.floor( location.getY() + 2 ) );
 		
-		// The bomb y adjustments should have been made in this function:
-		// tech.mcprison.prison.spigot.utils.PrisonUtilsMineBombs.setBombInHand()
-//		if ( bomb.getPlacementAdjustmentY() != 0 ) {
-//			
-//			location.setY( location.getY() + bomb.getPlacementAdjustmentY() );
-//		}
-		
 		
 		if ( Output.get().isDebug() ) {
 			String msg = String.format( 

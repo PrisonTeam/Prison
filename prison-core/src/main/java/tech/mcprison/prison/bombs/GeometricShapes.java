@@ -36,7 +36,6 @@ public class GeometricShapes
 				if ( (int) (getDistance( x, z, xi, zi )) == r )
 				{
 					world.setBlock( block, x, yi, z );
-//					world.setBlock( x, yi, z, Block.stone.blockID );
 				}
 			}
 		}
@@ -52,7 +51,6 @@ public class GeometricShapes
 				if ( (int) (getDistance( x, z, xi, zi )) <= r )
 				{
 					world.setBlock( block, x, yi, z );
-//					world.setBlock( x, yi, z, Block.stone.blockID );
 				}
 			}
 		}
@@ -69,7 +67,6 @@ public class GeometricShapes
 				if ( dist < outerRadius && dist >= innerRadius )
 				{
 					world.setBlock( block, x, yi, z );
-//					world.setBlock( x, yi, z, Block.stone.blockID );
 				}
 			}
 		}
@@ -160,10 +157,6 @@ public class GeometricShapes
 			world.setBlock( block, i, yi, zi + depth - 1 );
 			world.setBlock( block, i, yi + height - 1, zi + depth - 1 );
 			
-//			world.setBlock( i, yi, zi, id );
-//			world.setBlock( i, yi + height - 1, zi, id );
-//			world.setBlock( i, yi, zi + depth - 1, id );
-//			world.setBlock( i, yi + height - 1, zi + depth - 1, id );
 		}
 		for ( int i = yi; i < yi + height; i++ )
 		{
@@ -172,10 +165,6 @@ public class GeometricShapes
 			world.setBlock( block, xi, i, zi + depth - 1 );
 			world.setBlock( block, xi + width - 1, i, zi + depth - 1 );
 			
-//			world.setBlock( xi, i, zi, id );
-//			world.setBlock( xi + width - 1, i, zi, id );
-//			world.setBlock( xi, i, zi + depth - 1, id );
-//			world.setBlock( xi + width - 1, i, zi + depth - 1, id );
 		}
 		for ( int i = zi; i < zi + depth; i++ )
 		{
@@ -184,10 +173,6 @@ public class GeometricShapes
 			world.setBlock( block, xi + width - 1, yi, i );
 			world.setBlock( block, xi + width - 1, yi + height - 1, i );
 			
-//			world.setBlock( xi, yi, i, id );
-//			world.setBlock( xi, yi + height - 1, i, id );
-//			world.setBlock( xi + width - 1, yi, i, id );
-//			world.setBlock( xi + width - 1, yi + height - 1, i, id );
 		}
 	}
 
@@ -233,34 +218,6 @@ public class GeometricShapes
 	}
 
 	
-//	public class Point {
-//		private double x;
-//		private double y;
-//		private double z;
-//		public Point( double x, double y, double z ) {
-//			this.x = x;
-//			this.y = y;
-//			this.z = z;
-//		}
-//		public double getX() {
-//			return x;
-//		}
-//		public void setX(double x) {
-//			this.x = x;
-//		}
-//		public double getY() {
-//			return y;
-//		}
-//		public void setY(double y) {
-//			this.y = y;
-//		}
-//		public double getZ() {
-//			return z;
-//		}
-//		public void setZ(double z) {
-//			this.z = z;
-//		}
-//	}
 	
 	/**
 	 * This will calculate a new Vector based upon the degrees (angle), and the 

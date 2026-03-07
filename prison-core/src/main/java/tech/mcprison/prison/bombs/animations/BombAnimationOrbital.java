@@ -78,12 +78,8 @@ public class BombAnimationOrbital extends BombAnimations {
 		
 		
 		
-//		getArmorStand().get
-		
-		
 		
 		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radi );
-//		Vector vector = GeometricShapes.getPointsOnCircleXZ( angle, radius );
 		
 		// Location.add() creates a new instance of a Location and does not change
 		// the original value:

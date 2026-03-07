@@ -12,9 +12,6 @@ public class MineBombCooldownException
 	public MineBombCooldownException( int cooldownTicks ) {
 		super( MineBombMessages.mineBombsCoolDownMsg( cooldownTicks )
 				);
-//		super( "Bomb cooldown is in effect. Try again later. Seconds remaining: " + 
-//				Prison.getDecimalFormatStaticDouble().format( cooldownTicks / 20.0d )
-//				);
 		
 		this.cooldownTicks = cooldownTicks;
 	}
