@@ -82,17 +82,17 @@ public class TestPlatform implements Platform {
     
     @Override
     public Player getPlatformPlayer(RankPlayer rankPlayer) {
-    	return null;
+    		return null;
     }
     
     @Override
 	public RankPlayer getRankPlayer(UUID uuid, String name) {
-    	return null;
+    		return null;
     }
     
     @Override
     public boolean saveRankPlayer(RankPlayer rPlayer) {
-    	return false;
+    		return false;
     }
     
     @Override 
@@ -109,10 +109,11 @@ public class TestPlatform implements Platform {
     public List<Player> getOnlinePlayers() {
         return new ArrayList<>();
     }
+    
     @Override
     public List<Player> getOfflinePlayers() {
-    	List<Player> players = new ArrayList<>();
-    	return players;
+	    	List<Player> players = new ArrayList<>();
+	    	return players;
     }
     
     @Override
@@ -187,15 +188,15 @@ public class TestPlatform implements Platform {
 
     @Override
     public void logCore( String message ) {
-    	if (suppressOutput) {
-    		return;
-    	}
-    	System.out.println(ChatColor.stripColor(message));
+	    	if (suppressOutput) {
+	    		return;
+	    	}
+	    	System.out.println(ChatColor.stripColor(message));
     }
     
     @Override
     public void logPlain( String message ) {
-    	System.out.println(message);
+    		System.out.println(message);
     }
     
     @Override 
@@ -245,24 +246,24 @@ public class TestPlatform implements Platform {
 
     
     public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
-    	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
-    	
-    	return placeholderDetails;
+	    	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
+	    	
+	    	return placeholderDetails;
     }
     
     public int getPlaceholderCount() {
-    	return 0;
+    		return 0;
     }
     
     
     public int getPlaceholderRegistrationCount() {
-    	return 0;
+    		return 0;
     }
  
     
     @Override
     public Placeholders getPlaceholders() {
-    	return null;
+    		return null;
     }
     
 	

@@ -8,9 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import tech.mcprison.prison.util.BluesSemanticVersionComparator;
-import tech.mcprison.prison.util.BluesSemanticVersionData;
-
 public class BluesSemanticVersionDataTest
 {
 

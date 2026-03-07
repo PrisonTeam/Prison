@@ -76,47 +76,58 @@ public class TestPlayer
 //    	return JsonFileIO.filenamePlayer( this );
     }
     
-    @Override public void updateInventory() {
+    @Override 
+    public void updateInventory() {
     }
 
-    @Override public void dispatchCommand(String command) {
+    @Override 
+    public void dispatchCommand(String command) {
 
     }
 
-    @Override public boolean hasPermission(String perm) {
+    @Override 
+    public boolean hasPermission(String perm) {
         return true;
     }
 
-    @Override public void sendMessage(String message) {
+    @Override 
+    public void sendMessage(String message) {
         System.out.println(message);
         input.add(message);
     }
 
-    @Override public void sendMessage(String[] messages) {
+    @Override 
+    public void sendMessage(String[] messages) {
         input.addAll(Arrays.asList(messages));
     }
 
-    @Override public void sendRaw(String json) {
+    @Override 
+    public void sendRaw(String json) {
         input.add(json);
     }
 
-    @Override public UUID getUUID() {
+    @Override 
+    public UUID getUUID() {
         return null;
     }
 
-    @Override public String getDisplayName() {
+    @Override 
+    public String getDisplayName() {
         return null;
     }
 
-    @Override public void setDisplayName(String newDisplayName) {
+    @Override 
+    public void setDisplayName(String newDisplayName) {
 
     }
 
-    @Override public void give(ItemStack itemStack) {
+    @Override 
+    public void give(ItemStack itemStack) {
 
     }
 
-    @Override public Location getLocation() {
+    @Override 
+    public Location getLocation() {
         return null;
     }
     
@@ -128,42 +139,49 @@ public class TestPlayer
 	@Override
     public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
     	
-    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
-    	return results;
+	    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+	    	return results;
 	}
 	
 	
-    @Override public boolean teleport(Location location) {
-    	return false;
+    @Override 
+    public boolean teleport(Location location) {
+    		return false;
     }
 
-    @Override public boolean isOnline() {
+    @Override 
+    public boolean isOnline() {
         return true;
     }
 
-    @Override public void setScoreboard(Scoreboard scoreboard) {
+    @Override 
+    public void setScoreboard(Scoreboard scoreboard) {
 
     }
 
-    @Override public Gamemode getGamemode() {
+    @Override 
+    public Gamemode getGamemode() {
         return null;
     }
 
-    @Override public void setGamemode(Gamemode gamemode) {
+    @Override 
+    public void setGamemode(Gamemode gamemode) {
 
     }
 
-    @Override public Optional<String> getLocale() {
+    @Override 
+    public Optional<String> getLocale() {
         return Optional.of("en_US");
     }
 
-    @Override public boolean isOp() {
+    @Override 
+    public boolean isOp() {
         return true;
     }
 
     @Override
     public boolean isPlayer() {
-    	return false;
+    		return false;
     }
     
     @Override public Inventory getInventory() {
@@ -182,29 +200,29 @@ public class TestPlayer
     
     @Override
     public List<String> getPermissions() {
-    	List<String> results = new ArrayList<>();
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	return results;
     }
     
     
     @Override
     public List<String> getPermissions( String prefix ) {
     	
-    	return getPermissions( prefix, getPermissions() );
+    		return getPermissions( prefix, getPermissions() );
     }
     
     @Override
     public List<String> getPermissions( String prefix, List<String> perms ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	for ( String perm : perms ) {
-    		if ( perm.startsWith( prefix ) ) {
-    			results.add( perm );
-    		}
-    	}
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	for ( String perm : perms ) {
+	    		if ( perm.startsWith( prefix ) ) {
+	    			results.add( perm );
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
 	@Override
@@ -217,12 +235,12 @@ public class TestPlayer
     
     @Override
     public double getSellAllMultiplier() {
-    	return 1.0;
+    		return 1.0;
     }
     
     @Override
     public double getSellAllMultiplierDebug() {
-    	return 1.0;
+    		return 1.0;
     }
 
 	@Override
@@ -301,6 +319,7 @@ public class TestPlayer
 	public String getMiscText() {
 		return null;
 	}
+	
 	@Override
 	public void setMiscText( String text )  {
 	}
