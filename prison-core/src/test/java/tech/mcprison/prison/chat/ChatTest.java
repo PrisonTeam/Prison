@@ -35,7 +35,7 @@ public class ChatTest {
 
         String expected =
             "{\"text\":\"\",\"extra\":[{\"text\":\"Test\",\"color\":\"aqua\","
-            + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},."
+            + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},"
             + "{\"text\":\"ing\",\"color\":\"black\"}]}";
         String actual = message.toJSONString();
 

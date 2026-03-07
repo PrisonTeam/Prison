@@ -17,6 +17,9 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19j 2026-03-07
 
 
+* **Bug fix in the ChatTest Junit test. When I was cleaning up that source I accidentally introduced a stray '.'.**
+
+
 * **Prison Cleanup: prison-core: Removed obsolete and unneeded comments and fix indentation where needed.** Fifth part.
 
 
