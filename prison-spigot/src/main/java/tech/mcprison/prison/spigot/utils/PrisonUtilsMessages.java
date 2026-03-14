@@ -19,7 +19,6 @@ public class PrisonUtilsMessages
 	public PrisonUtilsMessages() {
 		super();
 		
-		
 	}
 	
 	/**
@@ -79,7 +78,7 @@ public class PrisonUtilsMessages
 	public void utilMessageBroadcast(CommandSender sender, 
 			
 			@Wildcard(join=true)
-	@Arg(name = "msg", description = "The message to send", def = "") String msg ) {
+			@Arg(name = "msg", description = "The message to send", def = "") String msg ) {
 		
 		if ( !isEnableMessageMsg() ) {
 			

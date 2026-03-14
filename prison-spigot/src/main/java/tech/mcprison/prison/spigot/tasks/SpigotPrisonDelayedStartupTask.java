@@ -103,36 +103,36 @@ public class SpigotPrisonDelayedStartupTask
 	
     
     public String inspectVaultEconomy() {
-    	String results = null;
+    		String results = null;
     	
         if ( econName == null && Bukkit.getPluginManager().getPlugin("Vault") != null && 
         		Bukkit.getServicesManager().getRegistration(Economy.class) != null ) {
            
-        	econ = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
-        	
-        	if ( econ != null ) {
-        		econName = econ.getClass().getSimpleName();
-        		results = econName;
-        		
-        		if ( prison.getConfig().isBoolean( "delayedPrisonStartup.inspect-vault" ) ) {
-        			
-        			String message = String.format(  
-        					"Inspect Vault Economy: %s  Use '%s' with " +
-        							"'delayedPrisonStartup.triggers-vault-economy-name' ", 
-        					econ.isEnabled() ? "enabled" : "disabled",
-        							econ.getClass().getSimpleName()
-        					);
-        			
-        			Output.get().logInfo( message );
-        		}
-        	}
+	        	econ = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
+	        	
+	        	if ( econ != null ) {
+	        		econName = econ.getClass().getSimpleName();
+	        		results = econName;
+	        		
+	        		if ( prison.getConfig().isBoolean( "delayedPrisonStartup.inspect-vault" ) ) {
+	        			
+	        			String message = String.format(  
+	        					"Inspect Vault Economy: %s  Use '%s' with " +
+	        							"'delayedPrisonStartup.triggers-vault-economy-name' ", 
+	        					econ.isEnabled() ? "enabled" : "disabled",
+	        							econ.getClass().getSimpleName()
+	        					);
+	        			
+	        			Output.get().logInfo( message );
+	        		}
+	        	}
         }
         else if ( econName != null ) {
-        	results = econName;
+        		results = econName;
         }
         
         if ( results == null ) {
-        	Output.get().logInfo( "Inspect Vault Economy: Failed." );
+        		Output.get().logInfo( "Inspect Vault Economy: Failed." );
         }
         
         return results;

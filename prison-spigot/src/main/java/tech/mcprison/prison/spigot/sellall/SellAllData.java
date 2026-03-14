@@ -59,48 +59,48 @@ public class SellAllData {
     }
 
     public static String itemsSoldReport( List<SellAllData> soldItems, SpigotPlayer sPlayer, double multiplier ) {
-    	StringBuilder sb = new StringBuilder();
-    	StringBuilder sbItems = new StringBuilder();
-    	
-    	double totalAmount = 0;
-    	int itemCount = 0;
-    	int stacks = soldItems.size();
-    	
-    	// Add same blocks together:
-    	soldItems = compressSoldItems( soldItems );
-    	
-    	for (SellAllData soldItem : soldItems) {
-    		if ( soldItem != null ) {
-    			
-    			totalAmount += soldItem.getTransactionAmount();
-    			itemCount += soldItem.getQuantity();
-    			
-    			if ( sbItems.length() > 0 ) {
-    				
-    				sbItems.append( ", " );
-    			}
-    			sbItems.append( soldItem.toString() );
-    		}
-    	}
-    	
-    	DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
-    	DecimalFormat iFmt = new DecimalFormat( "#,##0" );
-    	
-    	sb.append( "Transaction log: " )
-    		.append( sPlayer.getName() )
-    		.append( " multiplier: " )
-    		.append( dFmt.format(multiplier) )
-    		.append( " ItemStacks: " )
-    		.append( stacks )
-    		.append( " ItemCount: " )
-    		.append( iFmt.format(itemCount) )
-    		.append( " TotalAmount: " )
-    		.append( dFmt.format( totalAmount ))
-    		.append( " [" )
-    		.append( sbItems )
-    		.append("]");
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	StringBuilder sbItems = new StringBuilder();
+	    	
+	    	double totalAmount = 0;
+	    	int itemCount = 0;
+	    	int stacks = soldItems.size();
+	    	
+	    	// Add same blocks together:
+	    	soldItems = compressSoldItems( soldItems );
+	    	
+	    	for (SellAllData soldItem : soldItems) {
+	    		if ( soldItem != null ) {
+	    			
+	    			totalAmount += soldItem.getTransactionAmount();
+	    			itemCount += soldItem.getQuantity();
+	    			
+	    			if ( sbItems.length() > 0 ) {
+	    				
+	    				sbItems.append( ", " );
+	    			}
+	    			sbItems.append( soldItem.toString() );
+	    		}
+	    	}
+	    	
+	    	DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
+	    	DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+	    	
+	    	sb.append( "Transaction log: " )
+	    		.append( sPlayer.getName() )
+	    		.append( " multiplier: " )
+	    		.append( dFmt.format(multiplier) )
+	    		.append( " ItemStacks: " )
+	    		.append( stacks )
+	    		.append( " ItemCount: " )
+	    		.append( iFmt.format(itemCount) )
+	    		.append( " TotalAmount: " )
+	    		.append( dFmt.format( totalAmount ))
+	    		.append( " [" )
+	    		.append( sbItems )
+	    		.append("]");
+	    	
+	    	return sb.toString();
 	}
 	
 	private static List<SellAllData> compressSoldItems(List<SellAllData> soldItems) {

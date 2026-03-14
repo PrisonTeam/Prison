@@ -22,7 +22,6 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombCooldownException;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
-import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -79,57 +78,50 @@ public class PrisonBombListener
 		if ( iStack != null && iStack.getType() != Material.AIR ) {
 			
         	
-        	String bombName = checkMineBombItemStack( iStack );
-        	
-        	if ( bombName != null ) {
-        		
-        		Player player = event.getPlayer();
-        		SpigotPlayer sPlayer = new SpigotPlayer( player );
-        		
-        		MineBombData mineBomb = null;
-        		
-        		try {
-        			// Placing minebombs: Use cooldowns:
-					mineBomb = MineBombs.getInstance().findBombByName( sPlayer, bombName);
-				} 
-        		catch (MineBombCooldownException e) {
-					String msg = e.getLocalizedMessage();
-					
-					sPlayer.sendMessage(msg);
-					
-					return;
-				}
-        		
-//        		MineBombData mineBomb = MineBombs.getInstance().findBombByName( sPlayer, bombName );
-        		
-        		String thrower = player.getUniqueId().toString();
-        		String owner = PrisonNBTUtil.getNBTString(iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID);
-        		
-        		PrisonNBTUtil.setNBTString(iStack, 
-		        				MineBombs.MINE_BOMBS_NBT_KEY, 
-		        				bombName );
-        		PrisonNBTUtil.setNBTString(iStack, 
-        						MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
-        						thrower );
-        		
-        		Block targetBlock = event.getBlockAgainst();
-        		
-//        		SpigotBlock lsBlock = sPlayer.getLineOfSightBlock();
-        		
-//        		Output.get().logInfo( 
-//        				"### Place mine bomb: mineBombPlacementEvent: block: %s  sight: %s", 
-//        				targetBlock.getLocation().toString(),
-//        				lsBlock.getLocation().toString() );
-        		
-        		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
-        		
-        		boolean canceled = processBombTriggerEvent( player, mineBomb, 
-        				targetBlock, hand, thrower, owner );
-        		
-        		if ( canceled ) {
-        			event.setCancelled( canceled );
-        		}
-        	}
+	        	String bombName = checkMineBombItemStack( iStack );
+	        	
+	        	if ( bombName != null ) {
+	        		
+	        		Player player = event.getPlayer();
+	        		SpigotPlayer sPlayer = new SpigotPlayer( player );
+	        		
+	        		MineBombData mineBomb = null;
+	        		
+	        		try {
+	        			// Placing minebombs: Use cooldowns:
+						mineBomb = MineBombs.getInstance().findBombByName( sPlayer, bombName);
+					} 
+	        		catch (MineBombCooldownException e) {
+						String msg = e.getLocalizedMessage();
+						
+						sPlayer.sendMessage(msg);
+						
+						return;
+					}
+	        		
+	        		
+	        		String thrower = player.getUniqueId().toString();
+	        		String owner = PrisonNBTUtil.getNBTString(iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID);
+	        		
+	        		PrisonNBTUtil.setNBTString(iStack, 
+			        				MineBombs.MINE_BOMBS_NBT_KEY, 
+			        				bombName );
+	        		PrisonNBTUtil.setNBTString(iStack, 
+	        						MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
+	        						thrower );
+	        		
+	        		Block targetBlock = event.getBlockAgainst();
+	        		
+	        		
+	        		EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+	        		
+	        		boolean canceled = processBombTriggerEvent( player, mineBomb, 
+	        				targetBlock, hand, thrower, owner );
+	        		
+	        		if ( canceled ) {
+	        			event.setCancelled( canceled );
+	        		}
+	        	}
 			
 		}
 		
@@ -157,210 +149,210 @@ public class PrisonBombListener
 
 			String bombName = checkMineBombItemStack( iStack );
         	
-        	if ( bombName != null ) {
-        		
-        		// We do not know if the bomb will be in a mine, but we know 
-        		// it's a mine bomb so no other listener should handle it.
-        		event.setCancelled( true );
-        		
-        		Player player = event.getPlayer();
-        		SpigotPlayer sPlayer = new SpigotPlayer( player );
-        		
-        		// If the player is on a mine bomb cooldown, then mineBomb will be null:
-        		
-        		final MineBombData mineBomb;
-        		
-        		try {
-        			// Throw minebombs: Use cooldowns:
-					mineBomb = MineBombs.getInstance().findBombByName( sPlayer, bombName);
-				} 
-        		catch (MineBombCooldownException e) {
-					String msg = e.getLocalizedMessage();
-					
-					sPlayer.sendMessage(msg);
-					
-					return;
-				}
-        		
-//        		MineBombData mineBomb = MineBombs.getInstance().findBombByName( sPlayer, bombName );
-        		
-        		if ( mineBomb != null ) {
-        			
-        			EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
-        			
-        			
-        			
-        			final String thrower = sPlayer.getName();
-//        			final String thrower = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_THROWER_UUID );
-        			
-        			final String owner = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID);
-        			
-        		
-        			
-        			
-        			PrisonNBTUtil.setNBTString(iStack, 
-        					MineBombs.MINE_BOMBS_NBT_KEY, 
-        					bombName );
-        			PrisonNBTUtil.setNBTString(iStack, 
-        					MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
-        					thrower );
-        			
-        			SpigotLocation loc = new SpigotLocation( 
-        					player.getEyeLocation().add( player.getLocation().getDirection() ));
-        			
-        			
-        			ArmorStand armorStand = player.getWorld().spawn( 
-        					loc.getBukkitLocation(), 
-        					ArmorStand.class);
-        			
-        			armorStand.setVisible( false );
-        			armorStand.setItemInHand( iStack );
-        			
-        			
-        			SpigotArmorStand sArmorStand = new SpigotArmorStand(armorStand);
-        			
-        			sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, bombName );
-        			sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_THROWER_UUID, thrower );
-        			sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_OWNER_UUID, owner );
-        			
-        			
-        			if ( Output.get().isDebug() ) {
-        				String nbtJson = Text.translateAmpColorCodes( 
-        								PrisonNBTUtil.getNBTData( 
-        										sArmorStand.getBukkitEntity() ));
-        				Output.get().logInfo( "PrisonBombListener.mineBombThrowEvent ntb: %s", 
-        						 nbtJson );
-        			}
-        			
-        			
-        			Vector velocity = player.getLocation().getDirection().multiply( 
-        					mineBomb.getThrowVelocity() );
-        			
-        			armorStand.setVelocity( velocity );
-        			
-        			armorStand.setRemoveWhenFarAway(false);
-        			
-        			
-        			
-        			
-        			// Remove the unused armorStand in 120 seconds:
-        			final int taskId = SpigotPrison.getInstance().getScheduler()
-        					.runTaskLater( 
-        							new Runnable() {
-        								public void run() {
-        									armorStand.remove();
-        								}
-        							}, 120 * 20);
-        			
-        			
-        			// Run the following every tick to detect when the armor stand has
-        			// come to rest for 4 ticks, then trigger the animation.
-        			final SpigotArmorStand aStnd = sArmorStand;
-        			
-        			
-        			// Save the taskId so this task can be canceled:
-        			mineBomb.setTaskId(
-        					SpigotPrison.getInstance().getScheduler()
-        					.runTaskTimer(
-        							new Runnable() {
-        								private List<Location> locs = new ArrayList<>();
-        								private int checks = 0;
-        								
-        								/**
-        								 * <p>Remove the bomb.
-        								 * </p>
-        								 */
-        								private void removeBomb() {
-        									
-        									// Cancel this task:
-											SpigotPrison.getInstance().getScheduler().cancelTask( mineBomb.getTask() );
-											
-											// Cancel the cancellation task:
-											SpigotPrison.getInstance().getScheduler().cancelTask(taskId);
-											
-											
-											// remove armor stand:
-											aStnd.remove();
-        								}
-        								
-        								public void run() {
-        									Location loc = aStnd.getLocation();
-        									locs.add(loc);
-        									
-        									// Only keep no more than 4 locations in the list.  Purge the oldest.
-        									if ( locs.size() > 4 ) {
-        										locs.remove(0);
-        									}
-        									
-//        									String msg = String.format( 
-//        											"### MineBomb: tracking minebomb movements.  count=%s  locs=%s  current: %s", 
-//        											Integer.toString(checks++),
-//        											Integer.toString(locs.size()),
-//        											loc.toWorldCoordinates() );
-//        									Output.get().logInfo( msg );
-        									
-        									// If mine bomb does not land it may have fallen in the void.. so remove it:
-        									if ( checks > 100 ) {
-        										removeBomb();
-        									}
-        									
-        									if ( locs.size() == 4 ) {
-        										
-        										// When there are four locations, then check to ensure the mine
-        										// bomb is no longer moving... 
-        										if ( locs.get(0).equals(locs.get(1)) && 
-        												locs.get(1).equals(locs.get(2)) &&
-        												locs.get(2).equals(locs.get(3))
-        												) {
-        											
-        											// Set the mine bomb's location where the item has landed:
-        											mineBomb.setPlacedBombLocation( loc );
-        											
-        											removeBomb();
-        											
-//        											// Cancel this task:
-//        											SpigotPrison.getInstance().getScheduler().cancelTask( mineBomb.getTask() );
-//        											
-//        											// Cancel the cancellation task:
-//        											SpigotPrison.getInstance().getScheduler().cancelTask(taskId);
-//        											
-//        											
-//        											// remove armor stand:
-//        											aStnd.remove();
-        											
-        											// Start mine bomb animation:
-//        											loc.setY( loc.getY() );
-        											SpigotBlock targetBlock = (SpigotBlock) loc.getBlockAt();
-        											
-        											Mine mine = getMine(sPlayer, mineBomb, targetBlock );
-        											
-        											if ( mine != null ) {
-        												// It landed within a mine... subtract one from the player's inventory,
-        												// if it's used up, then remove from the inventory:
-//    								iStack.setAmount( iStack.getAmount() - 1);
-//    								if ( iStack.getAmount() == 0 ) {
-//    									player.getInventory().removeItem( iStack );
-//    								}
-
-        												processBombTriggerEvent( sPlayer, mine, mineBomb, targetBlock, 
-        														hand, thrower, owner );
-        											}
-        											
-        										}
-        									}
-        								}
-        								
-        							}, 2, 1));
-        		}
-        		else {
-        			int cooldownTicks = MineBombs.checkPlayerCooldown(sPlayer);
-        			
-        			getPrisonUtilsMineBombs().mineBombsCoolDownMsg( sPlayer, cooldownTicks );
-        		}
-        		
-    			
-
-    			
+	        	if ( bombName != null ) {
+	        		
+	        		// We do not know if the bomb will be in a mine, but we know 
+	        		// it's a mine bomb so no other listener should handle it.
+	        		event.setCancelled( true );
+	        		
+	        		Player player = event.getPlayer();
+	        		SpigotPlayer sPlayer = new SpigotPlayer( player );
+	        		
+	        		// If the player is on a mine bomb cooldown, then mineBomb will be null:
+	        		
+	        		final MineBombData mineBomb;
+	        		
+	        		try {
+	        			// Throw minebombs: Use cooldowns:
+						mineBomb = MineBombs.getInstance().findBombByName( sPlayer, bombName);
+					} 
+	        		catch (MineBombCooldownException e) {
+						String msg = e.getLocalizedMessage();
+						
+						sPlayer.sendMessage(msg);
+						
+						return;
+					}
+	        		
+	        		
+	        		if ( mineBomb != null ) {
+	        			
+	        			EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+	        			
+	        			
+	        			
+	        			final String thrower = sPlayer.getName();
+	        			
+	//        			final String thrower = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_THROWER_UUID );
+	        			
+	        			final String owner = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID);
+	        			
+	        		
+	        			
+	        			
+	        			PrisonNBTUtil.setNBTString(iStack, 
+	        					MineBombs.MINE_BOMBS_NBT_KEY, 
+	        					bombName );
+	        			PrisonNBTUtil.setNBTString(iStack, 
+	        					MineBombs.MINE_BOMBS_NBT_THROWER_UUID, 
+	        					thrower );
+	        			
+	        			SpigotLocation loc = new SpigotLocation( 
+	        					player.getEyeLocation().add( player.getLocation().getDirection() ));
+	        			
+	        			
+	        			ArmorStand armorStand = player.getWorld().spawn( 
+	        					loc.getBukkitLocation(), 
+	        					ArmorStand.class);
+	        			
+	        			armorStand.setVisible( false );
+	        			armorStand.setItemInHand( iStack );
+	        			
+	        			
+	        			SpigotArmorStand sArmorStand = new SpigotArmorStand(armorStand);
+	        			
+	        			sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_KEY, bombName );
+	        			sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_THROWER_UUID, thrower );
+	        			sArmorStand.setNbtString( MineBombs.MINE_BOMBS_NBT_OWNER_UUID, owner );
+	        			
+	        			
+	        			if ( Output.get().isDebug() ) {
+	        				String nbtJson = Text.translateAmpColorCodes( 
+	        								PrisonNBTUtil.getNBTData( 
+	        										sArmorStand.getBukkitEntity() ));
+	        				Output.get().logInfo( "PrisonBombListener.mineBombThrowEvent ntb: %s", 
+	        						 nbtJson );
+	        			}
+	        			
+	        			
+	        			Vector velocity = player.getLocation().getDirection().multiply( 
+	        					mineBomb.getThrowVelocity() );
+	        			
+	        			armorStand.setVelocity( velocity );
+	        			
+	        			armorStand.setRemoveWhenFarAway(false);
+	        			
+	        			
+	        			
+	        			
+	        			// Remove the unused armorStand in 120 seconds:
+	        			final int taskId = SpigotPrison.getInstance().getScheduler()
+	        					.runTaskLater( 
+	        							new Runnable() {
+	        								public void run() {
+	        									armorStand.remove();
+	        								}
+	        							}, 120 * 20);
+	        			
+	        			
+	        			// Run the following every tick to detect when the armor stand has
+	        			// come to rest for 4 ticks, then trigger the animation.
+	        			final SpigotArmorStand aStnd = sArmorStand;
+	        			
+	        			
+	        			// Save the taskId so this task can be canceled:
+	        			mineBomb.setTaskId(
+	        					SpigotPrison.getInstance().getScheduler()
+	        					.runTaskTimer(
+	        							new Runnable() {
+	        								private List<Location> locs = new ArrayList<>();
+	        								private int checks = 0;
+	        								
+	        								/**
+	        								 * <p>Remove the bomb.
+	        								 * </p>
+	        								 */
+	        								private void removeBomb() {
+	        									
+	        									// Cancel this task:
+												SpigotPrison.getInstance().getScheduler().cancelTask( mineBomb.getTask() );
+												
+												// Cancel the cancellation task:
+												SpigotPrison.getInstance().getScheduler().cancelTask(taskId);
+												
+												
+												// remove armor stand:
+												aStnd.remove();
+	        								}
+	        								
+	        								public void run() {
+	        									Location loc = aStnd.getLocation();
+	        									locs.add(loc);
+	        									
+	        									// Only keep no more than 4 locations in the list.  Purge the oldest.
+	        									if ( locs.size() > 4 ) {
+	        										locs.remove(0);
+	        									}
+	        									
+	//        									String msg = String.format( 
+	//        											"### MineBomb: tracking minebomb movements.  count=%s  locs=%s  current: %s", 
+	//        											Integer.toString(checks++),
+	//        											Integer.toString(locs.size()),
+	//        											loc.toWorldCoordinates() );
+	//        									Output.get().logInfo( msg );
+	        									
+	        									// If mine bomb does not land it may have fallen in the void.. so remove it:
+	        									if ( checks > 100 ) {
+	        										removeBomb();
+	        									}
+	        									
+	        									if ( locs.size() == 4 ) {
+	        										
+	        										// When there are four locations, then check to ensure the mine
+	        										// bomb is no longer moving... 
+	        										if ( locs.get(0).equals(locs.get(1)) && 
+	        												locs.get(1).equals(locs.get(2)) &&
+	        												locs.get(2).equals(locs.get(3))
+	        												) {
+	        											
+	        											// Set the mine bomb's location where the item has landed:
+	        											mineBomb.setPlacedBombLocation( loc );
+	        											
+	        											removeBomb();
+	        											
+	//        											// Cancel this task:
+	//        											SpigotPrison.getInstance().getScheduler().cancelTask( mineBomb.getTask() );
+	//        											
+	//        											// Cancel the cancellation task:
+	//        											SpigotPrison.getInstance().getScheduler().cancelTask(taskId);
+	//        											
+	//        											
+	//        											// remove armor stand:
+	//        											aStnd.remove();
+	        											
+	        											// Start mine bomb animation:
+	//        											loc.setY( loc.getY() );
+	        											SpigotBlock targetBlock = (SpigotBlock) loc.getBlockAt();
+	        											
+	        											Mine mine = getMine(sPlayer, mineBomb, targetBlock );
+	        											
+	        											if ( mine != null ) {
+	        												// It landed within a mine... subtract one from the player's inventory,
+	        												// if it's used up, then remove from the inventory:
+	//    								iStack.setAmount( iStack.getAmount() - 1);
+	//    								if ( iStack.getAmount() == 0 ) {
+	//    									player.getInventory().removeItem( iStack );
+	//    								}
+	
+	        												processBombTriggerEvent( sPlayer, mine, mineBomb, targetBlock, 
+	        														hand, thrower, owner );
+	        											}
+	        											
+	        										}
+	        									}
+	        								}
+	        								
+	        							}, 2, 1));
+	        		}
+	        		else {
+	        			int cooldownTicks = MineBombs.checkPlayerCooldown(sPlayer);
+	        			
+	        			getPrisonUtilsMineBombs().mineBombsCoolDownMsg( sPlayer, cooldownTicks );
+	        		}
+	        		
+	    			
+	
+	    			
     			
     			
 //    			player.launchProjectile( armorStand, velocity );
@@ -385,7 +377,7 @@ public class PrisonBombListener
                 //iStack.setAmount(iStack.getAmount()-1);
         		
         		
-        	}
+	        	}
 		}
     }
 	
@@ -400,9 +392,6 @@ public class PrisonBombListener
 	 */
 	@EventHandler( priority = EventPriority.LOW )
     public void bombPlacementEvent( PlayerInteractEvent event ) {
-//        if ( !event.getPlayer().hasPermission("prison.minebombs.use") ) {
-//        	return;
-//        }
 
         //Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  01 " );
         
@@ -566,8 +555,6 @@ public class PrisonBombListener
 		
 		SpigotBlock sBlock = null;
 		
-//		SpigotPlayer sPlayer = new SpigotPlayer( player );
-		
 		// If clicking AIR, then event.getClickedBlock() will be null...
 		// so if null, then use the player's location for placing the bomb.
 		if ( targetBlock == null ) {
@@ -680,7 +667,6 @@ public class PrisonBombListener
 							mine.getTag()
 							);
 					sPlayer.setActionBar( msg );
-//					sPlayer.sendMessage( msg );
 					
 					mine = null;
 				}
@@ -700,18 +686,11 @@ public class PrisonBombListener
         	
 //        	event.getItemDrop().getMetadata( "prisonMineBomb" );
         	
-//        	event.getItemDrop().
-
-        	event.setCancelled( false );
+        		event.setCancelled( false );
         }
         
     }
     
-//    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
-//    public void onBlockPlace2( PlayerInteractEvent event ) {
-//
-//    	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent - oof" );
-//    }
     
 ////    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
 //    public void onBlockPlace3( BlockPlaceEvent event ) {
@@ -746,13 +725,6 @@ public class PrisonBombListener
 //    	}
 //    }
     
-////    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
-//    public void onBlockPlace3( PlayerInteractEvent event ) {
-//    	
-//    	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent " );
-//    	
-//    	
-//    }
 
 	public PrisonUtilsMineBombs getPrisonUtilsMineBombs() {
 		return prisonUtilsMineBombs;
@@ -761,28 +733,4 @@ public class PrisonBombListener
 		this.prisonUtilsMineBombs = prisonUtilsMineBombs;
 	}
 
-//    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
-//    public void onBlockPlace3( BlockDropItemEvent event ) {
-//    	
-//    	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent " );
-//    	
-//    	
-//    }
-    
-//    @EventHandler( priority = EventPriority.HIGHEST )
-//    public void onBlockPlace2( Player event ) {
-//    	
-//    	
-//    	if ( event.isCancelled() && event.getItemDrop().hasMetadata( "prisonMineBomb" ) ) {
-//    		
-////        	event.getItemDrop().getMetadata( "prisonMineBomb" );
-//    		
-////        	event.getItemDrop().
-//    		
-//    		event.setCancelled( false );
-//    	}
-//    	
-//    }
-    
-    
 }

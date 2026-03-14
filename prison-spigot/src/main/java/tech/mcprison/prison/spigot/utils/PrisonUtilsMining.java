@@ -65,7 +65,6 @@ public class PrisonUtilsMining
 				if ( Output.get().isDebug() ) {
 					Output.get().logInfo( debugInfo.toString() );
 				}
-//				SpigotPrison.getInstance().getAutoFeatures().playerSmelt( player );
 			}
 		}
 	}
@@ -100,7 +99,6 @@ public class PrisonUtilsMining
 					Output.get().logInfo( debugInfo.toString() );
 				}
 
-//				SpigotPrison.getInstance().getAutoFeatures().playerBlock( player );
 			}
 		}
 	}

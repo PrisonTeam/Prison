@@ -63,7 +63,5 @@ public class WorldGuard6Integration
 		}
 	}
 
-
-
 	
 }

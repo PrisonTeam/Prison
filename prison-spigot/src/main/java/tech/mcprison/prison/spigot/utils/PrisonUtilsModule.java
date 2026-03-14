@@ -88,7 +88,6 @@ public class PrisonUtilsModule
 				PrisonUtilsPotions utils = new PrisonUtilsPotions();
 
 				utils.setEnablePotionEffects( isEnabled( "utils.potions.potionEffects", true ) );
-				// utils.setEnablePotions( isEnabled( "utils.potions.potions.enabled", true ) );
 
 				Prison.get().getCommandHandler().registerCommands( utils );
 
@@ -186,13 +185,13 @@ public class PrisonUtilsModule
      * @return
      */
     public int getElementCount() {
-    	int results = isEnabled() ? 0 : -1;
-    	
-    	if ( isEnabled() ) {
-    		results = getModulesEnabled();
-    	}
-    	
-    	return results;
+	    	int results = isEnabled() ? 0 : -1;
+	    	
+	    	if ( isEnabled() ) {
+	    		results = getModulesEnabled();
+	    	}
+	    	
+	    	return results;
     }
 
 

@@ -30,8 +30,6 @@ public class WorldGuardSettings {
 	}
 
 	
-	
-	
 	public String getWGPrefixRegionMine() {
 		return wgPrefixRegionMine;
 	}

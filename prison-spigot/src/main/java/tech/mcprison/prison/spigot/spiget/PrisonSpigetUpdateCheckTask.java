@@ -29,32 +29,14 @@ public class PrisonSpigetUpdateCheckTask
 
 		SpigotPrison plugin = SpigotPrison.getInstance();
 		
-      SpigetUpdate updater = new SpigetUpdate( plugin, Prison.SPIGOTMC_ORG_PROJECT_ID);
-//      SpigetUpdate updater = new SpigetUpdate(this, 1223);
-      
-      
-      BluesSpigetSemVerComparator aRealSemVerComparator = new BluesSpigetSemVerComparator();
-      updater.setVersionComparator( aRealSemVerComparator );
-//    updater.setVersionComparator(VersionComparator.EQUAL);
+		SpigetUpdate updater = new SpigetUpdate( plugin, Prison.SPIGOTMC_ORG_PROJECT_ID);
+  
+  
+		BluesSpigetSemVerComparator aRealSemVerComparator = new BluesSpigetSemVerComparator();
+		updater.setVersionComparator( aRealSemVerComparator );
 
-      updater.checkForUpdate( new PrisonSpigetUpdateCallback() );
+		updater.checkForUpdate( new PrisonSpigetUpdateCallback() );
       
-      
-//      updater.checkForUpdate(new UpdateCallback() {
-//          @Override
-//          public void updateAvailable(String newVersion, String downloadUrl,
-//                                      boolean hasDirectDownload) {
-//              Alerts.getInstance().sendAlert(
-//                      "&3%s is now available. &7Go to the &lSpigot&r&7 page to download the latest release with new features and fixes :)",
-//                      newVersion);
-//          }
-//
-//          @Override
-//          public void upToDate() {
-//              // Plugin is up-to-date
-//          }
-//      });	
-		
 	}
 
 	public long getDelayTicks() {

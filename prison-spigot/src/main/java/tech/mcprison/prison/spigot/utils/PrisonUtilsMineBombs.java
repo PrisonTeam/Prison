@@ -103,8 +103,6 @@ public class PrisonUtilsMineBombs
 	@Override
 	protected Boolean initialize()
 	{
-		//validateMineBombs();
-		
 		return true;
 	}
 
@@ -242,7 +240,7 @@ public class PrisonUtilsMineBombs
 					
 					// actions:
 					if ( show ) {
-//						sEntity.getWrapper().
+						
 					}
 					if ( list ) {
 						// Do nothing:
@@ -286,20 +284,8 @@ public class PrisonUtilsMineBombs
 					sender.sendMessage( "&3-= No ArmmorStands were located with the selected filters =-");
 				}
 				
-//				 Location EntityArea = new Location(Bukkit.getWorld("world"),125,71,105);
-//	                World world = Bukkit.getServer().getWorld("world");
-//	                List<Entity> entList = world.getEntities();
-//	             
-//	                for(Entity current : entList){
-//	                    if(current instanceof Item){
-//	                        current.remove();
-//	                    }
-//	                }
-				
 			}
-			
 		}
-		
 
 	}
 	
@@ -597,9 +583,10 @@ public class PrisonUtilsMineBombs
 						visuals.add( p.name() );
 					}
 					Collections.sort( visuals );
-//				for ( Particle p : Particle.values() ) {
-//					visuals.add( p.name() );
-//				}
+					
+//					for ( Particle p : Particle.values() ) {
+//						visuals.add( p.name() );
+//					}
 					
 					messages.add( "&7Visual Effects (bukkit 1.8.x: Effect):" );
 					for ( String line : Text.formatColumnsFromList( visuals, 4 ) ) {
@@ -613,9 +600,10 @@ public class PrisonUtilsMineBombs
 						visuals.add( p.name() );
 					}
 					Collections.sort( visuals );
-//				for ( Particle p : Particle.values() ) {
-//					visuals.add( p.name() );
-//				}
+					
+//					for ( Particle p : Particle.values() ) {
+//						visuals.add( p.name() );
+//					}
 					
 					messages.add( "&7Visual Effects (Particle):" );
 					for ( String line : Text.formatColumnsFromList( visuals, 4 ) ) {
@@ -747,6 +735,8 @@ public class PrisonUtilsMineBombs
 						messageShape = "  &4(no shape defined)";
 					}
 				}
+				
+				
 				if ( messageShape != null && !messageShape.isEmpty() ) {
 					
 					messages.add( messageShape );
@@ -916,13 +906,13 @@ public class PrisonUtilsMineBombs
 				
 //				MineBombs mBombs = MineBombs.getInstance();
 				
-        		MineBombData bomb = null;
-        		
-        		try {
-        			// Give command. Do not enable cooldowns:
-					bomb = MineBombs.getInstance().findBombByName( player, bombName, false );
-				} 
-        		catch (MineBombCooldownException e) {
+	        		MineBombData bomb = null;
+	        		
+	        		try {
+	        			// Give command. Do not enable cooldowns:
+						bomb = MineBombs.getInstance().findBombByName( player, bombName, false );
+					} 
+	        		catch (MineBombCooldownException e) {
 					String msg = e.getLocalizedMessage();
 					
 					player.sendMessage(msg);

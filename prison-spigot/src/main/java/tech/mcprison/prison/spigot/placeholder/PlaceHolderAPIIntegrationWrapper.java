@@ -19,10 +19,6 @@ public class PlaceHolderAPIIntegrationWrapper
 	}
 	
 
-//	public void registerPlaceholder(String placeholder, Function<Player, String> action) {
-//		this.register();
-//	}
-
     /**
      * This method should always return true unless we
      * have a dependency we need to make sure is on the server
@@ -79,10 +75,6 @@ public class PlaceHolderAPIIntegrationWrapper
 	public String onRequest(OfflinePlayer player, String identifier) {
 		String results = null;
 		
-//		if ( !identifier.toLowerCase().startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED ) ) {
-//			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
-//		}
-
 		if( player != null ) {
 			
 			UUID playerUuid = player.getUniqueId();

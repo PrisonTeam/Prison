@@ -2,8 +2,6 @@ package tech.mcprison.prison.spigot.utils;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 public class PrisonUtilsMineBombsTest extends PrisonUtilsMineBombs {
 
 //	@Test

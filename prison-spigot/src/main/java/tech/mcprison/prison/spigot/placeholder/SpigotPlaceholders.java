@@ -267,21 +267,6 @@ public class SpigotPlaceholders
     	return processPlaceholderIdentifier( identifier );
 	}
 
-    // NOTE: This is obsolete since the player should always be included:
-//    /**
-//     * <p>This function is used in this class's placeholderTranslateText() and
-//     * also in tech.mcprison.prison.mines.MinesChatHandler.onPlayerChat().
-//     * </p>
-//     * 
-//     */
-//    @Override
-//    public String placeholderTranslateText( String text) {
-//    	PlaceholderIdentifier identifier = new PlaceholderIdentifier( text );
-//    	
-//    	
-//    	return placeholderTranslateText( identifier );
-//    }
-    	
     private String processPlaceholderIdentifier( PlaceholderIdentifier identifier ) {
     	
     	long nanoStart = System.nanoTime();
@@ -443,25 +428,6 @@ public class SpigotPlaceholders
 		
     	return identifier.getText();
     }
-    
-//    /**
-//     * This provides for a case insensitive replacement of placeholders.
-//     * 
-//     * String target = "FOOBar";
-//	 * target = target.replaceAll("(?i)foo", "");
-//     * 
-//     * @param text The full text that contains one or more placeholders.  This is also the value that
-//     * 				will be returned, with the replacement of the contained placeholder.
-//     * @param placeholder The individual placeholder that should be replaced.  This should be the 
-//     * 				raw value of the identifier, including escape chaacters and placeholder attributes.
-//     * @param target The text that should replace the whole placeholder.
-//     * @return
-//     */
-//    private String placeholderReplace( String text, String placeholder, String target ) {
-//    	
-//    	return text == null || placeholder == null || target == null ?
-//    			text : text.replaceAll( "(?i)" + Pattern.quote(placeholder) , target );
-//    }
     
     
     /**

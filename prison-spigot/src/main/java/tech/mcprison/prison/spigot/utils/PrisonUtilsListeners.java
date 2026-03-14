@@ -11,8 +11,6 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 public class PrisonUtilsListeners
 		implements Listener
 {
-//	private HashMap<MineTargetBlockKey, SpigotBlock> unbreakableBlockList;
-	
 	
 	public PrisonUtilsListeners() {
 		super();
@@ -20,26 +18,8 @@ public class PrisonUtilsListeners
 		// Force it to be setup and ready:
 		BlockUtils.getInstance();
 		
-//		this.unbreakableBlockList = new HashMap<>();
 	}
 	
-	// Runtime exception for some reasons here.
-//    @EventHandler( priority=EventPriority.LOWEST )
-//    public void rainbowDecayBlockEvent(PrisonMinesBlockEventEvent e) {
-    	
-//    	if ( !e.isCancelled() && e.getParameter() != null &&
-//    			e.getParameter().startsWith("rainbow-decay" ) ) {
-//    		
-//    		PrisonUtilsRainbowDecay rainbow = new PrisonUtilsRainbowDecay( 
-//    						e, getUnbreakableBlockList());
-//    		
-//    		PrisonUtilsTask runableTask = new PrisonUtilsTask( rainbow.getTasks() );
-//    		
-//    		// submit:
-//    		runableTask.submit();
-//    	}
-
-//    }
 
     /**
      * <p>This event prevents any block that is within the unbreakableBlockList 
@@ -52,18 +32,13 @@ public class PrisonUtilsListeners
     @EventHandler( priority=EventPriority.LOWEST )
     public void unbreakableBlock( BlockBreakEvent e ) {
     	
-    	if ( !e.isCancelled() ) {
-    		PrisonBlock block = SpigotBlock.getSpigotBlock( e.getBlock() ).getPrisonBlock();
-    		
-    		if ( BlockUtils.getInstance().isUnbreakable( block ) ) {
-    			e.setCancelled( true );
-    		}
-    	}
+	    	if ( !e.isCancelled() ) {
+	    		PrisonBlock block = SpigotBlock.getSpigotBlock( e.getBlock() ).getPrisonBlock();
+	    		
+	    		if ( BlockUtils.getInstance().isUnbreakable( block ) ) {
+	    			e.setCancelled( true );
+	    		}
+	    	}
     }
-
-
-//	public HashMap<MineTargetBlockKey, SpigotBlock> getUnbreakableBlockList() {
-//		return unbreakableBlockList;
-//	}
 
 }

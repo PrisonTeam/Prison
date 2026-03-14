@@ -77,22 +77,22 @@ public class PrisonInitialStartupTask
         
         if ( firstPass ) {
         	
-        	display.sendtoOutputLogInfo();
-        	
-        	firstPass = false;
-        	
-        	resubmit();
+	        	display.sendtoOutputLogInfo();
+	        	
+	        	firstPass = false;
+	        	
+	        	resubmit();
         }
         else {
         	
-        	display.addText("Please see the prison startup messages within the console.");
-        	
-        	List<Player> onlinePlayers = Prison.get().getPlatform().getOnlinePlayers();
-        	
-        	for ( Player player : onlinePlayers ) {
-        		
-        		display.send( player );
-        	}
+	        	display.addText("Please see the prison startup messages within the console.");
+	        	
+	        	List<Player> onlinePlayers = Prison.get().getPlatform().getOnlinePlayers();
+	        	
+	        	for ( Player player : onlinePlayers ) {
+	        		
+	        		display.send( player );
+	        	}
         }
         
 	}
