@@ -23,7 +23,6 @@ import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 public class SellAllAdminGUI extends SpigotGUIComponents {
 
     private final Player p;
-//    int dimension = 27;
     
     private int page = 0;
     private String cmdPage;
@@ -43,15 +42,12 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
         if ( !SpigotPrison.getInstance().isSellAllEnabled() ){
         	
-        	new SpigotVariousGuiMessages().sellallIsDisabledMsg( new SpigotCommandSender(p) );
+        		new SpigotVariousGuiMessages().sellallIsDisabledMsg( new SpigotCommandSender(p) );
         	
-//            Output.get().sendWarn(new SpigotPlayer(p), 
-//            		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
             return;
         }
 
         updateSellAllConfig();
-        
         
         
         int totalArraySize = 27;

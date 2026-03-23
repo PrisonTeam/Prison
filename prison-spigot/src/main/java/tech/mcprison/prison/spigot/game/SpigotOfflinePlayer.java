@@ -116,23 +116,17 @@ public class SpigotOfflinePlayer
     public String filenamePlayer()
     {
     	return getFilePlayer().getName();
-//    	return JsonFileIO.filenamePlayer( this );
     }
     
     public String filenameCache()
     {
     	return getFileCache().getName();
-//    	return JsonFileIO.filenameCache( this );
     }
     
-//    public String getPlayerFileName() {
-//    	
-//    	return JsonFileIO.filenamePlayer( this );
-//    }
 
     @Override
     public String toString() {
-    	return getName();
+    		return getName();
     }
     
     
@@ -154,7 +148,6 @@ public class SpigotOfflinePlayer
 	@Override
 	public boolean isOnline() {
 		return offlinePlayer.isOnline();
-//		return false;
 	}
 	
 	
@@ -171,17 +164,10 @@ public class SpigotOfflinePlayer
 	 */
     @Override 
     public boolean isPlayer() {
-    	return ( offlinePlayer != null && offlinePlayer.getPlayer() != null &&
-    					offlinePlayer.getPlayer() instanceof Player );
-//    	return false;
+	    	return ( offlinePlayer != null && offlinePlayer.getPlayer() != null &&
+	    					offlinePlayer.getPlayer() instanceof Player );
     }
     
-//	@Override
-//	public boolean hasPermission( String perm ) {
-//		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
-//		return false;
-//	}
-	
 	@Override
 	public void setDisplayName( String newDisplayName ) {
 		Output.get().logError( "SpigotOfflinePlayer.setDisplayName: Cannot set display names." );
@@ -254,7 +240,7 @@ public class SpigotOfflinePlayer
     public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
     	
     	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
-    	return results;
+    		return results;
 	}
 	
 	
@@ -272,10 +258,6 @@ public class SpigotOfflinePlayer
 		return null;
 	}
 
-//	@Override
-//	public void printDebugInventoryInformationToConsole() {
-//		
-//	}
 	
 	public OfflinePlayer getWrapper() {
 		return offlinePlayer;
@@ -294,43 +276,43 @@ public class SpigotOfflinePlayer
 	
     @Override
     public List<String> getPermissions() {
-    	List<String> results = new ArrayList<>();
-    	
-    	if ( offlinePlayer.getPlayer() != null ) {
-    		
-    		Set<PermissionAttachmentInfo> perms = offlinePlayer.getPlayer().getEffectivePermissions();
-    		for ( PermissionAttachmentInfo perm : perms )
-    		{
-    			results.add( perm.getPermission() );
-    		}
-    	}
-    	else {
-    		// try to use vault:
-    		
-    		// TODO add permission integrations here!!
-    	}
-    	
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	if ( offlinePlayer.getPlayer() != null ) {
+	    		
+	    		Set<PermissionAttachmentInfo> perms = offlinePlayer.getPlayer().getEffectivePermissions();
+	    		for ( PermissionAttachmentInfo perm : perms )
+	    		{
+	    			results.add( perm.getPermission() );
+	    		}
+	    	}
+	    	else {
+	    		// try to use vault:
+	    		
+	    		// TODO add permission integrations here!!
+	    	}
+	    	
+	    	
+	    	return results;
     }
     
     @Override
     public List<String> getPermissions( String prefix ) {
     	
-    	return getPermissions( prefix, getPermissions() );
+    		return getPermissions( prefix, getPermissions() );
     }
     
     @Override
     public List<String> getPermissions( String prefix, List<String> perms ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	for ( String perm : perms ) {
-    		if ( perm.startsWith( prefix ) ) {
-    			results.add( perm );
-    		}
-    	}
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	for ( String perm : perms ) {
+	    		if ( perm.startsWith( prefix ) ) {
+	    			results.add( perm );
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
 	@Override
@@ -347,30 +329,8 @@ public class SpigotOfflinePlayer
 		}
 		
 		return hasPerm;
-		
-//		List<String> perms = getPermissions( perm );
-//		return perms.contains( perm );
 	}
     
-//    @Override
-//    public List<String> getPermissions() {
-//    	List<String> results = new ArrayList<>();
-//    	
-//    	return results;
-//    }
-//    
-//    @Override
-//    public List<String> getPermissions( String prefix ) {
-//    	List<String> results = new ArrayList<>();
-//    	
-//    	for ( String perm : getPermissions() ) {
-//			if ( perm.startsWith( prefix ) ) {
-//				results.add( perm );
-//			}
-//		}
-//    	
-//    	return results;
-//    }
     
 	@Override
 	public List<String> getPermissionsIntegrations( boolean detailed ) {
@@ -391,63 +351,48 @@ public class SpigotOfflinePlayer
      */
     @Override
     public double getSellAllMultiplier() {
-    	double results = 1.0;
+    		double results = 1.0;
     	
 		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
 		
 		if ( sellall != null && getWrapper() != null ) {
 			
-//			SpigotPlayer sPlayer = new SpigotPlayer( getWrapper() );
-			
 			results = sellall.getPlayerMultiplier( this );
 		}
 		
-//    	SpigotPlayer sPlayer = null;
-//    	
-//    	if ( getWrapper() != null ) {
-//    		sPlayer = new SpigotPlayer( getWrapper() );
-//
-//    		results = sPlayer.getSellAllMultiplier();
-//    	}
-    	
-    	return results;
+		return results;
     }
     
     @Override
     public double getSellAllMultiplierDebug() {
-    	double results = 1.0;
+    		double results = 1.0;
     	
     	// NOTE: isPlayer() is a check to see if it's tied to the bukkit Player object, of 
     	//       which offline player is not.  But the sellall multiplier can still be called.
-//    	if ( isPlayer() ) {
     		
     		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
     		
     		if ( sellall != null && getWrapper() != null ) {
     			
-//    			SpigotPlayer sPlayer = new SpigotPlayer( getWrapper() );
-    			
     			results = sellall.getPlayerMultiplierDebug( this );
     		}
-//    	}
     	
     	return results;
     }
     
     public List<String> getSellAllMultiplierListings() {
-    	List<String> results = new ArrayList<>();
-    	
-    	if ( isPlayer() ) {
-    		
-    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
-    		
-    		if ( sellall != null && getWrapper() != null ) {
-    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
-    		}
-    	}
-
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	if ( isPlayer() ) {
+	    		
+	    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+	    		
+	    		if ( sellall != null && getWrapper() != null ) {
+	    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
 	@Override
@@ -517,16 +462,6 @@ public class SpigotOfflinePlayer
 		SpigotPlayer sPlayer = SpigotPlayer.getSpigotPlayer( getRankPlayer() );
 		
 		return sPlayer;
-		
-//		tech.mcprison.prison.internal.Player player = null;
-//		
-//		Optional<tech.mcprison.prison.internal.Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
-//		
-//		if ( oPlayer.isPresent() ) {
-//			player = oPlayer.get();
-//		}
-//		
-//		return player;
 	}
 
 	

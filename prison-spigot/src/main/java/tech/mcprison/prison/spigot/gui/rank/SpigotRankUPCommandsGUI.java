@@ -46,14 +46,14 @@ public class SpigotRankUPCommandsGUI
 
         // If the inventory is empty
         if (dimension == 0){
-        	guiRanksErrorEmptyMsg( new SpigotPlayer(p) );
+        		guiRanksErrorEmptyMsg( new SpigotPlayer(p) );
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-        	guiRanksRankupCommandsTooManyMsg( new SpigotPlayer(p) );
+        		guiRanksRankupCommandsTooManyMsg( new SpigotPlayer(p) );
             p.closeInventory();
             return;
         }

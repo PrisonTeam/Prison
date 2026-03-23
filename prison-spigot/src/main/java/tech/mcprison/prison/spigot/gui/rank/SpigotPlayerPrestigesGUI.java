@@ -138,11 +138,6 @@ public class SpigotPlayerPrestigesGUI
         
         
 
-        
-        
-//         Create the inventory and set up the owner, dimensions or number of slots, and title
-//        int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
-
         PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), 
         				guiConfig.getString("Options.Titles.PlayerPrestigesGUI"));
 
@@ -150,22 +145,12 @@ public class SpigotPlayerPrestigesGUI
         String guiItemNameDefaultSetting = guiConfig.getString( "Options.Ranks.GuiItemNameDefault" );
 
 
-        
-        // dead code:
-//        if ( ladder == null ){
-//            Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.LadderPrestigesNotFound"));
-//            return;
-//        }
-
         if (!ladder.getLowestRank().isPresent()){
         	guiRanksPrestigesLadderIsEmptyMsg( new SpigotPlayer(player) );
             return;
         }
 
-//        Rank rank = ladder.getLowestRank().get();
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-//        PlayerRank prestigePlayerRank = rankPlayerFactory.getRank( getRankPlayer(), "prestiges");
-//        Rank playerRank = prestigePlayerRank == null ? null : prestigePlayerRank.getRank();
         XMaterial materialHas;
         XMaterial materialHasNot;
 
@@ -184,12 +169,10 @@ public class SpigotPlayerPrestigesGUI
         }
 
         // Variables.
-//        boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
 
         // Global strings.
         String loreInfo = guiRanksLoreInfoMsg();
-//        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
 
         // Global boolean.
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
@@ -219,13 +202,6 @@ public class SpigotPlayerPrestigesGUI
         	// hasAccess uses access by rank, and access by perm:
         	boolean playerHasThisRank = getRankPlayer() != null && getRankPlayer().hasAccessToRank( rank );
 
-//        int amount = 1;
-//        while ( rank != null ) {
-
-        	// Need to create a new PlayerRank specifically for the player which takes in to consideration 
-        	// all of their multipliers.
-//        	PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
-//        	PlayerRank targetPlayerRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
         	
         	PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), rank.getLadder() );
         	
@@ -241,9 +217,6 @@ public class SpigotPlayerPrestigesGUI
                 }
             }
 
-//            if (playerRank != null && playerRank.equals( rank )){
-//                playerHasThisRank = false;
-//            }
 
             XMaterial hasRankMsg = playerHasThisRank ? materialHas : materialHasNot;
             
@@ -260,18 +233,13 @@ public class SpigotPlayerPrestigesGUI
             gui.addButton(itemrank);
 
             rank = rank.getRankNext();
-//            if (amount > 45){
-//                break;
-//            }
         }
-        
 
         
         // Add the page controls: 
         // The controls for the standard menu are in positions: 4, 5, and 6:
         SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
 
-        
 			
         if (Prison.get().getPlatform().getConfigBooleanTrue( "ranks.gui-prestiges-include-rankup-button") ) {
 			
@@ -282,7 +250,6 @@ public class SpigotPlayerPrestigesGUI
 			gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
 			
 		}
-
         
         
         // Open GUI.

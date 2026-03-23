@@ -21,7 +21,6 @@ import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 public class SellAllPlayerGUI extends SpigotGUIComponents {
 
     private final Player p;
-//    private final int startingItem;
     
     private int page = 0;
     private String cmdPage;
@@ -34,7 +33,6 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         this.cmdPage = cmdPage;
         this.cmdReturn = cmdReturn;
 
-//        this.startingItem = startingItem;
     }
 
     public void open() {
@@ -54,9 +52,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
         if (emptyInv){
         	
-        	new SpigotVariousGuiMessages().sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
-//            Output.get().sendWarn(new SpigotPlayer(p), 
-//            		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_empty));
+        		new SpigotVariousGuiMessages().sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
             return;
         }
 
@@ -79,10 +75,6 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
         
         
-        // Global strings.
-//        String loreValue = messages.getString(MessagesConfig.StringID.spigot_gui_lore_value);
-
-//        int itemsAdded = 0, itemsRead = 0;
         for ( String key : itemsDisplay ) {
         	
         	String itemId = sellAllConfig.getString("Items." + key + ".ITEM_ID");
@@ -95,31 +87,12 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         			new ButtonLore(null, loreValue), 
         			  "&3" + itemId));
         	
-        	
-//            itemsRead++;
-
-//            if (itemsRead >= startingItem) {
-//
-//                if (startingItem != 0){
-//                    gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (startingItem - 45)));
-//                }
-//
-//                if (itemsAdded >= 45){
-//                    gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (startingItem + itemsAdded)));
-//                }
-//
-//                if (itemsAdded < 45) {
-//                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), new ButtonLore(null, loreValue + " " + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")), "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
-//                    itemsAdded++;
-//                }
-//            }
         }
         
         
         // Add the page controls: 
         // The controls for the standard menu are in positions: 4, 5, and 6:
         SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
-
         
         
         gui.open();

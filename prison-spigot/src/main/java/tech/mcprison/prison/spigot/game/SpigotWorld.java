@@ -82,14 +82,14 @@ public class SpigotWorld
     
     @Override
     public List<Entity> getEntities() {
-    	List<Entity> results = new ArrayList<>();
-    	
-    	for (org.bukkit.entity.Entity bukkitEnitity : getWrapper().getEntities() ) {
-			
-    		results.add( new SpigotEntity( bukkitEnitity) );
+	    	List<Entity> results = new ArrayList<>();
+	    	
+	    	for (org.bukkit.entity.Entity bukkitEnitity : getWrapper().getEntities() ) {
+				
+	    		results.add( new SpigotEntity( bukkitEnitity) );
 		}
     	
-    	return results;
+	    	return results;
     }
     
     /**
@@ -99,20 +99,20 @@ public class SpigotWorld
      * @return
      */
     public List<Entity> getEntities( EntityType eType ) {
-    	List<Entity> results = new ArrayList<>();
-    	
-    	SpigotEntityType seType = eType == null ? null : (SpigotEntityType) eType;
-    	
-    	for (org.bukkit.entity.Entity bukkitEnitity : getWrapper().getEntities() ) {
-    		
-    		if ( seType == null ||
-					seType.getxEType() == XEntityType.of(bukkitEnitity) ) {
-				
-				results.add( new SpigotEntity( bukkitEnitity ));
-			}
-    	}
-    	
-    	return results;
+	    	List<Entity> results = new ArrayList<>();
+	    	
+	    	SpigotEntityType seType = eType == null ? null : (SpigotEntityType) eType;
+	    	
+	    	for (org.bukkit.entity.Entity bukkitEnitity : getWrapper().getEntities() ) {
+	    		
+	    		if ( seType == null ||
+						seType.getxEType() == XEntityType.of(bukkitEnitity) ) {
+					
+					results.add( new SpigotEntity( bukkitEnitity ));
+				}
+	    	}
+	    	
+	    	return results;
     }
 
     /**
@@ -128,42 +128,37 @@ public class SpigotWorld
     @Override 
     public Block getBlockAt( Location location, boolean containsCustomBlocks ) {
     	
-    	if ( getBlockAtLocation == null ) {
-    		getBlockAtLocation = new SpigotBlockGetAtLocation();
-    	}
-    	
-    	return getBlockAtLocation.getBlockAt(location, containsCustomBlocks, this);
+	    	if ( getBlockAtLocation == null ) {
+	    		getBlockAtLocation = new SpigotBlockGetAtLocation();
+	    	}
+	    	
+	    	return getBlockAtLocation.getBlockAt(location, containsCustomBlocks, this);
     }
     
     public Block getBlockAt( Location location ) {
-    	return getBlockAt( location, false );
+    		return getBlockAt( location, false );
     }
  
     
-//    public SpigotBlock getSpigotBlockAt(Location location) {
-//    	return new SpigotBlock(
-//    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
-//    }
-    
     public org.bukkit.Location getBukkitLocation(Location location) {
-    	return SpigotUtil.prisonLocationToBukkit(location);
+    		return SpigotUtil.prisonLocationToBukkit(location);
     }
     
     public org.bukkit.inventory.ItemStack getBukkitItemStack( ItemStack itemStack ) {
     	
-    	SpigotItemStack sItemStack = (SpigotItemStack) itemStack;
-    	
-    	return sItemStack.getBukkitStack();
+	    	SpigotItemStack sItemStack = (SpigotItemStack) itemStack;
+	    	
+	    	return sItemStack.getBukkitStack();
     }
     
     @Override
     public void setBlock( PrisonBlock block, int x, int y, int z ) {
     	
-    	Location loc = new Location( this, x, y, z );
-    	org.bukkit.block.Block bukkitBlock = 
-    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(loc));
-    	
-    	SpigotCompatibility.getInstance().updateSpigotBlock( block, bukkitBlock );
+	    	Location loc = new Location( this, x, y, z );
+	    	org.bukkit.block.Block bukkitBlock = 
+	    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(loc));
+	    	
+	    	SpigotCompatibility.getInstance().updateSpigotBlock( block, bukkitBlock );
     }
     
     
@@ -209,59 +204,6 @@ public class SpigotWorld
 	}
 
 	
-//	public String getBlockSignature( Location location ) {
-//		String results = null;
-//		
-//		if ( getWrapper() != null ) {
-//			
-//			SpigotBlock block = (SpigotBlock) getBlockAt( location );
-//			
-//			 StringBuilder sb = new StringBuilder();
-//			 sb.append( block.getWrapper().getType().name() )
-//			 	.append( ":" )
-////			 	.append( location.toWorldCoordinates() )
-////			 	.append( "::" )
-//			 	.append( block.getWrapper().getBlockData() );
-//			 
-//			 results = sb.toString();
-//		}
-//		
-//		return results;
-//	}
-	
-//	public void getTestBlock() {
-//		
-//		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
-//		
-//		NBTItem nbtItemStack = nbtUtil.getNBT( bstack );
-//		
-//		nbtItemStack.
-//	}
-	
-//	public void setBlockFromString( String blockString, Location location ) {
-//		
-//		String[] parts = blockString.split("::");
-//		String blockNameFormal = parts[0];
-//		String worldCoordinates = parts[1];
-//		String blockData = parts[2];
-//		
-//		Location targetLocation = location;
-//		if ( targetLocation == null ) {
-//			targetLocation = Location.decodeWorldCoordinates(worldCoordinates);
-//		}
-//		
-//		SpigotBlock block = (SpigotBlock) getBlockAt( targetLocation );
-//		
-//		Prison.get().getPlatform().getPrisonBlock(blockNameFormal);
-////		block.setType(Material.getMaterial(parts[0]));
-//		
-//		BlockData targetBlockData = 
-//				SpigotPrison.getInstance().getServer().createBlockData( blockData );
-//		
-//		block.getWrapper().setBlockData( targetBlockData );
-//		
-//	}
-	
 	
     public org.bukkit.World getWrapper() {
         return bukkitWorld;
@@ -306,21 +248,12 @@ public class SpigotWorld
 		Location spawnPoint = new Location( location );
 		spawnPoint.setY(maxHight);
 		
-//		Entity e = spawnEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
-//		SpigotEntity sEntity = (SpigotEntity) e;
-		
 		org.bukkit.entity.Entity bEntity = spawnBukkitEntity( spawnPoint, SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
 		
 		org.bukkit.entity.ArmorStand armorStand = (org.bukkit.entity.ArmorStand) bEntity;
 		armorStand.setVisible(false);
 		
 		armorStand.teleport( new SpigotLocation( location ).getBukkitLocation() );
-		
-//		SpigotArmorStand sArmorStand = new SpigotArmorStand( armorStand );
-		
-//		sArmorStand.teleport(location);
-		
-//		testArmorStandPlacement( spawnPoint );
 		
 		return armorStand;
 	}
@@ -401,22 +334,9 @@ public class SpigotWorld
 		as.getHelmet();
 		as.setHelmet(bItemStack);
 		
-//		String msg = "SpigotWorld.spawnArmorStand: itemInHand: " +
-//				( as.getItemInHand() == null ? "null" : as.getItemInHand().toString()) +  
-//				"  hasArmms: " + as.hasArms() +
-//				"  itemStack( " + 
-//						(bItemStack == null ? "null" : 
-//							bItemStack.toString() + " " + bItemStack.getAmount()) + ") " +
-//						" name: " + (customName == null ? "noCustomName" : customName);
-//		
-//		Output.get().logInfo( msg );
-		
-//		as.teleport( SpigotLocation.getBukkitLocation(location) );
-		
 		
 		// wrap in a SpigotArmorStand:
 		SpigotArmorStand sas = new SpigotArmorStand( as );
-		//sas.teleport( location );
 		
 		return sas;
 	}

@@ -35,38 +35,18 @@ import tech.mcprison.prison.util.Text;
 public abstract class SpigotGUIComponents
 	extends PrisonCoreGuiMessages {
 
-    public static MessagesConfig messages = getMessages();
-    public static Configuration guiConfig = getGuiConfig();
-    
-    public static Configuration sellAllConfig;
-    
-    static {
-    	updateSellAllConfig();
+	    public static MessagesConfig messages = getMessages();
+	    public static Configuration guiConfig = getGuiConfig();
+	    
+	    public static Configuration sellAllConfig;
+	    
+	    static {
+	    	updateSellAllConfig();
     }
 
-//    /**
-//     * Bug: Cannot correctly create a button with Material variants with spigot versions less than 1.13:
-//     * 
-//     * Create a button for the GUI using Material.
-//     *
-//     * @param id
-//     * @param amount
-//     * @param lore
-//     * @param display
-//     * */
-//    protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
-//
-//        if (id == null){
-//            id = XMaterial.BARRIER.parseMaterial();
-//        }
-//
-//        ItemStack item = new ItemStack(id, amount);
-//        ItemMeta meta = item.getItemMeta();
-//        return getItemStack(item, lore, SpigotPrison.format(display), meta);
-//    }
 
     protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
-    	return createButton( item, 1, lore, display );
+    		return createButton( item, 1, lore, display );
     }
     /**
      * Create a button for the GUI using ItemStack.
@@ -83,7 +63,7 @@ public abstract class SpigotGUIComponents
     	
         item.setAmount( amount );
         
-    	ItemMeta meta = item.getItemMeta();
+        ItemMeta meta = item.getItemMeta();
 
         if (meta == null){
             meta = XMaterial.BARRIER.parseItem().getItemMeta();
@@ -177,13 +157,6 @@ public abstract class SpigotGUIComponents
         return SpigotPrison.getInstance().getMessagesConfig();
     }
 
-//    /**
-//     * Get SellAll config.
-//     * */
-//    protected static Configuration getSellAll(){
-//        return SpigotPrison.getInstance().updateSellAllConfig();
-//    }
-
     /**
      * Get GUI config.
      * */
@@ -220,15 +193,11 @@ public abstract class SpigotGUIComponents
      * */
     public static void updateSellAllConfig() {
     	
-    	if ( SellAllUtil.isAutoSellEnabled() ) {
-    		
-    		sellAllConfig = SellAllUtil.get().initCachedData();
-    	}
+	    	if ( SellAllUtil.isAutoSellEnabled() ) {
+	    		
+	    		sellAllConfig = SellAllUtil.get().initCachedData();
+	    	}
     	
-//        SellAllUtil util = SpigotPrison.getInstance().getSellAllUtil();
-//        if ( util != null ) {
-//        	sellAllConfig = util.sellAllConfig;
-//        }
     }
 
     public static void updateGUIConfig(){

@@ -44,12 +44,9 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         		.createGUIPageObject( totalArraySize, page, cmdPage, cmdReturn );
 
 
-//        int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3SellAll -> Delay");
 
         ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
-//        ButtonLore changeDecreaseValueLore = new ButtonLore(
-//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
         		guiLeftClickToConfirmMsg(), 
         		guiRightClickToCancelMsg() ), 
@@ -57,8 +54,6 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         		createLore( guiDelayMsg( val ) ));
         
         ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
-//        ButtonLore changeIncreaseValueLore = new ButtonLore(
-//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;
@@ -85,7 +80,6 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         // The controls for the standard menu are in positions: 4, 5, and 6:
         SpigotGUIMenuTools.getInstance().addMenuPageButtonsNoPaging( gui, guiPageData );
 
-        
         
         gui.open();
     }

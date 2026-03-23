@@ -74,24 +74,6 @@ public class SpigotPlayerMinesGUI
 
         List<Mine> minesDisplay = mines.getSortedList().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
         
-        
-    	
-//        // Get the dimensions and if needed increases them
-//        int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
-//
-//        // If the inventory is empty
-//        if (dimension == 0){
-//            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_empty));
-//            p.closeInventory();
-//            return;
-//        }
-//
-//        // If the dimension's too big, don't open the GUI
-//        if (dimension > 54){
-//            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_too_many));
-//            p.closeInventory();
-//            return;
-//        }
 
         GuiConfig guiConfigClass = new GuiConfig();
         guiConfig = guiConfigClass.getFileGuiConfig();
@@ -109,7 +91,7 @@ public class SpigotPlayerMinesGUI
         
         String noMineAccessBlockType = guiConfig.getString( "Options.Mines.MaterialType.NoMineAccess" );
         if ( noMineAccessBlockType == null ) {
-        	noMineAccessBlockType = XMaterial.REDSTONE_BLOCK.name();
+        		noMineAccessBlockType = XMaterial.REDSTONE_BLOCK.name();
         }
         else {
         	// Validate that it is valid, otherwise use redstone_block:
@@ -123,7 +105,6 @@ public class SpigotPlayerMinesGUI
         	
         // Make the buttons for every Mine with info
         for (Mine m : minesDisplay) {
-//        	for (Mine m : mines.getSortedList()) {
 
             String guiItemName = guiConfig.getString( "Options.Mines.GuiItemNames." + m.getName() );
 
@@ -133,14 +114,13 @@ public class SpigotPlayerMinesGUI
             
 
             // If a mine has custom LORE, then try to load it:
-        	String mineLoreKey = "EditableLore.Mine." + m.getName();
-        	List<String> mineLore = new ArrayList<>( configCustomLore );
-        	List<String> mineLore2 = guiConfig.getStringList( mineLoreKey );
-        	mineLore.addAll( mineLore2 );
+	        	String mineLoreKey = "EditableLore.Mine." + m.getName();
+	        	List<String> mineLore = new ArrayList<>( configCustomLore );
+	        	List<String> mineLore2 = guiConfig.getStringList( mineLoreKey );
+	        	mineLore.addAll( mineLore2 );
 
 
             XMaterial xMat = XMaterial.matchXMaterial( noMineAccessBlockType ).orElse(null);
-//            XMaterial xMat = XMaterial.REDSTONE_BLOCK;
             
             // Bug: Cannot safely use Material due to variants prior to bukkit v1.13:
 //            Material material;
@@ -160,9 +140,6 @@ public class SpigotPlayerMinesGUI
             				m.getTag() != null ? m.getTag() :
             					m.getName();
 
-//            // Add mineName lore for TP.
-//            minesLore.addLineLoreAction( "&3" + mineName );
-
             
             boolean hasMineAccess = m.hasMiningAccess(spigotPlayer);
             String permMineAccess = permission + m.getName();
@@ -179,68 +156,61 @@ public class SpigotPlayerMinesGUI
             		hasPerm ) 
             {
             	
-            	if ( !hasMineAccess ) {
-            		Output.get().logInfo( 
-            				"GUI Player Mines: Has access to mine %s through perms: %s=%s  OR  %s=%s",
-            				m.getName(), 
-            				permMineAccess, Boolean.toString(hasPermMine),
-            				permAccess, Boolean.toString(hasPerm)
-            				);
-            	}
+	            	if ( !hasMineAccess ) {
+	            		Output.get().logInfo( 
+	            				"GUI Player Mines: Has access to mine %s through perms: %s=%s  OR  %s=%s",
+	            				m.getName(), 
+	            				permMineAccess, Boolean.toString(hasPermMine),
+	            				permAccess, Boolean.toString(hasPerm)
+	            				);
+	            	}
             	
             	
-            	// Default to COAL_ORE since the player has access to the mine:
-            	{
-            		xMat = XMaterial.COAL_ORE;
-
-            		String defaultMineAccessXmat = guiConfig.getString(
-            									"Options.Mines.MaterialType.HasMineAccess","COAL_ORE");
-            		try {
-						XMaterial xMatTemp = SpigotUtil.getXMaterial( defaultMineAccessXmat );
-						if ( xMatTemp != null ) {
-							xMat = xMatTemp;
+	            	// Default to COAL_ORE since the player has access to the mine:
+	            	{
+	            		xMat = XMaterial.COAL_ORE;
+	
+	            		String defaultMineAccessXmat = guiConfig.getString(
+	            									"Options.Mines.MaterialType.HasMineAccess","COAL_ORE");
+	            		try {
+							XMaterial xMatTemp = SpigotUtil.getXMaterial( defaultMineAccessXmat );
+							if ( xMatTemp != null ) {
+								xMat = xMatTemp;
+							}
+						} 
+	            		catch (Exception e) {
 						}
-					} 
-            		catch (Exception e) {
-					}
-            	}
-            	// xMat = XMaterial.COAL_ORE;
+	            	}
 
             	
-            	// The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
-            	// based upon the XMaterial enumeration name, or supported past names.
-//            Material mineMaterial = null;
-            	String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
+	            	// The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
+	            	// based upon the XMaterial enumeration name, or supported past names.
+	            	String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
+	            	
+	            	if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
+	            		
+	            		XMaterial xMatTemp = SpigotUtil.getXMaterial( materialTypeStr );
+	            		if ( xMatTemp == null ) {
+	            			Output.get().logInfo( "Warning: A block was specified for mine '%s' but it was " +
+	            					"unable to be mapped to a valid XMaterial type. Key = " +
+	            					"[Options.Mines.MaterialType.%s] value = " +
+	            					"[%s] Please use valid material names as found in the XMaterial " +
+	            					"source on git hub: " +
+	            					"https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/" +
+	            					"com/cryptomorin/xseries/XMaterial.java ",
+	            					m.getName(), m.getName(), materialTypeStr );
+	            		}
+	            		else {
+	            			xMat = xMatTemp;
+	            		}
+	            	}
+	
+	            	lockStatus = statusUnlockedMine;
             	
-            	if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
-            		
-            		XMaterial xMatTemp = SpigotUtil.getXMaterial( materialTypeStr );
-            		if ( xMatTemp == null ) {
-            			Output.get().logInfo( "Warning: A block was specified for mine '%s' but it was " +
-            					"unable to be mapped to a valid XMaterial type. Key = " +
-            					"[Options.Mines.MaterialType.%s] value = " +
-            					"[%s] Please use valid material names as found in the XMaterial " +
-            					"source on git hub: " +
-            					"https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/" +
-            					"com/cryptomorin/xseries/XMaterial.java ",
-            					m.getName(), m.getName(), materialTypeStr );
-            		}
-            		else {
-            			xMat = xMatTemp;
-            		}
-            	}
-
-            	lockStatus = statusUnlockedMine;
-            	
-            	// material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-//                minesLore.addLineLoreDescription( statusUnlockedMine );
-//                minesLore.addLineLoreAction( clickToTeleport );
             } 
             else {
-            	xMat = XMaterial.REDSTONE_BLOCK;
+            		xMat = XMaterial.REDSTONE_BLOCK;
             	
-//                material = XMaterial.REDSTONE_BLOCK.parseMaterial();
-//                minesLore.addLineLoreDescription( statusLockedMine );
             }
 
             // Get mine Tag, but make sure it is valid and the mine's name is not null:
@@ -248,36 +218,36 @@ public class SpigotPlayerMinesGUI
             if ( m.getTag() != null && 
             		!m.getTag().equalsIgnoreCase("null") && 
             		!m.getTag().equalsIgnoreCase("none") ) {
-            	mineTag = m.getTag();
+            		mineTag = m.getTag();
             }
             
             DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
             
             for (String stringValue : mineLore) {
-            	
-            	double volume = ( m.isVirtual() ? 0 : m.getBounds().getTotalBlockCount() );
-            	double remaining = volume * m.getPercentRemainingBlockCount() / 100.0;
-            	
-            	String dimensions = ( m.isVirtual() ? "virtual" : m.getBounds().getDimensions() );
-            	
-            	stringValue = stringValue.replace( "{mineName}", mineName );
-            	stringValue = stringValue.replace( "{mineTag}", mineTag );
-            	stringValue = stringValue.replace( "{mineSize}", dimensions );
-            	stringValue = stringValue.replace( "{mineVolume}", iFmt.format( volume ));
-            	stringValue = stringValue.replace( "{mineRemaining}", iFmt.format( remaining ));
-            	stringValue = stringValue.replace( "{mineRemainingPercent}", iFmt.format( m.getPercentRemainingBlockCount() ));
-            	
-            	stringValue = stringValue.replace( "{clickToTeleport}", clickToTeleport );
-            	stringValue = stringValue.replace( "{lockStatus}", lockStatus );
-
-            	stringValue = stringValue.replace( "{playerCount}", iFmt.format( m.getPlayerCount()) );
-            	
-            	if ( m.getRank() == null ) {
-            		stringValue = stringValue.replace( "{linkedRank}", "Not linked" );
-            	}
-            	else {
-            		stringValue = stringValue.replace( "{linkedRank}", m.getRank().getTag() );
-            	}
+	            	
+	            	double volume = ( m.isVirtual() ? 0 : m.getBounds().getTotalBlockCount() );
+	            	double remaining = volume * m.getPercentRemainingBlockCount() / 100.0;
+	            	
+	            	String dimensions = ( m.isVirtual() ? "virtual" : m.getBounds().getDimensions() );
+	            	
+	            	stringValue = stringValue.replace( "{mineName}", mineName );
+	            	stringValue = stringValue.replace( "{mineTag}", mineTag );
+	            	stringValue = stringValue.replace( "{mineSize}", dimensions );
+	            	stringValue = stringValue.replace( "{mineVolume}", iFmt.format( volume ));
+	            	stringValue = stringValue.replace( "{mineRemaining}", iFmt.format( remaining ));
+	            	stringValue = stringValue.replace( "{mineRemainingPercent}", iFmt.format( m.getPercentRemainingBlockCount() ));
+	            	
+	            	stringValue = stringValue.replace( "{clickToTeleport}", clickToTeleport );
+	            	stringValue = stringValue.replace( "{lockStatus}", lockStatus );
+	
+	            	stringValue = stringValue.replace( "{playerCount}", iFmt.format( m.getPlayerCount()) );
+	            	
+	            	if ( m.getRank() == null ) {
+	            		stringValue = stringValue.replace( "{linkedRank}", "Not linked" );
+	            	}
+	            	else {
+	            		stringValue = stringValue.replace( "{linkedRank}", m.getRank().getTag() );
+	            	}
             	
             	
 				minesLore.addLineLoreAction( stringValue );
@@ -294,7 +264,6 @@ public class SpigotPlayerMinesGUI
 
             
             Button itemMine = new Button(null, xMat, minesLore, mineName );
-//            Button itemMine = new Button(null, xMat, minesLore, "&3" + mineTag);
             
             String mineTeleportCommand = 
             		Output.stringFormat( 
@@ -313,21 +282,6 @@ public class SpigotPlayerMinesGUI
             // Add the button to the inventory.
             gui.addButton( itemMine );
             
-            
-//            String mineTag = m.getTag();
-//
-//            // Check if mineName's null (which shouldn't be) and do actions.
-//            if (mineName != null) {
-//
-//                if (mineTag == null || mineTag.equalsIgnoreCase("null")){
-//                    mineTag = mineName;
-//                }
-//
-//                // Add the button to the inventory.
-//                gui.addButton(new Button(null, xMat, minesLore, "&3" + mineTag));
-////                gui.addButton(new Button(null, XMaterial.matchXMaterial(material), minesLore, "&3" + mineTag));
-//            }
-
         }
 
         

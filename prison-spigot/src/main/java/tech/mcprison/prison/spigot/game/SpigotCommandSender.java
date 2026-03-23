@@ -67,10 +67,10 @@ public class SpigotCommandSender
 	}
     
     public UUID getUUID() {
-    	UUID uuid = null;
-    	if ( isPlayer() ) {
-    		uuid = ((org.bukkit.entity.Player) bukkitSender).getUniqueId();
-    	}
+	    	UUID uuid = null;
+	    	if ( isPlayer() ) {
+	    		uuid = ((org.bukkit.entity.Player) bukkitSender).getUniqueId();
+	    	}
         return uuid;
     }
 
@@ -89,10 +89,10 @@ public class SpigotCommandSender
     @Override 
     public void dispatchCommand(String command) {
     	
-    	command = CommandHandler.remapRootCmdIdentifiers( command );
-    	
-    	String registeredCmd = Prison.get().getCommandHandler()
-    					.findRegisteredCommand( command );
+	    	command = CommandHandler.remapRootCmdIdentifiers( command );
+	    	
+	    	String registeredCmd = Prison.get().getCommandHandler()
+	    					.findRegisteredCommand( command );
     	
         Bukkit.getServer().dispatchCommand(bukkitSender, registeredCmd);
     }
@@ -104,11 +104,11 @@ public class SpigotCommandSender
 
     @Override 
     public void sendMessage(String message) {
-    	
-    	String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
-    	
-    	for ( String msg : msgs ) {
-    		bukkitSender.sendMessage(msg);
+	    	
+	    	String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
+	    	
+	    	for ( String msg : msgs ) {
+	    		bukkitSender.sendMessage(msg);
 		}
     }
 
@@ -116,24 +116,24 @@ public class SpigotCommandSender
     public void sendMessage(String[] messages) {
         for (String message : messages) {
 
-        	String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
-        	for ( String msg : msgs ) {
-        		
-        		sendMessage(msg);
-        	}
+	        	String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
+	        	for ( String msg : msgs ) {
+	        		
+	        		sendMessage(msg);
+	        	}
         }
     }
     
     @Override 
     public void sendMessage(List<String> messages) {
-    	for (String message : messages) {
-    		
-    		String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
-    		for ( String msg : msgs ) {
-    			
-    			sendMessage(msg);
-    		}
-    	}
+	    	for (String message : messages) {
+	    		
+	    		String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
+	    		for ( String msg : msgs ) {
+	    			
+	    			sendMessage(msg);
+	    		}
+	    	}
     }
 
     @Override 
@@ -146,7 +146,7 @@ public class SpigotCommandSender
 
     @Override
     public boolean isOp() {
-    	return bukkitSender.isOp();
+    		return bukkitSender.isOp();
     }
    
 	@Override
@@ -163,10 +163,10 @@ public class SpigotCommandSender
     
     @Override
     public List<String> getPermissions() {
-    	List<String> results = new ArrayList<>();
-    	
-    	Set<PermissionAttachmentInfo> perms = bukkitSender.getEffectivePermissions();
-    	for ( PermissionAttachmentInfo perm : perms )
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	Set<PermissionAttachmentInfo> perms = bukkitSender.getEffectivePermissions();
+	    	for ( PermissionAttachmentInfo perm : perms )
 		{
 			results.add( perm.getPermission() );
 		}
@@ -178,128 +178,108 @@ public class SpigotCommandSender
     @Override
     public List<String> getPermissions( String prefix ) {
     	
-    	return getPermissions( prefix, getPermissions() );
+    		return getPermissions( prefix, getPermissions() );
     }
     
     @Override
     public List<String> getPermissions( String prefix, List<String> perms ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	for ( String perm : perms ) {
-    		if ( perm.startsWith( prefix ) ) {
-    			results.add( perm );
-    		}
-    	}
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	for ( String perm : perms ) {
+	    		if ( perm.startsWith( prefix ) ) {
+	    			results.add( perm );
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
-//    @Override
-//    public List<String> getPermissions( String prefix ) {
-//    	List<String> results = new ArrayList<>();
-//    	
-//    	for ( String perm : getPermissions() ) {
-//			if ( perm.startsWith( prefix ) ) {
-//				results.add( perm );
-//			}
-//		}
-//    	
-//    	return results;
-//    }
 
     
     @Override
     public double getSellAllMultiplier() {
-    	double results = 1.0;
-    	
-    	if ( isPlayer() ) {
-    		
-    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
-    		
-    		if ( sellall != null && getWrapper() != null ) {
-    			results = sellall.getPlayerMultiplier((org.bukkit.entity.Player) getWrapper());
-    		}
-    	}
-    	
-    	return results;
-
-//    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
-//    	
-//    	if ( oPlayer.isPresent() ) {
-//    		results = oPlayer.get().getSellAllMultiplier();
-//    	}
-//    	
-//    	return results;
+	    	double results = 1.0;
+	    	
+	    	if ( isPlayer() ) {
+	    		
+	    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+	    		
+	    		if ( sellall != null && getWrapper() != null ) {
+	    			results = sellall.getPlayerMultiplier((org.bukkit.entity.Player) getWrapper());
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
     @Override
     public double getSellAllMultiplierDebug() {
-    	double results = 1.0;
-    	
-    	if ( isPlayer() ) {
-    		
-    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
-    		
-    		if ( sellall != null && getWrapper() != null ) {
-    			
-    			Player player = getPlatformPlayer();
-    			
-    			results = sellall.getPlayerMultiplierDebug( player );
-    		}
-    	}
-    	
-    	return results;
+	    	double results = 1.0;
+	    	
+	    	if ( isPlayer() ) {
+	    		
+	    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+	    		
+	    		if ( sellall != null && getWrapper() != null ) {
+	    			
+	    			Player player = getPlatformPlayer();
+	    			
+	    			results = sellall.getPlayerMultiplierDebug( player );
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
     @Override
     public List<String> getSellAllMultiplierListings() {
-    	List<String> results = new ArrayList<>();
-    	
-    	if ( isPlayer() ) {
-    		
-    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
-    		
-    		if ( sellall != null && getWrapper() != null ) {
-    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
-    		}
-    	}
-
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	if ( isPlayer() ) {
+	    		
+	    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
+	    		
+	    		if ( sellall != null && getWrapper() != null ) {
+	    			results.addAll( sellall.getPlayerMultiplierList((org.bukkit.entity.Player) getWrapper()) );
+	    		}
+	    	}
+	
+	    	
+	    	return results;
     }
     
     public List<String> getPermissionsIntegrations( boolean detailed ) {
-    	List<String> results = new ArrayList<>();
-    	
-    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
-    	
-    	if ( oPlayer.isPresent() ) {
-    		
-    		PermissionIntegration perms = PrisonAPI.getIntegrationManager() .getPermission();
-    		if ( perms != null ) {
-    			results = perms.getPermissions( oPlayer.get(), detailed );
-    		}
-    	}
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( getName() );
+	    	
+	    	if ( oPlayer.isPresent() ) {
+	    		
+	    		PermissionIntegration perms = PrisonAPI.getIntegrationManager() .getPermission();
+	    		if ( perms != null ) {
+	    			results = perms.getPermissions( oPlayer.get(), detailed );
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
     
     
     @Override 
     public boolean isPlayer() {
-    	return bukkitSender != null && bukkitSender instanceof org.bukkit.entity.Player;
+    		return bukkitSender != null && bukkitSender instanceof org.bukkit.entity.Player;
     }
     
     @Override
     public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	sb.append( "SpigotCommandSender: " ).append( getName() )
-    		.append( "  isOp=" ).append( isOp() )
-    		.append( "  isPlayer=" ).append( isPlayer() );
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	sb.append( "SpigotCommandSender: " ).append( getName() )
+	    		.append( "  isOp=" ).append( isOp() )
+	    		.append( "  isPlayer=" ).append( isPlayer() );
+	    	
+	    	return sb.toString();
     }
     
     public org.bukkit.command.CommandSender getWrapper() {

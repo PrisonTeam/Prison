@@ -48,9 +48,8 @@ public class SpigotPlayerRanksGUI
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
     private final boolean placeholderAPINotNull = 
-    		Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || 
-    		Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
-//    private final List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
+		    		Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || 
+		    		Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
     
     private String ladderName;
     private int page = 0;
@@ -88,7 +87,7 @@ public class SpigotPlayerRanksGUI
  	    }
 
  	    PlayerManager playerManager = rankPlugin.getPlayerManager();
-    	rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() );
+ 	    rPlayer = playerManager.getPlayer( player.getUniqueId(), player.getName() );
         Plugin plugin = server.getPluginManager().getPlugin( PrisonRanks.MODULE_NAME );
 
         if (plugin instanceof PrisonRanks) {
@@ -124,7 +123,6 @@ public class SpigotPlayerRanksGUI
 
         LadderManager lm = getRankPlugin().getLadderManager();
         RankLadder ladder = lm.getLadder( ladderName );
-//        RankLadder ladder = lm.getLadder(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Ensure ladder is present and that it has a rank:
         if ( ladder == null || !ladder.getLowestRank().isPresent()){
@@ -147,13 +145,6 @@ public class SpigotPlayerRanksGUI
         List<Rank> ranksDisplay = ladder.getRanks().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
         
         
-        // Get many parameters
-//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-//        Rank rank = ladder.getLowestRank().get();
-//        PlayerRank playerRankRank = rankPlayerFactory.getRank( getRankPlayer(), guiConfig.getString("Options.Ranks.Ladder"));
-        
-        
-//        Rank playerRank = playerRankRank == null ? null : playerRankRank.getRank();
 
         PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerRanksGUI"));
 
@@ -181,7 +172,6 @@ public class SpigotPlayerRanksGUI
         
         
         int amount = guiPageData.getPosStart();
-//        int amount = 1;
 
         // Global booleans.
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
@@ -219,27 +209,26 @@ public class SpigotPlayerRanksGUI
             boolean playerHasThisRank = getRankPlayer() != null && getRankPlayer().hasAccessToRank( rank );
             
            	
-        	// The valid names to use for Options.Ranks.MaterialType.<MaterialName> must be
-        	// based upon the XMaterial enumeration name, or supported past names.
-        	String materialTypeStr = guiConfig.getString("Options.Ranks.MaterialType." + rank.getName());
-        	XMaterial materialType =
-        			materialTypeStr == null ? null :
-        				XMaterial.matchXMaterial( materialTypeStr ).orElse(null);
-        	
-        	materialType = 
-        			!playerHasThisRank ? materialHasNot : 
-        				materialType != null ? materialType :
-        					materialHas;
-        	
-        	String rankLoreKey = "EditableLore.Rank." + ladderName + "." + rank.getName();
-        	List<String> rankLore = new ArrayList<>( configCustomLore );
-        	List<String> rankLore2 = guiConfig.getStringList( rankLoreKey );
-        	rankLore.addAll( rankLore2 );
-        	
+	        	// The valid names to use for Options.Ranks.MaterialType.<MaterialName> must be
+	        	// based upon the XMaterial enumeration name, or supported past names.
+	        	String materialTypeStr = guiConfig.getString("Options.Ranks.MaterialType." + rank.getName());
+	        	XMaterial materialType =
+	        			materialTypeStr == null ? null :
+	        				XMaterial.matchXMaterial( materialTypeStr ).orElse(null);
+	        	
+	        	materialType = 
+	        			!playerHasThisRank ? materialHasNot : 
+	        				materialType != null ? materialType :
+	        					materialHas;
+	        	
+	        	String rankLoreKey = "EditableLore.Rank." + ladderName + "." + rank.getName();
+	        	List<String> rankLore = new ArrayList<>( configCustomLore );
+	        	List<String> rankLore2 = guiConfig.getStringList( rankLoreKey );
+	        	rankLore.addAll( rankLore2 );
+	        	
             ButtonLore ranksLore = new ButtonLore();
 
             PlayerRank calPRank = rankPlayer.calculateTargetPlayerRank( rank );
-//            PlayerRank calPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
             
             double rankPrice = calPRank.getRankCost();
             double rankMultiplier = calPRank.getRankMultiplier();
@@ -247,24 +236,24 @@ public class SpigotPlayerRanksGUI
             StringBuilder sbMines = new StringBuilder();
             if ( rank.getMines() != null && rank.getMines().size() > 0 ) {
             	
-            	for (ModuleElement mine : rank.getMines() ) {
-            		if ( sbMines.length() > 0 ) {
-            			sbMines.append( " " );
-            		}
-            		sbMines.append( mine.getTag() );
-            	}
+	            	for (ModuleElement mine : rank.getMines() ) {
+	            		if ( sbMines.length() > 0 ) {
+	            			sbMines.append( " " );
+	            		}
+	            		sbMines.append( mine.getTag() );
+	            	}
             }
             else {
-            	sbMines.append( "&3None" );
+            		sbMines.append( "&3None" );
             }
 
             for ( String stringValue : rankLore ) {
                 
-            	String currency = (rank.getCurrency() == null || 
-        				"default".equalsIgnoreCase( rank.getCurrency()) ||
-							rank.getCurrency().trim().length() == 0  ?
-									"" : " " + rank.getCurrency() );
-            	
+	            	String currency = (rank.getCurrency() == null || 
+	        				"default".equalsIgnoreCase( rank.getCurrency()) ||
+								rank.getCurrency().trim().length() == 0  ?
+										"" : " " + rank.getCurrency() );
+	            	
                 stringValue = stringValue.replace("{rankPrice}", 
                 		PlaceholdersUtil.formattedKmbtSISize(
                 				rankPrice, formatDecimal, "") + currency
@@ -282,9 +271,9 @@ public class SpigotPlayerRanksGUI
             
             if ( placeholderAPINotNull ) {
             	
-            	List<String> lores = PlaceholderAPI.setPlaceholders(
-            			Bukkit.getOfflinePlayer(player.getUniqueId()), 
-        				ranksLore.getLoreAction());
+	            	List<String> lores = PlaceholderAPI.setPlaceholders(
+	            			Bukkit.getOfflinePlayer(player.getUniqueId()), 
+	        				ranksLore.getLoreAction());
             	
                 ranksLore.setLoreAction( lores );
             }
@@ -297,9 +286,6 @@ public class SpigotPlayerRanksGUI
 
             amount++;
 
-//            if (playerRank != null && playerRank.equals(rank)){
-//                playerHasThisRank = false;
-//            }
 
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
@@ -323,7 +309,6 @@ public class SpigotPlayerRanksGUI
             
             gui.addButton(itemRank);
             
-//            rank = rank.getRankNext();
         }
 
         

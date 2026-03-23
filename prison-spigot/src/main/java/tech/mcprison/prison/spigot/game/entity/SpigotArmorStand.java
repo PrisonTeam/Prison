@@ -23,16 +23,6 @@ public class SpigotArmorStand
 		this.bArmorStand = bArmorStand;
 	}
 
-//	public static ArmorStand spawn( tech.mcprison.prison.util.Location location ) {
-//		tech.mcprison.prison.internal.Entity e = location.spawnEntity( SpigotEntityType.ENTITY_TYPE_ARMOR_STAND );
-//		SpigotEntity sEntity = (SpigotEntity) e;
-//		
-//		org.bukkit.entity.ArmorStand armorStand = (org.bukkit.entity.ArmorStand) sEntity.getBukkitEntity();
-//		SpigotArmorStand sArmorStand = new SpigotArmorStand( armorStand );
-//		
-//		return sArmorStand;
-//	}
-
 	public SpigotArmorStand(Entity entity) {
 		this( (org.bukkit.entity.ArmorStand) ((SpigotEntity) entity).getBukkitEntity() );
 		
@@ -43,58 +33,6 @@ public class SpigotArmorStand
 		}
 	}
 	
-//	/**
-//	 * Sets visibility:false, arms:true, basePlate:false, canPickupItems:false, 
-//	 * removeWhenFar:false, gravity:false, and itemInHand.
-//	 */
-//	@Override
-//	public void setupArmorStand( ItemStack item ) {
-//		
-//		if ( item != null ) {
-//			
-//			setVisible( false );
-//			
-//			setArms( true );
-//			setBasePlate( false );
-//			setCanPickupItems( false );
-//			
-//			setItemInHand( item );
-//			
-//			setRemoveWhenFarAway(false);
-//			
-//			if ( new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
-//				
-//				// setGravity is invalid for spigot 1.8.8:
-//				setGravity( false );
-//			}
-//		}
-//	}
-	
-//	@Override
-//	public void setupArmorStand( String itemType ) {
-//		SpigotItemStack item = null;
-//		
-//		XMaterial xBomb = XMaterial.matchXMaterial( itemType ).orElse( null );
-//		
-//		if ( xBomb != null ) {
-//			try {
-//				
-//				// Create the spigot/bukkit ItemStack:
-//				org.bukkit.inventory.ItemStack bItemStack = xBomb.parseItem();
-//				
-//				if ( sItemStack != null ) {
-//					
-//					item = new SpigotItemStack( bItemStack );
-//				}
-//			} 
-//			catch (PrisonItemStackNotSupportedRuntimeException e) {
-//				// Ignore
-//			}
-//		}
-//		
-//		setupArmorStand( item );
-//	}
-
 	@Override
 	public boolean isVisible() {
 		return bArmorStand.isVisible();

@@ -26,7 +26,6 @@ public class SpigotRanksGUI
 
     private final Player p;
     private final RankLadder ladder;
-//    private int counter;
 
     private int page = 0;
     private String cmdPage;
@@ -40,7 +39,6 @@ public class SpigotRanksGUI
         this.cmdPage = cmdPage;
         this.cmdReturn = cmdReturn;
         
-//		this.counter = counter;
     }
 
     public void open(){
@@ -66,10 +64,6 @@ public class SpigotRanksGUI
         
 
 
-        // Get the dimensions and if required increases them
-//        int dimension = 54;
-//        int pageSize = 45;
-
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3Ladders -> Ranks");
 
         // Global Strings.
@@ -79,7 +73,6 @@ public class SpigotRanksGUI
         String loreId = guiRanksLoreIdMsg(); 
         String loreName = guiRanksLoreNameMsg();
         String loreTag2 = guiRanksLoreRankTagMsg();
-//        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
         String lorePlayersWithRank = guiRanksLorePlayersWithRankMsg();
 
         // Decimal Rank cost format.
@@ -89,9 +82,6 @@ public class SpigotRanksGUI
         for ( Rank rank : ranksDisplay )
 		{
 			
-//        int i = counter;
-//        for ( ; i < ladder.get().getRanks().size() && i < counter + pageSize; i++ ) {
-
             ButtonLore ranksLore = new ButtonLore(createLore(
                     loreShiftRightClickDelete,
                     loreClickToManageRank), createLore(loreInfo));
@@ -119,26 +109,14 @@ public class SpigotRanksGUI
 
             // Init a variable
             int playerCount = rank.getPlayers().size();
-//            List<RankPlayer> players =
-//                    PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-//                            .filter(rankPlayer -> rankPlayer.getLadderRanks().containsValue(rank))
-//                            .collect(Collectors.toList());
 
             // Add the number of players with this rank
             ranksLore.addLineLoreDescription( lorePlayersWithRank + " " + playerCount );
 
             // Add the button to the inventory
             gui.addButton(new Button( null, XMaterial.TRIPWIRE_HOOK, ranksLore, "&3" + rank.getName() ));
-//            gui.addButton(new Button(i - counter, XMaterial.TRIPWIRE_HOOK, ranksLore, "&3" + rank.getName() ));
         }
 
-//        if (i < ladder.get().getRanks().size()) {
-//            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
-//        }
-//        if (i >= (pageSize * 2)) {
-//            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null),
-//                    "&7Prior " + (i - (pageSize * 2) - 1)));
-//        }
         
         
         // Add the page controls: 

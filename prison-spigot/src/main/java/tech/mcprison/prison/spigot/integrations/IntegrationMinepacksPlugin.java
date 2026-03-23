@@ -75,7 +75,7 @@ public class IntegrationMinepacksPlugin
 
     @Override
     public boolean hasIntegrated() {
-    	return isEnabled();
+    		return isEnabled();
     }
     
     /**
@@ -84,7 +84,7 @@ public class IntegrationMinepacksPlugin
      */
     @Override
     public void disableIntegration() {
-    	minepacks = null;
+    		minepacks = null;
     }
     
     @Override
@@ -102,120 +102,119 @@ public class IntegrationMinepacksPlugin
     
     public HashMap<Integer, SpigotItemStack> addItems( Player player, HashMap<Integer, SpigotItemStack> items ) {
     	
-    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
-    	
-    	if ( items != null && items.size() > 0 && isEnabled() ) {
-    		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
-
-    		if ( bp != null ) {
-    			
-    			boolean changedBackpack = false;
-    			
-    			for ( SpigotItemStack spigotItemStack : items.values() ) {
-    				
-    				ItemStack iStack = SpigotUtil.prisonItemStackToBukkit( spigotItemStack );
-//    				ItemStack iStack = spigotItemStack.getBukkitStack();
-    				
-    				if ( iStack != null ) {
-    					ItemStack extra = bp.addItem( iStack );
-    					extras.put( Integer.valueOf( extras.size() ), new SpigotItemStack(extra) );
-    					
-    					changedBackpack = true;
-    				}
-    			}
-    			
-    			if ( changedBackpack ) {
-    				
-    				bp.setChanged();
-    				bp.save();
-    			}
-    		}
-    		else {
-    			extras.putAll( items );
-    		}
-    	}
-    	else {
-    		extras.putAll( items );
-    	}
-    	
-    	return extras;
+	    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
+	    	
+	    	if ( items != null && items.size() > 0 && isEnabled() ) {
+	    		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
+	
+	    		if ( bp != null ) {
+	    			
+	    			boolean changedBackpack = false;
+	    			
+	    			for ( SpigotItemStack spigotItemStack : items.values() ) {
+	    				
+	    				ItemStack iStack = SpigotUtil.prisonItemStackToBukkit( spigotItemStack );
+	    				
+	    				if ( iStack != null ) {
+	    					ItemStack extra = bp.addItem( iStack );
+	    					extras.put( Integer.valueOf( extras.size() ), new SpigotItemStack(extra) );
+	    					
+	    					changedBackpack = true;
+	    				}
+	    			}
+	    			
+	    			if ( changedBackpack ) {
+	    				
+	    				bp.setChanged();
+	    				bp.save();
+	    			}
+	    		}
+	    		else {
+	    			extras.putAll( items );
+	    		}
+	    	}
+	    	else {
+	    		extras.putAll( items );
+	    	}
+	    	
+	    	return extras;
     }
     
     public HashMap<Integer, ItemStack> addItemsBukkit( Player player, HashMap<Integer, ItemStack> items ) {
     	
-    	HashMap<Integer, ItemStack> extras = new HashMap<>();
-    	
-    	if ( items != null && items.size() > 0 && isEnabled() ) {
-    		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
-    		
-    		if ( bp != null ) {
-    			
-    			boolean changedBackpack = false;
-    			
-    			for ( ItemStack itemStack : items.values() ) {
-    				
-    				if ( itemStack != null ) {
-    					ItemStack extra = bp.addItem( itemStack );
-    					extras.put( Integer.valueOf( extras.size() ), extra );
-
-    					changedBackpack = true;
-    				}
-    			}
-    			
-    			if ( changedBackpack ) {
-    				
-    				bp.setChanged();
-    				bp.save();
-    			}
-    		}
-    		else {
-    			extras.putAll( items );
-    		}
-    	}
-    	else {
-    		extras.putAll( items );
-    	}
-    	
-    	return extras;
+	    	HashMap<Integer, ItemStack> extras = new HashMap<>();
+	    	
+	    	if ( items != null && items.size() > 0 && isEnabled() ) {
+	    		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
+	    		
+	    		if ( bp != null ) {
+	    			
+	    			boolean changedBackpack = false;
+	    			
+	    			for ( ItemStack itemStack : items.values() ) {
+	    				
+	    				if ( itemStack != null ) {
+	    					ItemStack extra = bp.addItem( itemStack );
+	    					extras.put( Integer.valueOf( extras.size() ), extra );
+	
+	    					changedBackpack = true;
+	    				}
+	    			}
+	    			
+	    			if ( changedBackpack ) {
+	    				
+	    				bp.setChanged();
+	    				bp.save();
+	    			}
+	    		}
+	    		else {
+	    			extras.putAll( items );
+	    		}
+	    	}
+	    	else {
+	    		extras.putAll( items );
+	    	}
+	    	
+	    	return extras;
     }
 
     public HashMap<Integer, SpigotItemStack> smeltItems( Player player, XMaterial source, SpigotItemStack destStack ) {
     	
-    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
-    	
-		SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
-    	
-    	if ( isEnabled() && sourceStack != null && destStack != null ) {
-    		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
-    		
-    		if ( bp != null ) {
-    			
-    			Inventory inv = bp.getInventory();
-    			
-    			if ( inv.containsAtLeast( sourceStack.getBukkitStack(), 1 ) ) {
-    				
-    				int count = SpigotUtil.itemStackCount( source, inv );
-    				if ( count > 0 ) {
-    					sourceStack.setAmount( count );
-    					destStack.setAmount( count );
-
-    					inv.remove( sourceStack.getBukkitStack() );
-    					
-    					HashMap<Integer, SpigotItemStack> temp = new HashMap<>();
-    					temp.put( Integer.valueOf( 0 ), destStack );
-    					
-    					extras.putAll( addItems( player, temp ) );
-
-    					bp.setChanged();
-    					bp.save();
-    				}
-					
-				}
-    			
-    		}
-    	}
-    	
-    	return extras;
+	    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
+	    	
+			SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
+	    	
+	    	if ( isEnabled() && sourceStack != null && destStack != null ) {
+	    		Backpack bp = getMinepacks().getBackpackCachedOnly(player);
+	    		
+	    		if ( bp != null ) {
+	    			
+	    			Inventory inv = bp.getInventory();
+	    			
+	    			if ( inv.containsAtLeast( sourceStack.getBukkitStack(), 1 ) ) {
+	    				
+	    				int count = SpigotUtil.itemStackCount( source, inv );
+	    				if ( count > 0 ) {
+	    					sourceStack.setAmount( count );
+	    					destStack.setAmount( count );
+	
+	    					inv.remove( sourceStack.getBukkitStack() );
+	    					
+	    					HashMap<Integer, SpigotItemStack> temp = new HashMap<>();
+	    					temp.put( Integer.valueOf( 0 ), destStack );
+	    					
+	    					extras.putAll( addItems( player, temp ) );
+	
+	    					bp.setChanged();
+	    					bp.save();
+	    				}
+						
+					}
+	    			
+	    		}
+	    	}
+	    	
+	    	return extras;
     }
     
     /**
@@ -252,40 +251,26 @@ public class IntegrationMinepacksPlugin
     public List<SellAllData> sellInventoryItems( Player player, double multiplier ) {
 		List<SellAllData> soldItems = new ArrayList<>();
 		
-	   	
-    	if ( isEnabled()  ) {
-    		Backpack bp = getMinepacks().getBackpackCachedOnly( player );
-    		
-    		if ( bp != null ) {
-    			
-    			Inventory inv = bp.getInventory();
-    			
-    			SpigotInventory sInventory = new SpigotInventory( inv );
-    			
-    			soldItems.addAll( SellAllUtil.get().sellInventoryItems( sInventory, multiplier ) );
-
-    			if ( soldItems.size() > 0 ) {
-    				bp.setChanged();
-					bp.save();
-    			}
-    		}
-    	}
+		   	
+	    	if ( isEnabled()  ) {
+	    		Backpack bp = getMinepacks().getBackpackCachedOnly( player );
+	    		
+	    		if ( bp != null ) {
+	    			
+	    			Inventory inv = bp.getInventory();
+	    			
+	    			SpigotInventory sInventory = new SpigotInventory( inv );
+	    			
+	    			soldItems.addAll( SellAllUtil.get().sellInventoryItems( sInventory, multiplier ) );
+	
+	    			if ( soldItems.size() > 0 ) {
+	    				bp.setChanged();
+						bp.save();
+	    			}
+	    		}
+	    	}
 		
 		return soldItems;
 	}
     
-//	private int itemCount(XMaterial source, Inventory inv ) {
-//		int count = 0;
-//		if ( source != null ) {
-//			ItemStack testStack = source.parseItem();
-//
-//			for (ItemStack is : inv.getContents() ) {
-//				if ( is != null && is.isSimilar( testStack ) ) {
-//					count += is.getAmount();
-//				}
-//			}
-//		}
-//		return count;
-//	}
-
 }

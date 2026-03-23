@@ -49,8 +49,6 @@ public class SpigotGUIMenuTools
 	private boolean useDisabledButtons;
 	
 	
-//	private String loreCommand;
-	
 	private SpigotGUIMenuTools() {
 		super();
 		
@@ -66,8 +64,6 @@ public class SpigotGUIMenuTools
 		
 		this.menuGoBack = XMaterial.BARRIER;
 		
-//		this.menuStateOff1 = XMaterial.BLACK_STAINED_GLASS_PANE;
-//		this.menuStateOff2 = XMaterial.GRAY_STAINED_GLASS_PANE;
 		
 	}
 
@@ -155,7 +151,6 @@ public class SpigotGUIMenuTools
 
 	        posStart = (page - 1) * pageSize;
 	        posEnd = posStart + pageSize;
-//	        posEnd = posStart + pageSize - 1;
 	        
 	        if ( posEnd > totalArraySize ) {
 	        	posEnd = totalArraySize;
@@ -305,29 +300,6 @@ public class SpigotGUIMenuTools
 	 */
 	private void internalInitalize() {
 		
-		
-//		this.loreCommand = SpigotPrison.getInstance().getMessagesConfig()
-//									.getString(MessagesConfig.StringID.spigot_gui_lore_command);
-		
-		
-		
-//		String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
-//		if ( bukkitVersion != null ) {
-//			
-//			BluesSemanticVersionData svData = new BluesSemanticVersionData( bukkitVersion );
-//			
-//			// If Spigot version is < 1.9.0... ie 1.8...
-//			if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
-//				
-////				// glass panes do not work well in 1.8 so setup alternatives:
-////				
-////				this.menuStateOff = XMaterial.PINK_STAINED_GLASS;
-////				this.menuStateOn = XMaterial.GREEN_STAINED_GLASS;
-//
-//			}
-//		}
-
-		
 	}
 	
 	
@@ -425,8 +397,6 @@ public class SpigotGUIMenuTools
     		{
     			String command = pageData.getCommandToRun() + 
     								( page <= 0 ? "" : " " + page);
-//    			String command = GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + 
-//    					( page <= 0 ? "" : " " + page);
     			
     			PrisonNBTUtil.setNBTBoolean( guiButton.getButtonItem(), GUI_MENU_TOOLS_NBT_ENABLED, true);
     			PrisonNBTUtil.setNBTString( guiButton.getButtonItem(), GUI_MENU_TOOLS_NBT_COMMAND, command );
@@ -436,36 +406,6 @@ public class SpigotGUIMenuTools
     	
     }
     
-//	private ButtonLore createButtonLore( boolean enableCmd, // String message, 
-//					GUIMenuPageData pageData, int page ) {
-//		
-//		ButtonLore buttonLore = new ButtonLore();
-//		
-////		if ( message != null ) {
-////			buttonLore.addLineLoreDescription( message );
-////		}
-//		
-//		
-//		if ( enableCmd && pageData != null ) {
-//		
-//			buttonLore.addLineLoreAction( "&0" +
-//					GUI_MENU_TOOLS_PAGE );
-//			
-//			if ( pageData.getCommandToRun() != null ) {
-//				buttonLore.addLineLoreAction( "&0" +
-//						GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + 
-//						( page <= 0 ? "" : " " + page) );
-//			}
-//			
-////			if ( pageData.getCommandsBack() != null ) {
-////				buttonLore.addLineLoreDescription( "&0" +
-////						GUI_MENU_TOOLS_COMMANDS_BACK + pageData.getCommandsBack() );
-////			}
-//			
-//		}
-//		return buttonLore;
-//	}
-	
 	
 	public Button createButtonBack( GUIMenuPageData pageData, int position ) {
 		
@@ -484,7 +424,6 @@ public class SpigotGUIMenuTools
 		String message = pageData.getCommandGoBack().equalsIgnoreCase( "close" ) ?
 				msgClose : msgGoBack;
 		
-//		ButtonLore buttonLore = createButtonLore( true, newPageData, 0 );
 		ButtonLore buttonLore = null;
 		
 		int pos = pageData.getMenuPosition( position );
@@ -507,9 +446,7 @@ public class SpigotGUIMenuTools
 		int pageNumber = 1;
 
 		String msg = guiPageToolsFirstPageMsg( pageData.getPage(), pageData.getPageLast() );
-//		String message = "Page 1 of " + pageData.getPageLast();
 		
-//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
 		ButtonLore buttonLore = null;
 		
 		int pos = pageData.getMenuPosition( position );
@@ -540,9 +477,6 @@ public class SpigotGUIMenuTools
 			return createButtonMenuBackground( pageData, position );
 		}
 
-//		String message = "Page " + pageNumber + " of " + lastPageNumber;
-	
-//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
 		ButtonLore buttonLore = null;
 
 		int pos = pageData.getMenuPosition( position );
@@ -563,9 +497,6 @@ public class SpigotGUIMenuTools
 
 		String msg = guiPageToolsCurrentPageMsg( pageData.getPage(), pageData.getPageLast() );
 
-//		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
-		
-//		ButtonLore buttonLore = createButtonLore( false, pageData, pageNumber );
 		ButtonLore buttonLore = null;
 		
 		int pos = pageData.getMenuPosition( position );
@@ -596,9 +527,6 @@ public class SpigotGUIMenuTools
 			return createButtonMenuBackground( pageData, position );
 		}
 		
-//		String message = "Page " + pageNumber + " of " + lastPageNumber;
-	
-//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
 		ButtonLore buttonLore = null;
 
 		int pos = pageData.getMenuPosition( position );
@@ -622,10 +550,8 @@ public class SpigotGUIMenuTools
 		int pageNumber = pageData.getPageLast() < 1 ?
 				pageData.getPageLast() : pageData.getPageLast();
 		
-//		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
 		
 		ButtonLore buttonLore = null;
-//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
 		
 		int pos = pageData.getMenuPosition( position );
 		
@@ -642,7 +568,6 @@ public class SpigotGUIMenuTools
 	public Button createButtonMenuBackground( GUIMenuPageData pageData, int position ) {
 		
 		ButtonLore buttonLore = null;
-//		ButtonLore buttonLore = createButtonLore( false, null, 1 );
 
 		int pos = pageData.getMenuPosition( position );
 		
@@ -682,7 +607,6 @@ public class SpigotGUIMenuTools
 		gui.addButton( createButtonPagePrior( pageData, 2 ) );
 		
 		gui.addButton( createButtonMenuBackground( pageData, 3 ) );
-//		gui.addButton( createButtonMenuBackground( pageData, 4 ) );
 		
 		gui.addButton( createButtonBack( pageData, 4 ) );
 		gui.addButton( createButtonPageCurrent( pageData, 5 ) );

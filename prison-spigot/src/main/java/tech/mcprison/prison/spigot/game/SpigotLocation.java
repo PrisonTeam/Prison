@@ -29,7 +29,6 @@ public class SpigotLocation
 		
 		if ( bukkitLocation == null ) {
 			bukkitLocation = getBukkitLocation( this );
-//			bukkitLocation = createBukkitLocation();
 		}
 		
 		return bukkitLocation;
@@ -46,27 +45,9 @@ public class SpigotLocation
 		
 		bLocation.setPitch( location.getPitch() );
 		
-//		bLocation.;
-		
 		return bLocation;
 	}
 	
-//	private org.bukkit.Location createBukkitLocation() {
-//		
-//		org.bukkit.World world = Bukkit.getWorld( getWorld().getName() );
-//		
-//		org.bukkit.Location bLocation = new org.bukkit.Location(world, getBlockX(), getBlockY(), getBlockZ() );
-//		
-//		bLocation.setYaw(getYaw());
-//		
-//		bLocation.setPitch(getPitch());
-//		
-//		return bLocation;
-//	}
-
-//	public void setBukkitLocation(org.bukkit.Location bukkitLocation) {
-//		this.bukkitLocation = bukkitLocation;
-//	}
 	
 	public org.bukkit.World getBukkitWorld() {
 		return getBukkitLocation().getWorld();

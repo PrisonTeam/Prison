@@ -104,7 +104,6 @@ public class SpigotEntity
 	 * @return
 	 */
 	public List<Entity> getNearbyEntities( int r, EntityType eType ) {
-//		Location loc = getLocation();
 		
 		List<org.bukkit.entity.Entity> bEntities = getBukkitEntity()
 				.getNearbyEntities( r * 2, r * 2, r * 2 );
@@ -280,30 +279,11 @@ public class SpigotEntity
 		return bukkitEntity;
 	}
 
-
-//	@Override
-//	public String getName() {
-//		
-//		return bukkitEntity != null ?
-//				bukkitEntity.getName() : 
-//					rankplayer;
-//	}
-
 	
 	@Override
 	public boolean isPlayer() {
 		return false;
 	}
-
-
-
-//	@Override
-//	public boolean doesSupportColors() {
-//		return false;
-//	}
-
-
-
 
 
 }

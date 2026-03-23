@@ -32,8 +32,6 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Edit -> Multiplier");
 
         ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
-//        ButtonLore changeDecreaseValueLore = new ButtonLore(
-//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
 
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
         		guiLeftClickToConfirmMsg(),
@@ -41,8 +39,6 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
         		createLore( guiMultiplierMsg( val ) ));
 
         ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
-//        ButtonLore changeIncreaseValueLore = new ButtonLore(
-//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;

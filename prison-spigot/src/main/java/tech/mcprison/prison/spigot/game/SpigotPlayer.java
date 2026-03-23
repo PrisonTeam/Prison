@@ -26,11 +26,9 @@ import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -38,7 +36,6 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
-import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.file.JsonFileIO;
@@ -63,7 +60,6 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.Text;
 import tech.mcprison.prison.util.Vector;
 
 /**
@@ -120,25 +116,25 @@ public class SpigotPlayer
      */
     public static SpigotPlayer getSpigotPlayer( RankPlayer rankPlayer ) {
     	
-    	SpigotPlayer result = null;
-    	
-    	// We have a RankPlayer object, but we need to connect this SpigotPlayer object 
-    	// to the bukkit player object.
-
-    	// NOTE: We're directly accessing bukkit here because it's more direct instead of 
-    	//       trying to do that through a few different function within the 
-    	//       SpigotPlatform.
-    	
-    	// First try to load a bukkit online player:
-    	org.bukkit.entity.Player bPlayer = Bukkit.getPlayer( rankPlayer.getUUID() );
-    	
-    	if ( bPlayer != null ) {
-    		result = new SpigotPlayer( bPlayer );
-    		
-    		result.setRankPlayer( rankPlayer );
-    	}
-    	
-    	return result;
+	    	SpigotPlayer result = null;
+	    	
+	    	// We have a RankPlayer object, but we need to connect this SpigotPlayer object 
+	    	// to the bukkit player object.
+	
+	    	// NOTE: We're directly accessing bukkit here because it's more direct instead of 
+	    	//       trying to do that through a few different function within the 
+	    	//       SpigotPlatform.
+	    	
+	    	// First try to load a bukkit online player:
+	    	org.bukkit.entity.Player bPlayer = Bukkit.getPlayer( rankPlayer.getUUID() );
+	    	
+	    	if ( bPlayer != null ) {
+	    		result = new SpigotPlayer( bPlayer );
+	    		
+	    		result.setRankPlayer( rankPlayer );
+	    	}
+	    	
+	    	return result;
     }
     
     
@@ -159,7 +155,7 @@ public class SpigotPlayer
      */
     public String getPlayerFileName() {
     	
-    	return filenamePlayer();
+    		return filenamePlayer();
     }
     
     
@@ -199,20 +195,6 @@ public class SpigotPlayer
     {
     	return getFileCache().getName();
     }
-//    public String getPlayerFileName() {
-//    	
-//    	return JsonFileIO.filenamePlayer( this );
-//    }
-    
-//    @Override 
-//    public UUID getUUID() {
-//        return bukkitPlayer.getUniqueId();
-//    }
-    
-//    @Override
-//    public String getName() {
-//    	return bukkitPlayer.getName();
-//    }
 
     @Override 
     public String getDisplayName() {
@@ -239,17 +221,6 @@ public class SpigotPlayer
         bukkitPlayer.getInventory().addItem(SpigotUtil.prisonItemStackToBukkit(itemStack));
     }
 
-//    @Override 
-//    public Location getLocation() {
-//        return SpigotUtil.bukkitLocationToPrison(bukkitPlayer.getLocation());
-//    }
-
-//    @Override public boolean teleport(Location location) {
-//    	
-//    	
-//        return bukkitPlayer.teleport(SpigotUtil.prisonLocationToBukkit(location),
-//            PlayerTeleportEvent.TeleportCause.PLUGIN);
-//    }
 
     @Override 
     public boolean isOnline() {
@@ -273,66 +244,29 @@ public class SpigotPlayer
 
     @Override 
     public Optional<String> getLocale() {
-    	Optional<String> results = Optional.empty();
+    		Optional<String> results = Optional.empty();
     	
-//    	if ( SpigotNMSPlayer.getInstance().hasSupport() ) {
-//            try {
-//                results = Optional.ofNullable(
-//                		SpigotNMSPlayer.getInstance().getLocale( getWrapper() )
-//                		);
-//            } 
-//            catch ( Exception ex ) {
-//            	Output.get().logInfo(
-//            			"Failed to initialize NMS components -- " +
-//            					"NMS is not functional - " +  ex.getMessage() );
-//            }
-//    	}
         return results;
     }
     
     @Override
     public SpigotBlock getLineOfSightBlock() {
     	
-    	SpigotBlock results = null;
-    	
-//    	org.bukkit.Location eyeLocation = getWrapper().getEyeLocation();
-//    	org.bukkit.util.Vector lineOfSight = eyeLocation.getDirection().normalize();
-//    	
-//    	double maxDistance = 256;
-//    	
-//    	for(double i = 0; i < maxDistance; ++i){
-//    	    Block block = eyeLocation.add( lineOfSight.clone().multiply(i) ).getBlock();
-//    	    if( block.getType() != Material.AIR ) {
-////    	    	if( block.getType().isSolid() ) {
-//
-//    	    	results = new SpigotBlock( block );
-//    	    	break;
-//    	    }
-//    	    
-//    	}
-//    	
-//    	return results;
-//    	
-
-        
-    	
-//    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
-    	
-    	
-    	
-    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
-    	for ( Block block : blocks ) {
-    		if ( block != null && block.getType() != Material.AIR &&
-    				!SpigotCompatibility.getInstance().isPassable(block) ) {
-
-    			
-    			// return the first non-null and non-AIR block, which will 
-    			// be the one the player is looking at:
-    			results = SpigotBlock.getSpigotBlock( block );
-    		}
+	    	SpigotBlock results = null;
+	    	
+	    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
+	    	for ( Block block : blocks ) {
+	    		if ( block != null && block.getType() != Material.AIR &&
+	    				!SpigotCompatibility.getInstance().isPassable(block) ) {
+	
+	    			
+	    			// return the first non-null and non-AIR block, which will 
+	    			// be the one the player is looking at:
+	    			results = SpigotBlock.getSpigotBlock( block );
+	    		}
 		}
-    	
-    	return results;
+	    	
+	    	return results;
     }
 
     
@@ -356,27 +290,27 @@ public class SpigotPlayer
      * @return
      */
     public Location getLineOfSightExactLocation() {
-    	
-    	SpigotLocation eyeLoc = new SpigotLocation( getWrapper().getEyeLocation() );
-    	Vector eyeVec = eyeLoc.getDirection();
-    	
-    	Location loc = eyeLoc.add(eyeVec);
-    	
-    	int i = 0;
-    	
-    	// Is isPassible also true when isEmpty? If so, then this could be simplified...
-    	// while ( i++ <= 75 && (loc.getBlockAt().isEmpty() || loc.getBlockAt().isPassible()) ) { 
-
-    	while ( i++ <= 75 && loc.getBlockAt().isEmpty() ) {
-    		
-    		loc = loc.add(eyeVec);
-    	}
-    	
-    	if ( loc.getBlockAt().isEmpty() ) {
-    		loc = null;
-    	}
-    	
-    	return loc;
+	    	
+	    	SpigotLocation eyeLoc = new SpigotLocation( getWrapper().getEyeLocation() );
+	    	Vector eyeVec = eyeLoc.getDirection();
+	    	
+	    	Location loc = eyeLoc.add(eyeVec);
+	    	
+	    	int i = 0;
+	    	
+	    	// Is isPassible also true when isEmpty? If so, then this could be simplified...
+	    	// while ( i++ <= 75 && (loc.getBlockAt().isEmpty() || loc.getBlockAt().isPassible()) ) { 
+	
+	    	while ( i++ <= 75 && loc.getBlockAt().isEmpty() ) {
+	    		
+	    		loc = loc.add(eyeVec);
+	    	}
+	    	
+	    	if ( loc.getBlockAt().isEmpty() ) {
+	    		loc = null;
+	    	}
+	    	
+	    	return loc;
     }
     
     /**
@@ -389,21 +323,21 @@ public class SpigotPlayer
     @Override
     public List<tech.mcprison.prison.internal.block.Block> getLineOfSightBlocks() {
     	
-    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
-    	
-    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
-    	for ( Block block : blocks ) {
-    		if ( block != null && 
-    				(results.size() == 0 && block.getType() != Material.AIR ||
-    				results.size() > 0 && results.size() < 20 )) {
-
-    			// return the first non-null and non-AIR block, which will 
-    			// be the one the player is looking at:
-    			results.add( SpigotBlock.getSpigotBlock( block ) );
-    		}
+	    	List<tech.mcprison.prison.internal.block.Block> results = new ArrayList<>();
+	    	
+	    	List<Block> blocks = bukkitPlayer.getLineOfSight( null, 256 );
+	    	for ( Block block : blocks ) {
+	    		if ( block != null && 
+	    				(results.size() == 0 && block.getType() != Material.AIR ||
+	    				results.size() > 0 && results.size() < 20 )) {
+	
+	    			// return the first non-null and non-AIR block, which will 
+	    			// be the one the player is looking at:
+	    			results.add( SpigotBlock.getSpigotBlock( block ) );
+	    		}
 		}
     	
-    	return results;
+    		return results;
     }
 
     
@@ -417,7 +351,7 @@ public class SpigotPlayer
     }
     
     public SpigotPlayerInventory getSpigotPlayerInventory() {
-    	return new SpigotPlayerInventory(getWrapper().getInventory());
+    		return new SpigotPlayerInventory(getWrapper().getInventory());
     }
 
     @Override 
@@ -438,284 +372,33 @@ public class SpigotPlayer
 
     @Override
     public long getLastSeenDate() {
-    	return bukkitPlayer.getLastPlayed();
+    		return bukkitPlayer.getLastPlayed();
     }
 
-//    @Override 
-//    public boolean isOp() {
-//        return bukkitPlayer.isOp();
-//    }
-    
-//	@Override
-//	public boolean hasPermission( String perm ) {
-//		List<String> perms = getPermissions( perm );
-//		return perms.contains( perm );
-//	}
-
-    
-//    @Override
-//    public List<String> getPermissions() {
-//    	List<String> results = new ArrayList<>();
-//    	
-//    	Set<PermissionAttachmentInfo> perms = bukkitPlayer.getEffectivePermissions();
-//    	for ( PermissionAttachmentInfo perm : perms )
-//		{
-//			results.add( perm.getPermission() );
-//		}
-//    	
-//    	return results;
-//    }
-    
-    
-//    @Override
-//    public List<String> getPermissions( String prefix ) {
-//    	List<String> results = new ArrayList<>();
-//    	
-//    	for ( String perm : getPermissions() ) {
-//			if ( perm.startsWith( prefix ) ) {
-//				results.add( perm );
-//			}
-//		}
-//    	
-//    	return results;
-//    }
-    
-    
-//    /**
-//     * <p>This uses the sellall configs for the permission name to use to get the list of
-//     * multipliers.  It then adds all of the multipliers together to ...
-//     * 
-//     * </p>
-//     * 
-//     */
-//    @Override
-//    public double getSellAllMultiplier() {
-//    	double results = 1.0;
-//    	
-//    	SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
-//    	
-//    	if ( sellall != null ) {
-//    		results = sellall.getMultiplier( this );
-//    	}
-//    	
-//    	return results;
-//    }
     
 	@Override
 	public int compareTo( SpigotPlayer sPlayer) {
 		return getUUID().compareTo( sPlayer.getUUID() );
-//		return getName().compareTo( sPlayer.getName() );
 	}
 	
 	
     @Override
     public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	sb.append( "SpigotPlayer: " ).append( getName() )
-    		.append( "  isOp=" ).append( isOp() )
-    		.append( "  isOnline=" ).append( isOnline() )
-    		.append( "  isPlayer=" ).append( isPlayer() )
-    		
-    		.append( "  hasBukkitPlayer=" ).append( bukkitPlayer != null )
-    		.append( "  hasRankPlayer=" ).append( rankPlayer != null )
-    		;
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	sb.append( "SpigotPlayer: " ).append( getName() )
+	    		.append( "  isOp=" ).append( isOp() )
+	    		.append( "  isOnline=" ).append( isOnline() )
+	    		.append( "  isPlayer=" ).append( isPlayer() )
+	    		
+	    		.append( "  hasBukkitPlayer=" ).append( bukkitPlayer != null )
+	    		.append( "  hasRankPlayer=" ).append( rankPlayer != null )
+	    		;
+	    	
+	    	return sb.toString();
     }
     
 	
-//    /**
-//     * This class is an adaptation of the NmsHelper class in the Rosetta library by Max Roncace. The
-//     * library is licensed under the New BSD License. See the {@link tech.mcprison.prison.localization}
-//     * package for the full license.
-//     *
-//     * @author Max Roncacé
-//     */
-//    private static class NmsHelper {
-//
-//        private static final boolean SUPPORT;
-//
-//        private static final String PACKAGE_VERSION;
-//
-//        private static final Method PLAYER_SPIGOT;
-//        private static final Method PLAYER$SPIGOT_GETLOCALE;
-//        private static final Method CRAFTPLAYER_GETHANDLE;
-//
-//        private static final Field ENTITY_PLAYER_LOCALE;
-//        private static final Field LOCALE_LANGUAGE_WRAPPED_STRING;
-//
-//        static {
-//            String[] array = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
-//            PACKAGE_VERSION = array.length == 4 ? array[3] + "." : "";
-//
-//            Method player_spigot = null;
-//            Method player$spigot_getLocale = null;
-//            Method craftPlayer_getHandle = null;
-//            Field entityPlayer_locale = null;
-//            Field localeLanguage_wrappedString = null;
-//            try {
-//
-//                Class<?> craftPlayer = getCraftClass("entity.CraftPlayer");
-//
-//                // for reasons not known to me Paper decided to make EntityPlayer#locale null by default and have the
-//                // fallback defined in CraftPlayer$Spigot#getLocale. Rosetta will use that method if possible and fall
-//                // back to accessing the field directly.
-//                try {
-//                    player_spigot = org.bukkit.entity.Player.class.getMethod("spigot");
-//                    Class<?> player$spigot = Class.forName("org.bukkit.entity.Player$Spigot");
-//                    player$spigot_getLocale = player$spigot.getMethod("getLocale");
-//                } catch (NoSuchMethodException ignored) { // we're non-Spigot or old
-//                }
-//
-//                if (player$spigot_getLocale == null) { // fallback for non-Spigot software
-//                    craftPlayer_getHandle = craftPlayer.getMethod("getHandle");
-//
-//                    entityPlayer_locale = getNmsClass("EntityPlayer").getDeclaredField("locale");
-//                    entityPlayer_locale.setAccessible(true);
-//                    if (entityPlayer_locale.getType().getSimpleName().equals("LocaleLanguage")) {
-//                        // On versions prior to 1.6, the locale is stored as a LocaleLanguage object.
-//                        // The actual locale string is wrapped within it.
-//                        // On 1.5, it's stored in field "e".
-//                        // On 1.3 and 1.4, it's stored in field "d".
-//                        try { // try for 1.5
-//                            localeLanguage_wrappedString =
-//                                entityPlayer_locale.getType().getDeclaredField("e");
-//                        } catch (NoSuchFieldException ex) { // we're pre-1.5
-//                            localeLanguage_wrappedString =
-//                                entityPlayer_locale.getType().getDeclaredField("d");
-//                        }
-//                    }
-//                }
-//            } 
-//            catch ( ClassNotFoundException ex ) {
-//            	Output.get().logInfo(
-//            			"Cannot initialize NMS components - ClassNotFoundException - " +
-//            			"NMS is not functional - " +  ex.getMessage() );
-//            	
-//            }
-//            catch (NoSuchFieldException | NoSuchMethodException ex) {
-//                Output.get().logInfo(
-//                    "Cannot initialize NMS components - per-player localization disabled. - " + ex.getMessage());
-//            }
-//            PLAYER_SPIGOT = player_spigot;
-//            PLAYER$SPIGOT_GETLOCALE = player$spigot_getLocale;
-//            CRAFTPLAYER_GETHANDLE = craftPlayer_getHandle;
-//            ENTITY_PLAYER_LOCALE = entityPlayer_locale;
-//            LOCALE_LANGUAGE_WRAPPED_STRING = localeLanguage_wrappedString;
-//            SUPPORT = CRAFTPLAYER_GETHANDLE != null;
-//        }
-//
-//        private static boolean hasSupport() {
-//            return SUPPORT;
-//        }
-//
-//        private static String getLocale(org.bukkit.entity.Player player)
-//            throws IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-//            if (PLAYER$SPIGOT_GETLOCALE != null) {
-//                return (String) PLAYER$SPIGOT_GETLOCALE.invoke(PLAYER_SPIGOT.invoke(player));
-//            }
-//
-//            Object entityPlayer = CRAFTPLAYER_GETHANDLE.invoke(player);
-//            Object locale = ENTITY_PLAYER_LOCALE.get(entityPlayer);
-//            if (LOCALE_LANGUAGE_WRAPPED_STRING != null) {
-//                return (String) LOCALE_LANGUAGE_WRAPPED_STRING.get(locale);
-//            } else {
-//                return (String) locale;
-//            }
-//        }
-//
-//        private static Class<?> getCraftClass(String className) throws ClassNotFoundException {
-//            return Class.forName("org.bukkit.craftbukkit." + PACKAGE_VERSION + className);
-//        }
-//
-//        private static Class<?> getNmsClass(String className) throws ClassNotFoundException {
-//            return Class.forName("net.minecraft.server." + PACKAGE_VERSION + className);
-//        }
-//
-//    }
-
-//    @SuppressWarnings( "deprecation" )
-//	public void printDebugInventoryInformationToConsole() {
-//    	
-//    	try {
-//    		printDebugInfo( bukkitPlayer.getInventory().getContents(), "Inventory Contents");
-//    	}
-//    	catch ( java.lang.NoSuchMethodError | Exception e ) {
-//    		// Ignore: Not supported with that version of spigot:
-//    	}
-//    	
-//    	try {
-//    		printDebugInfo( bukkitPlayer.getInventory().getExtraContents(), "Inventory Extra Contents");
-//    	}
-//    	catch ( java.lang.NoSuchMethodError | Exception e ) {
-//    		// Ignore: Not supported with that version of spigot:
-//    	}
-//        
-//    	try {
-//    		printDebugInfo( bukkitPlayer.getInventory().getArmorContents(), "Inventory Armor Contents");
-//    	}
-//    	catch ( java.lang.NoSuchMethodError | Exception e ) {
-//    		// Ignore: Not supported with that version of spigot:
-//    	}
-//    	try {
-//    		printDebugInfo( bukkitPlayer.getInventory().getStorageContents(), "Inventory Storage Contents");
-//    	}
-//    	catch ( java.lang.NoSuchMethodError | Exception e ) {
-//    		// Ignore: Not supported with that version of spigot:
-//    	}
-//        
-//    	try {
-//			printDebugInfo( bukkitPlayer.getInventory().getItemInHand(), "Inventory Item In Hand (pre 1.13)");
-//		}
-//		catch ( java.lang.NoSuchMethodError | Exception e ) {
-//			// Ignore: Not supported with that version of spigot:
-//		}
-//    	
-//    	try {
-//			printDebugInfo( bukkitPlayer.getInventory().getItemInMainHand(), "Inventory Item in Main Hand");
-//		}
-//		catch ( java.lang.NoSuchMethodError | Exception e ) {
-//			// Ignore: Not supported with that version of spigot:
-//		}
-//    	
-//    	try {
-//    		printDebugInfo( bukkitPlayer.getInventory().getItemInOffHand(), "Inventory Item in Off Hand");
-//    	}
-//    	catch ( java.lang.NoSuchMethodError | Exception e ) {
-//    		// Ignore: Not supported with that version of spigot:
-//    	}
-//    }
-    
-//    private void printDebugInfo( org.bukkit.inventory.ItemStack[] iStacks, String title ) {
-//    	
-//    	Output.get().logInfo( "&7%s:", title );
-//    	for ( int i = 0; i < iStacks.length; i++ ) {
-//    		org.bukkit.inventory.ItemStack iStack = iStacks[i];
-//    		
-//    		if ( iStack != null ) {
-//    			
-//    			ItemStack pItemStack = SpigotUtil.bukkitItemStackToPrison(iStack);
-//    			
-//    			Output.get().logInfo( "    i=%d  &3%s  &3%d &a[&3%s&a]", 
-//    					i, iStack.getType().name(), iStack.getAmount(),
-//    					(pItemStack == null ? "" : 
-//    						(pItemStack.getDisplayName() == null ? "" : 
-//    							pItemStack.getDisplayName())) );
-//    		}
-//    	}
-//    }
-    
-//    private void printDebugInfo( org.bukkit.inventory.ItemStack iStack, String title ) {
-//    	
-//    	Output.get().logInfo( "&7%s:", title );
-//    	if ( iStack != null ) {
-//    		
-//    		Output.get().logInfo( "    &3%s  &3%d", 
-//    				iStack.getType().name(), iStack.getAmount() );
-//    	}
-//    }
-
 	public void giveExp( int xp )
 	{
 		if ( getWrapper() != null ) {
@@ -860,8 +543,6 @@ public class SpigotPlayer
 		if ( getWrapper() != null) {
 			PlayerMessagingTask.submitTask( getWrapper(), MessageType.actionBar, actionBar );
 
-//			SpigotCompatibility.getInstance()
-//					.sendActionBar( getWrapper(), actionBar );
 		}
 	}
 	
@@ -920,7 +601,6 @@ public class SpigotPlayer
 			
 			if ( currencyEcon != null ) {
 				results = currencyEcon.addBalance( this, amount, currency );
-//				addCachedRankPlayerBalance( currency, amount );
 			}
 		}
 		return results;
@@ -947,20 +627,6 @@ public class SpigotPlayer
 		return enabled;
 	}
 	
-//	public Mine getEffectsMine() {
-//		Mine effectsMine = null;
-//		
-//		if ( lastEffectsMine != null ) {
-//			
-//			if ( !lastEffectsMine.isInMineExact( getLocation() ) ) {
-//				lastEffectsMine = null;
-//				
-//				// cancel all effects for player
-//			}
-//			effectsMine = lastEffectsMine;
-//		}
-//		return effectsMine;
-//	}
 	
 	public boolean isFlying() {
 		boolean flying = false;
@@ -994,13 +660,7 @@ public class SpigotPlayer
 	@Override
 	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity) {
 		
-//		Statistic.BREAK_ITEM;
-//		Statistic.DROP_COUNT;
-//		Statistic.MINE_BLOCK;
-//		Statistic.PICKUP;
-		
 		XMaterial xMat = XMaterial.matchXMaterial( blockName ).orElse( null );
-//		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( block );
 		
 		if ( xMat != null ) {
 			Material mat = xMat.parseMaterial();
@@ -1011,12 +671,6 @@ public class SpigotPlayer
 				
 			}
 		}
-		
-//		Statistic.MINE_BLOCK;
-//		player.setStatistic(null, count);
-//		player.incrementStatistic(null, null);
-//		player.incrementStatistic(null, null, count);
-//		player.statistic
 		
 	}
 	
@@ -1076,9 +730,6 @@ public class SpigotPlayer
 	 * 
 	 * @return
 	 */
-//	public boolean isAutoSellEnabled() {
-//		return isAutoSellEnabled( null );
-//	}
 	
 	public boolean isAutoSellEnabled( StringBuilder debugInfo ) {
 		boolean results = false;
@@ -1088,8 +739,6 @@ public class SpigotPlayer
 			
 			if ( SellAllUtil.get().isAutoSellPerUserToggleable ) {
 				debugInfo.append( "(&7sellallEnabled:userToggleable&3)" );
-				
-//			boolean isAutoSellPerUserToggleable = SellAllUtil.get().isAutoSellPerUserToggleable;
 				
 				boolean isPlayerAutoSellTurnedOn = 
 						SellAllUtil.get().isSellallPlayerUserToggleEnabled( getWrapper() );
@@ -1136,22 +785,6 @@ public class SpigotPlayer
 		return results;
 	}
 	
-	
-//	/**
-//	 * <p>This will check to see if the player has the perms enabled
-//	 * for autosell.  
-//	 * </p
-//	 * 
-//	 * <p>If the function 'isAutoSellEnabled()' has already
-//	 * been called, you can also pass that in as a parameter so it does
-//	 * not have to be recalculated.
-//	 * </p>
-//	 * 
-//	 * @return
-//	 */
-//	public boolean isAutoSellByPermEnabled( StringBuilder debugInfo ) {
-//		return isAutoSellByPermEnabled( isAutoSellEnabled( debugInfo ), debugInfo );
-//	}
 
 	/**
 	 * <p>This will check to see if the player has the perms enabled
@@ -1181,8 +814,8 @@ public class SpigotPlayer
 					!"false".equalsIgnoreCase( perm ) ) {
 				
 				debugInfo.append( "(&7autosellAutoFeaturesByPerm&3: " )
-				.append( Output.get().getColorCodeWarning() )
-				;
+						.append( Output.get().getColorCodeWarning() )
+						;
 				
 				if ( isOp() ) {
 					debugInfo.append( 

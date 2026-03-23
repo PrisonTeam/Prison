@@ -134,182 +134,179 @@ public class IntegrationBackpackAPI
 
 	public HashMap<Integer, SpigotItemStack> addItems( Player player, HashMap<Integer, SpigotItemStack> items ) {
     	
-    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
-    	
-    	if ( items != null && items.size() > 0 && isEnabled() ) {
-    		
-    		BackpackEvent bpEvent = new BackpackEvent( player );
-    		bpEvent.setAction( BackpackAction.addItems );
-
-			if ( bpEvent.fireBackpackEvent() ) {
-
-				boolean changedBackpack = false;
-				
-				for ( Inventory inv : bpEvent.getInventory() ) {
+	    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
+	    	
+	    	if ( items != null && items.size() > 0 && isEnabled() ) {
+	    		
+	    		BackpackEvent bpEvent = new BackpackEvent( player );
+	    		bpEvent.setAction( BackpackAction.addItems );
+	
+				if ( bpEvent.fireBackpackEvent() ) {
+	
+					boolean changedBackpack = false;
 					
-					if ( inv != null ) {
+					for ( Inventory inv : bpEvent.getInventory() ) {
 						
-						for ( SpigotItemStack spigotItemStack : items.values() ) {
+						if ( inv != null ) {
 							
-							ItemStack iStack = SpigotUtil.prisonItemStackToBukkit( spigotItemStack );
-//    				ItemStack iStack = spigotItemStack.getBukkitStack();
-							
-							if ( iStack != null ) {
+							for ( SpigotItemStack spigotItemStack : items.values() ) {
 								
-//								extras.putAll( inv.addItem( iStack ));
+								ItemStack iStack = SpigotUtil.prisonItemStackToBukkit( spigotItemStack );
 								
-								HashMap<Integer, ItemStack> extra = inv.addItem( iStack );
-								
-								Set<Integer> keys = extra.keySet();
-								for ( Integer key : keys ) {
-									ItemStack entry = extra.get(key);
+								if ( iStack != null ) {
 									
-									extras.put( key, new SpigotItemStack(entry) );
-
-									changedBackpack = true;
+									HashMap<Integer, ItemStack> extra = inv.addItem( iStack );
+									
+									Set<Integer> keys = extra.keySet();
+									for ( Integer key : keys ) {
+										ItemStack entry = extra.get(key);
+										
+										extras.put( key, new SpigotItemStack(entry) );
+	
+										changedBackpack = true;
+									}
+									
+									
 								}
-								
-								
 							}
+							
 						}
 						
+						
+						// Since we are processing multiple occurrences of inventories, then
+						// we need to reset items to extras so they can be processed in the
+						// next inventory.
+						
+						items.clear();
+						items.putAll( extras );
+						extras.clear();
 					}
 					
+					if ( changedBackpack ) {
+						bpEvent.setResults( BackpackResults.contentsChanged );
+						
+						bpEvent.getCallback().run();
+					}
 					
-					// Since we are processing multiple occurrences of inventories, then
-					// we need to reset items to extras so they can be processed in the
-					// next inventory.
-					
-					items.clear();
-					items.putAll( extras );
-					extras.clear();
 				}
-				
-				if ( changedBackpack ) {
-					bpEvent.setResults( BackpackResults.contentsChanged );
-					
-					bpEvent.getCallback().run();
-				}
-				
-			}
-    	}
-
-    	
-    	// All extras will be in items, so move them back to extras:
-    	extras.putAll( items );
-    	
-    	return extras;
+	    	}
+	
+	    	
+	    	// All extras will be in items, so move them back to extras:
+	    	extras.putAll( items );
+	    	
+	    	return extras;
     }
     
     public HashMap<Integer, ItemStack> addItemsBukkit( Player player, HashMap<Integer, ItemStack> items ) {
     	
-    	HashMap<Integer, ItemStack> extras = new HashMap<>();
-    	
-    	if ( items != null && items.size() > 0 && isEnabled() ) {
-    		
-    		BackpackEvent bpEvent = new BackpackEvent( player );
-    		bpEvent.setAction( BackpackAction.addItems );
-
-			if ( bpEvent.fireBackpackEvent() ) {
-				
-				boolean changedBackpack = false;
-				
-				for ( Inventory inv : bpEvent.getInventory() ) {
+	    	HashMap<Integer, ItemStack> extras = new HashMap<>();
+	    	
+	    	if ( items != null && items.size() > 0 && isEnabled() ) {
+	    		
+	    		BackpackEvent bpEvent = new BackpackEvent( player );
+	    		bpEvent.setAction( BackpackAction.addItems );
+	
+				if ( bpEvent.fireBackpackEvent() ) {
 					
-					if ( inv != null ) {
+					boolean changedBackpack = false;
+					
+					for ( Inventory inv : bpEvent.getInventory() ) {
 						
-						for ( ItemStack itemStack : items.values() ) {
+						if ( inv != null ) {
 							
-							if ( itemStack != null ) {
+							for ( ItemStack itemStack : items.values() ) {
 								
-								extras.putAll( inv.addItem( itemStack ));
-																
-								changedBackpack = true;
+								if ( itemStack != null ) {
+									
+									extras.putAll( inv.addItem( itemStack ));
+																	
+									changedBackpack = true;
+								}
 							}
+							
 						}
 						
+						// Since we are processing multiple occurrences of inventories, then
+						// we need to reset items to extras so they can be processed in the
+						// next inventory.
+						
+						items.clear();
+						items.putAll( extras );
+						extras.clear();
 					}
 					
-					// Since we are processing multiple occurrences of inventories, then
-					// we need to reset items to extras so they can be processed in the
-					// next inventory.
-					
-					items.clear();
-					items.putAll( extras );
-					extras.clear();
+					if ( changedBackpack ) {
+						bpEvent.setResults( BackpackResults.contentsChanged );
+						
+						bpEvent.getCallback().run();
+					}
 				}
-				
-				if ( changedBackpack ) {
-					bpEvent.setResults( BackpackResults.contentsChanged );
-					
-					bpEvent.getCallback().run();
-				}
-			}
-    	}
-
-    	// All extras will be in items, so put them back in extras:
-    	extras.putAll( items );
-    	
-    	return extras;
+	    	}
+	
+	    	// All extras will be in items, so put them back in extras:
+	    	extras.putAll( items );
+	    	
+	    	return extras;
     }
 
     public HashMap<Integer, SpigotItemStack> smeltItems( Player player, XMaterial source, SpigotItemStack destStack ) {
     	
-    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
-    	
-		SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
-    	
-    	if ( isEnabled() && sourceStack != null && destStack != null ) {
-    		
-    		BackpackEvent bpEvent = new BackpackEvent( player );
-    		bpEvent.setAction( BackpackAction.smeltItems );
-
-			if ( bpEvent.fireBackpackEvent() ) {
-				
-				boolean changedBackpack = false;
-
-				for ( Inventory inv : bpEvent.getInventory() ) {
+	    	HashMap<Integer, SpigotItemStack> extras = new HashMap<>();
+	    	
+			SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
+	    	
+	    	if ( isEnabled() && sourceStack != null && destStack != null ) {
+	    		
+	    		BackpackEvent bpEvent = new BackpackEvent( player );
+	    		bpEvent.setAction( BackpackAction.smeltItems );
+	
+				if ( bpEvent.fireBackpackEvent() ) {
 					
-					if ( inv != null ) {
+					boolean changedBackpack = false;
+	
+					for ( Inventory inv : bpEvent.getInventory() ) {
 						
-						if ( inv.containsAtLeast( sourceStack.getBukkitStack(), 1 ) ) {
+						if ( inv != null ) {
 							
-							int count = SpigotUtil.itemStackCount( source, inv );
-							if ( count > 0 ) {
-								sourceStack.setAmount( count );
-								destStack.setAmount( count );
+							if ( inv.containsAtLeast( sourceStack.getBukkitStack(), 1 ) ) {
 								
-								inv.remove( sourceStack.getBukkitStack() );
+								int count = SpigotUtil.itemStackCount( source, inv );
+								if ( count > 0 ) {
+									sourceStack.setAmount( count );
+									destStack.setAmount( count );
+									
+									inv.remove( sourceStack.getBukkitStack() );
+									
+									HashMap<Integer, SpigotItemStack> temp = new HashMap<>();
+									temp.put( Integer.valueOf( 0 ), destStack );
+									
+									extras.putAll( addItems( player, temp ) );
+									
+									changedBackpack = true;
+								}
 								
-								HashMap<Integer, SpigotItemStack> temp = new HashMap<>();
-								temp.put( Integer.valueOf( 0 ), destStack );
-								
-								extras.putAll( addItems( player, temp ) );
-								
-								changedBackpack = true;
 							}
-							
 						}
+						
+						
+						// Since we are smeltings, extras will be the results of the smelt,
+						// and as such, for multiple inventories, they can be combined in to
+						// one extras object without having to reset it each time.
+						
 					}
 					
-					
-					// Since we are smeltings, extras will be the results of the smelt,
-					// and as such, for multiple inventories, they can be combined in to
-					// one extras object without having to reset it each time.
+					if ( changedBackpack ) {
+						bpEvent.setResults( BackpackResults.contentsChanged );
+						
+						bpEvent.getCallback().run();
+					}
 					
 				}
-				
-				if ( changedBackpack ) {
-					bpEvent.setResults( BackpackResults.contentsChanged );
 					
-					bpEvent.getCallback().run();
-				}
-				
-			}
-				
-    	}
-    	
-    	return extras;
+	    	}
+	    	
+	    	return extras;
     }
     
     /**
@@ -362,38 +359,38 @@ public class IntegrationBackpackAPI
     public List<SellAllData> sellInventoryItems( Player player, double multiplier ) {
 		List<SellAllData> soldItems = new ArrayList<>();
 		
-    	if ( isEnabled()  ) {
-    		
-    		BackpackEvent bpEvent = new BackpackEvent( player );
-    		bpEvent.setAction( BackpackAction.removeAll );
-
-			if ( bpEvent.fireBackpackEvent() ) {
-				
-				boolean changedBackpack = false;
-				
-				for ( Inventory inv : bpEvent.getInventory() ) {
+	    	if ( isEnabled()  ) {
+	    		
+	    		BackpackEvent bpEvent = new BackpackEvent( player );
+	    		bpEvent.setAction( BackpackAction.removeAll );
+	
+				if ( bpEvent.fireBackpackEvent() ) {
 					
-					if ( inv != null ) {
+					boolean changedBackpack = false;
+					
+					for ( Inventory inv : bpEvent.getInventory() ) {
 						
-						SpigotInventory sInventory = new SpigotInventory( inv );
-						
-						soldItems.addAll( SellAllUtil.get().sellInventoryItems( sInventory, multiplier ) );
-						
-						if ( soldItems.size() > 0 ) {
-
-							changedBackpack = true;
+						if ( inv != null ) {
+							
+							SpigotInventory sInventory = new SpigotInventory( inv );
+							
+							soldItems.addAll( SellAllUtil.get().sellInventoryItems( sInventory, multiplier ) );
+							
+							if ( soldItems.size() > 0 ) {
+	
+								changedBackpack = true;
+							}
 						}
 					}
-				}
-				
-				if ( changedBackpack ) {
-					bpEvent.setResults( BackpackResults.contentsChanged );
 					
-					bpEvent.getCallback().run();
+					if ( changedBackpack ) {
+						bpEvent.setResults( BackpackResults.contentsChanged );
+						
+						bpEvent.getCallback().run();
+					}
 				}
-			}
-    		
-    	}
+	    		
+	    	}
 		
 		return soldItems;
 	}

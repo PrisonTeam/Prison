@@ -92,7 +92,6 @@ public class ListenersPrisonManager
     private final MessagesConfig messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !getBoolean(config.getString("prison-gui-enabled"));
 
-//    private Optional<RankLadder> ladder; // makes no sense... not thread safe.
     
     public ChatMode mode;
 
@@ -238,7 +237,6 @@ public class ListenersPrisonManager
                 // signs, so check if the material name contains "sign":
                 String matName = clickedBlock.name().toLowerCase();
                 if ( matName.contains("sign")) {
-//                	if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN) {
 
                     // Get the player
                     Player p = e.getPlayer();
@@ -265,7 +263,6 @@ public class ListenersPrisonManager
                                 if (sellAllUtil.isSellAllSignPermissionToUseEnabled && !p.hasPermission(permissionUseSign)) {
                                     Output.get().sendWarn(new SpigotPlayer(p), 
                                     		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//                                    		+ " [&3" + permissionUseSign + "&7]"
                                     		);
                                     return;
                                 }
@@ -426,7 +423,7 @@ public class ListenersPrisonManager
             // If a GUI Tools Page action, then process the request and just exit:
             else if ( SpigotGUIMenuTools.getInstance().processGUIPage( p, title, e ) ) {
             	
-            	return;
+            		return;
             }
             
             
@@ -570,41 +567,7 @@ public class ListenersPrisonManager
 
                     break;
                 }
-//                // Check the inventory title and do the actions.
-//                case "PrisonManager -> AutoFeatures": {
-//
-//                    // Call the method
-//                    autoFeaturesGUI(e, p, parts);
-//
-//                    break;
-//                }
 
-//                // Check the title and do the actions.
-//                case "AutoFeatures -> AutoPickup": {
-//
-//                    // Call the method
-//                    autoPickupGUI(e, p, parts);
-//
-//                    break;
-//                }
-
-//                // Check the title and do the actions.
-//                case "AutoFeatures -> AutoSmelt": {
-//
-//                    // Call the method
-//                    autoSmeltGUI(e, p, parts);
-//
-//                    break;
-//                }
-
-//                // Check the title and do the actions.
-//                case "AutoFeatures -> AutoBlock": {
-//
-//                    // Call the method
-//                    autoBlockGUI(e, p, parts);
-//
-//                    break;
-//                }
 
                 // Check the title and do the actions.
                 case "SellAll -> Blocks": {
@@ -744,60 +707,8 @@ public class ListenersPrisonManager
     }
 
     
-    
-    
-//    private boolean processGUIPage( Player p, String title, InventoryClickEvent e ) {
-//    	boolean isPageAction = false;
-//    	
-//    	ItemStack currentItem = e.getCurrentItem();
-//    	if ( currentItem != null && currentItem.hasItemMeta() ) {
-//    		
-//    		ItemMeta meta = currentItem.getItemMeta();
-//
-//    		if ( meta.hasLore() ) {
-//    			
-//    			String command = null;
-//    			
-//    			List<String> lores = meta.getLore();
-//    			
-//    			for ( String lore : lores ) {
-//					
-//    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_PAGE ) ) {
-//    					isPageAction = true;
-//    				}
-//    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
-//    					command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
-//    				}
-//				}
-//    			
-//    			if ( isPageAction && command != null ) {
-//    				Bukkit.dispatchCommand(p, 
-//								    Prison.get().getCommandHandler().findRegisteredCommand( command ));
-//    				
-//    			}
-//    		}
-//    		
-//    	}
-//    	
-//    	return isPageAction;
-//	}
 
 	private void sellAllPlayerGUI(InventoryClickEvent e, Player p, String[] parts) {
-//        if (parts[0].equalsIgnoreCase("Prior")){
-//
-//            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, Integer.parseInt(parts[1]));
-//            gui.open();
-//
-//            e.setCancelled(true);
-//            return;
-//        } else if (parts[0].equalsIgnoreCase("Next")){
-//
-//            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, Integer.parseInt(parts[1]));
-//            gui.open();
-//
-//            e.setCancelled(true);
-//            return;
-//        }
 
         p.closeInventory();
         e.setCancelled(true);
@@ -1401,7 +1312,7 @@ public class ListenersPrisonManager
         String positionStr = ( parts.length > 5 ? parts[5] : "0" );
         int position = 0;
         try {
-        	position = Integer.parseInt( positionStr );
+        		position = Integer.parseInt( positionStr );
         }
         catch(NumberFormatException ignored) {}
 
@@ -1620,22 +1531,6 @@ public class ListenersPrisonManager
 
     private void sellAllAdminBlocksGUI(InventoryClickEvent e, Player p, String[] parts) {
 
-//        if (parts[0].equalsIgnoreCase("Prior")){
-//
-//            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
-//            gui.open();
-//
-//            e.setCancelled(true);
-//            return;
-//        } else if (parts[0].equalsIgnoreCase("Next")){
-//
-//            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
-//            gui.open();
-//
-//            e.setCancelled(true);
-//            return;
-//        }
-
         if (e.isRightClick()){
 
         	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delete" );
@@ -1665,19 +1560,6 @@ public class ListenersPrisonManager
                 gui.open();
                 break;
             }
-
-//            // Check the Item display name and do open the right GUI.
-//            case "AutoManager": {
-//
-//                // Check if the autofeatures config isn't null.
-//                if(SpigotGUIComponents.afConfig() != null) {
-//                    SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
-//                    gui.open();
-//                } else {
-//                    Output.get().sendWarn(new SpigotPlayer(p), "Can't find an autofeatures config, maybe they're disabled.");
-//                }
-//                break;
-//            }
 
             // Check the Item display name and do open the right GUI.
             case "Mines": {
@@ -1713,21 +1595,12 @@ public class ListenersPrisonManager
             return;
         }
 
-//        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-//
-//            // Open a new SpigotLadders GUI page.
-//            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]), 1);
-//            p.closeInventory();
-//            gui.open();
-//            return;
-//        }
-
         // Get the ladder by the name of the button got before.
         RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain);
         
         if ( rLadder == null ) {
-        	// Do nothing since it's not a valid ladder name:
-        	return;
+	        	// Do nothing since it's not a valid ladder name:
+	        	return;
         }
 //        ladder = rLadder;
 
@@ -1735,22 +1608,22 @@ public class ListenersPrisonManager
         // to be sure's a right click.
         if (e.isShiftClick() && e.isRightClick()) {
         	
-        	if ( rLadder.getRanks().size() > 0 ) {
-        		
-        		SpigotPlayer sPlayer = new SpigotPlayer( p );
-        		sPlayer.setActionBar( "Cannot delete a non-empty ladder" );
-        	}
-        	else {
-        		
-        		// Execute the command
-        		Bukkit.dispatchCommand(p, 
-        				Prison.get().getCommandHandler().findRegisteredCommand( "ranks ladder delete " + buttonNameMain ));
-        		e.setCancelled(true);
-        		p.closeInventory();
-        		SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1, "gui ladders", "gui" );
-        		gui.open();
-        		return;
-        	}
+	        	if ( rLadder.getRanks().size() > 0 ) {
+	        		
+	        		SpigotPlayer sPlayer = new SpigotPlayer( p );
+	        		sPlayer.setActionBar( "Cannot delete a non-empty ladder" );
+	        	}
+	        	else {
+	        		
+	        		// Execute the command
+	        		Bukkit.dispatchCommand(p, 
+	        				Prison.get().getCommandHandler().findRegisteredCommand( "ranks ladder delete " + buttonNameMain ));
+	        		e.setCancelled(true);
+	        		p.closeInventory();
+	        		SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1, "gui ladders", "gui" );
+	        		gui.open();
+	        		return;
+	        	}
 
         }
 
@@ -1765,15 +1638,6 @@ public class ListenersPrisonManager
 
     private void ranksGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
 
-//        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-//
-//            // Open a new SpigotLadders GUI page.
-//            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, Integer.parseInt(parts[1]));
-//            p.closeInventory();
-//            gui.open();
-//            return;
-//        }
-    	
         if ( !PrisonRanks.getInstance().isEnabled() ) {
         	
         	Output.get().sendWarn(new SpigotPlayer(p), "&cPrison ranks are not enabled.");
@@ -1833,53 +1697,32 @@ public class ListenersPrisonManager
 
     private void prestigeConfirmationGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
-    	String playerName = p.getName();
+    		String playerName = p.getName();
 
         // Check the button name and do the actions.
         if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
         	
-        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been Confirmed. "
-        			+ "  calling: '/prestige " + playerName + " confirm'" );
-        	
-        	// Execute the command.
-        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "prestige" );
-
-        	String command = registeredCmd + " " + playerName + " confirm";
-        	
+	        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been Confirmed. "
+	        			+ "  calling: '/prestige " + playerName + " confirm'" );
+	        	
+	        	// Execute the command.
+	        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "prestige" );
+	
+	        	String command = registeredCmd + " " + playerName + " confirm";
+	        	
             Bukkit.dispatchCommand(p, command );
             
         } 
         else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
         	
-        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been canceled " + 
-        				"for " + playerName + "." );
+	        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been canceled " + 
+	        				"for " + playerName + "." );
         	
-        	// Send a message to the player.
-//            Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
         }
 
         // Close the inventory.
         p.closeInventory();
 
-//        // Check the button name and do the actions.
-//        if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
-//        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI: 'Confirm: Prestige'   calling: '/rankup prestiges'" );
-//        	
-//        	// Execute the command.
-//        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "rankup" );
-//        	
-//        	Bukkit.dispatchCommand(p, registeredCmd + " prestiges");
-//        	// Close the inventory.
-//        	p.closeInventory();
-//        } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
-//        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI/: 'Cancel: Don't Prestige'   sendInfo: 'cancelled'" );
-//        	
-//        	// Send a message to the player.
-//        	Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
-//        	// Close the inventory.
-//        	p.closeInventory();
-//        }
-//        
         // Cancel the event.
         e.setCancelled(true);
     }
@@ -1957,7 +1800,7 @@ public class ListenersPrisonManager
     private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the buttonName and do the actions.
-    	String message = Text.stripColor( messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup) );
+    		String message = Text.stripColor( messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup) );
         if (buttonNameMain.equals(SpigotPrison.format( message ))){
             Bukkit.dispatchCommand(p, 
             		Prison.get().getCommandHandler().findRegisteredCommand( 
@@ -2095,15 +1938,6 @@ public class ListenersPrisonManager
     }
 
     private void minesGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
-
-//        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-//
-//            // Open a new SpigotLadders GUI page.
-//            SpigotMinesGUI gui = new SpigotMinesGUI(p, Integer.parseInt(parts[1]));
-//            p.closeInventory();
-//            gui.open();
-//            return;
-//        }
 
         // Variables.
         PrisonMines pMines = PrisonMines.getInstance();
@@ -2655,277 +2489,7 @@ public class ListenersPrisonManager
         }
     }
 
-//    private void autoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
-//
-//        // Get the config
-//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-//        
-//        // Output finally the buttonname and the mode explicit out of the array
-//        String buttonName = parts[0];
-//        String mode = parts[1];
-//        
-//        boolean enabled = mode.equalsIgnoreCase("Enabled");
-//
-//        // Check the clickType and do the actions
-//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-//                !enabled && e.isRightClick()){
-//
-//            if (buttonName.equalsIgnoreCase("Full-Inventory-Sound")){
-//                afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, !enabled );
-//                saveConfigAutoFeatures(e, p);
-//            }
-//
-//            if (buttonName.equalsIgnoreCase("Full-Inventory-ActionBar")){
-//                afConfig.setFeature(AutoFeatures.actionBarMessageIfInventoryIsFull, !enabled);
-//                saveConfigAutoFeatures(e,p);
-//            }
-//
-//            if (buttonName.equalsIgnoreCase("All")){
-//                afConfig.setFeature(AutoFeatures.isAutoManagerEnabled, !enabled);
-//                saveConfigAutoFeatures(e,p);
-//            }
-//
-//        }
-//
-//        // Check the clickType and do the actions
-//        if (enabled && e.isRightClick() && e.isShiftClick() || !enabled && e.isRightClick() || enabled && e.isLeftClick()){
-//            if (buttonName.equalsIgnoreCase("AutoPickup")){
-//                if (e.isLeftClick()){
-//                    SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
-//                    gui.open();
-//                    return;
-//                }
-//                afConfig.setFeature(AutoFeatures.autoPickupEnabled, !enabled);
-//                saveConfigAutoFeatures(e,p);
-//            }
-//
-//            if (buttonName.equalsIgnoreCase("AutoSmelt")){
-//                if (e.isLeftClick()){
-//                    SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
-//                    gui.open();
-//                    return;
-//                }
-//                afConfig.setFeature(AutoFeatures.autoSmeltEnabled, !enabled);
-//                saveConfigAutoFeatures(e,p);
-//            }
-//
-//            if (buttonName.equalsIgnoreCase("AutoBlock")){
-//                if (e.isLeftClick()){
-//                    SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
-//                    gui.open();
-//                    return;
-//                }
-//                afConfig.setFeature(AutoFeatures.autoBlockEnabled, !enabled);
-//                saveConfigAutoFeatures(e,p);
-//            }
-//        }
-//    }
 
-//    private void autoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
-//
-//        // Get the config
-//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-//
-//        // Output finally the buttonname and the mode explicit out of the array
-//        String buttonname = parts[0];
-//        String mode = parts[1];
-//
-//        boolean enabled = mode.equalsIgnoreCase("Enabled");
-//        
-//        // Check the click and do the actions, also the buttonName
-//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-//        		!enabled && e.isRightClick() ){
-//
-//            switch (buttonname){
-//                case "All_Blocks":{
-//                    afConfig.setFeature( AutoFeatures.pickupAllBlocks, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Cobblestone":{
-//                    afConfig.setFeature(AutoFeatures.pickupCobbleStone, !enabled);
-//                    saveConfigPickup(e,p);
-//                    break;
-//                }
-//                case "Gold_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupGoldOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Iron_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupIronOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Coal_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupCoalOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Diamond_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupDiamondOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Redstone_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupRedStoneOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Emerald_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupEmeraldOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Quartz_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupQuartzOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Lapis_Ore":{
-//                    afConfig.setFeature( AutoFeatures.pickupLapisOre, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Snow_Ball":{
-//                    afConfig.setFeature( AutoFeatures.pickupSnowBall, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                case "Glowstone_Dust":{
-//                    afConfig.setFeature( AutoFeatures.pickupGlowstoneDust, !enabled );
-//                    saveConfigPickup(e, p);
-//                    break;
-//                }
-//                default:{
-//                    break;
-//                }
-//
-//            }
-//        }
-//    }
-//
-//    private void autoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
-//
-//        // Get the config
-//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-//
-//        // Output finally the buttonname and the mode explicit out of the array
-//        String buttonname = parts[0];
-//        String mode = parts[1];
-//        
-//        boolean enabled = mode.equalsIgnoreCase("Enabled");
-//
-//        // Check the clickType and do the actions
-//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-//        		!enabled && e.isRightClick()){
-//
-//            switch (buttonname){
-//                case "Gold_Ore":{
-//                    afConfig.setFeature( AutoFeatures.smeltGoldOre, !enabled );
-//                    saveConfigSmelt(e, p);
-//                    break;
-//                }
-//                case "Iron_Ore":{
-//                    afConfig.setFeature( AutoFeatures.smeltIronOre, !enabled );
-//                    saveConfigSmelt(e, p);
-//                    break;
-//                }
-//                case "All_Ores":{
-//                    afConfig.setFeature( AutoFeatures.smeltAllBlocks, !enabled );
-//                    saveConfigSmelt(e, p);
-//                    break;
-//                }
-//                default:{
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//
-//    private void autoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
-//
-//        // Get the config
-//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-//
-//        // Output finally the buttonname and the mode explicit out of the array
-//        String buttonname = parts[0];
-//        String mode = parts[1];
-//
-//        boolean enabled = mode.equalsIgnoreCase("Enabled");
-//
-//        // Check the clickType and do the actions
-//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-//        		!enabled && e.isRightClick()){
-//
-//            switch (buttonname){
-//                case "Gold_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockGoldBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Iron_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockIronBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Coal_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockCoalBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Diamond_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockDiamondBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Redstone_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockRedstoneBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Emerald_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockEmeraldBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Quartz_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockQuartzBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Prismarine_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockPrismarineBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Lapis_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockLapisBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Snow_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockSnowBlock, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "Glowstone_Block":{
-//                    afConfig.setFeature( AutoFeatures.blockGlowstone, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                case "All_Blocks":{
-//                    afConfig.setFeature( AutoFeatures.blockAllBlocks, !enabled );
-//                    saveConfigBlock(e, p);
-//                    break;
-//                }
-//                default:{
-//                    break;
-//                }
-//            }
-//        }
-//
-//    }
 
 
     private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
@@ -2955,7 +2519,7 @@ public class ListenersPrisonManager
     private void sellAllCurrencyChat(AsyncPlayerChatEvent e, Player p, String message) {
 
         // Check message and do the action
-    	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall set currency" );
+    		String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall set currency" );
         if (message.equalsIgnoreCase("cancel")){
             Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_event_cancelled));
         } else if (message.equalsIgnoreCase("default")){
@@ -2970,21 +2534,6 @@ public class ListenersPrisonManager
         isChatEventActive = false;
     }
 
-//    private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
-//
-//        // Check the chat message and do the actions
-//        if (message.equalsIgnoreCase("cancel")) {
-//            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled));
-//        } else if (message.equalsIgnoreCase("confirm")) {
-//            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-//        } else {
-//            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled_wrong_keyword));
-//        }
-//        // Cancel the event
-//        e.setCancelled(true);
-//        // Set the event to false, because it got deactivated
-//        isChatEventActive = false;
-//    }
 
     private void mineAction(AsyncPlayerChatEvent e, Player p, String message) {
 
@@ -3011,45 +2560,4 @@ public class ListenersPrisonManager
         isChatEventActive = false;
     }
 
-//    /**
-//     * Save the auto features, and then cancel the event and close the inventory.
-//     * 
-//     * @param e
-//     * @param player
-//     */
-//    private boolean saveAutoFeatures( InventoryClickEvent e, Player player ) {
-//    	boolean success = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().saveConf();
-//    	e.setCancelled(true);
-//    	player.closeInventory();
-//    	return success;
-//    }
-//
-//    
-//    private boolean saveConfigBlock(InventoryClickEvent e, Player p) {
-//    	boolean success = saveAutoFeatures( e, p );
-//        SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
-//        gui.open();
-//        return success;
-//    }
-//
-//    private boolean saveConfigSmelt(InventoryClickEvent e, Player p) {
-//    	boolean success = saveAutoFeatures( e, p );
-//        SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
-//        gui.open();
-//        return success;
-//    }
-//
-//    private boolean saveConfigPickup(InventoryClickEvent e, Player p) {
-//    	boolean success = saveAutoFeatures( e, p );
-//        SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
-//        gui.open();
-//        return success;
-//    }
-//
-//    private boolean saveConfigAutoFeatures(InventoryClickEvent e, Player p) {
-//    	boolean success = saveAutoFeatures( e, p );
-//        SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
-//        gui.open();
-//        return success;
-//    }
 }
