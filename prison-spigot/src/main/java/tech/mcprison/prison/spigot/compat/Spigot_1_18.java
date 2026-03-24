@@ -8,12 +8,12 @@ public class Spigot_1_18
     
     @Override
     public int getMinY() {
-    	return -64;
+    		return -64;
     }
     
     @Override
     public int getMaxY() {
-    	return 320;
+    		return 320;
     }
 	
 }

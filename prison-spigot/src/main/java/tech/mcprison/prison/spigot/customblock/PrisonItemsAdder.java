@@ -26,12 +26,9 @@ public class PrisonItemsAdder
     }
 	
 	
-	
 
 	@Override
 	public void integrate() {
-
-		// BluesSpigetSemVerComparator semVer = new BluesSpigetSemVerComparator();
 
 		if ( isRegistered()) {
 			try {
@@ -134,7 +131,6 @@ public class PrisonItemsAdder
 				results.setLocation( loc );
 			}
 			
-//			SpigotBlock sBlock = new SpigotBlock();
 		}
 		
 		return results;

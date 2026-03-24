@@ -41,28 +41,28 @@ public class TheNewEconomy extends EconomyCurrencyIntegration {
 
   @Override
   public boolean hasIntegrated() {
-    return wrapper != null;
+	  return wrapper != null;
   }
 
   @Override
   public void disableIntegration() {
-    wrapper = null;
+	  wrapper = null;
   }
 
   @Override
   public String getDisplayName() {
-    return super.getDisplayName() +
-            (availableAsAnAlternative ? " (disabled)" : "");
+	  return super.getDisplayName() +
+			  (availableAsAnAlternative ? " (disabled)" : "");
   }
 
   @Override
   public boolean supportedCurrency(final String currency) {
-    return wrapper != null && wrapper.supportedCurrency(currency);
+	  return wrapper != null && wrapper.supportedCurrency(currency);
   }
 
   @Override
   public boolean hasAccount(final Player player) {
-    return wrapper.hasAccount(player);
+	  return wrapper.hasAccount(player);
   }
 
   /**
@@ -74,12 +74,12 @@ public class TheNewEconomy extends EconomyCurrencyIntegration {
    */
   @Override
   public double getBalance(final Player player) {
-    return getBalance(player, wrapper.defaultCurrency());
+	  return getBalance(player, wrapper.defaultCurrency());
   }
 
   @Override
   public double getBalance(final Player player, final String currency) {
-    return wrapper.getBalance(player, currency).doubleValue();
+	  return wrapper.getBalance(player, currency).doubleValue();
   }
 
   /**
@@ -90,12 +90,12 @@ public class TheNewEconomy extends EconomyCurrencyIntegration {
    */
   @Override
   public boolean setBalance(final Player player, final double amount) {
-    return setBalance(player, amount, wrapper.defaultCurrency());
+	  return setBalance(player, amount, wrapper.defaultCurrency());
   }
 
   @Override
   public boolean setBalance(final Player player, final double amount, final String currency) {
-    return wrapper.setBalance(player, currency, new BigDecimal(amount));
+	  return wrapper.setBalance(player, currency, new BigDecimal(amount));
   }
 
   /**
@@ -106,12 +106,12 @@ public class TheNewEconomy extends EconomyCurrencyIntegration {
    */
   @Override
   public boolean addBalance(final Player player, final double amount) {
-    return addBalance(player, amount, wrapper.defaultCurrency());
+	  return addBalance(player, amount, wrapper.defaultCurrency());
   }
 
   @Override
   public boolean addBalance(final Player player, final double amount, final String currency) {
-    return wrapper.addBalance(player, new BigDecimal(amount), currency);
+	  return wrapper.addBalance(player, new BigDecimal(amount), currency);
   }
 
   /**

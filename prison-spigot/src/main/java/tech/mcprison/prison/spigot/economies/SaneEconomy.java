@@ -16,7 +16,7 @@ public class SaneEconomy
     private boolean availableAsAnAlternative = false;
     
     public SaneEconomy() {
-    	super( "SaneEconomy", "SaneEconomy" );
+    		super( "SaneEconomy", "SaneEconomy" );
     }
 	
 	@Override
@@ -39,7 +39,7 @@ public class SaneEconomy
     
     @Override
     public boolean hasAccount( Player player ) {
-    	return econWrapper.hasAccount( player );
+    		return econWrapper.hasAccount( player );
     }
 	
     @Override 
@@ -49,8 +49,8 @@ public class SaneEconomy
 
     @Override 
     public boolean setBalance(Player player, double amount) {
-    	econWrapper.setBalance(player, amount);
-    	return true;
+	    	econWrapper.setBalance(player, amount);
+	    	return true;
     }
 
     @Override 
@@ -75,14 +75,14 @@ public class SaneEconomy
     
     @Override
     public void disableIntegration() {
-    	econWrapper = null;
+    		econWrapper = null;
     }
     
     @Override
     public String getDisplayName()
     {
-    	return super.getDisplayName() + " (API v0.15.0)"+
-    			( availableAsAnAlternative ? " (disabled)" : "");
+	    	return super.getDisplayName() + " (API v0.15.0)"+
+	    			( availableAsAnAlternative ? " (disabled)" : "");
     }
     
 	@Override

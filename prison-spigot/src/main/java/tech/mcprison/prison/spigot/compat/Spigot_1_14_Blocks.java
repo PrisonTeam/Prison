@@ -10,7 +10,6 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 
 public class Spigot_1_14_Blocks 
 	extends Spigot_1_13
-	//implements CompatibilityBlocks
 {
 
 	private static Method SET_CUSTOM_MODEL_DATA = null;
@@ -34,7 +33,7 @@ public class Spigot_1_14_Blocks
      */
     @Override
     public int getCustomModelData( SpigotItemStack itemStack ) {
-    	return getCustomModelData( itemStack == null ? null : itemStack.getBukkitStack() );
+    		return getCustomModelData( itemStack == null ? null : itemStack.getBukkitStack() );
     }
     /**
      * Not compatible with Spigot 1.8 through 1.13 so return a value of 0.
@@ -44,30 +43,30 @@ public class Spigot_1_14_Blocks
      */
     @Override
     public int getCustomModelData( ItemStack itemStack ) {
-    	int results = 0;
-    	
-    	if ( itemStack != null ) {
-			ItemMeta meta = itemStack.getItemMeta();
-			
-			if (meta != null) {
-				try {
-					Integer customModelData = (Integer) GET_CUSTOM_MODEL_DATA.invoke(meta);
-					
-					if ( customModelData != null ) {
-						results = customModelData.intValue();
+	    	int results = 0;
+	    	
+	    	if ( itemStack != null ) {
+				ItemMeta meta = itemStack.getItemMeta();
+				
+				if (meta != null) {
+					try {
+						Integer customModelData = (Integer) GET_CUSTOM_MODEL_DATA.invoke(meta);
+						
+						if ( customModelData != null ) {
+							results = customModelData.intValue();
+						}
+					} 
+					catch (ReflectiveOperationException ex ) { 
+						ex.printStackTrace(); 
 					}
-				} 
-				catch (ReflectiveOperationException ex ) { 
-					ex.printStackTrace(); 
+					catch ( ClassCastException ex ) {
+						ex.printStackTrace();
+					}
 				}
-				catch ( ClassCastException ex ) {
-					ex.printStackTrace();
-				}
-			}
-			itemStack.setItemMeta(meta);
-    	}
-    	
-    	return results;
+				itemStack.setItemMeta(meta);
+	    	}
+	    	
+	    	return results;
     }
     
     /**
@@ -91,20 +90,20 @@ public class Spigot_1_14_Blocks
     @Override
 	public void setCustomModelData( ItemStack itemStack, int customModelData ) {
 		
-    	if ( itemStack != null ) {
-			ItemMeta meta = itemStack.getItemMeta();
-			
-			if (meta != null) {
-				try {
-					
-					SET_CUSTOM_MODEL_DATA.invoke( meta, customModelData );
-				} 
-				catch (ReflectiveOperationException ex) { 
-					ex.printStackTrace(); 
+	    	if ( itemStack != null ) {
+				ItemMeta meta = itemStack.getItemMeta();
+				
+				if (meta != null) {
+					try {
+						
+						SET_CUSTOM_MODEL_DATA.invoke( meta, customModelData );
+					} 
+					catch (ReflectiveOperationException ex) { 
+						ex.printStackTrace(); 
+					}
 				}
-			}
-			itemStack.setItemMeta(meta);
-    	}
+				itemStack.setItemMeta(meta);
+	    	}
     	
 	}
     
@@ -129,6 +128,6 @@ can be collided with.
 	 */
     @Override
 	public boolean isPassable( Block bBlock ) {
-    	return bBlock.isPassable();
+    		return bBlock.isPassable();
     }
 }

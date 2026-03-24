@@ -81,14 +81,14 @@ public class MessagesConfig {
             String line = br.readLine();
           
             while ( line != null ) {
-            	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
-          		
-            		String[] keyValue = line.split( "\\=" );
-            		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
-            		temp.put( keyValue[0], value );
-            	}
-          	
-            	line = br.readLine();
+	            	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
+	          		
+	            		String[] keyValue = line.split( "\\=" );
+	            		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
+	            		temp.put( keyValue[0], value );
+	            	}
+	          	
+	            	line = br.readLine();
             }
             
             // WARNING: cannot use the properties.load() function since it is NOT utf-8 capable.
@@ -105,13 +105,13 @@ public class MessagesConfig {
      * */
     public String getString(StringID message){
         		
-    	String msg = properties.getProperty(message.toString());
-    	
-    	if ( msg == null || msg.trim().isEmpty() ) {
-    		msg = message.name();
-    	}
-    	
-    	return msg;
+	    	String msg = properties.getProperty(message.toString());
+	    	
+	    	if ( msg == null || msg.trim().isEmpty() ) {
+	    		msg = message.name();
+	    	}
+	    	
+	    	return msg;
     }
 
     @Deprecated

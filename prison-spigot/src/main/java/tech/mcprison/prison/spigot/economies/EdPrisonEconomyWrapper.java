@@ -57,11 +57,6 @@ public class EdPrisonEconomyWrapper {
 	}
 	
 	
-	
-//	public double getBalance(Player player) {
-//        return getBalance(player, null);
-//    }
-
 	public double getBalance(Player player, String currencyName, boolean quite) {
 		double results = 0;
 		if ( isEnabled() && currencyName != null ) {

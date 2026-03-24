@@ -92,7 +92,7 @@ public class VaultEconomyWrapper
 		}
 		
     	
-    	return hasAccount;
+		return hasAccount;
 	}
 	
 	public String getProviderName() {
@@ -148,49 +148,27 @@ public class VaultEconomyWrapper
 	 */
     @SuppressWarnings( "deprecation" )
 	public double getBalance(Player player) {
-    	double results = 0;
- 
-    	boolean hasAccount = hasAccount(player, true);
-    	
-    	if ( economy != null && !hasAccount ) {
-    		player.sendMessage( "Economy Error: You don't have an account.");
-    	}
-    	else 
-        if (economy != null) {
-        	
-        	if ( isPreV1_4() ) {
-        		results = economy.getBalance(player.getName());
-        	}
-        	else {
-        		OfflinePlayer oPlayer = getOfflinePlayer( player );
-        		if ( oPlayer != null ) {
-        			results = economy.getBalance(oPlayer);
-        		}
-        		
-        		
-//        		if ( oPlayer == null ) {
-//        			Output.get().logInfo( "VaultEconomyWrapper.getBalance(): Error: " +
-//        					"Cannot get economy for player %s so returning a value of 0. " +
-//        					"Failed to get an bukkit offline player.", 
-//        					player.getName());
-//        			results = 0;
-//        		}
-//        		else {
-//        			results = economy.getBalance(oPlayer);
-//        		}
-        		
-        	}
-//        	if ( economy.hasBankSupport() ) {
-//
-//        		EconomyResponse bnkBal = economy.bankBalance( player.getName() );
-//        		if ( bnkBal.transactionSuccess() ) {
-//        			results = bnkBal.balance;
-//        		}
-//        			
-//        		
-//        	} else {
-//        	results = economy.getBalance(player.getName());
-//        	}
+	    	double results = 0;
+	 
+	    	boolean hasAccount = hasAccount(player, true);
+	    	
+	    	if ( economy != null && !hasAccount ) {
+	    		player.sendMessage( "Economy Error: You don't have an account.");
+	    	}
+	    	else 
+	        if (economy != null) {
+	        	
+	        	if ( isPreV1_4() ) {
+	        		results = economy.getBalance(player.getName());
+	        	}
+	        	else {
+	        		OfflinePlayer oPlayer = getOfflinePlayer( player );
+	        		if ( oPlayer != null ) {
+	        			results = economy.getBalance(oPlayer);
+	        		}
+	        		
+	        		
+	        	}
         }
         
         return results;
@@ -198,189 +176,142 @@ public class VaultEconomyWrapper
 
     @SuppressWarnings( "deprecation" )
 	public boolean setBalance(Player player, double amount) {
-    	boolean results = false;
-
-    	boolean hasAccount = hasAccount(player, true);
-
-    	if ( economy != null && !hasAccount ) {
-    		player.sendMessage( "Economy Error: You don't have an account.");
-    	}
-    	else 
-        if (economy != null) {
+	    	boolean results = false;
+	
+	    	boolean hasAccount = hasAccount(player, true);
+	
+	    	if ( economy != null && !hasAccount ) {
+	    		player.sendMessage( "Economy Error: You don't have an account.");
+	    	}
+	    	else 
+	        if (economy != null) {
+	        	
+	           	if ( isPreV1_4() ) {
+	           		economy.withdrawPlayer( player.getName(), getBalance( player ) );
+	           		economy.depositPlayer( player.getName(), amount );
+	           		results = true;
+	        	}
+	        	else {
+	        		OfflinePlayer oPlayer = getOfflinePlayer( player );
+	        		if ( oPlayer != null ) {
+	        			economy.withdrawPlayer( oPlayer, getBalance( player ) );
+	        			economy.depositPlayer( oPlayer, amount );
+	        			results = true;
+	        		}
+	        	}
         	
-           	if ( isPreV1_4() ) {
-           		economy.withdrawPlayer( player.getName(), getBalance( player ) );
-           		economy.depositPlayer( player.getName(), amount );
-           		results = true;
-        	}
-        	else {
-        		OfflinePlayer oPlayer = getOfflinePlayer( player );
-        		if ( oPlayer != null ) {
-//        			Output.get().logInfo( "VaultEconomyWrapper.setBalance(): Error: " +
-//        					"Cannot get economy for player %s so cannot set balance to %s.", 
-//        					player.getName(), Double.toString( amount ));
-//        		}
-//        		else {
-        			economy.withdrawPlayer( oPlayer, getBalance( player ) );
-        			economy.depositPlayer( oPlayer, amount );
-        			results = true;
-        		}
-        	}
-        	
-//        	if ( economy.hasBankSupport() ) {
-//        		economy.bankWithdraw(player.getName(), getBalance(player));
-//        		economy.bankDeposit(player.getName(), amount);
-//        	} else {
-//        		economy.withdrawPlayer( player.getName(), getBalance( player ) );
-//        		economy.depositPlayer( player.getName(), amount );
-//        	}
         }
         return results;
     }
 
     @SuppressWarnings( "deprecation" )
 	public boolean addBalance(Player player, double amount) {
-    	boolean results = false;
-    	
-    	boolean hasAccount = hasAccount(player, true);
-    	
-    	if ( amount < 0 ) {
-    		results = removeBalance( player, amount );
-    	}
-    	
-    	
-    	else if ( economy != null && !hasAccount ) {
-    		player.sendMessage( "Economy Error: You don't have an account.");
-    	}
-    	else if (economy != null) {
-        	if ( isPreV1_4() ) {
-        		economy.depositPlayer( player.getName(), amount );
-           		results = true;
-        	}
-        	else {
-        		OfflinePlayer oPlayer = getOfflinePlayer( player );
-        		if ( oPlayer != null ) {
-//        			Output.get().logInfo( "VaultEconomyWrapper.addBalance(): Error: " +
-//        					"Cannot get economy for player %s so cannot add a balance of %s.", 
-//        					player.getName(), Double.toString( amount ));
-//        		}
-//        		else {
-        			EconomyResponse response = economy.depositPlayer( oPlayer, amount );
-
-        			results = response.transactionSuccess();
-        			
-        			if ( !results ) {
-        				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
-        				String message = String.format( 
-        						"VaultEconomy.addBalance failed: %s  amount: %s  " +
-        									"balance: %s  error: %s", 
-        						oPlayer.getName(),
-        						dFmt.format(amount), dFmt.format(response.balance),
-        						response.errorMessage );
-        				Output.get().logError( message );
-        			}
-//        			results = true;
-        		}
-        	}
-//        	if ( economy.hasBankSupport() ) {
-//        		economy.bankDeposit(player.getName(), amount);
-//        	} else {
-//        		economy.depositPlayer( player.getName(), amount );
-//        	}
+	    	boolean results = false;
+	    	
+	    	boolean hasAccount = hasAccount(player, true);
+	    	
+	    	if ( amount < 0 ) {
+	    		results = removeBalance( player, amount );
+	    	}
+	    	
+	    	
+	    	else if ( economy != null && !hasAccount ) {
+	    		player.sendMessage( "Economy Error: You don't have an account.");
+	    	}
+	    	else if (economy != null) {
+	        	if ( isPreV1_4() ) {
+	        		economy.depositPlayer( player.getName(), amount );
+	           		results = true;
+	        	}
+	        	else {
+	        		OfflinePlayer oPlayer = getOfflinePlayer( player );
+	        		if ( oPlayer != null ) {
+	        			EconomyResponse response = economy.depositPlayer( oPlayer, amount );
+	
+	        			results = response.transactionSuccess();
+	        			
+	        			if ( !results ) {
+	        				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+	        				String message = String.format( 
+	        						"VaultEconomy.addBalance failed: %s  amount: %s  " +
+	        									"balance: %s  error: %s", 
+	        						oPlayer.getName(),
+	        						dFmt.format(amount), dFmt.format(response.balance),
+	        						response.errorMessage );
+	        				Output.get().logError( message );
+	        			}
+	        		}
+	        	}
         }
         return results;
     }
 
     @SuppressWarnings( "deprecation" )
 	public boolean removeBalance(Player player, double amount) {
-    	boolean results = false;
-    	
-    	// Needs to be a positive amount:
-    	if ( amount < 0 ) {
-    		amount *= -1;
-    	}
-    	
-    	boolean hasAccount = hasAccount(player, true);
-
-    	if ( economy != null && !hasAccount ) {
-    		player.sendMessage( "Economy Error: You don't have an account.");
-    	}
-    	else 
-    	if (economy != null) {
-    		if ( isPreV1_4() ) {
-    			economy.withdrawPlayer( player.getName(), amount );
-    			results = true;
-    		}
-    		else {
-    			OfflinePlayer oPlayer = getOfflinePlayer( player );
-    			if ( oPlayer != null ) {
-//    				Output.get().logInfo( "VaultEconomyWrapper.removeBalance(): Error: " +
-//    						"Cannot get economy for player %s so cannot remove a balance of %s.", 
-//    						player.getName(), Double.toString( amount ));
-//    			}
-//    			else {
-    				EconomyResponse response = economy.withdrawPlayer( oPlayer, amount );
-
-    				results = response.transactionSuccess();
-        			
-        			if ( !results ) {
-        				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
-        				String message = String.format( 
-        						"VaultEconomy.removeBalance failed: %s  amount: %s  " +
-        									"balance: %s  error: %s", 
-        						oPlayer.getName(),
-        						dFmt.format(amount), dFmt.format(response.balance),
-        						response.errorMessage );
-        				Output.get().logError( message );
-        			}
-//    				results = true;
-    			}
-    		}
-
-//        if (economy != null) {
-//        	if ( economy.hasBankSupport() ) {
-//        		economy.bankWithdraw(player.getName(), amount);
-//        	} else {
-//        		economy.withdrawPlayer( player.getName(), amount );
-//        	}
-//        }
-    	}
-    	return results;
+	    	boolean results = false;
+	    	
+	    	// Needs to be a positive amount:
+	    	if ( amount < 0 ) {
+	    		amount *= -1;
+	    	}
+	    	
+	    	boolean hasAccount = hasAccount(player, true);
+	
+	    	if ( economy != null && !hasAccount ) {
+	    		player.sendMessage( "Economy Error: You don't have an account.");
+	    	}
+	    	else 
+	    	if (economy != null) {
+	    		if ( isPreV1_4() ) {
+	    			economy.withdrawPlayer( player.getName(), amount );
+	    			results = true;
+	    		}
+	    		else {
+	    			OfflinePlayer oPlayer = getOfflinePlayer( player );
+	    			if ( oPlayer != null ) {
+	    				EconomyResponse response = economy.withdrawPlayer( oPlayer, amount );
+	
+	    				results = response.transactionSuccess();
+	        			
+	        			if ( !results ) {
+	        				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+	        				String message = String.format( 
+	        						"VaultEconomy.removeBalance failed: %s  amount: %s  " +
+	        									"balance: %s  error: %s", 
+	        						oPlayer.getName(),
+	        						dFmt.format(amount), dFmt.format(response.balance),
+	        						response.errorMessage );
+	        				Output.get().logError( message );
+	        			}
+	    			}
+	    		}
+	
+	    	}
+	    	return results;
     }
 
     @SuppressWarnings( "deprecation" )
 	public boolean canAfford(Player player, double amount) {
-    	boolean results = false;
-    	
-    	boolean hasAccount = hasAccount(player, true);
-
-    	if ( economy != null && !hasAccount ) {
-    		player.sendMessage( "Economy Error: You don't have an account.");
-    	}
-    	else 
-    	if (economy != null) {
-       		if ( isPreV1_4() ) {
-       			results = economy.has(player.getName(), amount);
-    		}
-    		else {
-    			OfflinePlayer oPlayer = getOfflinePlayer( player );
-    			if ( oPlayer != null ) {
-//    				Output.get().logInfo( "VaultEconomyWrapper.canAfford(): Error: " +
-//    						"Cannot get economy for player %s so cannot tell if " +
-//    						"player can afford the amount of %s.", 
-//    						player.getName(), Double.toString( amount ));
-//    			}
-//    			else {
-    				results = economy.has(oPlayer, amount);
-    			}
-    		}
-
-//        	if ( economy.hasBankSupport() ) {
-//        		results = economy.bankHas(player.getName(), amount).transactionSuccess();
-//        	} else {
-//        		results = economy.has(player.getName(), amount);
-//        	}
-    	}
+	    	boolean results = false;
+	    	
+	    	boolean hasAccount = hasAccount(player, true);
+	
+	    	if ( economy != null && !hasAccount ) {
+	    		player.sendMessage( "Economy Error: You don't have an account.");
+	    	}
+	    	else 
+	    	if (economy != null) {
+	       		if ( isPreV1_4() ) {
+	       			results = economy.has(player.getName(), amount);
+	    		}
+	    		else {
+	    			OfflinePlayer oPlayer = getOfflinePlayer( player );
+	    			if ( oPlayer != null ) {
+	    				results = economy.has(oPlayer, amount);
+	    			}
+	    		}
+	
+	    	}
         return results;
     }
 

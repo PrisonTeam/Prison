@@ -147,27 +147,6 @@ public class CustomItems
 		return results;
 	}
 	
-//	public PrisonBlock getCustomBlock( org.bukkit.block.Block spigotBlock ) {
-//		PrisonBlock results = null;
-//		
-//		String customBlockId = getCustomBlockId( spigotBlock );
-//		
-//		if ( customBlockId != null ) {
-//			results = SpigotPrison.getInstance().getPrisonBlockTypes()
-//									.getBlockTypesByName( customBlockId );
-//			
-//			if ( results != null ) {
-//				Location loc = SpigotUtil.bukkitLocationToPrison( spigotBlock.getLocation() );
-//
-//				results.setLocation( loc );
-//			}
-//			
-//			SpigotBlock sBlock = new SpigotBlock();
-//		}
-//		
-//		return results;
-//	}
-	
 	
 	@Override
 	public Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate ) {

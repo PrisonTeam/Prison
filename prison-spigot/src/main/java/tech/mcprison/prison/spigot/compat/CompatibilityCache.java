@@ -23,8 +23,6 @@ public class CompatibilityCache {
 	public static final XMaterial NULL_TOKEN = XMaterial.VOID_AIR;
 	
 	
-//	private Map<String, BlockType> blockTypeCache;
-	
 	private Map<String, XMaterial> xMaterialCache;
 	
 	
@@ -34,7 +32,6 @@ public class CompatibilityCache {
 	public CompatibilityCache() {
 		super();
 		
-//		this.blockTypeCache = new TreeMap<>();
 		this.xMaterialCache = new TreeMap<>();
 		
 		initializeForcedCache();
@@ -54,44 +51,6 @@ public class CompatibilityCache {
 		xMaterialCache.put( "WATER", XMaterial.WATER );
 		
 	}
-	
-	
-//	public BlockType getCachedBlockType( Block spigotBlock, byte data ) {
-//		String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" +data);
-//		
-//		BlockType blockType = blockTypeCache.get( key );
-//		
-//		return blockType; //blockType == BlockType.NULL_BLOCK ? null : blockType;
-//	}
-//	public void putCachedBlockType( Block spigotBlock, byte data, BlockType blockType ) {
-//		if ( spigotBlock != null ) {
-//			String key = spigotBlock.getType().name() + ( data <= 0 ? "" : ":" + data);
-//			
-//			if ( !blockTypeCache.containsKey( key ) ) {
-//				blockTypeCache.put( key, blockType == null ? BlockType.NULL_BLOCK : blockType );
-//			}
-//		}
-//	}
-	
-	
-//	public BlockType getCachedBlockType( ItemStack spigotStack, byte data ) {
-//		String key = spigotStack.getType().name() + ( data <= 0 ? "" : ":" + data);
-//		
-//		BlockType blockType = blockTypeCache.get( key );
-//		
-//		return blockType; // blockType == BlockType.NULL_BLOCK ? null : blockType;
-//	}
-//	public void putCachedBlockType( ItemStack spigotStack, byte data, BlockType blockType ) {
-//		if ( spigotStack != null ) {
-//			String key = spigotStack.getType().name() + ( data <= 0 ? "" : ":" + data);
-//			
-//			if ( !blockTypeCache.containsKey( key ) ) {
-//				blockTypeCache.put( key, blockType == null ? BlockType.NULL_BLOCK : blockType );
-//			}
-//		}
-//	}
-	
-	
 	
 	
 	public XMaterial getCachedXMaterial( tech.mcprison.prison.internal.block.Block prisonBlock )
@@ -131,23 +90,6 @@ public class CompatibilityCache {
 		}
 	}
 	
-//	public XMaterial getCachedXMaterial( BlockType blockType, byte data ) {
-//		String key = blockType.name() + ( data <= 0 ? "" : ":" +data);
-//		
-//		XMaterial xMat = xMaterialCache.get( key );
-//		
-//		// Using VOID_AIR as temp placeholder for null values:
-//		return xMat; // xMat == XMaterial.VOID_AIR ? null : xMat;
-//	}
-//	public void putCachedXMaterial( BlockType blockType, byte data, XMaterial xMat ) {
-//			String key = blockType.name() + ( data <= 0 ? "" : ":" +data);
-//			
-//			if ( !xMaterialCache.containsKey( key ) ) {
-//			// Using VOID_AIR as temp placeholder for null values:
-//			xMaterialCache.put( key, xMat == null ? NULL_TOKEN : xMat );
-//		}
-//	}
-
 	public SpigotPrison getPlugin() {
 		return plugin;
 	}

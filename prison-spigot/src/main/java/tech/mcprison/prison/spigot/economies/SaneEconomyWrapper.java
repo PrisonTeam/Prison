@@ -26,49 +26,49 @@ public class SaneEconomyWrapper
     
     public boolean hasAccount( Player player ) {
     	
-    	EconomablePlayer p = toEconomablePlayer(player);
-    	
-    	return p != null && economyManager.accountExists( p );
+	    	EconomablePlayer p = toEconomablePlayer(player);
+	    	
+	    	return p != null && economyManager.accountExists( p );
     }
 	
     public double getBalance(Player player) {
-    	double result = 0;
-        
-    	try {
-    		
-    		if ( !hasAccount( player ) ) {
-        		player.sendMessage( "Economy Error: You don't have an account.");
-        	}
-        	else {
-        		
-        		EconomablePlayer p = toEconomablePlayer(player);
-        		result = economyManager.getBalance( p );
-        	}
-    	}
+	    	double result = 0;
+	        
+	    	try {
+	    		
+	    		if ( !hasAccount( player ) ) {
+	        		player.sendMessage( "Economy Error: You don't have an account.");
+	        	}
+	        	else {
+	        		
+	        		EconomablePlayer p = toEconomablePlayer(player);
+	        		result = economyManager.getBalance( p );
+	        	}
+	    	}
 	    catch ( Exception e ) {
-	    	Output.get().logError( "Failed to get SaneEconomy balance. " +
-	    			"Using API v0.15.0. You may need to downgrade. ", e );
+		    	Output.get().logError( "Failed to get SaneEconomy balance. " +
+		    			"Using API v0.15.0. You may need to downgrade. ", e );
 	    }
 
         return result;
     }
 
     public void setBalance(Player player, double amount) {
-    	try {
-    		
-    		if ( !hasAccount( player ) ) {
-        		player.sendMessage( "Economy Error: You don't have an account.");
-        	}
-        	else {
-        		
-        		EconomablePlayer p = toEconomablePlayer(player);
-        		economyManager.setBalance( p, amount);
-        	}
-    		
-    	}
+	    	try {
+	    		
+	    		if ( !hasAccount( player ) ) {
+	        		player.sendMessage( "Economy Error: You don't have an account.");
+	        	}
+	        	else {
+	        		
+	        		EconomablePlayer p = toEconomablePlayer(player);
+	        		economyManager.setBalance( p, amount);
+	        	}
+	    		
+	    	}
 	    catch ( Exception e ) {
-	    	Output.get().logError( "Failed to set SaneEconomy balance. " +
-	    			"Using API v0.15.0. You may need to downgrade. ", e );
+		    	Output.get().logError( "Failed to set SaneEconomy balance. " +
+		    			"Using API v0.15.0. You may need to downgrade. ", e );
 	    }
     }
 

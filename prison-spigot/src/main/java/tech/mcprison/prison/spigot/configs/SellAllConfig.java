@@ -26,7 +26,7 @@ public class SellAllConfig extends SpigotConfigComponents {
 
     public void initialize(){
 
-    	String path = "/SellAllConfig.yml";
+    		String path = "/SellAllConfig.yml";
     	
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + path );

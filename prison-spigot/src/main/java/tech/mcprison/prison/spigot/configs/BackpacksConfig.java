@@ -25,7 +25,7 @@ public class BackpacksConfig extends SpigotConfigComponents{
 
     public void initialize(){
 
-    	String path = "/backpacks/backpacksconfig.yml";
+    		String path = "/backpacks/backpacksconfig.yml";
     	
         // Filepath
         File file = new File(SpigotPrison.getInstance().getDataFolder() + path );

@@ -14,21 +14,14 @@ import tech.mcprison.prison.util.Location;
 public interface CompatibilityBlocks
 			extends CompatibilityPlayer {
 
-//	public BlockType getBlockType(Block spigotBlock);
-
 	public SpigotBlock getSpigotBlock(Block spigotBlock);
 	
 	public XMaterial getXMaterial( Block spigotBlock );
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock );
 	
-//	public XMaterial getXMaterial( BlockType blockType );
-
-//	public BlockType getBlockType( ItemStack spigotStack );
 
 	
-	
-//	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
 	
 	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock );
 	
@@ -37,12 +30,6 @@ public interface CompatibilityBlocks
 
 	
 	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Location location );
-	
-//	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock );
-//	
-//	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock );
-//	
-//	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock );
 	
 
 	
@@ -57,10 +44,6 @@ public interface CompatibilityBlocks
     
     public boolean setDurability( SpigotItemStack itemStack, int newDurability );
     
-//	public int getDurability( SpigotItemStack itemInHand );
-//	
-//	public void setDurability( SpigotItemStack itemInHand, int newDurability );
-	
 	public void setBlockFace( Block bBlock, BlockFace blockFace );
 	
     public ItemStack getLapisItemStack();

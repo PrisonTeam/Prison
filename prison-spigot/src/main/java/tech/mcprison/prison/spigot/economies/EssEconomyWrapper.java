@@ -39,17 +39,17 @@ class EssEconomyWrapper {
 	
     
     public boolean hasAccount( Player player ) {
-    	return Economy.playerExists( player.getName() );
+    		return Economy.playerExists( player.getName() );
     }
 
-    double getBalance(Player player) {
+    public double getBalance(Player player) {
         try {
-        	if ( hasAccount( player ) ) {
-        		return Economy.getMoneyExact(player.getName()).doubleValue();
-        	}
-        	
-        	player.sendMessage( "You don't exist in the economy plugin." );
-        	return 0;
+	        	if ( hasAccount( player ) ) {
+	        		return Economy.getMoneyExact(player.getName()).doubleValue();
+	        	}
+	        	
+	        	player.sendMessage( "You don't exist in the economy plugin." );
+	        	return 0;
         	
         } catch (UserDoesNotExistException e) {
             player.sendMessage("You don't exist in the economy plugin.");
@@ -57,11 +57,11 @@ class EssEconomyWrapper {
         }
     }
 
-    void setBalance(Player player, double amount) {
+    public void setBalance(Player player, double amount) {
         try {
            	if ( hasAccount( player ) ) {
            		Economy.setMoney(player.getName(), new BigDecimal(amount));
-        	}
+           	}
            	else {
            		
            		player.sendMessage( "You don't exist in the economy plugin." );

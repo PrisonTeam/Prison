@@ -53,10 +53,5 @@ public abstract class Spigot_1_9_Player
 		String message = Text.translateAmpColorCodes( actionBar );
 		ActionBar.sendActionBar( player, message );
 		
-		// Was using the following until it was replaced with XSeries' ActionBar:
-//		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
-//					new TextComponent( actionBar ) );
-
-//		player.sendTitle( "", actionBar );
 	}
 }

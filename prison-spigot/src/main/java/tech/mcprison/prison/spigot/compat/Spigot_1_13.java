@@ -29,11 +29,11 @@ public class Spigot_1_13
 
     @Override 
     public EquipmentSlot getHand(BlockPlaceEvent e) {
-    	if (e.getHand() == null) {
-    		return null;
-    	} else {
-    		return EquipmentSlot.valueOf(e.getHand().name());
-    	}
+	    	if (e.getHand() == null) {
+	    		return null;
+	    	} else {
+	    		return EquipmentSlot.valueOf(e.getHand().name());
+	    	}
     }
     
     @Override 
@@ -43,22 +43,22 @@ public class Spigot_1_13
 
     @Override 
     public ItemStack getItemInMainHand(Player player) {
-    	return getItemInMainHand( player.getInventory() );
+    		return getItemInMainHand( player.getInventory() );
     }
     
 	@Override 
     public ItemStack getItemInMainHand(PlayerInventory playerInventory) {
-    	return playerInventory.getItemInMainHand();
+		return playerInventory.getItemInMainHand();
     }
    
 	@Override
     public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e) {
-    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
+		return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
     }
     
 	@Override
     public SpigotItemStack getPrisonItemInMainHand(Player player) {
-    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+		return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
 	
 	@Override
@@ -83,12 +83,12 @@ public class Spigot_1_13
 
     @Override 
     public ItemStack getItemInOffHand(Player player ) {
-    	return getItemInOffHand(player.getInventory());
+    		return getItemInOffHand(player.getInventory());
     }
     
     @Override
     public ItemStack getItemInOffHand(PlayerInventory playerInventory) {
-    	return playerInventory.getItemInOffHand();
+    		return playerInventory.getItemInOffHand();
     }
     
     /**
@@ -112,8 +112,8 @@ public class Spigot_1_13
     @Override
     public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
     	
-    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
-    			.setItemInMainHand( itemStack.getBukkitStack() );
+	    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
+	    			.setItemInMainHand( itemStack.getBukkitStack() );
     }
 
     @Override
@@ -123,16 +123,16 @@ public class Spigot_1_13
     
     @Override
     public void setItemInMainHand(SpigotPlayer p, ItemStack itemStack){
-    	p.getWrapper().getInventory().setItemInMainHand(itemStack);
+    		p.getWrapper().getInventory().setItemInMainHand(itemStack);
     }
     
     @Override
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
     	
-    	ItemStack iStack = itemStack == null ? null : itemStack.getBukkitStack();
-    	
-    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
-    			.setItemInOffHand( iStack );
+	    	ItemStack iStack = itemStack == null ? null : itemStack.getBukkitStack();
+	    	
+	    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
+	    			.setItemInOffHand( iStack );
     }
     
     @Override 

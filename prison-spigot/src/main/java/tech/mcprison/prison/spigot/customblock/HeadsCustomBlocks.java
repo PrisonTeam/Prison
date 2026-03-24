@@ -59,21 +59,18 @@ public class HeadsCustomBlocks
 		return results;
 	}
 
-
-//	@Override
-//	public List<? extends ItemStack> getDrops( PrisonBlock prisonBlock )
-//	{
-//		List<? extends ItemStack> results = new ArrayList<>();
-//		
-//		return results;
-//	}
-
-
 	@Override
 	public List<? extends ItemStack> getDrops(Player player, PrisonBlock prisonBlock, ItemStack tool) {
 		List<? extends ItemStack> results = new ArrayList<>();
 		
 		return results;
+	}
+
+	protected HeadsCustomBlocksWrapper getHeadsCustomBlocksWrapper() {
+		return headsCustomBlocksWrapper;
+	}
+	protected void setHeadsCustomBlocksWrapper(HeadsCustomBlocksWrapper headsCustomBlocksWrapper) {
+		this.headsCustomBlocksWrapper = headsCustomBlocksWrapper;
 	}
 	
 }
