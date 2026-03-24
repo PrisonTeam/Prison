@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 
 
 public class PlaceholderIdentifier {
@@ -176,9 +177,10 @@ public class PlaceholderIdentifier {
 	 * @param playerName
 	 */
 	public void setPlayer( UUID playerUuid, String playerName ) {
-		Player player = null;
 		
-		player = Prison.get().getPlatform().getRankPlayer( playerUuid, playerName );
+		RankPlayer rPlayer = Prison.get().getPlatform().getRankPlayer( playerUuid, playerName );
+		
+		Player player = Prison.get().getPlatform().getPlatformPlayer( rPlayer );
 			
 		if ( player != null ) {
 			setPlayer(player);

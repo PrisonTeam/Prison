@@ -760,6 +760,8 @@ public class MineManager
 		}
 		else {
 			
+			// If the placeholder is a MINEPLAYERS, then dynamically figure out
+			// what mine a player is is, which requires a location...
 			if ( player != null && player.getLocation() != null ) {
 				
 				mine = PrisonMines.getInstance().findMineLocation( player );
