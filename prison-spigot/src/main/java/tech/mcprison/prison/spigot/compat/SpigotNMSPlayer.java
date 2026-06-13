@@ -151,9 +151,9 @@ public class SpigotNMSPlayer
 			}
 		}
         catch (IllegalAccessException | InvocationTargetException ex) {
-        	supported = false;
-            
-        	Output.get().logInfo("Could not get locale of player " + player.getName(), ex);
+	        	supported = false;
+	            
+	        	Output.get().logInfo("Could not get locale of player " + player.getName(), ex);
         }
 		catch ( Exception ex ) {
 			supported = false;

@@ -22,19 +22,18 @@ public class PrisonSpigotMinesCommands
 
             if (isPrisonConfig("prison-gui-enabled") && isConfig("Options.Mines.GUI_Enabled")){
             	
-            	Object regCommand = Prison.get().getCommandHandler()
-            				.getRegisteredCommandClass( PrisonSpigotGUICommands.class );
-            	if ( regCommand != null ) {
-            		PrisonSpigotGUICommands psGUICmd = (PrisonSpigotGUICommands) regCommand;
-            		psGUICmd.cmdPrisonManagerMines( sender, page, "gui mines", "close" );
-            		
-            		return;
-            	}
-//                sender.dispatchCommand("gui mines");
+	            	Object regCommand = Prison.get().getCommandHandler()
+	            				.getRegisteredCommandClass( PrisonSpigotGUICommands.class );
+	            	if ( regCommand != null ) {
+	            		PrisonSpigotGUICommands psGUICmd = (PrisonSpigotGUICommands) regCommand;
+	            		psGUICmd.cmdPrisonManagerMines( sender, page, "gui mines", "close" );
+	            		
+	            		return;
+	            	}
             }
             else {
             	
-            	sender.dispatchCommand("mines help");
+            		sender.dispatchCommand("mines help");
             }
 
 		} else {

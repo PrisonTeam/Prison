@@ -55,7 +55,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
      * */
     public static boolean isEnabled() {
     	
-    	return SpigotPrison.getInstance().isSellAllEnabled();
+    		return SpigotPrison.getInstance().isSellAllEnabled();
     }
 
     /**
@@ -100,13 +100,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         if (sender.hasPermission("prison.admin")) {
-        	sender.dispatchCommand("sellall help");
-//            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall help" );
-//            sender.dispatchCommand(registeredCmd);
+        		sender.dispatchCommand("sellall help");
         } else {
-        	sender.dispatchCommand("sellall sell");
-//            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-//            sender.dispatchCommand(registeredCmd);
+        		sender.dispatchCommand("sellall sell");
         }
     }
 
@@ -121,7 +117,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
            		def = "false") String enable){
 
         if ( !isEnabled() ){
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
@@ -188,7 +184,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
          		def = "true") String enable){
 
         if ( !isEnabled() ){
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
@@ -235,7 +231,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         def = "") String enable){
 
         if (!isEnabled() ){
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
@@ -272,7 +268,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
                     "'silent' suppresses all notifications. [silent]") String notification ){
 
         if ( !isEnabled() ) {
-        	return;
+        		return;
         }
 
         Player p = getSpigotPlayer(sender);
@@ -282,35 +278,35 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         
         tech.mcprison.prison.internal.Player sPlayerAlt = getOnlinePlayer( sender, playerName );
         if ( sPlayerAlt == null ){
-        	// If sPlayerAlt is null then the value in playerName is really intended for notification:
-        	notification = playerName;
+	        	// If sPlayerAlt is null then the value in playerName is really intended for notification:
+	        	notification = playerName;
         }
 
         if ( isOp && !sender.isPlayer() && sPlayerAlt != null ) {
-        	// Only if OP and a valid player name was provided, then OP is trying to run this
-        	// for another player
-        	
-        	if ( !sPlayerAlt.isOnline() ) {
-        		sender.sendMessage( "Player is not online." );
-        		return;
-        	}
-        	
-        	// Set the active player to who OP specified:
-        	p = ((SpigotPlayer) sPlayerAlt).getWrapper();
+	        	// Only if OP and a valid player name was provided, then OP is trying to run this
+	        	// for another player
+	        	
+	        	if ( !sPlayerAlt.isOnline() ) {
+	        		sender.sendMessage( "Player is not online." );
+	        		return;
+	        	}
+	        	
+	        	// Set the active player to who OP specified:
+	        	p = ((SpigotPlayer) sPlayerAlt).getWrapper();
         }
         
 
         else if (p == null){
         	
-        	if ( getPlayerByName( playerName ) != null ) {
-        		
-        		sender.sendMessage( String.format( "&cSorry but the specified player must be online "
-        				+ "[/sellall sell %s]", playerName ) );
-        	}
-        	else {
-        		
-        		sender.sendMessage( "&cSorry but you can't use that command from the console.");
-        	}
+	        	if ( getPlayerByName( playerName ) != null ) {
+	        		
+	        		sender.sendMessage( String.format( "&cSorry but the specified player must be online "
+	        				+ "[/sellall sell %s]", playerName ) );
+	        	}
+	        	else {
+	        		
+	        		sender.sendMessage( "&cSorry but you can't use that command from the console.");
+	        	}
             
             
             return;
@@ -322,14 +318,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
-//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
 
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
             	sender.sendMessage( 
                 		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission)
-//                		+ " [" + permission + "]"
                 		);
                 return;
             }
@@ -367,14 +361,11 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
-
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
             	sender.sendMessage( 
                 		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//                		+ " [" + permission + "]"
                 		);
                 return;
             }
@@ -403,14 +394,11 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
 
-//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
-
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
                 Output.get().sendWarn(new SpigotPlayer(p), 
                 		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//                		+ " [" + permission + "]"
                 		);
                 return;
             }
@@ -435,7 +423,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
              ){
 
         if ( !isEnabled() ) {
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
@@ -445,22 +433,18 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         boolean isOp = sender.isOp();
         
         tech.mcprison.prison.internal.Player sPlayerAlt = getOnlinePlayer( sender, playerName );
-//        if ( sPlayerAlt == null ){
-//        	// If sPlayerAlt is null then the value in playerName is really intended for notification:
-//        	notification = playerName;
-//        }
 
         if ( isOp && !sender.isPlayer() && sPlayerAlt != null ) {
-        	// Only if OP and a valid player name was provided, then OP is trying to run this
-        	// for another player
-        	
-        	if ( !sPlayerAlt.isOnline() ) {
-        		sender.sendMessage( "Player is not online." );
-        		return;
-        	}
-        	
-        	// Set the active player to who OP specified:
-        	p = ((SpigotPlayer) sPlayerAlt).getWrapper();
+	        	// Only if OP and a valid player name was provided, then OP is trying to run this
+	        	// for another player
+	        	
+	        	if ( !sPlayerAlt.isOnline() ) {
+	        		sender.sendMessage( "Player is not online." );
+	        		return;
+	        	}
+	        	
+	        	// Set the active player to who OP specified:
+	        	p = ((SpigotPlayer) sPlayerAlt).getWrapper();
         }
         
 
@@ -482,14 +466,11 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
         
 
-//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
-
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
             	sender.sendMessage( 
                 		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//                		+ " [" + permission + "]"
                 		);
                 return;
             }
@@ -516,25 +497,23 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
         if (!sellAllUtil.isSellAllHandEnabled){
-        	sender.sendMessage( "The command `/sellall valueOfHand` is disabled in the configs! (SellAllHandEnabled)");
+        		sender.sendMessage( "The command `/sellall valueOfHand` is disabled in the configs! (SellAllHandEnabled)");
             return;
         }
 
         Player p = getSpigotPlayer(sender);
 
         if (p == null){
-        	sender.sendMessage( "&cSorry but you can't use that from the console!");
+        		sender.sendMessage( "&cSorry but you can't use that from the console!");
             return;
         }
 
-//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
 
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
-            	sender.sendMessage( 
+            		sender.sendMessage( 
                 		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//                		+ " [" + permission + "]"
                 		);
                 return;
             }
@@ -558,7 +537,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     public void sellAllSellWithDelayCommand(CommandSender sender){
 
         if ( !isEnabled() ) {
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
@@ -570,14 +549,11 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
 
-//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
-
         if (sellAllUtil.isSellAllSellPermissionEnabled){
             String permission = sellAllUtil.permissionSellAllSell;
             if (permission == null || !p.hasPermission(permission)){
                 Output.get().sendWarn(new SpigotPlayer(p), 
                 		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//                		+ " [" + permission + "]"
                 		);
                 return;
             }
@@ -605,7 +581,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllAutoEnableUser(CommandSender sender){
 
         if ( !isEnabled() ) {
-        	return;
+        		return;
         }
         StringBuilder debugInfo = new StringBuilder();
         debugInfo.append( "[sellall autoSellToggle] " );
@@ -622,20 +598,15 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
 
-//        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
-
         if (!sellAllUtil.isAutoSellPerUserToggleable){
             return;
         }
 
         boolean hasAutosellPerms = sPlayer.checkAutoSellTogglePerms( debugInfo );
         
-//        String permission = sellAllUtil.permissionAutoSellPerUserToggleable;
         if ( sellAllUtil.isAutoSellPerUserToggleablePermEnabled && !hasAutosellPerms ) {
-//        	if (sellAllUtil.isAutoSellPerUserToggleablePermEnabled && (permission != null && !p.hasPermission(permission))){
             Output.get().sendWarn(sender, 
             		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//            		+ " [" + permission + "]"
             		);
             return;
         }
@@ -645,12 +616,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             if ( isplayerAutosellEnabled  ){ 
                 String msg = messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_disabled);
             	
-            	Output.get().sendInfo( sPlayer, msg );
+                Output.get().sendInfo( sPlayer, msg );
             } 
             else {
-            	String msg = messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_enabled);
-            	
-            	Output.get().sendInfo( sPlayer, msg );
+	            	String msg = messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_enabled);
+	            	
+	            	Output.get().sendInfo( sPlayer, msg );
             }
         }
         
@@ -658,65 +629,6 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         	Output.get().logInfo( debugInfo.toString() );
         }
     }
-//
-//    @Command(identifier = "sellall gui", 
-//    		description = "SellAll GUI command", 
-////    		aliases = "gui sellall",
-//    		permissions = "prison.admin", onlyPlayers = true)
-//    private void sellAllGuiCommand(CommandSender sender,
-//    		@Arg(name = "page", description = "If there are more than 45 items, then they " +
-//    				"will be shown on multiple pages.  The page parameter starts with " +
-//    				"page 1.", def = "1" ) int page){
-//
-//        if (!isEnabled()) return;
-//
-//        Player p = getSpigotPlayer(sender);
-//
-//        // Sender must be a Player, not something else like the Console.
-//        if (p == null) {
-//            Output.get().sendError(sender, getMessages().getString(MessagesConfig.StringID.spigot_message_console_error));
-//            return;
-//        }
-//
-//        SellAllUtil sellAllUtil = SellAllUtil.get();
-//        if (sellAllUtil == null){
-//            return;
-//        }
-//
-//        if (!sellAllUtil.openSellAllGUI( p, page, "sellall gui", "close" )){
-//            // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
-//            if (p.hasPermission("prison.admin")) {
-//            	
-//            	new SpigotVariousGuiMessages().sellallGUIIsDisabledMsg(sender);
-////                Output.get().sendError(sender, 
-////                		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
-//            }
-//        }
-//    }
-//    
-//    @Command(identifier = "sellall gui blocks", 
-//    		description = "SellAll GUI Blocks command", 
-//    		aliases = "gui sellall",
-//    		permissions = "prison.admin", onlyPlayers = true)
-//    private void sellAllGuiBlocksCommand(CommandSender sender,
-//    		@Arg(name = "page", description = "If there are more than 45 items, then they " +
-//    				"will be shown on multiple pages.  The page parameter starts with " +
-//    				"page 1.", def = "1" ) int page){
-//    	
-//    	if (!isEnabled()) return;
-//    	
-//    	Player p = getSpigotPlayer(sender);
-//    	
-//    	// Sender must be a Player, not something else like the Console.
-//    	if (p == null) {
-//    		Output.get().sendError(sender, getMessages().getString(MessagesConfig.StringID.spigot_message_console_error));
-//    		return;
-//    	}
-//    	
-//    	SellAllAdminBlocksGUI saBlockGui = new SellAllAdminBlocksGUI( p, page, "sellall gui blocks", "sellall gui" );
-//    	saBlockGui.open();
-//    	
-//    }
 
     @Command(identifier = "sellall items add", 
     		description = "This will add an item to the SellAll shop. "
@@ -730,58 +642,35 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
                    @Arg(name = "Value", description = "The value of the item.") Double value){
 
         if ( !isEnabled() ){
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
         if (itemID == null){
-        	sender.sendMessage( messages.getString(
+        		sender.sendMessage( messages.getString(
             		MessagesConfig.StringID.spigot_message_sellall_item_missing_name));
             return;
         }
         itemID = itemID.toUpperCase();
 
         if (value == null){
-        	sender.sendMessage( messages.getString(
+        		sender.sendMessage( messages.getString(
             		MessagesConfig.StringID.spigot_message_sellall_item_missing_price));
             return;
         }
 
 
         if (sellAllUtil.sellAllConfig.getConfigurationSection("Items." + itemID) != null){
-        	sender.sendMessage( itemID + " " + 
+        		sender.sendMessage( itemID + " " + 
             			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_already_added));
             return;
         }
 
         if (sellAllUtil.addSellAllBlock( itemID, null, value )) {
-        	sender.sendMessage( "&3 ITEM [" + itemID + ", " + value + "] " + 
+        		sender.sendMessage( "&3 ITEM [" + itemID + ", " + value + "] " + 
         			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
         }
 
-//        try {
-//            XMaterial blockAdd;
-//            try {
-//                blockAdd = XMaterial.matchXMaterial(itemID).orElse(null);
-//            } 
-//            catch (IllegalArgumentException ex){
-//            	sender.sendMessage( messages.getString(
-//                		MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + 
-//                		" [" + itemID + "]");
-//                return;
-//            }
-//
-//            if (sellAllUtil.addSellAllBlock(blockAdd, value)){
-//            	sender.sendMessage( "&3 ITEM [" + itemID + ", " + value + "] " + 
-//                			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
-//            }
-//
-//        } 
-//        catch (IllegalArgumentException ex){
-//        	sender.sendMessage( messages.getString(
-//            		MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + 
-//            		" [" + itemID + "]");
-//        }
     }
 
     
@@ -793,71 +682,68 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllAddHandItemCommand(CommandSender sender, 
     		@Arg(name = "Value", description = "The value of the item.") Double value ) {
     	
-    	if ( !isEnabled() ) {
-    		return;
-    	}
-    	SellAllUtil sellAllUtil = SellAllUtil.get();
-
-    	
-    	SpigotPlayer sPlayer = (SpigotPlayer) sender.getPlatformPlayer();
-    	
-    	if ( sPlayer == null ) {
-    		String msg = String.format( 
-    				"Only online players can add what they're holding."
-    				);
-    		sender.sendMessage(msg);
-    	}
-    	else {
-    		
-    		SpigotPlayerUtil sUtil = new SpigotPlayerUtil( sPlayer );
-    		
-    		SpigotItemStack iStack = sUtil.getItemInHand();
-    		
-    		if ( iStack == null || iStack.isAir() ) {
-    			
-    			String msg = String.format( 
-    					"Nothing to add to sellall. You're not holding anything other than air."
-    					);
-    			sender.sendMessage(msg);
-    		}
-    		else {
-    			
-    	        if (value == null){
-    	        	sender.sendMessage( messages.getString(
-    	            		MessagesConfig.StringID.spigot_message_sellall_item_missing_price));
-    	            return;
-    	        }
-
-
-
-    			
-    			PrisonBlock pBlock = iStack.getMaterial();
-    			
-    			String displayName = iStack.getDisplayName();
-    	        if ( displayName != null && displayName.trim().length() > 0 ) {
-    	        	pBlock.setDisplayName( displayName.trim() );
-    	        }
-    	        
-    			String sellallName = pBlock.getBlockNameSearch();
-
-    			
-    			if (sellAllUtil.sellAllConfig.getConfigurationSection("Items." + sellallName.toUpperCase()) != null){
-    				sender.sendMessage( sellallName + " " + 
-    						messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_already_added));
-    				return;
-    			}
-    			
-    			
-
-                if (sellAllUtil.addSellAllBlock( sellallName, value, pBlock )){
-                	sender.sendMessage( "&3 ITEM [" + sellallName + ", " + value + "] " + 
-                    			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
-                }
-                
-//    			sellAllAddCommand( sender, sellallName, value );
-    	        
-    		}
-    	}
+	    	if ( !isEnabled() ) {
+	    		return;
+	    	}
+	    	SellAllUtil sellAllUtil = SellAllUtil.get();
+	
+	    	
+	    	SpigotPlayer sPlayer = (SpigotPlayer) sender.getPlatformPlayer();
+	    	
+	    	if ( sPlayer == null ) {
+	    		String msg = String.format( 
+	    				"Only online players can add what they're holding."
+	    				);
+	    		sender.sendMessage(msg);
+	    	}
+	    	else {
+	    		
+	    		SpigotPlayerUtil sUtil = new SpigotPlayerUtil( sPlayer );
+	    		
+	    		SpigotItemStack iStack = sUtil.getItemInHand();
+	    		
+	    		if ( iStack == null || iStack.isAir() ) {
+	    			
+	    			String msg = String.format( 
+	    					"Nothing to add to sellall. You're not holding anything other than air."
+	    					);
+	    			sender.sendMessage(msg);
+	    		}
+	    		else {
+	    			
+	    	        if (value == null){
+	    	        	sender.sendMessage( messages.getString(
+	    	            		MessagesConfig.StringID.spigot_message_sellall_item_missing_price));
+	    	            return;
+	    	        }
+	
+	    			
+	    			PrisonBlock pBlock = iStack.getMaterial();
+	    			
+	    			String displayName = iStack.getDisplayName();
+	    	        if ( displayName != null && displayName.trim().length() > 0 ) {
+	    	        		pBlock.setDisplayName( displayName.trim() );
+	    	        }
+	    	        
+	    			String sellallName = pBlock.getBlockNameSearch();
+	
+	    			
+	    			if (sellAllUtil.sellAllConfig.getConfigurationSection("Items." + sellallName.toUpperCase()) != null){
+	    				sender.sendMessage( sellallName + " " + 
+	    						messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_already_added));
+	    				return;
+	    			}
+	    			
+	    			
+	
+	            if (sellAllUtil.addSellAllBlock( sellallName, value, pBlock )){
+	            	sender.sendMessage( "&3 ITEM [" + sellallName + ", " + value + "] " + 
+	                			messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
+	            }
+	            
+	    	        
+	    		}
+	    	}
     }
     
     /**
@@ -896,7 +782,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		@Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID ) {
 
         if ( !isEnabled() ) {
-        	return;
+    			return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
@@ -916,11 +802,6 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         	Output.get().sendInfo(sender, itemID + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_delete_success));
         }
 
-//        if (XMaterial.matchXMaterial(itemID).isPresent()) {
-//            if (sellAllUtil.removeSellAllBlock(XMaterial.matchXMaterial(itemID).get())) {
-//                Output.get().sendInfo(sender, itemID + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_delete_success));
-//            }
-//        }
     }
 
     @Command(identifier = "sellall items edit", 
@@ -931,7 +812,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
                 @Arg(name = "Value", description = "The value of the item.") Double value){
 
         if ( !isEnabled() ) {
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
@@ -959,26 +840,6 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         	
             Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
         }
-        
-//        try {
-//            XMaterial blockAdd;
-//            try {
-//            	String xMatName = itemID.lastIndexOf(":") > 0 ? itemID.substring(0, itemID.lastIndexOf(":") ) : itemID;
-//            	
-//                blockAdd = XMaterial.matchXMaterial( xMatName ).orElse(null);
-//            } 
-//            catch (IllegalArgumentException ex){
-//                Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
-//                return;
-//            }
-//
-//            if (sellAllUtil.editPrice(blockAdd, value)){
-//                Output.get().sendInfo(sender, "&3ITEM [" + itemID + ", " + value + "] " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_edit_success));
-//            }
-//
-//        } catch (IllegalArgumentException ex){
-//            Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
-//        }
     }
 
     
@@ -994,54 +855,45 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     				def = "false") 
     			String isLoreAllowed ){
     	
-    	if ( !isEnabled() ) {
-    		return;
-    	}
-    	SellAllUtil sellAllUtil = SellAllUtil.get();
-    	
-    	if (itemID == null){
-    		Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_missing_name));
-    		return;
-    	}
-    	itemID = itemID.toUpperCase();
-    	
-    	
-    	if (sellAllUtil.sellAllConfig.getConfigurationSection("Items." + itemID) == null){
-    		Output.get().sendWarn(sender, itemID + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_not_found));
-    		return;
-    	}
-    	
-    	boolean allowLore = false;
-    	
-    	if ( isLoreAllowed != null && 
-    			("true".equalsIgnoreCase(isLoreAllowed) || "allow".equalsIgnoreCase(isLoreAllowed)) ) {
-    		allowLore = true;
-    	}
+	    	if ( !isEnabled() ) {
+	    		return;
+	    	}
+	    	SellAllUtil sellAllUtil = SellAllUtil.get();
+	    	
+	    	if (itemID == null){
+	    		Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_missing_name));
+	    		return;
+	    	}
+	    	itemID = itemID.toUpperCase();
+	    	
+	    	
+	    	if (sellAllUtil.sellAllConfig.getConfigurationSection("Items." + itemID) == null){
+	    		Output.get().sendWarn(sender, itemID + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_not_found));
+	    		return;
+	    	}
+	    	
+	    	boolean allowLore = false;
+	    	
+	    	if ( isLoreAllowed != null && 
+	    			("true".equalsIgnoreCase(isLoreAllowed) || "allow".equalsIgnoreCase(isLoreAllowed)) ) {
+	    		allowLore = true;
+	    	}
+	    		
     		
-    		
-//    	sender.sendMessage("not yet enabled");
-//    	return;
-    	
-    	try {
-    		
-    		PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock( itemID );
-    		
-//    		XMaterial blockAdd;
-//    		try {
-//    			blockAdd = XMaterial.matchXMaterial(itemID).orElse(null);
-//    		} catch (IllegalArgumentException ex){
-//    			Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
-//    			return;
-//    		}
-    		
-    		if (sellAllUtil.editAllowLore( pBlock, allowLore )) {
-    			
-    			Output.get().sendInfo(sender, "&3ITEM [" + itemID + ", allowLore= " + allowLore + "] " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_edit_success));
-    		}
-    		
-    	} catch (IllegalArgumentException ex){
-    		Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
-    	}
+	    	
+	    	try {
+	    		
+	    		PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock( itemID );
+	    		
+	    		
+	    		if (sellAllUtil.editAllowLore( pBlock, allowLore )) {
+	    			
+	    			Output.get().sendInfo(sender, "&3ITEM [" + itemID + ", allowLore= " + allowLore + "] " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_edit_success));
+	    		}
+	    		
+	    	} catch (IllegalArgumentException ex){
+	    		Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_id_not_found) + " [" + itemID + "]");
+	    	}
     }
     
     
@@ -1051,197 +903,195 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllItemInspectCommand(CommandSender sender) {
     	
-    	if ( !isEnabled() ) {
-    		return;
-    	}
-    	SellAllUtil sellAllUtil = SellAllUtil.get();
-
-    	
-    	SpigotPlayer sPlayer = (SpigotPlayer) sender.getPlatformPlayer();
-    	
-    	if ( sPlayer == null ) {
-    		String msg = String.format( 
-    				"Only online players can see what they're holding."
-    				);
-    		sender.sendMessage(msg);
-    	}
-    	else {
-    		
-    		SpigotPlayerUtil sUtil = new SpigotPlayerUtil( sPlayer );
-    		
-    		SpigotItemStack iStack = sUtil.getItemInHand();
-    		
-    		if ( iStack == null || iStack.isAir() ) {
-    			
-    			String msg = String.format( 
-    					"Nothing to report. You're not holding anything other than air."
-    					);
-    			sender.sendMessage(msg);
-    		}
-    		else {
-    			
-    			PrisonBlock pBlock = iStack.getMaterial();
-    			boolean iStackHasLore = iStack.getLore() != null && iStack.getLore().size() > 0;
-    	        
-    	        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Items inspect: " );
-
-    			List<String> msg = new ArrayList<>();
-    			
-    			String name = iStack.getName();
-    			String nameSellall = pBlock.getBlockNameSearch();
-    			String nameFull = iStack.getDisplayName() == null ? "" : 
-    						"(" + Text.stripColor( iStack.getDisplayName()) + ")";
-    			
-
-    			int amount = iStack.getAmount();
-    			
-    			List<String> lore = iStack.getLore();
-    			
-    			Map<Enchantment, Integer> enchants = iStack.getEnchantments();
-    			
-				String nbtInfo = iStack.getNBTItemStackInfo();
-
-    			
-    			
-    			chatDisplay.addText( "Item:         %-14s  %s", name, nameFull  );
-    			chatDisplay.addText( "Sellall Name: &7%s  &3(use this value when adding to sellall)", nameSellall );
-    			
-    			
-    			PrisonBlock sellallItem = sellAllUtil.getSellAllItems().get( nameSellall );
-    			boolean sellallItemAllowLore = sellallItem != null && sellallItem.isLoreAllowed();
-    			
-    			if ( sellallItem != null && iStackHasLore == sellallItemAllowLore ) {
-
-    				String itemPrice = sellallItem.getSalePrice() == null ? "---" : 
-    					Prison.getDecimalFormatStaticInt().format( 
-    							sellallItem.getSalePrice().doubleValue() );
-    				chatDisplay.addText( "  Item Price:  &7%s", itemPrice );
-    				
-    				if ( sellallItem.getPurchasePrice() != null ) {
-    					
-    					String purchasePrice = sellallItem.getPurchasePrice() == null ? "---" : 
-    						Prison.getDecimalFormatStaticInt().format( 
-    								sellallItem.getPurchasePrice().doubleValue() );
-    					chatDisplay.addText( "  Purchase Price:  &7%s", purchasePrice );
-    				}
-    				
-    				if ( sellallItem.isLoreAllowed() ) {
-    					
-    					chatDisplay.addText( "  Allow Lore when sold: &7true" );
-    				}
-    			}
-    			
-    			
-    			chatDisplay.addText( "Quanty:       %5s  PrisonItem: %s", 
-    						Integer.toString(amount), pBlock.getBlockNameFormal()  );
-    			
-    			if ( lore.size() == 0 ) {
-    				
-    				chatDisplay.addText( "No Lore."   );
-    			}
-    			else {
-    				chatDisplay.addText( "Lore:"   );
-    				
-    				for (String l : lore) {
-    					String loreEscaped = l.replace(Text.COLOR_CHAR, '&');
-    					
-    					chatDisplay.addText( "  %s :: [\\Q%s\\E]", l, loreEscaped  );
-    				}
-    			}
-    			
-    			if ( enchants == null || enchants.size() == 0 ) {
-    				
-    				chatDisplay.addText( "No Enchantments."   );
-    			}
-    			else {
-    				chatDisplay.addText( "Enchantments:"   );
-    				
-    				Set<Enchantment> keys = enchants.keySet();
-    				for (Enchantment ench : keys ) {
-						
-    					Integer value = enchants.get( ench );
-						
-    					String namespace = "";
-    					String targetName = "";
-    					
-    					try {
-
-    						// NOTE: This is for spigot 1.13.x and higher:
-    						if ( ench.getClass().getMethod( "getKey" ) != null ) {
-    							namespace = ench.getKey() == null ? 
-    									"---" : 
-    										ench.getKey().toString();
-    						}
-    						else if ( ench.getClass().getMethod( "getName" ) != null ) {
-    							// Versions of spigot prior to 1.13.x:
-    							namespace = ench.getName();
-    							
-    						}
-    						
-    						
-    						if ( ench.getClass().getMethod( "getItemTarget" ) != null && 
-    								ench.getItemTarget() != null ) {
-    							targetName = ench.getItemTarget().name();
-    						}
-
-    					} catch (Exception e) {
-						}
-    					
-    					if ( namespace == null || namespace.trim().length() == 0 ) {
-    						namespace = ench.toString();
-    					}
-
-    					chatDisplay.addText( "    %-10s  %s  %s (%s - %s)", 
-    							//ench.toString(), 
-    							namespace,
-    							targetName,
-    							
-    							value.toString(),
-    							Integer.toString( ench.getStartLevel()),
-    							Integer.toString( ench.getMaxLevel())
-    							);
+	    	if ( !isEnabled() ) {
+	    		return;
+	    	}
+	    	SellAllUtil sellAllUtil = SellAllUtil.get();
+	
+	    	
+	    	SpigotPlayer sPlayer = (SpigotPlayer) sender.getPlatformPlayer();
+	    	
+	    	if ( sPlayer == null ) {
+	    		String msg = String.format( 
+	    				"Only online players can see what they're holding."
+	    				);
+	    		sender.sendMessage(msg);
+	    	}
+	    	else {
+	    		
+	    		SpigotPlayerUtil sUtil = new SpigotPlayerUtil( sPlayer );
+	    		
+	    		SpigotItemStack iStack = sUtil.getItemInHand();
+	    		
+	    		if ( iStack == null || iStack.isAir() ) {
+	    			
+	    			String msg = String.format( 
+	    					"Nothing to report. You're not holding anything other than air."
+	    					);
+	    			sender.sendMessage(msg);
+	    		}
+	    		else {
+	    			
+	    			PrisonBlock pBlock = iStack.getMaterial();
+	    			boolean iStackHasLore = iStack.getLore() != null && iStack.getLore().size() > 0;
+	    	        
+	    	        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Items inspect: " );
+	
+	    			List<String> msg = new ArrayList<>();
+	    			
+	    			String name = iStack.getName();
+	    			String nameSellall = pBlock.getBlockNameSearch();
+	    			String nameFull = iStack.getDisplayName() == null ? "" : 
+	    						"(" + Text.stripColor( iStack.getDisplayName()) + ")";
+	    			
+	
+	    			int amount = iStack.getAmount();
+	    			
+	    			List<String> lore = iStack.getLore();
+	    			
+	    			Map<Enchantment, Integer> enchants = iStack.getEnchantments();
+	    			
+					String nbtInfo = iStack.getNBTItemStackInfo();
+	
+	    			
+	    			
+	    			chatDisplay.addText( "Item:         %-14s  %s", name, nameFull  );
+	    			chatDisplay.addText( "Sellall Name: &7%s  &3(use this value when adding to sellall)", nameSellall );
+	    			
+	    			
+	    			PrisonBlock sellallItem = sellAllUtil.getSellAllItems().get( nameSellall );
+	    			boolean sellallItemAllowLore = sellallItem != null && sellallItem.isLoreAllowed();
+	    			
+	    			if ( sellallItem != null && iStackHasLore == sellallItemAllowLore ) {
+	
+	    				String itemPrice = sellallItem.getSalePrice() == null ? "---" : 
+	    					Prison.getDecimalFormatStaticInt().format( 
+	    							sellallItem.getSalePrice().doubleValue() );
+	    				chatDisplay.addText( "  Item Price:  &7%s", itemPrice );
+	    				
+	    				if ( sellallItem.getPurchasePrice() != null ) {
+	    					
+	    					String purchasePrice = sellallItem.getPurchasePrice() == null ? "---" : 
+	    						Prison.getDecimalFormatStaticInt().format( 
+	    								sellallItem.getPurchasePrice().doubleValue() );
+	    					chatDisplay.addText( "  Purchase Price:  &7%s", purchasePrice );
+	    				}
+	    				
+	    				if ( sellallItem.isLoreAllowed() ) {
+	    					
+	    					chatDisplay.addText( "  Allow Lore when sold: &7true" );
+	    				}
+	    			}
+	    			
+	    			
+	    			chatDisplay.addText( "Quanty:       %5s  PrisonItem: %s", 
+	    						Integer.toString(amount), pBlock.getBlockNameFormal()  );
+	    			
+	    			if ( lore.size() == 0 ) {
+	    				
+	    				chatDisplay.addText( "No Lore."   );
+	    			}
+	    			else {
+	    				chatDisplay.addText( "Lore:"   );
+	    				
+	    				for (String l : lore) {
+	    					String loreEscaped = l.replace(Text.COLOR_CHAR, '&');
+	    					
+	    					chatDisplay.addText( "  %s :: [\\Q%s\\E]", l, loreEscaped  );
+	    				}
+	    			}
+	    			
+	    			if ( enchants == null || enchants.size() == 0 ) {
+	    				
+	    				chatDisplay.addText( "No Enchantments."   );
+	    			}
+	    			else {
+	    				chatDisplay.addText( "Enchantments:"   );
+	    				
+	    				Set<Enchantment> keys = enchants.keySet();
+	    				for (Enchantment ench : keys ) {
+							
+	    					Integer value = enchants.get( ench );
+							
+	    					String namespace = "";
+	    					String targetName = "";
+	    					
+	    					try {
+	
+	    						// NOTE: This is for spigot 1.13.x and higher:
+	    						if ( ench.getClass().getMethod( "getKey" ) != null ) {
+	    							namespace = ench.getKey() == null ? 
+	    									"---" : 
+	    										ench.getKey().toString();
+	    						}
+	    						else if ( ench.getClass().getMethod( "getName" ) != null ) {
+	    							// Versions of spigot prior to 1.13.x:
+	    							namespace = ench.getName();
+	    							
+	    						}
+	    						
+	    						
+	    						if ( ench.getClass().getMethod( "getItemTarget" ) != null && 
+	    								ench.getItemTarget() != null ) {
+	    							targetName = ench.getItemTarget().name();
+	    						}
+	
+	    					} catch (Exception e) {
+							}
+	    					
+	    					if ( namespace == null || namespace.trim().length() == 0 ) {
+	    						namespace = ench.toString();
+	    					}
+	
+	    					chatDisplay.addText( "    %-10s  %s  %s (%s - %s)", 
+	    							//ench.toString(), 
+	    							namespace,
+	    							targetName,
+	    							
+	    							value.toString(),
+	    							Integer.toString( ench.getStartLevel()),
+	    							Integer.toString( ench.getMaxLevel())
+	    							);
 					}
-    				
-    				
-    			}
-    			
-    			
-    			try {
-    				String bombName = PrisonNBTUtil.getNBTString( iStack.getBukkitStack(), 
-    															MineBombs.MINE_BOMBS_NBT_KEY );
-//    				String ownerUUID = PrisonNBTUtil.getNBTString( iStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID );
-    				
-    				if ( bombName != null && bombName.trim().length() == 0 ) {
-    					bombName = null;
-    				}
-    				
-    				if ( bombName != null ) {
-        				chatDisplay.addText( "   Mine Bomb Name: %s", bombName  );
-    					
-    				}
-    			} 
-    			catch (Exception | Error e) {
-    				// Ignore... not a mine bomb.
-    			}
-    			
-    			
-    			if ( nbtInfo == null || nbtInfo.trim().length() == 0 ) {
-    				
-    				chatDisplay.addText( "  No NBT." );
-    			}
-    			else {
-    				
-    				chatDisplay.addText( "    %s", nbtInfo  );
-    			}
-//    			chatDisplay.addText( " ",   );
-    			
-    			chatDisplay.send( sender );
-    			
-    			// Send to the console too:
-    			chatDisplay.sendtoOutputLogInfo();
-    		}
-    		
-    	}
+	    				
+	    				
+	    			}
+	    			
+	    			
+	    			try {
+	    				String bombName = PrisonNBTUtil.getNBTString( iStack.getBukkitStack(), 
+	    															MineBombs.MINE_BOMBS_NBT_KEY );
+	    				
+	    				if ( bombName != null && bombName.trim().length() == 0 ) {
+	    					bombName = null;
+	    				}
+	    				
+	    				if ( bombName != null ) {
+	        				chatDisplay.addText( "   Mine Bomb Name: %s", bombName  );
+	    					
+	    				}
+	    			} 
+	    			catch (Exception | Error e) {
+	    				// Ignore... not a mine bomb.
+	    			}
+	    			
+	    			
+	    			if ( nbtInfo == null || nbtInfo.trim().length() == 0 ) {
+	    				
+	    				chatDisplay.addText( "  No NBT." );
+	    			}
+	    			else {
+	    				
+	    				chatDisplay.addText( "    %s", nbtInfo  );
+	    			}
+	    			
+	    			chatDisplay.send( sender );
+	    			
+	    			// Send to the console too:
+	    			chatDisplay.sendtoOutputLogInfo();
+	    		}
+	    		
+	    	}
     }
     
     @Command(identifier = "sellall multiplier list", 
@@ -1266,17 +1116,17 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
     	
-    	if ( !PrisonRanks.getInstance().isEnabled() ) {
-    		Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier addLadder` since ranks are disabled" );
-    		return;
-    	}
+	    	if ( !PrisonRanks.getInstance().isEnabled() ) {
+	    		Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier addLadder` since ranks are disabled" );
+	    		return;
+	    	}
+	    	
+	    	int displayColumns = 10;
+//	    	String ladderName = "";
+	    	RankLadder rLadder = null;
+	    	
     	
-    	int displayColumns = 10;
-    	String ladderName = "";
-    	RankLadder rLadder = null;
-    	
-    	
-    	// pull columns out of the options, if it has been specified:
+	    	// pull columns out of the options, if it has been specified:
 		String colsStr = extractParameter("cols=", options);
 		if ( colsStr != null ) {
 			options = options.replace( colsStr, "" ).trim();
@@ -1297,24 +1147,20 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 		}
 		
     	
-    	List<RankLadder> ladders = new ArrayList<>();
-    	
-    	if ( rLadder == null ) {
-    		ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
-    	}
-    	else {
-    		ladders.add( rLadder );
-    	}
-    	
+	    	List<RankLadder> ladders = new ArrayList<>();
+	    	
+	    	if ( rLadder == null ) {
+	    		ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+	    	}
+	    	else {
+	    		ladders.add( rLadder );
+	    	}
+	    	
     	
 
-        
-//        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier help" );
-//        sender.dispatchCommand(registeredCmd);
         
         TreeMap<String, Double> mults = new TreeMap<>( sellAllUtil.getPrestigeMultipliers() );
 
-//        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
         DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
         DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
         
@@ -1340,13 +1186,13 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
         for (RankLadder ladder : ladders ) {
 			
-        	StringBuilder sb = new StringBuilder();
-
-        	int lines = 0;
-        	int columns = 0;
-        	for ( Rank rank : ladder.getRanks() ) {
-        		String key = rank.getName();
-        		
+	        	StringBuilder sb = new StringBuilder();
+	
+	        	int lines = 0;
+	        	int columns = 0;
+	        	for ( Rank rank : ladder.getRanks() ) {
+	        		String key = rank.getName();
+	        		
 				if ( mults.containsKey( key ) ) {
 					
 					if ( lines == 0 && sb.length() == 0 ) {
@@ -1355,67 +1201,36 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 								iFmt.format( ladder.getRanks().size() ));
 					}
 					
-		        	Double cost = mults.get( key );
-		        	
-		        	if ( columns++ > 0 ) {
-		        		sb.append( "    " );
-		        	}
-		        	
-		        	sb.append( String.format( multiplierLayout, 
-		        			key, dFmt.format( cost ) ) );
-		        	
-		        	if ( columns >= displayColumns ) {
-		        		chatDisplay.addText( sb.toString() );
-		        		
-		        		if ( ++lines % 10 == 0 && lines > 1 ) {
-		        			chatDisplay.addText( " " );
-		        		}
-		        		
-		        		sb.setLength( 0 );
-		        		columns = 0;
-		        	}
+			        	Double cost = mults.get( key );
+			        	
+			        	if ( columns++ > 0 ) {
+			        		sb.append( "    " );
+			        	}
+			        	
+			        	sb.append( String.format( multiplierLayout, 
+			        			key, dFmt.format( cost ) ) );
+			        	
+			        	if ( columns >= displayColumns ) {
+			        		chatDisplay.addText( sb.toString() );
+			        		
+			        		if ( ++lines % 10 == 0 && lines > 1 ) {
+			        			chatDisplay.addText( " " );
+			        		}
+			        		
+			        		sb.setLength( 0 );
+			        		columns = 0;
+			        	}
 
 				}
 			}
             if ( sb.length() > 0 ) {
-            	chatDisplay.addText( sb.toString() );
+            		chatDisplay.addText( sb.toString() );
             }
         	
 		}
         
         
-//        int columns = 0;
-//        for ( String key : keys ) {
-////        	boolean first = sb.length() == 0;
-//
-//        	Double cost = mults.get( key );
-//        	
-//        	if ( columns++ > 0 ) {
-//        		sb.append( "    " );
-//        	}
-//        	
-//        	sb.append( String.format( "%-" + maxLenKey + "s %" + maxLenVal + "s", 
-//        			key, fFmt.format( cost ) ) );
-////        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
-////        			key.toString(), fFmt.format( cost ), key.name() ) );
-//        	
-//        	if ( columns > 7 ) {
-//        		chatDisplay.addText( sb.toString() );
-//        		
-//        		if ( ++lines % 10 == 0 && lines > 1 ) {
-//        			chatDisplay.addText( " " );
-//        		}
-//        		
-//        		sb.setLength( 0 );
-//        		columns = 0;
-//        	}
-//        }
-//        if ( sb.length() > 0 ) {
-//        	chatDisplay.addText( sb.toString() );
-//        }
-        
         chatDisplay.send( sender );
-
     }
 
 	private String extractParameter( String key, String options ) {
@@ -1490,7 +1305,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_add_success));
         }
         else {
-        	Output.get().sendInfo( sender, "Failed to add sellall rank multiplier." );
+        		Output.get().sendInfo( sender, "Failed to add sellall rank multiplier." );
         }
     }
 
@@ -1549,19 +1364,19 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
         
         if ( !PrisonRanks.getInstance().isEnabled() ) {
-        	Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier deleteLadder` since ranks are disabled" );
-        	return;
+	        	Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier deleteLadder` since ranks are disabled" );
+	        	return;
         }
 
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         
         
         if ( ladder == null ) {
-        	Output.get().sendWarn(sender, 
-        			"A ladder with the name of '%s' does not exist. Use '/ranks ladder list' "
-        			+ "to find the correct ladder name.", ladderName );
-        	
-        	return;
+	        	Output.get().sendWarn(sender, 
+	        			"A ladder with the name of '%s' does not exist. Use '/ranks ladder list' "
+	        			+ "to find the correct ladder name.", ladderName );
+	        	
+	        	return;
         }
         
         DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
@@ -1610,59 +1425,59 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		
     		) {
     	
-    	if ( !isEnabled() ) {
-    		return;
-    	}
-    	SellAllUtil sellAllUtil = SellAllUtil.get();
+	    	if ( !isEnabled() ) {
+	    		return;
+	    	}
+	    	SellAllUtil sellAllUtil = SellAllUtil.get();
+	    	
+	    	if (!sellAllUtil.isSellAllMultiplierEnabled){
+	    		Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_are_disabled));
+	    		return;
+	    	}
+	    	
+	    	if ( !PrisonRanks.getInstance().isEnabled() ) {
+	    		Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier addLadder` since ranks are disabled" );
+	    		return;
+	    	}
+	    	
+	    	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+	    	
+	    	
+	    	if ( ladder == null ) {
+	    		Output.get().sendWarn(sender, 
+	    				"A ladder with the name of '%s' does not exist. Use '/ranks ladder list' "
+	    						+ "to find the correct ladder name.", ladderName );
+	    		
+	    		return;
+	    	}
     	
-    	if (!sellAllUtil.isSellAllMultiplierEnabled){
-    		Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_are_disabled));
-    		return;
-    	}
+	    	DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
+	    	
+	    	int added = 0;
+	    	int failed = 0;
+	    	for (Rank rank : ladder.getRanks() ) {
+	    		
+	    		int rankPos = rank.getPosition();
+	    		
+	    		double multi = baseMultiplier + (rankPos * rankMultiplier);
+	    		
+	    		if ( sellAllUtil.addSellallRankMultiplier(rank.getName(), multi) ) {
+	    			// No message should be sent for each rank, since there could be thousands of prestige ranks
+	    			added++;
+	    		}
+	            else {
+	            	failed++;
+	            }
+	    		
+	    	}
     	
-    	if ( !PrisonRanks.getInstance().isEnabled() ) {
-    		Output.get().sendWarn(sender, "Cannot use command `/sellall multiplier addLadder` since ranks are disabled" );
-    		return;
-    	}
-    	
-    	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-    	
-    	
-    	if ( ladder == null ) {
-    		Output.get().sendWarn(sender, 
-    				"A ladder with the name of '%s' does not exist. Use '/ranks ladder list' "
-    						+ "to find the correct ladder name.", ladderName );
-    		
-    		return;
-    	}
-    	
-    	DecimalFormat iFmt = Prison.get().getDecimalFormat("#,##0");
-    	
-    	int added = 0;
-    	int failed = 0;
-    	for (Rank rank : ladder.getRanks() ) {
-    		
-    		int rankPos = rank.getPosition();
-    		
-    		double multi = baseMultiplier + (rankPos * rankMultiplier);
-    		
-    		if ( sellAllUtil.addSellallRankMultiplier(rank.getName(), multi) ) {
-    			// No message should be sent for each rank, since there could be thousands of prestige ranks
-    			added++;
-    		}
-            else {
-            	failed++;
-            }
-    		
-    	}
-    	
-    	sender.sendMessage( 
-    			String.format( 
-    					"For ladder %s, there were %s multipliers added, and %s failed to be added.",
-    					ladderName, 
-    					iFmt.format(added),
-    					iFmt.format(failed)
-    					) );
+	    	sender.sendMessage(
+	    			String.format( 
+	    					"For ladder %s, there were %s multipliers added, and %s failed to be added.",
+	    					ladderName, 
+	    					iFmt.format(added),
+	    					iFmt.format(failed)
+	    					) );
     	
     }
     
@@ -1679,14 +1494,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     		@Arg(name = "Boolean", description = "Enable or disable", def = "true") String enable){
 
         if (!isEnabled() ) {
-        	return;
+        		return;
         }
         SellAllUtil sellAllUtil = SellAllUtil.get();
 
         if (enable.equalsIgnoreCase("null")){
-        	sender.dispatchCommand("sellall toolsTrigger help");
-//            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall toolsTrigger help" );
-//            sender.dispatchCommand(registeredCmd);
+        		sender.dispatchCommand("sellall toolsTrigger help");
             return;
         }
 
@@ -1799,7 +1612,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     private void sellAllSetDefaultCommand(CommandSender sender){
 
         if ( !isEnabled() ) {
-        	return;
+        		return;
         }
 
         // Setup all the prices in sellall:
@@ -1839,20 +1652,17 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         int maxLenVal = 0;
         int maxLenCode = 0;
         for ( String key : keys ) {
-//			if ( key.toString().length() > maxLenKey ) {
-//				maxLenKey = key.toString().length();
-//			}
-        	
-        	if ( filter.length() == 0 || key.contains( filter ) ) {
-        		
-        		if ( key.length() > maxLenCode ) {
-        			maxLenCode = key.length();
-        		}
-        		String val = fFmt.format( items.get( key ).getSalePrice() );
-        		if ( val.length() > maxLenVal ) {
-        			maxLenVal = val.length();
-        		}
-        	}
+	        	
+	        	if ( filter.length() == 0 || key.contains( filter ) ) {
+	        		
+	        		if ( key.length() > maxLenCode ) {
+	        			maxLenCode = key.length();
+	        		}
+	        		String val = fFmt.format( items.get( key ).getSalePrice() );
+	        		if ( val.length() > maxLenVal ) {
+	        			maxLenVal = val.length();
+	        		}
+	        	}
 		}
         
         
@@ -1862,35 +1672,32 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         int columns = 0;
         StringBuilder sb = new StringBuilder();
         for ( String key : keys ) {
-//        	boolean first = sb.length() == 0;
 
-        	if ( filter.length() == 0 || key.contains( filter ) ) {
-        		
-        		Double cost = items.get( key ).getSalePrice();
-        		
-        		if ( sb.length() > 0 ) {
-        			sb.append( "    " );
-        		}
-        		
-        		sb.append( String.format( "%-" + maxLenCode + "s %" + maxLenVal + "s", 
-        				key, fFmt.format( cost ) ) );
-//        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
-//        			key.toString(), fFmt.format( cost ), key.name() ) );
-        		
-        		if ( ++columns >= 3 ) {
-        			chatDisplay.addText( sb.toString() );
-        			
-        			if ( ++lines % 10 == 0 && lines > 1 ) {
-        				chatDisplay.addText( " " );
-        			}
-        			
-        			sb.setLength( 0 );
-        			columns = 0;
-        		}
-        	}
+	        	if ( filter.length() == 0 || key.contains( filter ) ) {
+	        		
+	        		Double cost = items.get( key ).getSalePrice();
+	        		
+	        		if ( sb.length() > 0 ) {
+	        			sb.append( "    " );
+	        		}
+	        		
+	        		sb.append( String.format( "%-" + maxLenCode + "s %" + maxLenVal + "s", 
+	        				key, fFmt.format( cost ) ) );
+	        		
+	        		if ( ++columns >= 3 ) {
+	        			chatDisplay.addText( sb.toString() );
+	        			
+	        			if ( ++lines % 10 == 0 && lines > 1 ) {
+	        				chatDisplay.addText( " " );
+	        			}
+	        			
+	        			sb.setLength( 0 );
+	        			columns = 0;
+	        		}
+	        	}
         }
         if ( sb.length() > 0 ) {
-        	chatDisplay.addText( sb.toString() );
+        		chatDisplay.addText( sb.toString() );
         }
         
         chatDisplay.send( sender );

@@ -29,7 +29,6 @@ public class PrisonSpigotGUISellAllCommands
 
         Player p = getSpigotPlayer(sender);
 
-        // Sender must be a Player, not something else like the Console.
         if (p == null) {
             Output.get().sendError(sender, getMessages().getString(MessagesConfig.StringID.spigot_message_console_error));
             return;
@@ -44,9 +43,7 @@ public class PrisonSpigotGUISellAllCommands
             // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
             if (p.hasPermission("prison.admin")) {
             	
-            	new SpigotVariousGuiMessages().sellallGUIIsDisabledMsg(sender);
-//                Output.get().sendError(sender, 
-//                		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
+            		new SpigotVariousGuiMessages().sellallGUIIsDisabledMsg(sender);
             }
         }
     }
@@ -60,18 +57,18 @@ public class PrisonSpigotGUISellAllCommands
     				"will be shown on multiple pages.  The page parameter starts with " +
     				"page 1.", def = "1" ) int page){
     	
-    	if (!PrisonSpigotSellAllCommands.isEnabled()) return;
-    	
-    	Player p = getSpigotPlayer(sender);
-    	
-    	// Sender must be a Player, not something else like the Console.
-    	if (p == null) {
-    		Output.get().sendError(sender, getMessages().getString(MessagesConfig.StringID.spigot_message_console_error));
-    		return;
-    	}
-    	
-    	SellAllAdminBlocksGUI saBlockGui = new SellAllAdminBlocksGUI( p, page, "sellall gui blocks", "sellall gui" );
-    	saBlockGui.open();
+	    	if (!PrisonSpigotSellAllCommands.isEnabled()) return;
+	    	
+	    	Player p = getSpigotPlayer(sender);
+	    	
+	    	// Sender must be a Player, not something else like the Console.
+	    	if (p == null) {
+	    		Output.get().sendError(sender, getMessages().getString(MessagesConfig.StringID.spigot_message_console_error));
+	    		return;
+	    	}
+	    	
+	    	SellAllAdminBlocksGUI saBlockGui = new SellAllAdminBlocksGUI( p, page, "sellall gui blocks", "sellall gui" );
+	    	saBlockGui.open();
     	
     }
     

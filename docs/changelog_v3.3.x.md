@@ -14,7 +14,14 @@
 These change logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.19j 2026-03-23
+# 3.3.0-alpha.19j 2026-06-12
+
+
+* **Prison Cleanup: prison-spigot: Removed obsolete and unneeded comments and fix indentation where needed.** Fourth part.
+
+
+
+* **Prison Cleanup: prison-spigot: Removed obsolete and unneeded comments and fix indentation where needed.** Third part.
 
 
 * **Placeholders: Bug fix.  The wrong player object was being used with the placeholder processing**, so it was not able to identify the player's location, which was preventing mineplayer placeholders from working.
