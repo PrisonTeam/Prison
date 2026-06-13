@@ -11,41 +11,36 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.Location;
 
 public class PrisonDebugBlockInspectorCommand
-	extends PrisonSpigotBaseCommands {
-
-	
-	   @Command( identifier = "mines debugBlockBreak", 
-			   	description = "This will debug the BlockBreakEvent chain of plugins handling the "
-			   			+ "event. Look at a block, while holding the tool of choice, and then "
-			   			+ "issue this command.",
-	            altPermissions = "prison.admin",
-	            onlyPlayers = true
-	    )
-	    private void mineDebugBlockBreak(CommandSender sender) {
-
-//	        Player player = getSpigotPlayer(sender);
+		extends PrisonSpigotBaseCommands {
 
 
-	        PrisonDebugBlockInspector blockInspector = PrisonDebugBlockInspector.getInstance();
+	@Command( 
+			identifier = "mines debugBlockBreak", 
+			description = "This will debug the BlockBreakEvent chain of plugins handling the "
+			+ "event. Look at a block, while holding the tool of choice, and then "
+			+ "issue this command.", 
+			altPermissions = "prison.admin", onlyPlayers = true )
+	private void mineDebugBlockBreak( CommandSender sender ) {
 
-	        
-//	        (SpigotPlayer) sender.getPlatformPlayer();
 
-	        Player player = Prison.get().getPlatform().getPlayer( sender.getPlatformPlayer().getUUID() ).orElse(null);
-	        
-	        
-	        if ( player != null && player instanceof SpigotPlayer ) {
-	        	
-	        	SpigotPlayer sPlayer = (SpigotPlayer) player;
-	        	
-	        	Location location = sPlayer.getLineOfSightExactLocation();
-	        	
-	        	boolean isSneaking = true;
-	        	
-	        	blockInspector.debugBlockBreak( sPlayer, isSneaking, location );
-	        }
-	        
-	        
-	    }
+		PrisonDebugBlockInspector blockInspector = PrisonDebugBlockInspector.getInstance();
+
+
+		Player player = Prison.get().getPlatform().getPlayer( sender.getPlatformPlayer().getUUID() ).orElse( null );
+
+
+		if ( player != null && player instanceof SpigotPlayer ) {
+
+			SpigotPlayer sPlayer = (SpigotPlayer) player;
+
+			Location location = sPlayer.getLineOfSightExactLocation();
+
+			boolean isSneaking = true;
+
+			blockInspector.debugBlockBreak( sPlayer, isSneaking, location );
+		}
+
+
+	}
 
 }

@@ -47,7 +47,6 @@ public class SpigotBlockSetSynchronously {
 								Location location = tBlock.getLocation();
 								
 								SpigotBlock sBlock = (SpigotBlock) world.getBlockAt( location );
-//							SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
 								
 								sBlock.setPrisonBlock( pBlock );
 							}

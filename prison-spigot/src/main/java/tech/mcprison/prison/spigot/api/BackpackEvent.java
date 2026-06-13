@@ -111,8 +111,6 @@ public class BackpackEvent
 		
 		this.player = player;
 	}
-
-	
 	
 	
 	/**

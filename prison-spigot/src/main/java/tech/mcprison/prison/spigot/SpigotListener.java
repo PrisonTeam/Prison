@@ -78,50 +78,50 @@ public class SpigotListener implements Listener {
     	initialize();
     }
 
-    public void initialize() {
-    	
-    	// Check to see if the class BlockBreakEvent even exists:
-    	try {
-    		
-    		Output.get().logInfo( "SpigotListener: Trying to register events" );
-    		
-    		SpigotPrison prison = SpigotPrison.getInstance();
-    		PluginManager pm = Bukkit.getServer().getPluginManager();
-    		
-    		
-    		String chatEventPriorityString = Prison.get().getPlatform().getConfigString( 
-    					"prison-events.AsyncPlayerChatEvent.priority", BlockBreakPriority.NORMAL.name() );
-    		
-    		
-    		BlockBreakPriority chatEventPriority = BlockBreakPriority.fromString( chatEventPriorityString );
-    		
-    		if ( chatEventPriority != BlockBreakPriority.DISABLED ) {
-    			
-    			EventPriority ePriority = EventPriority.valueOf( chatEventPriority.name().toUpperCase() );           
-    			
-    			OnPlayerChatListener chatListener = new OnPlayerChatListener();
-    		    // onPlayerChat
+	public void initialize() {
 
-    			pm.registerEvent(AsyncPlayerChatEvent.class, chatListener, ePriority,
-    					new EventExecutor() {
-		    				public void execute(Listener l, Event e) {
-		    					if ( l instanceof OnPlayerChatListener && 
-		    							e instanceof AsyncPlayerChatEvent ) {
-		    						((OnPlayerChatListener)l)
-		    						.onPlayerChat( (AsyncPlayerChatEvent) e );
-		    					}
-		    				}
-		    			},
-    					prison);
-    			//prison.getRegisteredListeners().add( chatListener );
-    			
-    		}
-    		
-    	}
-    	catch ( Exception e ) {
-    		Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
-    	}
-    }
+		// Check to see if the class BlockBreakEvent even exists:
+		try {
+
+			Output.get().logInfo( "SpigotListener: Trying to register events" );
+
+			SpigotPrison prison = SpigotPrison.getInstance();
+			PluginManager pm = Bukkit.getServer().getPluginManager();
+
+
+			String chatEventPriorityString = Prison.get().getPlatform().getConfigString(
+					"prison-events.AsyncPlayerChatEvent.priority", BlockBreakPriority.NORMAL.name() );
+
+
+			BlockBreakPriority chatEventPriority = BlockBreakPriority.fromString( chatEventPriorityString );
+
+			if ( chatEventPriority != BlockBreakPriority.DISABLED ) {
+
+				EventPriority ePriority = EventPriority.valueOf( chatEventPriority.name().toUpperCase() );
+
+				OnPlayerChatListener chatListener = new OnPlayerChatListener();
+				// onPlayerChat
+
+				pm.registerEvent( AsyncPlayerChatEvent.class, chatListener, ePriority,
+						new EventExecutor() {
+							public void execute( Listener l, Event e ) {
+
+								if ( l instanceof OnPlayerChatListener &&
+										e instanceof AsyncPlayerChatEvent ) {
+									( (OnPlayerChatListener) l )
+											.onPlayerChat( (AsyncPlayerChatEvent) e );
+								}
+							}
+						},
+						prison );
+				// prison.getRegisteredListeners().add( chatListener );
+
+			}
+
+		} catch ( Exception e ) {
+			Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
+		}
+	}
     
     
     // Do not use this init() function since it is non-standard in how 
@@ -215,44 +215,41 @@ public class SpigotListener implements Listener {
     	Prison.get().getEventBus().post(pwlEvent);
     }
 
-    @EventHandler 
-    public void onPlayerInteract(PlayerInteractEvent e) {
-        // TODO Accept air events (block is null when air is clicked...)
+	@EventHandler
+	public void onPlayerInteract( PlayerInteractEvent e ) {
+		// TODO Accept air events (block is null when air is clicked...)
 
-        // Check to see if we support the Action
+		// Check to see if we support the Action
 //        PrisonPlayerInteractEvent.Action[] values = PrisonPlayerInteractEvent.Action.values();
-        
+
 //        boolean has = false;
-        
-        Action action = Action.fromString( e.getAction().name() );
-        if ( action == null ) {
-        	// We don't support this action:
-        	return;
-        }
-        
+
+		Action action = Action.fromString( e.getAction().name() );
+		if ( action == null ) {
+			// We don't support this action:
+			return;
+		}
+
 //        for ( PrisonPlayerInteractEvent.Action value : PrisonPlayerInteractEvent.Action.values() ) {
 //            if(value.name().equals(e.getAction().name())) has = true;
 //        }
 //        if(!has) return; // we don't support this Action
 
-        // This one's a workaround for the double-interact event glitch.
-        // The wand can only be used in the main hand
-        if ( SpigotCompatibility.getInstance().getHand(e) != 
-        								Compatibility.EquipmentSlot.HAND) {
-            return;
-        }
+		// This one's a workaround for the double-interact event glitch.
+		// The wand can only be used in the main hand
+		if ( SpigotCompatibility.getInstance().getHand( e ) != Compatibility.EquipmentSlot.HAND ) { return; }
 
-        org.bukkit.Location block = e.getClickedBlock().getLocation();
-        PrisonPlayerInteractEvent event = new PrisonPlayerInteractEvent(
-                new SpigotPlayer(e.getPlayer()),
-                		SpigotUtil.bukkitItemStackToPrison(
-                				SpigotCompatibility.getInstance().getItemInMainHand(e)),
-                action,
-                new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
-                    block.getZ()));
-        Prison.get().getEventBus().post(event);
-        doCancelIfShould(event, e);
-    }
+		org.bukkit.Location block = e.getClickedBlock().getLocation();
+		PrisonPlayerInteractEvent event = new PrisonPlayerInteractEvent(
+				new SpigotPlayer( e.getPlayer() ),
+				SpigotUtil.bukkitItemStackToPrison(
+						SpigotCompatibility.getInstance().getItemInMainHand( e ) ),
+				action,
+				new Location( new SpigotWorld( block.getWorld() ), block.getX(), block.getY(),
+						block.getZ() ) );
+		Prison.get().getEventBus().post( event );
+		doCancelIfShould( event, e );
+	}
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent e) {
@@ -301,7 +298,6 @@ public class SpigotListener implements Listener {
 			
 		@EventHandler(priority=EventPriority.NORMAL) 
 	    public void onPlayerChat(AsyncPlayerChatEvent e) {
-//			String message = e.getMessage();
 			String format = e.getFormat();
 			
 			SpigotPlayer p = new SpigotPlayer( e.getPlayer() );
@@ -313,15 +309,6 @@ public class SpigotListener implements Listener {
 			String translated = Text.translateAmpColorCodes( results + "&r" );
 			e.setFormat( translated );
 			
-//	        PlayerChatEvent event =
-//	            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), message, format);
-//	        
-//	        Prison.get().getEventBus().post(event);
-	        
-//	        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
-//	        e.setMessage(event.getMessage());
-//	        
-//	        doCancelIfShould(event, e);
 	    }
 	}
 

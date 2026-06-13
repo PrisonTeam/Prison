@@ -849,13 +849,18 @@ public abstract class MineData
 	    	boolean results = false;
 	    	
 	    	StringBuilder dbug = new StringBuilder();
+	    	boolean isDebug = Output.get().isDebug();
 	    	
-	    	dbug.append( "&3## hasMineAccess: mineAccessByRank: " ).append( isMineAccessByRank() );
+	    	// The mine setting:
+	    	boolean isAccessByRank = isMineAccessByRank();
 	    	
+	    	dbug.append( "&3## hasMineAccess: mineAccessByRank: [" )
+	    			.append( getName() ).append( " " )
+	    			.append( isAccessByRank ).append( "]  " );	    	
 	    	/// Note: the following cannot be added here since it will grant access if both are disabled
 	    	//		|| !isMineAccessByRank() && !isAccessPermissionEnabled() 
 	
-	    	if ( isMineAccessByRank() ) {
+	    	if ( isAccessByRank ) {
 	    		 
 	    		if ( Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ) {
 	    			
@@ -863,8 +868,17 @@ public abstract class MineData
 	    			results = true;
 	    		}
 	    		else {
-	    			dbug.append( "&cFailed! &aPlayer does not have access based upon their rank." );
+	    			String mineRank = getRank().getName();
+	    			
+	    			if ( isDebug ) {
+	    				
+	    				dbug.append( "&cFailed! &aPlayer does not have access based upon their rank.  " )
+	    					.append( "mineRank: " ).append( mineRank );
+	    				
+	    				
+	    			}
 	    		}
+	    			
 	    		
 	    	}
 	    	else {
@@ -890,7 +904,15 @@ public abstract class MineData
 	    				
 	    	}
 	    	
-	    	if ( Output.get().isDebug() ) {
+	    	if ( isDebug ) {
+	    		String setting = Prison.get().getPlatform().getConfigString( "prison-mines.access-to-prior-mines" );
+	    		if ( setting != null ) {
+	    			dbug.append( "Config.yml: prison-mines.access-to-prior-mines: " ).append( setting.trim() );
+	    			
+	    		}
+	    	}
+	    	
+	    	if ( isDebug ) {
 	    		Output.get().logInfo( dbug.toString() );
 	    	}
 	    				

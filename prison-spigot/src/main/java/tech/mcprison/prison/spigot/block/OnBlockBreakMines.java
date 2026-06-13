@@ -746,83 +746,6 @@ public class OnBlockBreakMines
         return false;
 }
 	
-//	/**
-//	 * <p>Warning... this is a temp copy of the real function and will be removed
-//	 * if PEExplosionEvent adds the interface Cancellable.
-//	 * </p>
-//	 * 
-//	 * @param event
-//	 * @param player
-//	 * @param block
-//	 * @return
-//	 */
-//	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
-//		boolean processEvent = true;
-//		
-//		SpigotBlock sBlock = new SpigotBlock( block );
-//		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//		
-//		Mine mine = findMine( player, sBlock,  null, null ); 
-//		
-//		if ( mine == null  ) {
-//			// Prison is unable to process blocks outside of mines right now, so exit:
-//			processEvent = false;
-//		}
-//		
-//		// If not minable, then display message and exit.
-//		if ( !mine.getMineStateMutex().isMinable() ) {
-//			
-//			SpigotPlayer sPlayer = new SpigotPlayer( player );
-//			sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//		
-//		// If ignore all block events, then exit this function without logging anything:
-//		if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//
-//		
-//		return processEvent;
-//	}
-	
-//	/**
-//	 * <p>If mine is not null, then it will check for a zero-block reset (reset-threshold).
-//	 * </p>
-//	 * 
-//	 * @param mine
-//	 */
-//	public void checkZeroBlockReset( Mine mine ) {
-//		if ( mine != null ) {
-//			
-//			// Checks to see if the mine ran out of blocks, and if it did, then
-//			// it will reset the mine:
-//			mine.checkZeroBlockReset();
-//		}
-//	}
-	
-	
-//	/**
-//	 * <p>If mine is not null, then it will perform a mine sweeper 
-//	 * for the mine, if it is enabled.
-//	 * </p>
-//	 * 
-//	 * @param mine
-//	 */
-//	public void checkMineSweeper( Mine mine ) {
-//		if ( mine != null ) {
-//			
-//			// submit a mine sweeper task.  It will only run if it is enabled and another 
-//			// mine sweeper task has not been submitted.
-//			mine.submitMineSweeperTask();
-//		}
-//	}
 	
 	
 	
@@ -937,11 +860,6 @@ public class OnBlockBreakMines
 		
 		
 		
-		// if ( sBlockMined == null && targetBlock.getMinedBlock() != null ) {
-		// sBlockMined = (SpigotBlock) targetBlock.getMinedBlock();
-		// }
-		// SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
-
 		// If in the mine, then need a targetBlock, otherwise if it's null then get drops anyway:
 		if ( !results && sBlockMined != null 
 //				&& ( targetBlock == null ||
@@ -963,12 +881,6 @@ public class OnBlockBreakMines
 			results = true;
 
 		}
-//		else if ( !results && sBlockMined != null )
-//		{
-//			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " + "Block: " +
-//					sBlockMined.getBlockName() + "  expecting: " + 
-//					(targetBlock == null ? "(nothing)" : targetBlock.getPrisonBlock().getBlockName()) );
-//		}
 
 		return results;
 	}

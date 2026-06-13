@@ -100,56 +100,57 @@ public abstract class AutoManagerFeatures
 	}
 
 
-    /**
-     * <p> NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-     * with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be 
-     * converted to just ACCESS at this point, and the other part will run under either 
-     * BLOCKEVENTS or MONITOR.
-     * </p>
-     * 
-     * @param pmEvent
-     * @param start
-     * @return
-     */
-    protected boolean checkIfNoAccess( PrisonMinesBlockBreakEvent pmEvent, double start ) {
-    	boolean results = false;
-    	
-    	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-    	//       with a cancel on the event.
-    	if ( pmEvent.getBbPriority().isAccess() && pmEvent.getMine() != null && 
-    			!pmEvent.getMine().hasMiningAccess( pmEvent.getSpigotPlayer() )) {
-    		
-    		String message = String.format( "(&cACCESS fail: player %s does not have access to "
-    												+ "mine %s&3. Event canceled) ",
-    						pmEvent.getSpigotPlayer().getName(),
-    						pmEvent.getMine().getTag() );
-    		pmEvent.getDebugInfo().append( message );
+	/**
+	 * <p>
+	 * NOTE: Check for the ACCESS priority and if someone does not have access, then return with a cancel on the event. Both
+	 * ACCESSBLOCKEVENTS and ACCESSMONITOR will be converted to just ACCESS at this point, and the other part will run under
+	 * either BLOCKEVENTS or MONITOR.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 * @param start
+	 * @return
+	 */
+	protected boolean checkIfNoAccess( PrisonMinesBlockBreakEvent pmEvent, double start ) {
 
-    		printDebugInfo( pmEvent, start );
+		boolean results = false;
 
-    		
-    		if ( pmEvent.getSpigotPlayer() != null &&
-    				isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
-    			// run the `/mines tp` command for the player which will TP them to a 
-    			// mine they can access:
-    			
+		// NOTE: Check for the ACCESS priority and if someone does not have access, then return
+		// with a cancel on the event.
+		if ( pmEvent.getBbPriority().isAccess() && pmEvent.getMine() != null &&
+				!pmEvent.getMine().hasMiningAccess( pmEvent.getSpigotPlayer() ) ) {
+
+			String message = String.format( "(&cACCESS fail: player %s does not have access to "
+					+ "mine %s&3. Event canceled) ",
+					pmEvent.getSpigotPlayer().getName(),
+					pmEvent.getMine().getTag() );
+			pmEvent.getDebugInfo().append( message );
+
+			printDebugInfo( pmEvent, start );
+
+
+			if ( pmEvent.getSpigotPlayer() != null &&
+					isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+				// run the `/mines tp` command for the player which will TP them to a
+				// mine they can access:
+
 				String debugInfo = String.format(
-								"ACCESS failed: teleport %s to valid mine.", 
-								pmEvent.getSpigotPlayer().getName() );
-				
-				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
-								"mines tp", 0 );
+						"ACCESS failed: teleport %s to valid mine.",
+						pmEvent.getSpigotPlayer().getName() );
+
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo,
+						"mines tp", 0 );
 				cmdTask.setTaskMode( TaskMode.syncPlayer );
 
-    			PrisonCommandTasks.submitTasks( pmEvent.getSpigotPlayer(), cmdTask );
-    			
-    		}
-    		
-    		results = true;
-    	}
-    	
-    	return results;
-    }
+				PrisonCommandTasks.submitTasks( pmEvent.getSpigotPlayer(), cmdTask );
+
+			}
+
+			results = true;
+		}
+
+		return results;
+	}
     
 	/**
 	 * <p>Prints out the debugInfo if it has anything to print.
@@ -525,57 +526,19 @@ public abstract class AutoManagerFeatures
 
 	
     
-    
-//    @Override
-//	public boolean doAction( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
-//    	
-//    	return processAutoEvents( pmEvent, debugInfo );
-//	}
-    
-    
-    /**
-     * <p>This function overrides the doAction in OnBlockBreakEventListener and
-     * this is only enabled when auto manager is enabled.
-     * </p>
-     * 
-     */
-    @Override
-    public boolean doAction( PrisonMinesBlockBreakEvent pmEvent ) {
-    	return applyAutoEvents( pmEvent );
-    }
+	/**
+	 * <p>
+	 * This function overrides the doAction in OnBlockBreakEventListener and this is only enabled when auto manager is
+	 * enabled.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public boolean doAction( PrisonMinesBlockBreakEvent pmEvent ) {
+
+		return applyAutoEvents( pmEvent );
+	}
 	
-
-//	private boolean processAutoEvents( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
-//		boolean cancel = false;
-//		
-//		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !pmEvent.getSpigotBlock().isEmpty() ) {
-//			
-//			
-//			debugInfo.append( "(doAction autoManager processAutoEvent single-block) ");
-//
-//			
-////			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
-////					"  blocks remaining= " + 
-////					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
-////					);
-//
-//
-//			int count = applyAutoEventsDetails( pmEvent, debugInfo );
-//			
-//			if ( count > 0 ) {
-//				processBlockBreakage( pmEvent, count, true, debugInfo );
-//
-//    			cancel = true;
-//			}
-//			
-//			checkZeroBlockReset( pmEvent.getMine() );
-//	
-//		}
-//		
-//		return cancel;
-//	}
-
-
 	
 	
 	private int applyAutoEventsDetails( PrisonMinesBlockBreakEvent pmEvent ) {
@@ -1838,11 +1801,6 @@ public abstract class AutoManagerFeatures
 		
 	}
 	
-//	private boolean isBoolean( Configuration sellAllConfig, String config ) {
-//		String configValue = sellAllConfig.getString( config );
-//		return configValue != null && configValue.equalsIgnoreCase( "true" );
-//	}
-	
 	private void dropAtBlock( SpigotItemStack itemStack, SpigotBlock block ) {
 		
 		SpigotUtil.dropItems( block, itemStack );
@@ -1855,10 +1813,6 @@ public abstract class AutoManagerFeatures
 		notifyPlayerWithSound( player, message );
 	}
 
-//	@SuppressWarnings( "unused" )
-//	private void notifyPlayerThatInventoryIsFullDroppingItems( Player player ) {
-//		notifyPlayerWithSound( player, AutoFeatures.inventoryIsFullDroppingItems );
-//	}
 
 	private void notifyPlayerThatInventoryIsFullLosingItems( Player player ) {
 		
@@ -1962,19 +1916,6 @@ public abstract class AutoManagerFeatures
 		return results;
 	}
 	
-//	private void actionBarVersion(Player player, String message) {
-//		
-//		PlayerMessagingTask.submitTask( player, MessageType.actionBar, message );
-//		
-////		SpigotCompatibility.getInstance().sendActionBar( player, message );
-//		
-////		if (new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0) {
-////			displayActionBarMessage(player, message);
-////		}
-////		else {
-////			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
-////		}
-//	}
 
 	/**
 	 * This is not usable since it not only prevents the player from mining when it is
@@ -1998,10 +1939,6 @@ public abstract class AutoManagerFeatures
 		Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, (7L * 20L));
 	}
 
-//	private void displayActionBarMessage(Player player, String message) {
-//		SpigotPlayer prisonPlayer = new SpigotPlayer(player);
-//		Prison.get().getPlatform().showActionBar(prisonPlayer, message, 80);
-//	}
 
 
 	/**

@@ -253,151 +253,138 @@ public class AutoManagerRevEnchantsExplosiveEvent
 
 
 	/**
-	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
-	 * get the mine, then loop through those blocks to make sure they are within the mine.
+	 * <p>
+	 * Since there are multiple blocks associated with this event, pull out the
+	 * player first and get the mine, then loop through those blocks to make sure
+	 * they are within the mine.
 	 * </p>
 	 * 
-	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
-	 * event contains multiple blocks so it's far more efficient to process the player data once. 
-	 * So that basically needed a slight refactoring.
+	 * <p>
+	 * The logic in this function is slightly different compared to
+	 * genericBlockEvent() because this event contains multiple blocks so it's far
+	 * more efficient to process the player data once. So that basically needed a
+	 * slight refactoring.
 	 * </p>
 	 * 
 	 * @param e
 	 */
-	public void handleRevEnchantsExplosiveEvent( ExplosiveEvent e, BlockBreakPriority bbPriority ) {
-			
+	public void handleRevEnchantsExplosiveEvent(ExplosiveEvent e, BlockBreakPriority bbPriority) {
+
 		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
-		
-		// If the event is canceled, it still needs to be processed because of the 
+
+		// If the event is canceled, it still needs to be processed because of the
 		// MONITOR events:
-		// An event will be "canceled" and "ignored" if the block 
+		// An event will be "canceled" and "ignored" if the block
 		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
-		// or if the targetBlock has been set to ignore all block events which 
+		// or if the targetBlock has been set to ignore all block events which
 		// means the block has already been processed.
-		
-		Block bBlock = e.getBlocks().size() >= 0 ? e.getBlocks().get( 0 ) : null;
-		
-    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    							e.getPlayer(), bBlock,
-    							bbPriority, true );
-    	
-    	if ( eventResults.isIgnoreEvent() ) {
+
+		Block bBlock = e.getBlocks().size() >= 0 ? e.getBlocks().get(0) : null;
+
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent(e, e.getPlayer(), bBlock, bbPriority, true);
+
+		if (eventResults.isIgnoreEvent()) {
 			return;
 		}
-    	
-				
+
 		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "&6### ** handleRevEnchantsExplosiveEvent ** ###&3 " +
-				"(event: &6ExplosiveEvent&3, config: %s, priority: %s, canceled: %s) ",
-				bbPriority.name(),
-				bbPriority.getBukkitEventPriority().name(),
-				(e.isCancelled() ? "TRUE " : "FALSE")
-				) );
-		
-		debugInfo.append( eventResults.getDebugInfo() );
-		
-		
-		// NOTE that check for auto manager has happened prior to accessing this function.
-		
-		// Process all priorities if the event has not been canceled, and 
+
+		debugInfo.append(String.format(
+				"&6### ** handleRevEnchantsExplosiveEvent ** ###&3 "
+						+ "(event: &6ExplosiveEvent&3, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(), bbPriority.getBukkitEventPriority().name(), (e.isCancelled() ? "TRUE " : "FALSE")));
+
+		debugInfo.append(eventResults.getDebugInfo());
+
+		// NOTE that check for auto manager has happened prior to accessing this
+		// function.
+
+		// Process all priorities if the event has not been canceled, and
 		// process the MONITOR priority even if the event was canceled:
-    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
-    			bbPriority.isMonitor() &&
-    			e.getBlocks().size() > 0 ) {
+		if (!bbPriority.isMonitor() && !e.isCancelled() || bbPriority.isMonitor() && e.getBlocks().size() > 0) {
 
-		
-			
 //    		Block bukkitBlock = e.getBlocks().get( 0 );
-    		
-    		BlockEventType eventType = BlockEventType.RevEnExplosion;
-    		String triggered = null;
-    		
 
-    		pmEvent = new PrisonMinesBlockBreakEvent( 
-    					eventResults,
+			BlockEventType eventType = BlockEventType.RevEnExplosion;
+			String triggered = null;
+
+			pmEvent = new PrisonMinesBlockBreakEvent(eventResults,
 //    					bukkitBlock, 
 //    					e.getPlayer(),
 //    					eventResults.getMine(),
 //    					bbPriority, 
-    					eventType, triggered,
-    					debugInfo );
-    		
+					eventType, triggered, debugInfo);
 
-        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
-        	//       converted to just ACCESS at this point, and the other part will run under either
-        	//       BLOCKEVENTS or MONITOR.
-    		// This check has to be performed after creating the pmEvent object since it uses
-    		// a lot of the internal variables and objects.  There is not much of an impact since
-    		// the validateEvent() has not been ran yet.
-        	if ( checkIfNoAccess( pmEvent, start ) ) {
-        		
-        		e.setCancelled( true );
-        		return;
-        	}
-        	
-    		
-    		for ( int i = 1; i < e.getBlocks().size(); i++ ) {
-    			pmEvent.getUnprocessedRawBlocks().add( e.getBlocks().get( i ) );
-    		}
-    		
-    		
-    		
-    		// Check to see if the blockConverter's EventTrigger should have
-    		// it's blocks suppressed from explosion events.  If they should be
-    		// removed, then it's removed within this funciton.
-    		removeEventTriggerBlocksFromExplosions( pmEvent );
-    		
-  
-    		
-    		if ( !validateEvent( pmEvent ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.setCancelled( true );
-    			}
-    			
-    			debugInfo.append( "(doAction failed validation) " );
-    		}
+			// NOTE: Check for the ACCESS priority and if someone does not have access, then
+			// return
+			// with a cancel on the event. Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+			// converted to just ACCESS at this point, and the other part will run under
+			// either
+			// BLOCKEVENTS or MONITOR.
+			// This check has to be performed after creating the pmEvent object since it
+			// uses
+			// a lot of the internal variables and objects. There is not much of an impact
+			// since
+			// the validateEvent() has not been ran yet.
+			if (checkIfNoAccess(pmEvent, start)) {
 
-    		
+				e.setCancelled(true);
+				return;
+			}
 
-    		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
-    		else if ( pmEvent.getBbPriority().isMonitor() ) {
-    			// Stop here, and prevent additional processing. 
-    			// Monitors should never process the event beyond this.
-    		}
-    		
+			for (int i = 1; i < e.getBlocks().size(); i++) {
+				pmEvent.getUnprocessedRawBlocks().add(e.getBlocks().get(i));
+			}
 
-    		
-    		// This is where the processing actually happens:
-    		else {
-    			
+			// Check to see if the blockConverter's EventTrigger should have
+			// it's blocks suppressed from explosion events. If they should be
+			// removed, then it's removed within this funciton.
+			removeEventTriggerBlocksFromExplosions(pmEvent);
+
+			if (!validateEvent(pmEvent)) {
+
+				// The event has not passed validation. All logging and Errors have been
+				// recorded
+				// so do nothing more. This is to just prevent normal processing from occurring.
+
+				if (pmEvent.isCancelOriginalEvent()) {
+
+					e.setCancelled(true);
+				}
+
+				debugInfo.append("(doAction failed validation) ");
+			}
+
+			// The validation was successful, but stop processing for the MONITOR
+			// priorities.
+			// Note that BLOCKEVENTS processing occurred already within validateEvent():
+			else if (pmEvent.getBbPriority().isMonitor()) {
+				// Stop here, and prevent additional processing.
+				// Monitors should never process the event beyond this.
+			}
+
+			// This is where the processing actually happens:
+			else {
+
 //    			debugInfo.append( "(normal processing initiating) " );
-    			
-    			// check all external events such as mcMMO and EZBlocks:
+
+				// check all external events such as mcMMO and EZBlocks:
 //    			if ( e instanceof BlockBreakEvent ) {
 //    				processPMBBExternalEvents( pmEvent, debugInfo, e );
 //    			}
 //    			
-    			
-    			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
-    			
-    			cancelBy = processPMBBEvent( pmEvent );
 
-    			
-    			if ( cancelBy != EventListenerCancelBy.none ) {
-    				
-    				e.setCancelled( true );
-    				debugInfo.append( "(event canceled) " );
-    			}
+				EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
+
+				cancelBy = processPMBBEvent(pmEvent);
+
+				if (cancelBy != EventListenerCancelBy.none) {
+
+					e.setCancelled(true);
+					debugInfo.append("(event canceled) ");
+				}
 //    			else if ( cancelBy == EventListenerCancelBy.drops ) {
 //					try
 //					{
@@ -419,15 +406,15 @@ public class AutoManagerRevEnchantsExplosiveEvent
 //					}
 //
 //    			}
-    		}
+			}
 
-    		if ( pmEvent.getSpigotPlayer().isInventoryFull() ) {
-    			
-    			InventoryFullEvent.fireInventoryFullEvent( pmEvent.getPlayer() );
-    		}
+			if (pmEvent.getSpigotPlayer().isInventoryFull()) {
+
+				InventoryFullEvent.fireInventoryFullEvent(pmEvent.getPlayer());
+			}
 		}
-    	
-    	printDebugInfo( pmEvent, start );
+
+		printDebugInfo(pmEvent, start);
 	}
 
 	@Override

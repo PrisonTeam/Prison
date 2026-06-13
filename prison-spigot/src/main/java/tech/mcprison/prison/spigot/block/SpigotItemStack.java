@@ -25,17 +25,12 @@ public class SpigotItemStack
 		extends ItemStack {
 
 	private org.bukkit.inventory.ItemStack bukkitStack;
-//	private NBTItem nbtBukkitStack;
-//	private boolean nbtChecked = false;
-//	private org.bukkit.inventory.ItemStack bukkitStack;
-//	private org.bukkit.inventory.ItemStack deserialize;
 	
 	public SpigotItemStack( org.bukkit.inventory.ItemStack bukkitStack )
 		throws PrisonItemStackNotSupportedRuntimeException {
 		super();
 
 		this.bukkitStack = bukkitStack;
-//		this.nbtBukkitStack = null;
 		
 		setupBukkitStack( bukkitStack );
 	}
@@ -56,13 +51,6 @@ public class SpigotItemStack
 			}
 		}
 		
-//		if ( xMat != XMaterial.AIR ) {
-//			
-//			NBTItem nbtItemStack = new NBTItem( bukkitStack, true );
-//			
-//			this.nbtBukkitStack = nbtItemStack;
-////		this.bukkitStack = bukkitStack;
-//		}
 		
 		
         if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
@@ -82,20 +70,11 @@ public class SpigotItemStack
         	
         	
         	
-        	
-//        	BlockType type = SpigotCompatibility.getInstance()
-//        			.getBlockType( bukkitStack );
-//        BlockType type = materialToBlockType(bukkitStack.getType());
-        	
-        	
         	String displayName = null;
         	
         	if (meta.hasDisplayName()) {
         		displayName = meta.getDisplayName();
         	}
-//        	else if ( type != null ) {
-//        		displayName = type.getBlockName().toLowerCase();
-//        	}
         	
         	
         	PrisonBlock type = SpigotUtil.getPrisonBlock( xMat, displayName );
@@ -106,7 +85,7 @@ public class SpigotItemStack
         	if ( meta.hasLore() ) {
         		for ( String lore : meta.getLore() ) {
 					lores.add( lore );
-				}
+			}
         	}
         	
         	setAmount( amount );
@@ -134,156 +113,82 @@ public class SpigotItemStack
         }
     }
 
-    public SpigotItemStack(int amount, PrisonBlock material, String... lore) {
-    	super( amount, material, lore );
-    	
-    	SpigotItemStack sItemStack = SpigotUtil.getSpigotItemStack( material, amount );
-    	
-    	this.bukkitStack = sItemStack.getBukkitStack();
-    	
-    	if ( bukkitStack != null ) {
-    		setupBukkitStack( bukkitStack );
-    	}
-    }
-    
-    
-    
-    public SpigotItemStack( ItemStack iStack) {
-    	super( iStack );
-    	
-    	org.bukkit.inventory.ItemStack bStack = 
-    			( iStack instanceof SpigotItemStack ?
-    					((SpigotItemStack) iStack).getBukkitStack() :
-    						null );
-    	
-    	
-    	if ( bStack == null ) {
-    		
-    		XMaterial xMat =  SpigotCompatibility.getInstance().getXMaterial( getMaterial() );
-    		if ( xMat != null ) {
-    			bStack = xMat.parseItem();
-    		}
-    	}
-    	
-    	if ( bStack != null ) {
-    		
-    		this.bukkitStack = bStack.clone();
-    		
-    		if ( bukkitStack != null ) {
-    			setupBukkitStack( bukkitStack );
-    		}
-    	}
+	public SpigotItemStack(int amount, PrisonBlock material, String... lore) {
+		super(amount, material, lore);
 
-    }
+		SpigotItemStack sItemStack = SpigotUtil.getSpigotItemStack(material, amount);
+
+		this.bukkitStack = sItemStack.getBukkitStack();
+
+		if (bukkitStack != null) {
+			setupBukkitStack(bukkitStack);
+		}
+	}
     
     
-    public void setPrisonBlock( PrisonBlock pBlock ) {
-    	
-    	String displayName = pBlock.getBlockName();
-    	
-    	if ( pBlock.getDisplayName() != null ) {
-    		displayName = pBlock.getDisplayName();
-    	}
-    	
-    	setDisplayName( displayName );
-    	
-    	setMaterial( pBlock );
-    }
+    
+	public SpigotItemStack(ItemStack iStack) {
+		super(iStack);
+
+		org.bukkit.inventory.ItemStack bStack = (iStack instanceof SpigotItemStack
+				? ((SpigotItemStack) iStack).getBukkitStack()
+				: null);
+
+		if (bStack == null) {
+
+			XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial(getMaterial());
+			if (xMat != null) {
+				bStack = xMat.parseItem();
+			}
+		}
+
+		if (bStack != null) {
+
+			this.bukkitStack = bStack.clone();
+
+			if (bukkitStack != null) {
+				setupBukkitStack(bukkitStack);
+			}
+		}
+
+	}
     
     
-//    /**
-//     * <p>This will check to see if the nbt library is active on this itemStack,
-//     * of which there are some items and blocks that it cannot be used with.
-//     * If it has not been checked before, it will attempt a check.
-//     * </p>
-//     * 
-//     * @return
-//     */
-//    public boolean isNBTEnabled() {
-//    	
-//    	if ( !nbtChecked && bukkitStack != null && bukkitStack.getType() != Material.AIR ) {
-//    		
-//    		try {
-//				NBTItem nbtItemStack = new NBTItem( bukkitStack, true );
-//				
-//				this.nbtBukkitStack = nbtItemStack;
-//			} catch (Exception e) {
-//				// ignore - the bukkit item stack is not compatible with the NBT library
-//			}
-//
-//    		this.nbtChecked = true;
-//    	}
-//    	
-//    	return nbtBukkitStack != null;
-//    }
+	public void setPrisonBlock(PrisonBlock pBlock) {
+
+		String displayName = pBlock.getBlockName();
+
+		if (pBlock.getDisplayName() != null) {
+			displayName = pBlock.getDisplayName();
+		}
+
+		setDisplayName(displayName);
+
+		setMaterial(pBlock);
+	}
     
-//    public NBTItem getNBT() {
-//    	NBTItem nbtItemStack = null;
-//    	
-//    	if ( getBukkitStack() != null && getBukkitStack().getType() != Material.AIR  ) {
-//    		try {
-//				nbtItemStack = new NBTItem( getBukkitStack(), true );
-//				
-//				nbtDebugLog( nbtItemStack, "getNbt" );
-//			} catch (Exception e) {
-//				// ignore - the bukkit item stack is not compatible with the NBT library
-//			}
-//    	}
-//    	
-//    	return nbtItemStack;
-//    }
     
-//    private void applyNbt( NBTItem nbtItem ) {
-//		if ( nbtItem != null && getBukkitStack() != null ) {
-//			
-////			nbtItem.applyNBT( getBukkitStack() );
-//			
-//			nbtDebugLog( nbtItem, "applyNbt" );
-//		}
-//    }
     
-//    private void nbtDebugLog( NBTItem nbtItem, String desc ) {
-//		if ( Output.get().isDebug() ) {
-//			org.bukkit.inventory.ItemStack iStack = nbtItem.getItem();
-//			
-//			int sysId = System.identityHashCode(iStack);
-//			
-//			String message = String.format( 
-//					"NBT %s ItemStack for %s: %s  sysId: %d", 
-//					desc,
-//					iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName() ? 
-//							iStack.getItemMeta().getDisplayName() :
-//							iStack.getType().name(),
-//					nbtItem.toString(),
-//					sysId );
-//			
-//			Output.get().logInfo( message );
-//			
-//			Output.get().logInfo( "NBT: " + new NBTItem( getBukkitStack() ) );
-//			
-//		}
-//    }
-    
-    public boolean hasNBTKey( String key ) {
-    	boolean results = PrisonNBTUtil.hasNBTString( getBukkitStack(), key);
-    	
+	public boolean hasNBTKey(String key) {
+		boolean results = PrisonNBTUtil.hasNBTString(getBukkitStack(), key);
+
 //    	NBTItem nbtItem = getNBT();
 //    	if ( nbtItem != null ) {
 //    		results = nbtItem.hasKey( key );
 //    	}
-    	
-    	return results;
-    }
+
+		return results;
+	}
     
-    public String getNBTString( String key ) {
-    	String results = PrisonNBTUtil.getNBTString( getBukkitStack(), key);
-    	
+	public String getNBTString(String key) {
+		String results = PrisonNBTUtil.getNBTString(getBukkitStack(), key);
+
 //    	NBTItem nbtItem = getNBT();
 //    	if ( nbtItem != null ) {
 //    		results = nbtItem.getString( key );
 //    	}
-    	return results;
-    }
+		return results;
+	}
     public void setNBTString( String key, String value ) {
     	
     	PrisonNBTUtil.setNBTString( getBukkitStack(), key, value );
@@ -297,80 +202,13 @@ public class SpigotItemStack
     
     
     
-    public String getNBTItemStackInfo() {
-    	
-    	String results = PrisonNBTUtil.nbtDebugString(getBukkitStack()) ;
-    	
-    	return results;
-    }
+	public String getNBTItemStackInfo() {
+
+		String results = PrisonNBTUtil.nbtDebugString(getBukkitStack());
+
+		return results;
+	}
     
-//    public int getNBTInt( String key ) {
-//    	int results = -1;
-//    	
-//    	NBTItem nbtItem = getNBT();
-//    	if ( nbtItem != null ) {
-//     		results = nbtItem.getInteger( key );
-//    	}
-//    	return results;
-//    }
-//    public void setNBTInt( String key, int value ) {
-//    	
-//    	NBTItem nbtItem = getNBT();
-//    	if ( nbtItem != null ) {
-//     		nbtItem.setInteger( key, value );
-//     		nbtDebugLog( nbtItem, "setNBTInt" );
-//    	}
-//    }
-    
-//    public double getNBTDouble( String key ) {
-//    	double results = -1d;
-//    	
-//    	NBTItem nbtItem = getNBT();
-//    	if ( nbtItem != null ) {
-//    		results = nbtItem.getDouble( key );
-//    	}
-//    	return results;
-//    }
-//    public void setNBTDouble( String key, double value ) {
-//    	
-//    	NBTItem nbtItem = getNBT();
-//    	if ( nbtItem != null ) {
-//    		nbtItem.setDouble( key, value );
-//    		nbtDebugLog( nbtItem, "setNBTDouble" );
-//    	}
-//    }
-    
-//    public boolean getNBTBoolean( String key ) {
-//    	boolean results = false;
-//    	
-//    	NBTItem nbtItem = getNBT();
-//    	if ( nbtItem != null ) {
-//    		results = nbtItem.getBoolean( key );
-//    	}
-//    	return results;
-//    }
-//    public void setNBTBoolean( String key, boolean value ) {
-//    	
-//    	NBTItem nbtItem = getNBT();
-//    	if ( nbtItem != null ) {
-//    		nbtItem.setBoolean( key, value );
-//    		nbtDebugLog( nbtItem, "setNBTBoolean" );
-//    	}
-//    }
-    
-    
-//    	
-//    public void setNbtString( org.bukkit.inventory.ItemStack bItemStack, String key, String value ) {
-//    	NBTItem nbt = new NBTItem( bItemStack );
-//    	nbt.setString( key, value );
-//    	nbt.applyNBT( bItemStack );
-//    }
-//    	
-//    public String getNbtValue( org.bukkit.inventory.ItemStack bItemStack, String key ) {
-//    	NBTItem nbt = new NBTItem( bItemStack );
-//    	return nbt.getString( key );
-//    }
-//    
     
 	/**
 	 * <p>This function overrides the Prison's ItemStack class's setAmount() to perform the 
@@ -477,10 +315,6 @@ public class SpigotItemStack
 		
 		if ( getBukkitStack() != null ) {
 			results = getBukkitStack().getType().isBlock();
-//			XMaterial xMat = XMaterial.matchXMaterial( getBukkitStack() );
-//			if ( xMat != null ) {
-//				results = xMat.parseMaterial().isBlock();
-//			}
 		}
 		
 		return results;
@@ -494,15 +328,9 @@ public class SpigotItemStack
 	public void setBukkitStack( org.bukkit.inventory.ItemStack bukkitStack ) {
 		
 		this.bukkitStack = bukkitStack;
-//		this.nbtBukkitStack = null;
 		
 		setupBukkitStack( bukkitStack );
 	}
-
-	
-//	public NBTItem getNbtBukkitStack() {
-//		return nbtBukkitStack;
-//	}
 
 
 

@@ -77,8 +77,6 @@ public class PrisonMinesBlockBreakEvent
 	private MineTargetPrisonBlock targetBlock;
 
 	
-	//private SpigotBlock overRideSpigotBlock;
-	
 	private List<SpigotBlock> explodedBlocks;
 	
 	// The targetBlocks are the blocks that were used to reset the mine with.
@@ -465,13 +463,6 @@ public class PrisonMinesBlockBreakEvent
 		this.triggered = triggered;
 	}
 
-//	public SpigotBlock getOverRideSpigotBlock() {
-//		return overRideSpigotBlock;
-//	}
-//	public void setOverRideSpigotBlock( SpigotBlock overRideSpigotBlock ) {
-//		this.overRideSpigotBlock = overRideSpigotBlock;
-//	}
-	
 	public boolean isCancelOriginalEvent() {
 		return cancelOriginalEvent;
 	}
@@ -506,20 +497,6 @@ public class PrisonMinesBlockBreakEvent
 	public void setBbPriority( BlockBreakPriority bbPriority ) {
 		this.bbPriority = bbPriority;
 	}
-
-//	public boolean isMonitor() {
-//		return monitor;
-//	}
-//	public void setMonitor( boolean monitor ) {
-//		this.monitor = monitor;
-//	}
-//	
-//	public boolean isBlockEventsOnly() {
-//		return blockEventsOnly;
-//	}
-//	public void setBlockEventsOnly( boolean blockEventsOnly ) {
-//		this.blockEventsOnly = blockEventsOnly;
-//	}
 
 	public List<Block> getUnprocessedRawBlocks() {
 		return unprocessedRawBlocks;

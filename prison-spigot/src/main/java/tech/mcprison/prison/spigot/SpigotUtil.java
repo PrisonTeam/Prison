@@ -54,7 +54,6 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.integrations.IntegrationBackpackAPI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
-import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 import tech.mcprison.prison.util.Vector;
@@ -82,64 +81,14 @@ public class SpigotUtil {
     	return XMaterial.matchXMaterial( materialName ).orElse( null );
     }
     
-//    /**
-//     * <p>Gets the XMaterial based upon the BlockType name, and if it fails to hit
-//     * anything, then it falls back on to the id, of which XMaterial strips the 
-//     * prefix of "minecraft:".
-//     * </p>
-//     * 
-//     * @param prisonBlockType
-//     * @return
-//     */
-//    public static XMaterial getXMaterial( BlockType prisonBlockType ) {
-//    	
-//    	XMaterial xMat = SpigotCompatibility.getInstance()
-//    						.getXMaterial( prisonBlockType );
-//    	
-//    	return xMat;
-//    }
     
-    public static XMaterial getXMaterial( PrisonBlock prisonBlock ) {
-    	
-    	XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial(prisonBlock);
-    	
-//    	XMaterial xMat = getXMaterial( prisonBlock.getBlockName());
-    	
-    	return xMat;
-    }
-    
-//    public static Material getMaterial( BlockType prisonBlockType ) {
-//    	XMaterial xMat = getXMaterial( prisonBlockType );
-//    	
-//    	return xMat == null ? null : xMat.parseMaterial();
-//    }
-    
+	public static XMaterial getXMaterial( PrisonBlock prisonBlock ) {
 
+		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( prisonBlock );
+
+		return xMat;
+	}
     
-//	public static BlockType blockToBlockType( Block spigotBlock ) {
-//		BlockType results = SpigotCompatibility.getInstance()
-//				.getBlockType( spigotBlock );
-//		
-////		
-////		XMaterial xMatMatch = XMaterial.matchXMaterial( material );
-////		
-////		for ( BlockType blockType : BlockType.values() ) {
-////			XMaterial xMat = getXMaterial( blockType );
-////			if ( xMat != null ) {
-////				results = blockType;
-////				break;
-////			}
-////		}
-//		
-//        return results;
-//    }
-	
-//	public static BlockType prisonBlockToBlockType( PrisonBlock prisonBlock ) {
-//		
-//		BlockType results = BlockType.getBlock( prisonBlock.getBlockName() );
-//		
-//		return results;
-//	}
 
 	/**
 	 * <p>Returns a stack of PrisonBlock or a stack of air.
@@ -203,48 +152,6 @@ public class SpigotUtil {
 	}
 	
 	
-//	public static void getSpigotBlock( ItemStack iStack ) {
-//		//XMaterial xmat = XMaterial.matchXMaterial( iStack );
-//		
-////		SpigotCompatibility.getInstance().
-//	}
-	
-
-	/*public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory(
-			Player player, SpigotItemStack itemStack ) {
-		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
-		
-		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
-		Set<Integer> keys = overflow.keySet();
-
-		if (SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true") &&
-				SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
-
-			// Get backpack.
-			Inventory prisonBackpack = BackPacksUtil.get().getInventory(player);
-
-			for (Integer key : keys){
-				HashMap<Integer, ItemStack> overflowBackPack = prisonBackpack.addItem(overflow.get(key));
-
-				if (!overflowBackPack.isEmpty()){
-					Set<Integer> keys2 = overflowBackPack.keySet();
-					for (Integer key2 : keys2) {
-						results.put(key2, new SpigotItemStack(overflowBackPack.get(key2)));
-					}
-				}
-			}
-			// Save backpack with new items if not full.
-			BackPacksUtil.get().setInventory(player, prisonBackpack);
-		} else {
-			for (Integer key : keys) {
-				results.put(key, new SpigotItemStack(overflow.get(key)));
-			}
-		}
-
-		return results;
-	}*/
-
-
 	/**
 	 * Used in AutoManagerFeatures.
 	 *
@@ -323,30 +230,6 @@ public class SpigotUtil {
 		return results;
 	}
 	
-//	public static int countItemsInPlayerInventory(
-//								Player player, SpigotItemStack itemStackSource, 
-//								SpigotItemStack itemStackTarget, int quantity ) {
-//		int count = 0;
-//
-//		player.getInventory().
-//		
-//		
-//		
-//		return count ;
-//	}
-//	
-//	public static HashMap<Integer, SpigotItemStack> exchangeItemsFromPlayerInventory(
-//			Player player, SpigotItemStack itemStackSource, 
-//			SpigotItemStack itemStackTarget, int quantity ) {
-//		HashMap<Integer, SpigotItemStack> overflow = new HashMap<>();
-//		
-//		HashMap<Integer, SpigotItemStack> removed = new HashMap<>();
-//		
-//		
-//		
-//		return overflow ;
-//	}
-
 	
 	public static int itemStackCount(XMaterial xMat, Inventory inv ) {
 		int count = 0;
@@ -733,18 +616,6 @@ public class SpigotUtil {
 					}
 				}
 				
-//				Material mat = xMat.parseMaterial();
-//				if ( mat != null ) {
-//					if ( mat.isBlock() ) {
-//						
-//						PrisonBlock block = new PrisonBlock( xMat.name().toLowerCase() );
-//						
-//						block.setValid( true );
-//						block.setBlock( mat.isBlock() );
-//						
-//						blockTypes.add( block );
-//					}
-//				}
 				else {
 					
 					// NOTE: Wall hangings, water, and potted plants can be placed as blocks, but cannot
@@ -849,28 +720,6 @@ public class SpigotUtil {
 		PrisonBlock results = new PrisonBlock( blockName, displayName );
 		results.setValid( false );
 		
-//		BlockType bTypeObsolete = null;
-//		
-//		XMaterial xMat = getXMaterial( blockName );
-//		
-//		if ( xMat == null ) {
-//			// Try to get the material through the old prison blocks:
-//			bTypeObsolete = BlockType.getBlock( blockName );
-//			
-//			xMat = getXMaterial( bTypeObsolete );
-//		}
-//		
-//		if ( xMat != null ) {
-//			results = new PrisonBlock( xMat.name() );
-//			
-//			if ( bTypeObsolete != null ) {
-//				results.setLegacyBlock( true );
-//			}
-//		}
-//		else {
-//			results = new PrisonBlock( blockName );
-//			results.setValid( false );
-//		}
 		return results;
 	}
 	
@@ -904,32 +753,6 @@ public class SpigotUtil {
 		int supportedBlockCountPrison = 0;
 		int supportedBlockCountXMaterial = 0;
 		
-//		for ( BlockType block : BlockType.values() ) {
-//			
-//			if ( block.isBlock() ) {
-//				XMaterial xMat = getXMaterial( block );
-//				
-//				if ( xMat == null ) {
-//					if ( sbNoMap.length() > 0 ) {
-//						sbNoMap.append( " " );
-//					}
-//					
-//					Material mat = getMaterial( block );
-//					
-//					String bName = block.name() + (mat == null ? "" : "(" + mat.name() + ")");
-//					sbNoMap.append( bName );
-//				}
-//				else if ( !xMat.isSupported() ) {
-//					if ( sbNotSupported.length() > 0 ) {
-//						sbNotSupported.append( " " );
-//					}
-//					sbNotSupported.append( block.name() );
-//				}
-//				else {
-//					supportedBlockCountPrison++;
-//				}
-//			}
-//		}
 		
 		// Validate which XMaterial 
 		for ( XMaterial xMat : XMaterial.values() ) {
@@ -1028,115 +851,28 @@ public class SpigotUtil {
 		Output.get().logWarn( message + sb.substring( start ));
 	}
 	
-//    @SuppressWarnings( "deprecation" )
-//	public static BlockType materialToBlockType(Material material) {
-//        return BlockType.getBlock(material.getId()); // To be safe, we use legacy ID
-//    }
 
-//    @SuppressWarnings( "deprecation" )
-//	public static MaterialData blockTypeToMaterial(BlockType type) {
-//        Material material = Material.getMaterial(type.getLegacyId());
-//        if ( material == null ) {
-//        	material = Material.STONE;
-//        }
-//        return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
-////		Material material = Material.getMaterial(type.getLegacyId());
-////		if ( material == null ) {
-////			material = Material.STONE;
-////		}
-////		
-////		return new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
-////
-////    	
-////    	
-////    	MaterialData results = null;
-////    	
-////    	if ( type.getMaterialVersion() == MaterialVersion.v1_13 ) {
-////    		Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: v1_13 : %s ",
-////    				type.getId()) );
-////    		
-////    		// Material type for 1.13 and higher have a legacyID == 0:
-////    		Material material = null;
-////    		material = getMaterial( type.getId() );
-////    		
-////    		if ( material == null ) {
-////    			String materialName = type.getId().toUpperCase();
-////    			material = getMaterial( materialName );
-////    			
-////    			Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: was null : %s -> %s [%s]", 
-////    					type.name(), materialName, (material == null ? "null" : "NOT null")) );
-////    			
-//////    			if ( material == null ) {
-//////    				material = Material.
-//////    				Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: was null : %s -> %s [%s]", 
-//////    						type.name(), materialName, (material == null ? "null" : "NOT null")) );
-//////    				
-//////    			}
-////    		}
-////    		else {
-////    			Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: %s [%s]", 
-////    					type.name(), (material == null ? "null" : "NOT null")) );
-////    			
-////    		}
-////    		
-////    		if ( material == null ) {
-////    			material = Material.STONE;
-////    		}
-////    		results = new MaterialData(material);
-////    	} 
-////    	else {
-//////    		Output.get().logInfo( String.format( "SpigotUtil.blockTypeToMaterial: v1_8 : %s  %s  data=%s", 
-//////    				type.getId(), Integer.toString( type.getLegacyId()), 
-//////    				Integer.toString( type.getData())) );
-//////    		// type.getMaterialVersion() == MaterialVersion.v1_8
-////    		
-////    		// Material types for 1.12 and lower:
-////    		Material material = Material.getMaterial(type.getLegacyId());
-////    		if ( material == null ) {
-////    			material = Material.STONE;
-////    		}
-////    		
-////    		results = new MaterialData(material, (byte) type.getData()); // To be safe, we use legacy ID
-////    		
-////    	}
-////    	return results;
-//    }
-    
-//    private static Material getMaterial( String materialName ) {
-//    	Material results = null;
-//    	
-//    	try {
-//    		results = Material.matchMaterial( materialName );
-//    	}
-//    	catch ( Exception e ) {
-//    		// Do nothing for now... 
-//    		// Will try other combination later and will report failure if needed;
-//    		Output.get().logInfo( "&cSpigotUtil.getMaterial() Failure : &7" + e.getMessage() );
-//    	}
-//    	
-//    	return results;
-//    }
 
-  /*
-   * Location
-   */
+	/*
+	 * Location
+	 */
 
-    public static Location bukkitLocationToPrison(org.bukkit.Location bukkitLocation) {
-    	
-    	Location loc = new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
-    			bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
-    			bukkitLocation.getYaw() );
-    	
-    	double x = bukkitLocation.getDirection().getX();
-    	double y = bukkitLocation.getDirection().getY();
-    	double z = bukkitLocation.getDirection().getZ();
-    	
-    	Vector direction = new Vector( x, y, z );
-    	
-    	loc.setDirection( direction );
-    	
-    	return loc;
-    	
+	public static Location bukkitLocationToPrison( org.bukkit.Location bukkitLocation ) {
+
+		Location loc = new Location( new SpigotWorld( bukkitLocation.getWorld() ), bukkitLocation.getX(),
+				bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
+				bukkitLocation.getYaw() );
+
+		double x = bukkitLocation.getDirection().getX();
+		double y = bukkitLocation.getDirection().getY();
+		double z = bukkitLocation.getDirection().getZ();
+
+		Vector direction = new Vector( x, y, z );
+
+		loc.setDirection( direction );
+
+		return loc;
+
 //    	org.bukkit.util.Vector v = bukkitLocation.getDirection();
 //    	Vector direction = new Vector( v.getX(), v.getY(), v.getZ() );
 //    	
@@ -1144,7 +880,7 @@ public class SpigotUtil {
 //            bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
 //            bukkitLocation.getYaw(), 
 //            direction );
-    }
+	}
 
     public static org.bukkit.Location prisonLocationToBukkit(Location prisonLocation) {
         org.bukkit.Location loc = new org.bukkit.Location(
@@ -1159,103 +895,100 @@ public class SpigotUtil {
         return loc;
     }
 
-  /*
-   * ItemStack
-   */
+	/*
+	 * ItemStack
+	 */
 
-    public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack) {
-    	SpigotItemStack results = null;
-    	
-    	if ( bukkitStack != null ) {
-    		try {
+	public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack ) {
+
+		SpigotItemStack results = null;
+
+		if ( bukkitStack != null ) {
+			try {
 				results = new SpigotItemStack( bukkitStack );
-			} 
-    		catch (PrisonItemStackNotSupportedRuntimeException e) {
+			} catch ( PrisonItemStackNotSupportedRuntimeException e ) {
 				// ignore...
 			}
-    	}
-    	
-    	return results;
-    }
+		}
 
-    /**
-     * <p>This function will try to use the 'prisonStack' parameter, and then
-     * construct an org.bukkit.inventory.ItemStack object and return it. If
-     * the provided prisonStack already contains a bukkit ItemStack, then it 
-     * will be returned from this function, otherwise it will have to construct
-     * one.
-     * </p>
-     * 
-     * <p>If it has to construct one, it will add the lore and custom name.
-     * It may have to also handle enchantments too.  Not sure right now.
-     * </p>
-     * 
-     * <p>The idea is that hopefully the prisonStack will always have an
-     * included bukkit ItemStack so everything will faithfully copy over.
-     * </p>
-     * 
-     * @param prisonStack
-     * @return
-     */
-    public static ItemStack prisonItemStackToBukkit(
-    				tech.mcprison.prison.internal.ItemStack prisonStack) {
-    	
-    	ItemStack bukkitStack = null;
-    	
-        int amount = prisonStack.getAmount();
-        
-        if ( prisonStack instanceof SpigotItemStack ) {
-        	
-        	SpigotItemStack sItemStack = (SpigotItemStack) prisonStack;
-        	
-        	if ( sItemStack.getBukkitStack() != null ) {
-        		bukkitStack = sItemStack.getBukkitStack();
-        	}
-        }
-        
+		return results;
+	}
 
-        if ( bukkitStack == null ) {
-        	
-        	bukkitStack = getItemStack( prisonStack.getMaterial(), amount );
-        	
-//        MaterialData materialData = blockTypeToMaterial(prisonStack.getMaterial());
-//
-//        ItemStack bukkitStack = new ItemStack(materialData.getItemType(), amount);
-//        bukkitStack.setData(materialData);
-        	
-        	ItemMeta meta;
-        	if (bukkitStack.getItemMeta() == null || !bukkitStack.hasItemMeta()) {
-        		meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
-        	} else {
-        		meta = bukkitStack.getItemMeta();
-        	}
-        	
-        	if (meta != null) {
-        		if (prisonStack.getDisplayName() != null) {
-        			meta.setDisplayName(Text.translateAmpColorCodes(prisonStack.getDisplayName()));
-        		}
-        		if (prisonStack.getLore() != null) {
-        			List<String> colored = new ArrayList<>();
-        			for (String uncolor : prisonStack.getLore()) {
-        				colored.add(Text.translateAmpColorCodes(uncolor));
-        			}
-        			meta.setLore(colored);
-        		}
-        		bukkitStack.setItemMeta(meta);
-        	}
-        	
-        	// Need to copy enchantments?
-        	
-        	// Need to copy lore:
-        	// No, this does not make sense... if prisonStack has NBT data, then
-        	// it would also have a getBukkitStack() entry, so this part of the
-        	// code would never be reached. So if there is no bukkitStack in the
-        	// prisonStack, then there would be no NBT data either.
+	/**
+	 * <p>
+	 * This function will try to use the 'prisonStack' parameter, and then construct an org.bukkit.inventory.ItemStack
+	 * object and return it. If the provided prisonStack already contains a bukkit ItemStack, then it will be returned from
+	 * this function, otherwise it will have to construct one.
+	 * </p>
+	 * 
+	 * <p>
+	 * If it has to construct one, it will add the lore and custom name. It may have to also handle enchantments too. Not
+	 * sure right now.
+	 * </p>
+	 * 
+	 * <p>
+	 * The idea is that hopefully the prisonStack will always have an included bukkit ItemStack so everything will
+	 * faithfully copy over.
+	 * </p>
+	 * 
+	 * @param prisonStack
+	 * @return
+	 */
+	public static ItemStack prisonItemStackToBukkit(
+			tech.mcprison.prison.internal.ItemStack prisonStack ) {
+
+		ItemStack bukkitStack = null;
+
+		int amount = prisonStack.getAmount();
+
+		if ( prisonStack instanceof SpigotItemStack ) {
+
+			SpigotItemStack sItemStack = (SpigotItemStack) prisonStack;
+
+			if ( sItemStack.getBukkitStack() != null ) {
+				bukkitStack = sItemStack.getBukkitStack();
+			}
+		}
+
+
+		if ( bukkitStack == null ) {
+
+			bukkitStack = getItemStack( prisonStack.getMaterial(), amount );
+
+			ItemMeta meta;
+			if ( bukkitStack.getItemMeta() == null || !bukkitStack.hasItemMeta() ) {
+				meta = Bukkit.getItemFactory().getItemMeta( bukkitStack.getType() );
+			}
+			else {
+				meta = bukkitStack.getItemMeta();
+			}
+
+			if ( meta != null ) {
+				if ( prisonStack.getDisplayName() != null ) {
+					meta.setDisplayName( Text.translateAmpColorCodes( prisonStack.getDisplayName() ) );
+				}
+				if ( prisonStack.getLore() != null ) {
+					List<String> colored = new ArrayList<>();
+					for ( String uncolor : prisonStack.getLore() ) {
+						colored.add( Text.translateAmpColorCodes( uncolor ) );
+					}
+					meta.setLore( colored );
+				}
+				bukkitStack.setItemMeta( meta );
+			}
+
+			// Need to copy enchantments?
+
+			// Need to copy lore:
+			// No, this does not make sense... if prisonStack has NBT data, then
+			// it would also have a getBukkitStack() entry, so this part of the
+			// code would never be reached. So if there is no bukkitStack in the
+			// prisonStack, then there would be no NBT data either.
 //        	PrisonNBTUtil.copyCustomNBT(bukkitStack, bukkitStack)
-        }
+		}
 
-        return bukkitStack;
-    }
+		return bukkitStack;
+	}
     
     
     
@@ -1281,17 +1014,10 @@ public class SpigotUtil {
 			ret.add( SpigotUtil.bukkitItemStackToPrison(drop) );
 		}
 		
-	//	block.getWrapper().getDrops( tool.getBukkitStack() )
-	//			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
-		
 		return ret;
 	}
     
   
-//  public static void clearDrops(SpigotBlock block) {
-//	  
-//	  block.getWrapper().getDrops().clear();;
-//  }
   
   /*
    * InventoryType
@@ -1321,27 +1047,20 @@ public class SpigotUtil {
     }
 
     
-    /**
-     * <p>Vault economy requires the parameter of bukkit's OfflinePlayer.
-     * That was never exposed for good reasons, and do not want to use
-     * bukkit/spigot specific code within that integration.  So, this is
-     * where this code will live since it is a Spigot untility.
-     * </p>
-     * 
-     * @param uuid
-     * @return OfflinePlayer
-     */
-    public static OfflinePlayer getBukkitOfflinePlayer( UUID uuid ) {
-    	
-    	OfflinePlayer results = Bukkit.getOfflinePlayer(uuid);
-    	
-//    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
-//    		if ( uuid != null && offP.getUniqueId().equals(uuid) ) {
-//    			results = offP;
-//    			break;
-//	  		}
-//		}
-    	
-    	return results;
-    }
+	/**
+	 * <p>
+	 * Vault economy requires the parameter of bukkit's OfflinePlayer. That was never exposed for good reasons, and do not
+	 * want to use bukkit/spigot specific code within that integration. So, this is where this code will live since it is a
+	 * Spigot untility.
+	 * </p>
+	 * 
+	 * @param uuid
+	 * @return OfflinePlayer
+	 */
+	public static OfflinePlayer getBukkitOfflinePlayer( UUID uuid ) {
+
+		OfflinePlayer results = Bukkit.getOfflinePlayer( uuid );
+
+		return results;
+	}
 }

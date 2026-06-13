@@ -37,7 +37,6 @@ public class PrisonBStats {
 	private List<String> reportPermissions;
 	private List<String> reportEconomy;
 	private List<String> reportPlaceholders;
-//	private List<String> reportVault;
 	private List<String> reportEnchantments;
 	private List<String> reportAdminTools;
 	private List<String> reportConflicts;
@@ -57,7 +56,6 @@ public class PrisonBStats {
 
 		this.reportEconomy = new ArrayList<>();
 		this.reportPlaceholders = new ArrayList<>();
-//		this.reportVault = new ArrayList<>();
 		this.reportEnchantments = new ArrayList<>();
 		this.reportAdminTools = new ArrayList<>();
 		this.reportConflicts = new ArrayList<>();
@@ -83,9 +81,6 @@ public class PrisonBStats {
     	
     	int pluginId = 657;
     	setbStatsMetrics( new Metrics( spigotPrison, pluginId ) );;
-//    	bStatsMetrics = new PrisonMetrics( this, pluginId );
-    	
-//    	Metrics metrics = new Metrics( this, pluginId );
     }
     
     public void initMetricsOnEnable() {
@@ -98,7 +93,6 @@ public class PrisonBStats {
         	int pluginId = 657;
         	
         	setbStatsMetrics( new Metrics( spigotPrison, pluginId ) );
-//        	bStatsMetrics = new PrisonMetrics( this, pluginId );
         }
 
         // Report the modules being used
@@ -145,7 +139,6 @@ public class PrisonBStats {
         	
         	int defaultRankCount = prisonRanks.getDefaultLadderRankCount();
         	
-//        	int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
         	return Integer.toString( defaultRankCount );
         }) );
         

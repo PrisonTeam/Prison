@@ -90,40 +90,36 @@ public class AutoManagerPrisonEnchants
 	 *
 	 */
 	public class AutoManagerPEExplosiveEventListener 
-		extends AutoManagerPrisonEnchants
-		implements Listener {
-		
-    	public AutoManagerPEExplosiveEventListener( 
-    					BlockBreakPriority bbPriority, 
-    					PEExplosionEventVersion peApiVersion ) {
-    		super( bbPriority );
-    		
-    		// Setup the plugin's version:
-    		if ( peApiVersion != PEExplosionEventVersion.undefined ) {
-    			// It's already been calculated, so save it:
-    			setPeApiVersion( peApiVersion );
-    		}
-    		else {
-    			// It was not properly calculated before, so figure it out and save it:
-    			getPEPluginVersion();
-    		}
-    	}
-    	
-		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onPrisonEnchantsExplosiveEvent( PEExplosionEvent e, BlockBreakPriority bbPriority ) {
-			
-			Block block = getBlock( e );
-			
-			if ( isDisabled( block.getLocation().getWorld().getName() ) ||
-					bbPriority.isDisabled() ) {
+			extends AutoManagerPrisonEnchants 
+			implements Listener {
+
+		public AutoManagerPEExplosiveEventListener(BlockBreakPriority bbPriority,
+				PEExplosionEventVersion peApiVersion) {
+			super(bbPriority);
+
+			// Setup the plugin's version:
+			if (peApiVersion != PEExplosionEventVersion.undefined) {
+				// It's already been calculated, so save it:
+				setPeApiVersion(peApiVersion);
+			} else {
+				// It was not properly calculated before, so figure it out and save it:
+				getPEPluginVersion();
+			}
+		}
+
+		@EventHandler(priority = EventPriority.NORMAL)
+		public void onPrisonEnchantsExplosiveEvent(PEExplosionEvent e, BlockBreakPriority bbPriority) {
+
+			Block block = getBlock(e);
+
+			if (isDisabled(block.getLocation().getWorld().getName()) || bbPriority.isDisabled()) {
 				return;
 			}
 
-			
 //			me.pulsi_.prisonenchants.events.PEExplosionEvent
-			
-			handlePEExplosionEvent( e, bbPriority );
-			
+
+			handlePEExplosionEvent(e, bbPriority);
+
 //			genericBlockExplodeEventAutoManager( e );
 		}
 	}
@@ -375,11 +371,11 @@ public class AutoManagerPrisonEnchants
 
    
 
-    @Override
-    public void unregisterListeners() {
-    	setPeApiVersion( null );
+	@Override
+	public void unregisterListeners() {
+		setPeApiVersion(null);
 //    	super.unregisterListeners();
-    }
+	}
 	
 	@Override
 	public void dumpEventListeners() {
@@ -401,32 +397,30 @@ public class AutoManagerPrisonEnchants
 	
 	
 	@Override
-	public void dumpEventListeners( StringBuilder sb ) {
-		
-		String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+	public void dumpEventListeners(StringBuilder sb) {
 
-    	if ( !isEventEnabled ) {
-    		return;
-    	}
-		
+		String eP = getMessage(AutoFeatures.PrisonEnchantsExplosiveEventPriority);
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase(eP);
+
+		if (!isEventEnabled) {
+			return;
+		}
+
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
-			
-			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
-							this.getClass().getClassLoader() );
-			
-			HandlerList handlers = PEExplosionEvent.getHandlerList();
-			
-			// debug only:
-			Output.get().logInfo( "PEExplosionEvent: " + handlers.getClass().getName() );
-			
-//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
-    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
-    		dumpEventListenersCore( "Pulsi_'s PEExplosionEvent", handlers, bbPriority, sb );
-    		
-			
+			Class.forName("me.pulsi_.prisonenchants.events.PEExplosionEvent", false, this.getClass().getClassLoader());
+
+			HandlerList handlers = PEExplosionEvent.getHandlerList();
+
+			// debug only:
+			Output.get().logInfo("PEExplosionEvent: " + handlers.getClass().getName());
+
+//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
+			BlockBreakPriority bbPriority = BlockBreakPriority.fromString(eP);
+
+			dumpEventListenersCore("Pulsi_'s PEExplosionEvent", handlers, bbPriority, sb);
+
 //    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 //			
 //			String title = String.format( 
@@ -458,203 +452,189 @@ public class AutoManagerPrisonEnchants
 //				
 //				sb.append( msg ).append( "\n" );
 //			}
-		}
-		catch ( ClassNotFoundException e ) {
+		} catch (ClassNotFoundException e) {
 			// PrisonEnchants is not loaded... so ignore.
-		}
-		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage() );
+		} catch (Exception e) {
+			Output.get().logInfo("AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage());
 		}
 	}
     
 	/**
-	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
-	 * get the mine, then loop through those blocks to make sure they are within the mine.
+	 * <p>
+	 * Since there are multiple blocks associated with this event, pull out the
+	 * player first and get the mine, then loop through those blocks to make sure
+	 * they are within the mine.
 	 * </p>
 	 * 
-	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
-	 * event contains multiple blocks so it's far more efficient to process the player data once. 
-	 * So that basically needed a slight refactoring.
+	 * <p>
+	 * The logic in this function is slightly different compared to
+	 * genericBlockEvent() because this event contains multiple blocks so it's far
+	 * more efficient to process the player data once. So that basically needed a
+	 * slight refactoring.
 	 * </p>
 	 * 
 	 * @param e
 	 */
-	public void handlePEExplosionEvent( PEExplosionEvent e, BlockBreakPriority bbPriority) {
-		
+	public void handlePEExplosionEvent(PEExplosionEvent e, BlockBreakPriority bbPriority) {
+
 		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
-		
-		// If the event is canceled, it still needs to be processed because of the 
+
+		// If the event is canceled, it still needs to be processed because of the
 		// MONITOR events:
-		// An event will be "canceled" and "ignored" if the block 
+		// An event will be "canceled" and "ignored" if the block
 		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
-		// or if the targetBlock has been set to ignore all block events which 
+		// or if the targetBlock has been set to ignore all block events which
 		// means the block has already been processed.
-		
-		
-		if ( e.getBlocks().size() == 0 ) {
+
+		if (e.getBlocks().size() == 0) {
 			// Nothing to process:
-			return ;
+			return;
 		}
-		
 
 		// Remove all invalid blocks:
 		// The original collection in the event will be updated...
+		@SuppressWarnings("unused")
 		int blocksBefore = e.getBlocks().size();
-		
+
 		// verified blocks:
-		List<Block> vBlocks = removeAllInvalidBlocks( e.getPlayer(), e.getBlocks(), bbPriority, true );
+		List<Block> vBlocks = removeAllInvalidBlocks(e.getPlayer(), e.getBlocks(), bbPriority, true);
+		@SuppressWarnings("unused")
 		int blocksAfter = vBlocks.size();
 
 //		Output.get().logInfo( "&6 #### PEExplosionEvent:  &7removeAllInvalidBlocks:&3  before: %d  after: %d",
 //				blocksBefore, blocksAfter );
-		
-		
-		if ( vBlocks.size() == 0 ) {
+
+		if (vBlocks.size() == 0) {
 			// No blocks are within prison mines... ignore this event.
 			return;
 		}
-		
-		
+
 		// NOTE: support for v1.0, v2.2, and v2.2.1 has different block structures:
-		Block bBlock = getBlock( e );
-		
-    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    			e.getPlayer(), bBlock,
-    			bbPriority, true );
-    	
-    	// The primary block is not in the mine, or they don't have access to it, so ignore event:
-    	if ( eventResults.isIgnoreEvent() ) {
+		Block bBlock = getBlock(e);
 
-    		// But if vBlocks.size() > 0, the try the first block in that list to see if it will work:
-    		if ( vBlocks.size() > 0 ) {
-    			bBlock = vBlocks.remove( 0 );
-    			
-    			eventResults = ignoreMinesBlockBreakEvent( e, 
-    	    			e.getPlayer(), bBlock,
-    	    			bbPriority, true );
-    			
-    			if ( eventResults.isIgnoreEvent() ) {
-    				return;
-    			}
-    		}
-    		else {
-    			
-    			return;
-    		}
-    	}
-				
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent(e, e.getPlayer(), bBlock, bbPriority, true);
+
+		// The primary block is not in the mine, or they don't have access to it, so
+		// ignore event:
+		if (eventResults.isIgnoreEvent()) {
+
+			// But if vBlocks.size() > 0, the try the first block in that list to see if it
+			// will work:
+			if (vBlocks.size() > 0) {
+				bBlock = vBlocks.remove(0);
+
+				eventResults = ignoreMinesBlockBreakEvent(e, e.getPlayer(), bBlock, bbPriority, true);
+
+				if (eventResults.isIgnoreEvent()) {
+					return;
+				}
+			} else {
+
+				return;
+			}
+		}
+
 		StringBuilder debugInfo = new StringBuilder();
-		
-		
-		debugInfo.append( String.format( "&6### ** handlePEEExplosionEvent (Pulsi) ** ###&3 " +
-				"(event: &6PEExplosionEvent&3, config: %s, priority: %s, %scanceled: %s) ",
-				bbPriority.name(),
-				bbPriority.getBukkitEventPriority().name(),
-				(e.getEventName() == null ? "" : "EventName: " + e.getEventName()),
-				(e.isCancelled() ? "TRUE " : "FALSE")
-				) );
-		
-		debugInfo.append( eventResults.getDebugInfo() );
-		
-		
-		// Process all priorities if the event has not been canceled, and 
-		// process the MONITOR priority even if the event was canceled:
-    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
-    			bbPriority.isMonitor() ) {
 
-    		
-    		BlockEventType eventType = BlockEventType.PEExplosive;
-    		String triggered = null; // e.getTriggeredBy();
-    		
-    		pmEvent = new PrisonMinesBlockBreakEvent( 
-    					eventResults,
+		debugInfo.append(String.format(
+				"&6### ** handlePEEExplosionEvent (Pulsi) ** ###&3 "
+						+ "(event: &6PEExplosionEvent&3, config: %s, priority: %s, %scanceled: %s) ",
+				bbPriority.name(), bbPriority.getBukkitEventPriority().name(),
+				(e.getEventName() == null ? "" : "EventName: " + e.getEventName()),
+				(e.isCancelled() ? "TRUE " : "FALSE")));
+
+		debugInfo.append(eventResults.getDebugInfo());
+
+		// Process all priorities if the event has not been canceled, and
+		// process the MONITOR priority even if the event was canceled:
+		if (!bbPriority.isMonitor() && !e.isCancelled() || bbPriority.isMonitor()) {
+
+			BlockEventType eventType = BlockEventType.PEExplosive;
+			String triggered = null; // e.getTriggeredBy();
+
+			pmEvent = new PrisonMinesBlockBreakEvent(eventResults,
 //    					e.getBlockBroken(), 
 //    					e.getPlayer(),
 //    					eventResults.getMine(),
 //    					bbPriority, 
-    					eventType, 
-    					triggered,
-    					debugInfo );
-    		
+					eventType, triggered, debugInfo);
 
-        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
-        	//       converted to just ACCESS at this point, and the other part will run under either
-        	//       BLOCKEVENTS or MONITOR.
-    		// This check has to be performed after creating the pmEvent object since it uses
-    		// a lot of the internal variables and objects.  There is not much of an impact since
-    		// the validateEvent() has not been ran yet.
-        	if ( checkIfNoAccess( pmEvent, start ) ) {
-        		
-        		e.setCancelled( true );
-        		return;
-        	}
-        	
+			// NOTE: Check for the ACCESS priority and if someone does not have access, then
+			// return
+			// with a cancel on the event. Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+			// converted to just ACCESS at this point, and the other part will run under
+			// either
+			// BLOCKEVENTS or MONITOR.
+			// This check has to be performed after creating the pmEvent object since it
+			// uses
+			// a lot of the internal variables and objects. There is not much of an impact
+			// since
+			// the validateEvent() has not been ran yet.
+			if (checkIfNoAccess(pmEvent, start)) {
+
+				e.setCancelled(true);
+				return;
+			}
+
 //        	List<Block> blocks = getBlocks( e );
-        	
-        	// vBlocks have been verified to be within a mine.  There may be restrictions that prevent them
-        	// from being used, but they passed the first check.
-    		pmEvent.setUnprocessedRawBlocks( vBlocks );
-    		
-    		
-    		// Check to see if the blockConverter's EventTrigger should have
-    		// it's blocks suppressed from explosion events.  If they should be
-    		// removed, then it's removed within this function.
-    		removeEventTriggerBlocksFromExplosions( pmEvent );
-    		
-  
-    		
-    		if ( !validateEvent( pmEvent ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.getBlocks().clear();
-    				e.setCancelled( true );
-    			}
-    			
-    			debugInfo.append( "(doAction failed validation) " );
-    		}
 
-    		
-    		
-    		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
-    		else if ( pmEvent.getBbPriority().isMonitor() ) {
-    			// Stop here, and prevent additional processing. 
-    			// Monitors should never process the event beyond this.
-    		}
-    		
+			// vBlocks have been verified to be within a mine. There may be restrictions
+			// that prevent them
+			// from being used, but they passed the first check.
+			pmEvent.setUnprocessedRawBlocks(vBlocks);
 
-    		// This is where the processing actually happens:
-    		else {
-    			
+			// Check to see if the blockConverter's EventTrigger should have
+			// it's blocks suppressed from explosion events. If they should be
+			// removed, then it's removed within this function.
+			removeEventTriggerBlocksFromExplosions(pmEvent);
+
+			if (!validateEvent(pmEvent)) {
+
+				// The event has not passed validation. All logging and Errors have been
+				// recorded
+				// so do nothing more. This is to just prevent normal processing from occurring.
+
+				if (pmEvent.isCancelOriginalEvent()) {
+
+					e.getBlocks().clear();
+					e.setCancelled(true);
+				}
+
+				debugInfo.append("(doAction failed validation) ");
+			}
+
+			// The validation was successful, but stop processing for the MONITOR
+			// priorities.
+			// Note that BLOCKEVENTS processing occurred already within validateEvent():
+			else if (pmEvent.getBbPriority().isMonitor()) {
+				// Stop here, and prevent additional processing.
+				// Monitors should never process the event beyond this.
+			}
+
+			// This is where the processing actually happens:
+			else {
+
 //    			debugInfo.append( "(normal processing initiating) " );
-    			
-    			// check all external events such as mcMMO and EZBlocks:
+
+				// check all external events such as mcMMO and EZBlocks:
 //    			if ( e instanceof BlockBreakEvent ) {
 //    				processPMBBExternalEvents( pmEvent, debugInfo, e );
 //    			}
-    			
-    			
-    			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
-    			
-    			cancelBy = processPMBBEvent( pmEvent );
 
-    			
-    			if ( cancelBy != EventListenerCancelBy.none ) {
-    				
-    				e.setCancelled( true );
-    				debugInfo.append( "(event canceled) " );
-    			}
-    			
-    			e.getBlocks().clear();
-    			
-    			
+				EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
+
+				cancelBy = processPMBBEvent(pmEvent);
+
+				if (cancelBy != EventListenerCancelBy.none) {
+
+					e.setCancelled(true);
+					debugInfo.append("(event canceled) ");
+				}
+
+				e.getBlocks().clear();
+
 //    			else if ( cancelBy == EventListenerCancelBy.drops ) {
 //					try
 //					{
@@ -676,16 +656,16 @@ public class AutoManagerPrisonEnchants
 //					}
 //
 //    			}
-    		}
+			}
 
-    		if ( pmEvent.getSpigotPlayer().isInventoryFull() ) {
-    			
-    			InventoryFullEvent.fireInventoryFullEvent( pmEvent.getPlayer() );
-    		}
+			if (pmEvent.getSpigotPlayer().isInventoryFull()) {
+
+				InventoryFullEvent.fireInventoryFullEvent(pmEvent.getPlayer());
+			}
 
 		}
-    	
-    	printDebugInfo( pmEvent, start );
+
+		printDebugInfo(pmEvent, start);
 	}
 
 	@Override
@@ -697,11 +677,9 @@ public class AutoManagerPrisonEnchants
 
 	public PEExplosionEventVersion getPeApiVersion() {
 		return this.peApiVersion;
-//		return AutoManagerPrisonEnchants.peApiVersion;
 	}
 	public void setPeApiVersion(PEExplosionEventVersion peApiVersion) {
 		this.peApiVersion = peApiVersion;
-//		AutoManagerPrisonEnchants.peApiVersion = peApiVersion;
 	}
 
 

@@ -67,8 +67,6 @@ public class ExplosiveBlockBreakEvent
 	
 	private boolean calculateDurability = true;
 	
-//	private boolean processedSuccessfully = false;
-	
 	
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player,
 						List<Block> explodedBlocks, String triggeredBy ) {

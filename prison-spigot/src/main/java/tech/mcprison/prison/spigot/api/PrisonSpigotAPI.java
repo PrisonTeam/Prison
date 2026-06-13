@@ -58,21 +58,6 @@ public class PrisonSpigotAPI {
 	private SellAllUtil sellAll;
 	
 	
-//	private void junk() {
-		
-//		SpigotPrison.getInstance().isSellAllEnabled();
-//		
-//		SpigotPlayer sPlayer = new SpigotPlayer( Player player );
-//		
-//		sPlayer.getSellAllMulitiplier()
-//		sPlayer.getSellAllMultiplierListings()
-//		sPlayer.checkAutoSellPermsAutoFeatures()
-//		sPlayer.checkAutoSellTogglePerms( sbDebug )
-//		sPlayer.isAutoSellEnabled( sbDebug )
-//		
-		
-	//	PrisonSpigotAPI.sellPlayerItems(Player player );
-//	}
 
 //	private void handleAffectedBlocks(Player p, IWrappedRegion region, List<Block> blocksAffected) {
 //        double totalDeposit = 0.0;
@@ -124,45 +109,49 @@ public class PrisonSpigotAPI {
 //    }
 
 	/**
-	 * <p>This returns all mines that are within prison.
+	 * <p>
+	 * This returns all mines that are within prison.
 	 * </p>
 	 * 
 	 * @return results - List of Mines
 	 */
 	public List<Mine> getMines() {
-		List<Mine> results = new ArrayList<>();
-		
-    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
 
-    		results = mm.getMines();
-    	}
-		
+		List<Mine> results = new ArrayList<>();
+
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+
+			results = mm.getMines();
+		}
+
 		return results;
 	}
 	
 	/**
-	 * <p>Returns all mines within prison, but sorted by the specified sort order.
-	 * Because some sort types omit mines, there are two different collections within the
-	 * PrisonSortableResults.  There is an include and exclude list.
+	 * <p>
+	 * Returns all mines within prison, but sorted by the specified sort order. Because some sort types omit mines, there
+	 * are two different collections within the PrisonSortableResults. There is an include and exclude list.
 	 * </p>
 	 * 
-	 * <p>All sort types that omit mines from the result type has a counter sort type
-	 * that will include all mines and will not omit any.  Those begin with an "x".
+	 * <p>
+	 * All sort types that omit mines from the result type has a counter sort type that will include all mines and will not
+	 * omit any. Those begin with an "x".
 	 * </p>
 	 * 
 	 * @param sortOrder - MineSortOrder
 	 * @return results - PrisonSortableResults
 	 */
 	public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
-		PrisonSortableResults results = null;
-		
-    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
 
-    		results = mm.getMines(sortOrder);
-    	}
-		
+		PrisonSortableResults results = null;
+
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+
+			results = mm.getMines( sortOrder );
+		}
+
 		return results;
 	}
 	

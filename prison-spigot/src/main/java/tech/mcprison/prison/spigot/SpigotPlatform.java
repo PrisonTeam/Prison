@@ -136,7 +136,6 @@ import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.game.SpigotPlayerException;
 import tech.mcprison.prison.spigot.game.SpigotPlayerUtil;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
@@ -192,20 +191,21 @@ public class SpigotPlatform
     	//ActionBarUtil.init(plugin);
     }
     
-    public SpigotPlatform(SpigotPrison plugin) {
-    	super();
-    	
-        this.plugin = plugin;
-        this.scoreboardManager = new SpigotScoreboardManager();
-        
-        
-        this.storage = null;
-//        this.storage = initStorage();
-        
-        this.placeholders = new SpigotPlaceholders();
+	public SpigotPlatform( SpigotPrison plugin ) {
 
-        ActionBarUtil.init(plugin);
-    }
+		super();
+
+		this.plugin = plugin;
+		this.scoreboardManager = new SpigotScoreboardManager();
+
+
+		this.storage = null;
+//        this.storage = initStorage();
+
+		this.placeholders = new SpigotPlaceholders();
+
+		ActionBarUtil.init( plugin );
+	}
 
     public Storage initStorage() {
     	
@@ -225,9 +225,10 @@ public class SpigotPlatform
     }
 
     
-    public org.bukkit.World getBukkitWorld(String name ) {
-    	return Bukkit.getWorld(name);
-    }
+	public org.bukkit.World getBukkitWorld( String name ) {
+
+		return Bukkit.getWorld( name );
+	}
     
     @Override 
     public Optional<World> getWorld(String name) {
@@ -258,133 +259,90 @@ public class SpigotPlatform
     @Override 
     public void getWorldLoadErrors( ChatDisplay display ) {
     
-    	Module prisonMinesModule = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-    	
-    	if ( prisonMinesModule != null ) {
-    		MineManager mineManager = ((PrisonMines) prisonMinesModule).getMineManager();
-    		
-    		// When finished loading the mines, then if there are any worlds that
-    		// could not be loaded, dump the details:
-    		List<String> unavailableWorlds = mineManager.getUnavailableWorldsListings();
-    		for ( String uWorld : unavailableWorlds ) {
-    			
-    			display.addText( uWorld );
-    		}
-    		
-    	}
-        
+	    	Module prisonMinesModule = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+	    	
+	    	if ( prisonMinesModule != null ) {
+	    		MineManager mineManager = ((PrisonMines) prisonMinesModule).getMineManager();
+	    		
+	    		// When finished loading the mines, then if there are any worlds that
+	    		// could not be loaded, dump the details:
+	    		List<String> unavailableWorlds = mineManager.getUnavailableWorldsListings();
+	    		for ( String uWorld : unavailableWorlds ) {
+	    			
+	    			display.addText( uWorld );
+	    		}
+	    		
+	    	}
+	        
     }
     
     @Override
     public Player getPlatformPlayer( RankPlayer rankPlayer) {
-    	Player sPlayer = SpigotPlayer.getSpigotPlayer( rankPlayer );
+    		Player sPlayer = SpigotPlayer.getSpigotPlayer( rankPlayer );
     	
-//		try {
-//		} 
-//		catch (SpigotPlayerException e) {
-			
-//			String msg = String.format(
-//					"SpigotPlatform.getPlatformPlayer: "
-//					+ "Could not get a bukkit player object for '%s'. "
-//					+ "Have they been removed or banned from spigot?",
-//					rankPlayer.getName()
-//					);
-			
-//			Output.get().logInfo( e.getMessage() );
-//		}
-		
-    	return sPlayer;
+    		return sPlayer;
     }
     
     @Override
     public RankPlayer getRankPlayer( UUID uuid, String name ) {
-    	RankPlayer rPlayer = null;
-    	
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-			
-			rPlayer = pm.getPlayer( uuid, name );
-			
-		}
-    	
-    	return rPlayer;
+	    	RankPlayer rPlayer = null;
+	    	
+	    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+				PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+				
+				rPlayer = pm.getPlayer( uuid, name );
+				
+			}
+	    	
+	    	return rPlayer;
     }
     
     @Override
     public boolean saveRankPlayer( RankPlayer rPlayer ) {
-    	boolean results = false;
-    	
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		
-    		results = pm.savePlayer(rPlayer);
-    		
-    	}
-    	
-    	return results;
+	    	boolean results = false;
+	    	
+	    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+	    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+	    		
+	    		results = pm.savePlayer(rPlayer);
+	    		
+	    	}
+	    	
+	    	return results;
     }
     
     @Override 
     public Optional<Player> getPlayer(String name) {
-    	SpigotPlayer player = null;
-    	
-    	if ( !"CONSOLE".equalsIgnoreCase( name ) ) {
-    		
-    		org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
-    		
-    		if ( name != null && playerBukkit != null && !playerBukkit.getName().equalsIgnoreCase( name ) ) {
-    			playerBukkit = null;
-    		}
-    		
-    		if ( playerBukkit != null ) {
-    			player = new SpigotPlayer( playerBukkit );
-    		}
-    	}
-
-    	return Optional.ofNullable( player );
-//    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
-    	
-//        return Optional.ofNullable(
-//            players.stream().filter(player -> player.getName().equalsIgnoreCase( name)).findFirst()
-//                .orElseGet(() -> {
-//                	
-//           // ### getting the bukkit player here!
-//                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
-//                    if (playerBukkit == null) {
-//                        return null;
-//                    }
-//                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
-//                    players.add(player);
-//                    return player;
-//                }));
+	    	SpigotPlayer player = null;
+	    	
+	    	if ( !"CONSOLE".equalsIgnoreCase( name ) ) {
+	    		
+	    		org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+	    		
+	    		if ( name != null && playerBukkit != null && !playerBukkit.getName().equalsIgnoreCase( name ) ) {
+	    			playerBukkit = null;
+	    		}
+	    		
+	    		if ( playerBukkit != null ) {
+	    			player = new SpigotPlayer( playerBukkit );
+	    		}
+	    	}
+	
+	    	return Optional.ofNullable( player );
     }
 
-    @Override 
-    public Optional<Player> getPlayer(UUID uuid) {
-    	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
+	@Override
+	public Optional<Player> getPlayer( UUID uuid ) {
 
-    	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
-    	
-//        return Optional.ofNullable(
-//            players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst()
-//                .orElseGet(() -> {
-//                	
-//                	
-//    	// ### getting the bukkit player here!
-//                	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(uuid);
-//                    if (playerBukkit == null) {
-//                        return null;
-//                    }
-//                    SpigotPlayer player = new SpigotPlayer(playerBukkit);
-//                    players.add(player);
-//                    return player;
-//                }));
-    }
+		org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer( uuid );
+
+		return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer( playerBukkit ) );
+	}
     
-    public Player getPlayer( org.bukkit.entity.Player playerBukkit ) {
-    	
-    	return new SpigotPlayer(playerBukkit);    	
-    }
+	public Player getPlayer( org.bukkit.entity.Player playerBukkit ) {
+
+		return new SpigotPlayer( playerBukkit );
+	}
 
     /**
      * <p>If there are a lot of players on a server, getting bukkit's online players should be
@@ -405,158 +363,79 @@ public class SpigotPlatform
             .collect(Collectors.toList());
     }
 
-    /**
-     * <p>Warning: Do not use because the Bukkit.getOfflinePlayer( name ) is deprecated.
-     * Use instead, the getRankPlayer() and if they exist, which means they are setup in prison,
-     * then you will have their UUID to use the Bukkit.getOfflinePlayer( uuid ) function.
-     * </p>
-     */
-    @Override
-    public Optional<Player> getOfflinePlayer(String name) {
-    	
-    	Player player = null;
-    	
+	/**
+	 * <p>
+	 * Warning: Do not use because the Bukkit.getOfflinePlayer( name ) is deprecated. Use instead, the getRankPlayer() and
+	 * if they exist, which means they are setup in prison, then you will have their UUID to use the
+	 * Bukkit.getOfflinePlayer( uuid ) function.
+	 * </p>
+	 */
+	@Override
+	public Optional<Player> getOfflinePlayer( String name ) {
+
+		Player player = null;
+
 		try {
 			OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( name );
-			player = (oPlayer == null ? null : new SpigotOfflinePlayer( oPlayer ) );
-		} 
-		catch (Exception e) {
+			player = ( oPlayer == null ? null : new SpigotOfflinePlayer( oPlayer ) );
+		} catch ( Exception e ) {
 			Output.get().logWarn( "SpigotPlatform.getOfflinePlayer(name) failed (is deprecated): " + e.getMessage() );
 		}
-    	
-    	return Optional.ofNullable( player );
-    	
-//    	return getOfflinePlayer(name, null);
-    }
-    
-    @Override
-    public Optional<Player> getOfflinePlayer(UUID uuid) {
-    	
-    	OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( uuid );
-		Player player = (oPlayer == null ? null : new SpigotOfflinePlayer( oPlayer ) );
-    	
+
 		return Optional.ofNullable( player );
-		
-//    	return getOfflinePlayer(null, uuid);
-    }
+
+//    	return getOfflinePlayer(name, null);
+	}
     
-    
-    /**
-     * <p>This function will return all players that are setup in prison.
-     * This function cannot use bukkit's getOffLinePlayers() because for
-     * servers with a lot of players, that will force bukkit to read a ton
-     * of files, which will lag the server big time.
-     * </p>
-     * 
-     * <p>Using the PlayerManger to get the registered players makes the most
-     * sense.
-     * </p>
-     * 
-     */
 	@Override
-    public List<Player> getOfflinePlayers() {
-    	List<Player> players = new ArrayList<>();
-    	
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+	public Optional<Player> getOfflinePlayer( UUID uuid ) {
+
+		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( uuid );
+		Player player = ( oPlayer == null ? null : new SpigotOfflinePlayer( oPlayer ) );
+
+		return Optional.ofNullable( player );
+
+//    	return getOfflinePlayer(null, uuid);
+	}
+    
+    
+	/**
+	 * <p>
+	 * This function will return all players that are setup in prison. This function cannot use bukkit's getOffLinePlayers()
+	 * because for servers with a lot of players, that will force bukkit to read a ton of files, which will lag the server
+	 * big time.
+	 * </p>
+	 * 
+	 * <p>
+	 * Using the PlayerManger to get the registered players makes the most sense.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public List<Player> getOfflinePlayers() {
+
+		List<Player> players = new ArrayList<>();
+
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-			
+
 			for ( RankPlayer rPlayer : pm.getPlayers() ) {
-				players.add(rPlayer);
+				players.add( rPlayer );
 			}
-			
+
 		}
-    	
-    	
+
+
 //    	for ( OfflinePlayer oPlayer : Bukkit.getOfflinePlayers() ) {
 //			if ( oPlayer != null ) {
 //				
 //				players.add( new SpigotOfflinePlayer( oPlayer ) );
 //			}
 //    	}
-    	
-    	return players;
-    }
+
+		return players;
+	}
     
-//    private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
-//    	Player player = null;
-//    
-//    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-//			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-//			
-//			player = pm.getPlayer( uuid, name );
-//			
-//		}
-//
-//    	
-////    	if ( uuid != null ) {
-////    		OfflinePlayer oPlayer = Bukkit.getOfflinePlayer( uuid );
-////    		player = (oPlayer == null ? null : new SpigotOfflinePlayer( oPlayer ) );
-////    		
-////    	}
-////    	
-////    	if ( player == null && name != null && name.trim().length() > 0 ) {
-////    		
-////    		// No hits on uuid so only compare names:
-////    		for ( OfflinePlayer oPlayer : Bukkit.getOfflinePlayers() ) {
-////    			if ( oPlayer != null && oPlayer.getName() != null && 
-////    					oPlayer.getName().equalsIgnoreCase( name.trim() ) ) {
-////    				
-////    				player = new SpigotOfflinePlayer( oPlayer );
-////    				break;
-////    			}
-////    			else if ( oPlayer == null || oPlayer.getName() == null ) {
-////    				Output.get().logWarn( "SpigotPlatform.getOfflinePlayer: Bukkit return a " +
-////    						"bad player: OfflinePlayer == null? " + (oPlayer == null) + 
-////    						( oPlayer == null ? "" : 
-////    							"  name= " + (oPlayer.getName() == null ? "null" : 
-////    								oPlayer.getName())));
-////    				
-////    			}
-////    		}
-////    	}
-////    	
-////    	// If player is not available, then try to get a RankPlayer instance of the player:
-////    	if ( player == null ) {
-////    		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-////    			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-////    			
-////    			RankPlayer rankPlayer = pm.getPlayer( uuid, name );
-////    			if ( rankPlayer != null ) {
-////    				if ( uuid != null && rankPlayer.getUUID().equals( uuid ) || 
-////    					 uuid == null && name != null && rankPlayer.getName() != null && 
-////    						rankPlayer.getName().equalsIgnoreCase( name )) {
-////    					
-////    					player = rankPlayer;
-////    				}
-////    			}
-////    		}
-////    	}
-//    	
-//    	return Optional.ofNullable( player );
-//    	
-//    	
-////    	for ( OfflinePlayer offP : Bukkit.getOfflinePlayers() ) {
-////    		if ( name != null && offP.getName().equalsIgnoreCase( name) ||
-////					  uuid != null && offP.getUniqueId().equals(uuid) ) {
-////    			
-////	// ### getting the offline bukkit player here!
-////    			player = new SpigotOfflinePlayer( offP );
-////	  			players.add(player);
-////	              break;
-////	  		}
-////		}
-////    	
-////    	List<OfflinePlayer> olPlayers = Arrays.asList( Bukkit.getOfflinePlayers() );
-////    	for ( OfflinePlayer offlinePlayer : olPlayers ) {
-////    		if ( name != null && offlinePlayer.getName().equals(name) ||
-////					  uuid != null && offlinePlayer.getUniqueId().equals(uuid) ) {
-////    			player = new SpigotPlayer(offlinePlayer.getPlayer());
-////    			players.add(player);
-////                break;
-////    		}
-////		}
-////    	return Optional.ofNullable( player );
-//    }
     
     @Override public String getPluginVersion() {
         return plugin.getDescription().getVersion();
@@ -567,65 +446,65 @@ public class SpigotPlatform
         return plugin.getDataFolder();
     }
 
-    @Override
-    public void registerCommand(PluginCommand command) {
-        try {
-        	Command cmd = new Command(
-    				command.getLabel(),
-    				command.getDescription(), 
-    				command.getUsage(),
-    				Collections.emptyList() ) {
+	@Override
+	public void registerCommand( PluginCommand command ) {
 
-        		/**
-        		 * <p>This is the entry point where bukkit passes control over to prison for the
-        		 * commands to be executed.
-        		 * </p>
-        		 * 
-        		 * <p>This will prevent any command that a player is using from being ran in the
-        		 * the excluded worlds.  See config.yml file and the section:
-        		 * `prisonCommandHandler.exclude-worlds`
-        		 * </p>
-        		 * 
-        		 * <p>There are two types of players that run commands... The primary one is
-        		 * an online player.  Otherwise it's a CommandSender.
-        		 * </p>
-        		 * 
-        		 * <p>When the command is actually resolved and the onCommmand() is ran, the 
-        		 * first thing it checks is to ensure that the command is not within the
-        		 * `prisonCommandHander.exclude-non-ops.commands` list of commands, and if it is, then 
-        		 * it will check all perms agains the CommandSender.  The perms it checks are 
-        		 * the perms tied to the command and the perms listed under the 
-        		 * `prisonCommandHandler.exclude-non-ops.commands`.
-        		 * </p>
-        		 */
-                @Override 
-                public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-                    if (sender instanceof org.bukkit.entity.Player) {
-                    	
-                    	org.bukkit.World bWorld = ((org.bukkit.entity.Player) sender).getLocation().getWorld();
-                    	if ( isWorldExcluded( bWorld.getName() ) ) {
-                    		return false;
-                    	}
-                    	
-                        return Prison.get().getCommandHandler()
-                            .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
-                                command, commandLabel, args);
-                    }
-                    
-                    return Prison.get().getCommandHandler()
-                    				.onCommand(new SpigotCommandSender(sender), command, commandLabel, args);
-                }    
-                
-       			
-    			@Override
+		try {
+			Command cmd = new Command(
+					command.getLabel(),
+					command.getDescription(),
+					command.getUsage(),
+					Collections.emptyList() ) {
+
+				/**
+				 * <p>
+				 * This is the entry point where bukkit passes control over to prison for the commands to be executed.
+				 * </p>
+				 * 
+				 * <p>
+				 * This will prevent any command that a player is using from being ran in the the excluded worlds. See config.yml file
+				 * and the section: `prisonCommandHandler.exclude-worlds`
+				 * </p>
+				 * 
+				 * <p>
+				 * There are two types of players that run commands... The primary one is an online player. Otherwise it's a
+				 * CommandSender.
+				 * </p>
+				 * 
+				 * <p>
+				 * When the command is actually resolved and the onCommmand() is ran, the first thing it checks is to ensure that the
+				 * command is not within the `prisonCommandHander.exclude-non-ops.commands` list of commands, and if it is, then it will
+				 * check all perms agains the CommandSender. The perms it checks are the perms tied to the command and the perms listed
+				 * under the `prisonCommandHandler.exclude-non-ops.commands`.
+				 * </p>
+				 */
+				@Override
+				public boolean execute( CommandSender sender, String commandLabel, String[] args ) {
+
+					if ( sender instanceof org.bukkit.entity.Player ) {
+
+						org.bukkit.World bWorld = ( (org.bukkit.entity.Player) sender ).getLocation().getWorld();
+						if ( isWorldExcluded( bWorld.getName() ) ) { return false; }
+
+						return Prison.get().getCommandHandler()
+								.onCommand( new SpigotPlayer( (org.bukkit.entity.Player) sender ),
+										command, commandLabel, args );
+					}
+
+					return Prison.get().getCommandHandler()
+							.onCommand( new SpigotCommandSender( sender ), command, commandLabel, args );
+				}
+
+
+				@Override
 				public List<String> tabComplete( CommandSender sender, String alias, String[] args )
-						throws IllegalArgumentException
-				{
-    				SpigotCommandSender pSender = new SpigotCommandSender( sender );
-    				
-    				List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( pSender, alias, args );
-    				
-    				
+						throws IllegalArgumentException {
+
+					SpigotCommandSender pSender = new SpigotCommandSender( sender );
+
+					List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( pSender, alias, args );
+
+
 //    				StringBuilder sb = new StringBuilder();
 //    				for ( String arg : args ) {
 //    					sb.append( "[" ).append( arg ).append( "] " );
@@ -639,42 +518,41 @@ public class SpigotPlatform
 //    				plugin.logDebug( "### registerCommand: Command.tabComplete() : alias= %s  args= %s   results= %s", 
 //    						alias, sb.toString(), sbR.toString() );
 
-    				
-    				return results;
+
+					return results;
 				}
 
 
-				//@Override
-				public List<String> tabComplete( CommandSender sender, String alias, String[] args, 
-										org.bukkit.Location location )
-						throws IllegalArgumentException
-				{
-    				return tabComplete( sender, alias, args );
+				// @Override
+				public List<String> tabComplete( CommandSender sender, String alias, String[] args,
+						org.bukkit.Location location )
+						throws IllegalArgumentException {
+
+					return tabComplete( sender, alias, args );
 				}
 
-            };
-        	
-            @SuppressWarnings( "unused" )
-			boolean success = 
-            			((SimpleCommandMap) plugin.commandMap.get(Bukkit.getServer()))
-            				.register(command.getLabel(), "prison", cmd );
-            
-         // Always record the registered label:
- 			if ( cmd != null ) {
- 				command.setLabelRegistered( cmd.getLabel() );
- 			}
-        
- 			getCommands().add(command);
-            
+			};
+
+			@SuppressWarnings( "unused" )
+			boolean success = ( (SimpleCommandMap) plugin.commandMap.get( Bukkit.getServer() ) )
+					.register( command.getLabel(), "prison", cmd );
+
+			// Always record the registered label:
+			if ( cmd != null ) {
+				command.setLabelRegistered( cmd.getLabel() );
+			}
+
+			getCommands().add( command );
+
 //            if ( !success ) {
 //            	Output.get().logInfo( "SpigotPlatform.registerCommand: %s  " +
 //            			"Duplicate command. Fall back to Prison: [%s] ", command.getLabel(), 
 //            			cmd.getLabel() );
 //            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
+		} catch ( IllegalAccessException e ) {
+			e.printStackTrace();
+		}
+	}
 
     @SuppressWarnings("unchecked") @Override 
     public void unregisterCommand(String command) {
@@ -688,29 +566,31 @@ public class SpigotPlatform
     }
 
     
-    @Override
-    public void unregisterAllCommands() {
-    	List<String> cmds = new ArrayList<>();
-    	for ( PluginCommand pluginCommand : getCommands() ) {
-    		cmds.add( pluginCommand.getLabel() );
+	@Override
+	public void unregisterAllCommands() {
+
+		List<String> cmds = new ArrayList<>();
+		for ( PluginCommand pluginCommand : getCommands() ) {
+			cmds.add( pluginCommand.getLabel() );
 		}
-    	
-    	for ( String lable : cmds ) {
-    		unregisterCommand( lable );
+
+		for ( String lable : cmds ) {
+			unregisterCommand( lable );
 		}
-    }
+	}
     
-    public PluginCommand findCommand( String label ) {
-    	PluginCommand results = null;
-    	
-    	for ( PluginCommand command : getCommands() ) {
-    		if (command.getLabel().equalsIgnoreCase(label)) {
-    			results = command;
-    			break;
-    		}
+	public PluginCommand findCommand( String label ) {
+
+		PluginCommand results = null;
+
+		for ( PluginCommand command : getCommands() ) {
+			if ( command.getLabel().equalsIgnoreCase( label ) ) {
+				results = command;
+				break;
+			}
 		}
-    	return results;
-    }
+		return results;
+	}
     
     @Override 
     public List<PluginCommand> getCommands() {
@@ -722,23 +602,23 @@ public class SpigotPlatform
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd);
     }
     
-    @Override 
-    public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
-    	
-    	if ( sender instanceof SpigotCommandSender ) {
-    		SpigotCommandSender cmdSender = (SpigotCommandSender) sender;
+	@Override
+	public void dispatchCommand( tech.mcprison.prison.internal.CommandSender sender, String cmd ) {
 
-    		Bukkit.getServer().dispatchCommand( cmdSender.getWrapper(), cmd);
-    	}
-    	else {
+		if ( sender instanceof SpigotCommandSender ) {
+			SpigotCommandSender cmdSender = (SpigotCommandSender) sender;
 
-    		Player player = getPlayer( sender.getName() ).orElse( null );
-    		if ( player != null ) {
-    			player.dispatchCommand( cmd );
-    		}
-    	}
-    	
-    }
+			Bukkit.getServer().dispatchCommand( cmdSender.getWrapper(), cmd );
+		}
+		else {
+
+			Player player = getPlayer( sender.getName() ).orElse( null );
+			if ( player != null ) {
+				player.dispatchCommand( cmd );
+			}
+		}
+
+	}
 
     @Override 
     public Scheduler getScheduler() {
@@ -780,104 +660,105 @@ public class SpigotPlatform
         logCore( message );
     }
 
-    @Override 
-	public void logCore( String message )
-	{
-    	ConsoleCommandSender sender = Bukkit.getConsoleSender();
+	@Override
+	public void logCore( String message ) {
+
+		ConsoleCommandSender sender = Bukkit.getConsoleSender();
 
 		if ( message.contains( "U+0026" ) ) {
-			message = message.replace("U+0026", "&");
+			message = message.replace( "U+0026", "&" );
 		}
-    	
-    	String[] msgs = message.split( "\\{br\\}" );
 
-    	for ( String msg : msgs ) {
-			
-    		if (sender == null) {
-    			Bukkit.getLogger().info(ChatColor.stripColor(msg));
-    		} 
-    		else {
-    			sender.sendMessage(msg);
-    		}
+		String[] msgs = message.split( "\\{br\\}" );
+
+		for ( String msg : msgs ) {
+
+			if ( sender == null ) {
+				Bukkit.getLogger().info( ChatColor.stripColor( msg ) );
+			}
+			else {
+				sender.sendMessage( msg );
+			}
 		}
-    	
+
 	}
     
-    /**
-     * This does not translate any color codes.
-     */
+	/**
+	 * This does not translate any color codes.
+	 */
+	@Override
+	public void logPlain( String message ) {
+
+		ConsoleCommandSender sender = Bukkit.getConsoleSender();
+
+		String[] msgs = message.split( "\\{br\\}" );
+
+		for ( String msg : msgs ) {
+
+			if ( sender == null ) {
+				Bukkit.getLogger().info( msg );
+			}
+			else {
+				sender.sendMessage( msg );
+			}
+		}
+	}
+
+	@Override
+	public void debug( String message, Object... format ) {
+
+		if ( !plugin.debug ) { return; }
+
+		log( Output.get().format( message, LogLevel.DEBUG ), format );
+	}
+
+	@Override
+	public String runConverter() {
+
+		File file = new File( plugin.getDataFolder().getParent(), "Prison.old" );
+		if ( !file.exists() ) {
+			return Output.get().format(
+					"Could not find a 'Prison.old' folder to convert. Prison 2 may not have been installed " +
+							"before, so there is nothing that can be converted :)",
+					LogLevel.WARNING );
+		}
+
+		List<ConversionResult> results = ConversionManager.getInstance().runConversion();
+
+		if ( results.size() == 0 ) { return Text
+				.translateAmpColorCodes( "&7There are no conversions to be run at this time." ); }
+
+		BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
+		for ( ConversionResult result : results ) {
+			String status = result.getStatus() == ConversionResult.Status.Success ? "&aSuccess" : "&cFailure";
+			builder.add(
+					result.getAgentName() + " &8- " + status + " &7(" + result.getReason() + "&7)" );
+		}
+
+		return builder.build().text();
+	}
+
+	@Override
+	public void showTitle( Player player, String title, String subtitle, int fade ) {
+
+		org.bukkit.entity.Player play = Bukkit.getPlayer( player.getName() );
+
+		Titles.sendTitle( play, title, subtitle );
+	}
+
     @Override 
-    public void logPlain( String message )
-    {
-    	ConsoleCommandSender sender = Bukkit.getConsoleSender();
-    	
-    	String[] msgs = message.split( "\\{br\\}" );
-
-    	for ( String msg : msgs ) {
-    		
-    		if (sender == null) {
-    			Bukkit.getLogger().info(msg);
-    		} 
-    		else {
-    			sender.sendMessage(msg);
-    		}
-    	}
-    }
-
-    @Override public void debug(String message, Object... format) {
-        if (!plugin.debug) {
-            return;
-        }
-
-        log( Output.get().format( message, LogLevel.DEBUG), format );
-    }
-
-    @Override public String runConverter() {
-        File file = new File(plugin.getDataFolder().getParent(), "Prison.old");
-        if (!file.exists()) {
-            return Output.get().format(
-                "Could not find a 'Prison.old' folder to convert. Prison 2 may not have been installed " +
-                "before, so there is nothing that can be converted :)",
-                LogLevel.WARNING);
-        }
-
-        List<ConversionResult> results = ConversionManager.getInstance().runConversion();
-
-        if (results.size() == 0) {
-            return Text
-                .translateAmpColorCodes("&7There are no conversions to be run at this time.");
-        }
-
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-        for (ConversionResult result : results) {
-            String status =
-                result.getStatus() == ConversionResult.Status.Success ? "&aSuccess" : "&cFailure";
-            builder.add(
-                result.getAgentName() + " &8- " + status + " &7(" + result.getReason() + "&7)");
-        }
-
-        return builder.build().text();
-    }
-
-//    @SuppressWarnings( "deprecation" )
-	@Override public void showTitle(Player player, String title, String subtitle, int fade) {
-        org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
-//        play.sendTitle(title, subtitle);
-        
-        Titles.sendTitle( play, title, subtitle );
-    }
-
-    @Override public void showActionBar(Player player, String text, int duration) {
+    public void showActionBar(Player player, String text, int duration) {
         org.bukkit.entity.Player play = Bukkit.getPlayer(player.getName());
         ActionBarUtil.sendActionBar(play, Text.translateAmpColorCodes(text), duration);
     }
 
-    @Override public ScoreboardManager getScoreboardManager() {
+    @Override
+    public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
     }
 
-    @Override public Storage getStorage() {
+    @Override 
+    public Storage getStorage() {
         return storage;
     }
 
@@ -886,26 +767,26 @@ public class SpigotPlatform
         return plugin.getConfig().getBoolean("show-alerts", true);
     }
 
-    private boolean isDoor(Material block) {
-    	
-    	Material acaciaDoor = Material.matchMaterial( "ACACIA_DOOR" );
-    	Material birchDoor = Material.matchMaterial( "BIRCH_DOOR" );
-    	Material darkOakDoor = Material.matchMaterial( "DARK_OAK_DOOR" );
-    	Material ironDoor = Material.matchMaterial( "IRON_DOOR_BLOCK" );
-    	Material jungleDoor = Material.matchMaterial( "JUNGLE_DOOR" );
-    	Material woodenDoor = Material.matchMaterial( "WOODEN_DOOR" );
-    	Material spruceDoor = Material.matchMaterial( "SPRUCE_DOOR" );    	
-    	
+	private boolean isDoor( Material block ) {
+
+		Material acaciaDoor = Material.matchMaterial( "ACACIA_DOOR" );
+		Material birchDoor = Material.matchMaterial( "BIRCH_DOOR" );
+		Material darkOakDoor = Material.matchMaterial( "DARK_OAK_DOOR" );
+		Material ironDoor = Material.matchMaterial( "IRON_DOOR_BLOCK" );
+		Material jungleDoor = Material.matchMaterial( "JUNGLE_DOOR" );
+		Material woodenDoor = Material.matchMaterial( "WOODEN_DOOR" );
+		Material spruceDoor = Material.matchMaterial( "SPRUCE_DOOR" );
+
 //        return block == Material.ACACIA_DOOR || block == Material.BIRCH_DOOR
 //            || block == Material.DARK_OAK_DOOR || block == Material.IRON_DOOR_BLOCK
 //            || block == Material.JUNGLE_DOOR || block == Material.WOODEN_DOOR
 //            || block == Material.SPRUCE_DOOR;
-    	
-    	return block == acaciaDoor || block == birchDoor || 
-    		   block == darkOakDoor || block == ironDoor ||
-    		   block == jungleDoor || block == woodenDoor ||
-    		   block == spruceDoor;
-    }
+
+		return block == acaciaDoor || block == birchDoor ||
+				block == darkOakDoor || block == ironDoor ||
+				block == jungleDoor || block == woodenDoor ||
+				block == spruceDoor;
+	}
 
     @Override public Map<Capability, Boolean> getCapabilities() {
         Map<Capability, Boolean> capabilities = new HashMap<>();
@@ -914,84 +795,88 @@ public class SpigotPlatform
         return capabilities;
     }
 
-    /**
-     * <p>This can be useful to see if a given plugin is active.  The returned 
-     * data, RegisteredPluginData, has additional information pertaining to the
-     * plugin.  If the plugin is not found, then this will return a null value.
-     * </p>
-     * 
-     * @param pluginName
-     * @return
-     */
-    public RegisteredPluginsData identifyRegisteredPlugin( String pluginName ) {
-    	identifyRegisteredPlugins( false );
-    	
-    	RegisteredPluginsData plugin = Prison.get().getPrisonCommands().getRegisteredPluginData().get( pluginName );
-    	
-    	return plugin;
-    }
+	/**
+	 * <p>
+	 * This can be useful to see if a given plugin is active. The returned data, RegisteredPluginData, has additional
+	 * information pertaining to the plugin. If the plugin is not found, then this will return a null value.
+	 * </p>
+	 * 
+	 * @param pluginName
+	 * @return
+	 */
+	public RegisteredPluginsData identifyRegisteredPlugin( String pluginName ) {
+
+		identifyRegisteredPlugins( false );
+
+		RegisteredPluginsData plugin = Prison.get().getPrisonCommands().getRegisteredPluginData().get( pluginName );
+
+		return plugin;
+	}
     
-    @Override
+	@Override
 	public void identifyRegisteredPlugins() {
-    	identifyRegisteredPlugins( true );
-    }
+
+		identifyRegisteredPlugins( true );
+	}
     
 	public void identifyRegisteredPlugins( boolean checkForWarnings ) {
-		 PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
-		 
-		 // reset so it will reload cleanly:
-		 cmdVersion.getRegisteredPlugins().clear();
-//		 cmdVersion.getRegisteredPluginData().clear();
-		 
-		 Server server = SpigotPrison.getInstance().getServer();
-		 
-		 // Scan the existing jar files:
-		 PrisonJarReporter jarReporter = new PrisonJarReporter();
-		 jarReporter.scanForJars();
-		 // jarReporter.dumpJarDetails(); // temp!
-		 
-        // Finally print the version after loading the prison plugin:
-//        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
-		 
-		 boolean isPlugManPresent = false;
-        
-        // Store all loaded plugins within the PrisonCommand for later inclusion:
-        for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
-        	String name = plugin.getName();
-        	String version = plugin.getDescription().getVersion();
-        	JarFileData pluginJarFile = jarReporter.getJarsByPluginName().get( name );
-        	
-        	String value = " " + name + " (" + version + 
-        			( pluginJarFile == null ? "" : " " + pluginJarFile.getJavaVersion().name() ) +
-        			")";
-        	cmdVersion.getRegisteredPlugins().add( value );
-        	
-        	cmdVersion.addRegisteredPlugin( name, version );
-        	
-        	if ( "PlugMan".equalsIgnoreCase( name ) ) {
-        		isPlugManPresent = true;
-        	}
-		}
-        
-        if ( checkForWarnings && isPlugManPresent ) {
-        	ChatDisplay chatDisplay = new ChatDisplay("&d* *&5 WARNING: &d PlugMan &5 Detected! &d* *");
-        	chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
-        	chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
-        	chatDisplay.addText( "&7corruption of the internal settings, the saved files, and maybe" );
-        	chatDisplay.addText( "&7even the mines and surrounding areas too." );
-        	chatDisplay.addText( "&7The only safe way to restart Prison is through a server restart." );
-        	chatDisplay.addText( "&7Use of PlugMan at your own risk.  You have been warned. " );
-        	chatDisplay.addText( "&7Prison support team has no obligation to help recover, or repair," );
-        	chatDisplay.addText( "&7any troubles that may result of the use of PlugMan." );
-        	chatDisplay.addText( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
-        	chatDisplay.addText( "&d* *&5 WARNING &d* *&5 WARNING &d* *&5 WARNING &d* *" );
-        	
-        	chatDisplay.sendtoOutputLogInfo();;
-        }
 
-        // NOTE: The following code does not actually get all of the commands that have been
-        //       registered with the bukkit plugin registry.  So commenting this out and may revisit
-        //       in the future.  Only tested with 1.8.8 so may work better with more recent version.
+		PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+
+		// reset so it will reload cleanly:
+		cmdVersion.getRegisteredPlugins().clear();
+//		 cmdVersion.getRegisteredPluginData().clear();
+
+		Server server = SpigotPrison.getInstance().getServer();
+
+		// Scan the existing jar files:
+		PrisonJarReporter jarReporter = new PrisonJarReporter();
+		jarReporter.scanForJars();
+		// jarReporter.dumpJarDetails(); // temp!
+
+		// Finally print the version after loading the prison plugin:
+//        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+
+		boolean isPlugManPresent = false;
+
+		// Store all loaded plugins within the PrisonCommand for later inclusion:
+		for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
+			String name = plugin.getName();
+			String version = plugin.getDescription().getVersion();
+			JarFileData pluginJarFile = jarReporter.getJarsByPluginName().get( name );
+
+			String value = " " + name + " (" + version +
+					( pluginJarFile == null ? "" : " " + pluginJarFile.getJavaVersion().name() ) +
+					")";
+			cmdVersion.getRegisteredPlugins().add( value );
+
+			cmdVersion.addRegisteredPlugin( name, version );
+
+			if ( "PlugMan".equalsIgnoreCase( name ) ) {
+				isPlugManPresent = true;
+			}
+		}
+
+		if ( checkForWarnings && isPlugManPresent ) {
+			ChatDisplay chatDisplay = new ChatDisplay( "&d* *&5 WARNING: &d PlugMan &5 Detected! &d* *" );
+			chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
+			chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
+			chatDisplay.addText( "&7corruption of the internal settings, the saved files, and maybe" );
+			chatDisplay.addText( "&7even the mines and surrounding areas too." );
+			chatDisplay.addText( "&7The only safe way to restart Prison is through a server restart." );
+			chatDisplay.addText( "&7Use of PlugMan at your own risk.  You have been warned. " );
+			chatDisplay.addText( "&7Prison support team has no obligation to help recover, or repair," );
+			chatDisplay.addText( "&7any troubles that may result of the use of PlugMan." );
+			chatDisplay.addText( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
+			chatDisplay.addText( "&d* *&5 WARNING &d* *&5 WARNING &d* *&5 WARNING &d* *" );
+
+			chatDisplay.sendtoOutputLogInfo();
+			;
+		}
+
+		// NOTE: The following code does not actually get all of the commands that have been
+		// registered with the bukkit plugin registry. So commenting this out and may revisit
+		// in the future. Only tested with 1.8.8 so may work better with more recent version.
 //        SimplePluginManager spm = (SimplePluginManager) Bukkit.getPluginManager();
 //        
 //        try {
@@ -1039,8 +924,8 @@ public class SpigotPlatform
 //		catch ( NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e ) {
 //			e.printStackTrace();
 //		}
-        
-        
+
+
 	}
     
     
@@ -1113,33 +998,6 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-//	/**
-//	 * <p>Prison is now automatically enabling the new prison block model.
-//	 * The old block model still exists, but it has to be explicitly 
-//	 * enabled in config.yml.
-//	 * </p>
-//	 * 
-//	 * <p>No one should ever use the old block model. If there is an issue with
-//	 * the new model then it should be fixed and not avoided.  But if they 
-//	 * must, then the following must be added to the `plugins/Prison/config.yml`.
-//	 * </p>
-//	 * 
-//	 * <pre>
-//	 * # Warning: The use of the OLD prison block model will be removed
-//	 * #          from future releases in the near future.  This old
-//	 * #          model is to be used only on an emergency basis 
-//	 * #          until any issues with the new model have been resolved.
-//	 * use-old-prison-block-model: true
-//	 * </pre>
-//	 * 
-//	 * @return
-//	 */
-//	@Override
-//	public boolean isUseNewPrisonBlockModel() {
-//		
-////		return getConfigBooleanFalse( "use-new-prison-block-model" );
-//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
-//	}
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
@@ -1306,25 +1164,13 @@ public class SpigotPlatform
 	public PrisonBlockTypes getPrisonBlockTypes() {
 		return SpigotPrison.getInstance().getPrisonBlockTypes();
 	}
-//	/**
-//	 * This listing that is returned, should be the XMaterial enum name
-//	 * for the blocks that are valid on the server.
-//	 * 
-//	 * @return
-//	 */
-//	@Override
-//	public void getAllPlatformBlockTypes( List<PrisonBlock> blockTypes ) {
-//		
-//		SpigotUtil.getAllPlatformBlockTypes( blockTypes );
-//		
-//		SpigotUtil.getAllCustomBlockTypes( blockTypes );
-//	}
+
+
 	
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {
 		
 		return getPrisonBlockTypes().getBlockTypesByName( blockName );
-//		return SpigotUtil.getPrisonBlock( blockName );
 	}
 	
 	
@@ -1590,27 +1436,28 @@ public class SpigotPlatform
 		
 		return results;
 	}
+	
 	/**
-	 * <p>This function takes a CommandSender for a player, and tries to find a mine
-	 * that would be associated with that player.  This is a very complex process
-	 * since mines don't have to be associated with mines, and you can have multiple 
-	 * mines per rank.  This only processes ranks on the default ladder. Both 
-	 * the Ranks and Mines modules must be enabled too.
+	 * <p>
+	 * This function takes a CommandSender for a player, and tries to find a mine that would be associated with that player.
+	 * This is a very complex process since mines don't have to be associated with mines, and you can have multiple mines
+	 * per rank. This only processes ranks on the default ladder. Both the Ranks and Mines modules must be enabled too.
 	 * </p>
 	 * 
-	 * <p>First, the CommandSender has to be converted to a Player object, then
-	 * mapped to a RankPlayer.  This process can only happen with a RankPlayer object
-	 * since that is where a Player is associated with ranks. 
+	 * <p>
+	 * First, the CommandSender has to be converted to a Player object, then mapped to a RankPlayer. This process can only
+	 * happen with a RankPlayer object since that is where a Player is associated with ranks.
 	 * </p>
 	 * 
-	 * <p>If the player has a rank on the default ladder, then that rank will be
-	 * used to continue the search for the mine.  If there is more than one mine 
-	 * associated with the rank, then it tries to find a mine with the same name.
-	 * Otherwise it will take the first mine in the list.
+	 * <p>
+	 * If the player has a rank on the default ladder, then that rank will be used to continue the search for the mine. If
+	 * there is more than one mine associated with the rank, then it tries to find a mine with the same name. Otherwise it
+	 * will take the first mine in the list.
 	 * </p>
 	 * 
-	 * <p>The result, if not null, is the best mine that can be found. It is recognized
-	 * that if multiple mines exist, then it may not always be the one intended.
+	 * <p>
+	 * The result, if not null, is the best mine that can be found. It is recognized that if multiple mines exist, then it
+	 * may not always be the one intended.
 	 * </p>
 	 * 
 	 * @param sender
@@ -1618,74 +1465,73 @@ public class SpigotPlatform
 	 */
 	@Override
 	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender ) {
+
 		Mine results = null;
-		
+
 		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() &&
-				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() 
-				) {
-			
+				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+
 //    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 //    		Player player = sender.getPlatformPlayer();
-    		RankPlayer rankPlayer = sender.getRankPlayer();
+			RankPlayer rankPlayer = sender.getRankPlayer();
 
-    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-    		
-    		if ( rankPlayer != null && rankPlayerFactory.getRank( rankPlayer, "default" ) != null ) {
-    			PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, "default" );
-    			
-    			// Reset the miscText field:
-    			sender.setMiscText( null );
-    			
-    			Rank rank = pRank.getRank();
-    			
-    			while ( rank != null && results == null ) {
-    				
-    				// First check to see if there are any mines linked to a rank:
-    				if ( rank.getMines() != null && rank.getMines().size() > 0 ) {
-    					
-    					for ( ModuleElement mineME : rank.getMines() ) {
-							if ( mineME.getName().equalsIgnoreCase( rank.getName() )) {
+			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+
+			if ( rankPlayer != null && rankPlayerFactory.getRank( rankPlayer, "default" ) != null ) {
+				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, "default" );
+
+				// Reset the miscText field:
+				sender.setMiscText( null );
+
+				Rank rank = pRank.getRank();
+
+				while ( rank != null && results == null ) {
+
+					// First check to see if there are any mines linked to a rank:
+					if ( rank.getMines() != null && rank.getMines().size() > 0 ) {
+
+						for ( ModuleElement mineME : rank.getMines() ) {
+							if ( mineME.getName().equalsIgnoreCase( rank.getName() ) ) {
 								// Found a mine with the same name as the rank. Give high priority:
-								
+
 								results = (Mine) mineME;
 								break;
 							}
 						}
-    					
-    					if ( results == null ) {
-    						results = (Mine) rank.getMines().get(0);
-    					}
-    				}
-    				
-    				if ( results == null ) {
-    					// Check to see if there are any mines with the same name:
-    					
-    					MineManager mm = PrisonMines.getInstance().getMineManager();
-    					results = mm.getMine( rank.getName() );
-    				}
-    				
-    				if ( results == null ) {
-    					// The current rank did not have any mines tied to the rank, nor was there
-    					// a mine with the name of the current rank.
-    					// Therefore, try the prior rank:
-    					rank = rank.getRankPrior();
-    				}
-    				
-    			}
 
-    			if ( rank != null && rank.compareTo( pRank.getRank() ) != 0 ) {
-    				String msg = String.format( 
-    						"&3No mines are connected to current rank %s&3. Mine %s&3 is the next "
-    						+ "highest rank that has a mine.",
-    						pRank.getRank().getTag(),
-    						rank.getTag()
-    						);
-    				sender.setMiscText( msg );
-    			}
-    		}
-			
+						if ( results == null ) {
+							results = (Mine) rank.getMines().get( 0 );
+						}
+					}
+
+					if ( results == null ) {
+						// Check to see if there are any mines with the same name:
+
+						MineManager mm = PrisonMines.getInstance().getMineManager();
+						results = mm.getMine( rank.getName() );
+					}
+
+					if ( results == null ) {
+						// The current rank did not have any mines tied to the rank, nor was there
+						// a mine with the name of the current rank.
+						// Therefore, try the prior rank:
+						rank = rank.getRankPrior();
+					}
+
+				}
+
+				if ( rank != null && rank.compareTo( pRank.getRank() ) != 0 ) {
+					String msg = String.format(
+							"&3No mines are connected to current rank %s&3. Mine %s&3 is the next "
+									+ "highest rank that has a mine.",
+							pRank.getRank().getTag(),
+							rank.getTag() );
+					sender.setMiscText( msg );
+				}
+			}
+
 		}
-		
+
 		return results;
 	}
 	
@@ -1710,37 +1556,30 @@ public class SpigotPlatform
 	 * @return
 	 */
 	@Override
-	public boolean isMineAccessibleByRank( Player player, ModuleElement mine ) {
+	public boolean isMineAccessibleByRank( Player player, ModuleElement mineModule ) {
 		boolean isAccessible = false;
 		
 		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() &&
 				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() &&
 				player != null && 
-				mine != null && mine instanceof Mine && ((Mine) mine).getRank() != null
+						mineModule != null && 
+						mineModule instanceof Mine
 				) {
+			Mine mine = (Mine) mineModule;
 			
-			Rank targetRank = (Rank) ((Mine) mine).getRank();
+			if ( mine.getRank() != null ) {
+				
+				Rank targetRank = (Rank) mine.getRank();
+				
+				RankPlayer rankPlayer = player.getRankPlayer();
+				
+				if ( rankPlayer != null ) {
+					
+					isAccessible = rankPlayer.hasAccessToRank( targetRank );
+					
+				}
+			}
 			
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		RankPlayer rankPlayer = pm.getPlayer( player );
-
-    		if ( rankPlayer != null ) {
-    			
-    			isAccessible = rankPlayer.hasAccessToRank( targetRank );
-    			
-//    			Rank rank = rankPlayer.getRank( "default" );
-//    			if ( rank != null ) {
-//    				
-//    				isAccessible = rank.equals( targetRank );
-//    				Rank priorRank = rank.getRankPrior();
-//    				
-//    				while ( !isAccessible && priorRank != null ) {
-//    					
-//    					isAccessible = priorRank.equals( targetRank );
-//    					priorRank = priorRank.getRankPrior();
-//    				}
-//    			}
-    		}
 		}
 		
 		return isAccessible;
@@ -1943,7 +1782,6 @@ public class SpigotPlatform
 			boolean forceLinersBottom, boolean forceLinersWalls ) {
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
-//		List<Mine> mines = mm.getMines();
 		
 		for ( String mineName : rankMineNames ) {
 			
@@ -1967,7 +1805,6 @@ public class SpigotPlatform
 		if ( eMine instanceof Mine ) {
 			
 			MineManager mm = PrisonMines.getInstance().getMineManager();
-//		List<Mine> mines = mm.getMines();
 			
 			Mine mine = (Mine) eMine;
 			
@@ -1997,18 +1834,6 @@ public class SpigotPlatform
 		// Get a random pattern, filtered for this version of spigot:
 		LinerPatterns results = LinerPatterns.getRandomLinerPattern();
 		
-//		LinerPatterns[] liners = LinerPatterns.values();
-//		
-//		// Exclude the last 3 LinerPatterns since they are "repair", "remove" and "removeAll".
-//		int pos = new Random().nextInt( liners.length - 3 );
-//		LinerPatterns liner = liners[pos];
-//		
-//		// Just in case any of these are selected, choose another:
-//		if ( liner ==LinerPatterns.remove || liner == LinerPatterns.removeAll || liner == LinerPatterns.repair ) {
-//			liner = getRandomLinerType();
-//		}
-//		return liner;
-		
 		return results;
 	}
 	
@@ -2034,28 +1859,6 @@ public class SpigotPlatform
 		
 		return results;
 	}
-	
-//	/**
-//	 * This function grabs a rolling sub set of blocks from the startPos and working backwards 
-//	 * up to the specified length. The result set will be less than the specified length if at
-//	 * the beginning of the list, or at the end.
-//	 * 
-//	 * @param startPos
-//	 * @param length
-//	 * @param blockList
-//	 * @return
-//	 */
-//	protected List<String> mineBlockList( int startPos, int length, List<SellAllBlockData> blockList ) {
-//		
-//		List<String> results = new ArrayList<>();
-//		int iStart = (startPos >= blockList.size() ? blockList.size() - 1 : startPos);
-//		
-//		for (int i = iStart; i >= 0 && i >= startPos - length + 1; i--) {
-//			results.add( blockList.get( i ).getBlock().name() );
-//		}
-//		
-//		return results;
-//	}
 	
 	
 	/**
@@ -2383,200 +2186,134 @@ public class SpigotPlatform
 		
 	}
 	
-//	/**
-//	 * This listing of blocks is based strictly upon the old prison's block
-//	 * model.
-//	 * 
-//	 * Please note, that right now these names match exactly with XMaterial only
-//	 * because I renamed a few of them to make them match.  But if more are added
-//	 * in the future, then there may be mismatches.
-//	 * 
-//	 * @return
-//	 */
-//	protected List<String> buildBlockListBlockType() {
-//		List<String> blockList = new ArrayList<>();
-//		
-//		blockList.add( BlockType.COBBLESTONE.name() );
-//		blockList.add( BlockType.ANDESITE.name() );
-//		blockList.add( BlockType.DIORITE.name() );
-//		blockList.add( BlockType.COAL_ORE.name() );
-//		
-//		blockList.add( BlockType.GRANITE.name() );
-//		blockList.add( BlockType.STONE.name() );
-//		blockList.add( BlockType.IRON_ORE.name() );
-//		blockList.add( BlockType.POLISHED_ANDESITE.name() );
-//		
-////		blockList.add( BlockType.POLISHED_DIORITE.name() );
-////		blockList.add( BlockType.POLISHED_GRANITE.name() );
-//		blockList.add( BlockType.GOLD_ORE.name() );
-//		
-//		
-//		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
-//		blockList.add( BlockType.COAL_BLOCK.name() );
-//		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
-//		blockList.add( BlockType.LAPIS_ORE.name() );
-//
-//		
-//		blockList.add( BlockType.END_STONE.name() );
-//		blockList.add( BlockType.IRON_BLOCK.name() );
-//		
-//		blockList.add( BlockType.REDSTONE_ORE.name() );
-//		blockList.add( BlockType.DIAMOND_ORE.name() );
-//		
-//		blockList.add( BlockType.QUARTZ_BLOCK.name() );
-//		blockList.add( BlockType.EMERALD_ORE.name() );
-//		
-//		blockList.add( BlockType.GOLD_BLOCK.name() );
-//		blockList.add( BlockType.PRISMARINE.name() );
-//		blockList.add( BlockType.LAPIS_BLOCK.name() );
-//		blockList.add( BlockType.REDSTONE_BLOCK.name() );
-//		
-//		blockList.add( BlockType.OBSIDIAN.name() );
-//		blockList.add( BlockType.DIAMOND_BLOCK.name() );
-//		blockList.add( BlockType.DARK_PRISMARINE.name() );
-//		blockList.add( BlockType.EMERALD_BLOCK.name() );
-//		
-//		return blockList;
-//	}
 	
 	@Override
 	public List<String> getActiveFeatures( boolean showLaddersAndRanks ) {
+
 		List<String> results = new ArrayList<>();
-		
-		
+
+
 		if ( showLaddersAndRanks ) {
-			
+
 			// Log rank related items first:
 			if ( Prison.get().getModuleManager().isModuleActive( PrisonRanks.MODULE_NAME ) ) {
-				
+
 				PrisonRanks pRanks = PrisonRanks.getInstance();
-				
-				results.add( 
-						pRanks.prisonRanksStatusLoadedLaddersMsg( 
+
+				results.add(
+						pRanks.prisonRanksStatusLoadedLaddersMsg(
 								pRanks.getladderCount() ) );
-				
+
 				int totalRanks = pRanks.getRankCount();
 				int defaultRanks = pRanks.getDefaultLadderRankCount();
 				int prestigesRanks = pRanks.getPrestigesLadderRankCount();
 				int otherRanks = totalRanks - defaultRanks - prestigesRanks;
-				
-				results.add( 
-						pRanks.prisonRanksStatusLoadedRanksMsg( 
+
+				results.add(
+						pRanks.prisonRanksStatusLoadedRanksMsg(
 								totalRanks, defaultRanks, prestigesRanks, otherRanks ) );
-				
-				results.add( 
-						pRanks.prisonRanksStatusLoadedPlayersMsg( 
+
+				results.add(
+						pRanks.prisonRanksStatusLoadedPlayersMsg(
 								pRanks.getPlayersCount() ) );
-				
-				
+
+
 				// Display all Ranks in each ladder:
 				results.addAll(
 						PrisonRanks.getInstance().getRankManager().ranksByLadders() );
-				
+
 				results.add( " " );
 			}
-	        else {
-	        	results.add( "&7Ranks: &9Not Enabled." );
-	        }
+			else {
+				results.add( "&7Ranks: &9Not Enabled." );
+			}
 		}
-		
-		
-        Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ); //.orElseGet( null );
-        if ( minesModule != null && 
-        		minesModule.getStatus().getStatus() == ModuleStatus.Status.ENABLED ) {
-        	
-        	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
-        	
-        	int minesEnabled = 0;
-        	int minesVirtual = 0;
-        	int minesDeleted = 0;
-        	int minesBlocks = 0;
-        	
-        	List<Mine> mines = PrisonMines.getInstance().getMines();
-        	for (Mine mine : mines) {
-        		
-        		minesEnabled += mine.isEnabled() ? 1 : 0;
+
+
+		Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ); // .orElseGet( null );
+		if ( minesModule != null &&
+				minesModule.getStatus().getStatus() == ModuleStatus.Status.ENABLED ) {
+
+			DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+
+			int minesEnabled = 0;
+			int minesVirtual = 0;
+			int minesDeleted = 0;
+			int minesBlocks = 0;
+
+			List<Mine> mines = PrisonMines.getInstance().getMines();
+			for ( Mine mine : mines ) {
+
+				minesEnabled += mine.isEnabled() ? 1 : 0;
 				minesVirtual += mine.isVirtual() ? 1 : 0;
 				minesDeleted += mine.isDeleted() ? 1 : 0;
-				
+
 				minesBlocks += mine.isEnabled() ? mine.getBounds().getTotalBlockCount() : 0;
 			}
-        	
-        	double blksPerMine = minesEnabled == 0 ? 0 : minesBlocks / (double) minesEnabled;
-        	
-        	String mineDetails = String.format( 
-        			"&7Mines Info:  &9Enabled: &b%d  &9Virtual: &b%d  &9Deleted: &b%d  &9AvgBlocks/Mine: &b%s",
-        			minesEnabled, minesVirtual, minesDeleted, 
-        			dFmt.format(blksPerMine) );
-        	
-        	results.add( mineDetails );
-        }
-        else {
-        	results.add( "&7Mines: &9Not Enabled." );
-        }
-        
-        
-    	
-		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
-    	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
-//    	afw.reloadConfigs();
-    	
-//		AutoFeaturesWrapper.getBlockConvertersInstance();
-		
-		
-		
-    	
-    	
-    	boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );
-    	
-    	String autoMangerHeader = "&7AutoManager: " + 
-    				( isAutoManagerEnabled ? 
-    						"&9Enabled" :
-    						"&9Not Enabled" );
-    	
-    	results.add( autoMangerHeader );
-    	
-    	if ( isAutoManagerEnabled ) {
-    		
-    		
-    		
-    		boolean bbeAbbtst = afw.isBoolean( AutoFeatures.applyBlockBreaksThroughSyncTask );
-    		results.add( String.format(".   Apply Block Breaks through Sync Tasks:&b %s", 
-    				Boolean.toString( bbeAbbtst ) ) );
-    		
-    		
-    		boolean bbeCabbe = afw.isBoolean( AutoFeatures.cancelAllBlockBreakEvents );
-    		results.add( String.format(".   Cancel all Block Break Events:&b %s", 
-    				Boolean.toString( bbeCabbe ) ) );
-    		
-    		
-    		boolean bbeCabebd = afw.isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops );
-    		results.add( String.format(".   Cancel All Block Break Events Block Drops:&b %s", 
-    				Boolean.toString( bbeCabebd ) ) );
-    		
-    		
-    		
-    		results.add( formatAFEvent( "'&7org.bukkit.BlockBreakEvent&3'", AutoFeatures.blockBreakEventPriority ) );
-    		results.add( formatAFEvent( "Prison's own '&7ExplosiveBlockBreakEvent&3'", AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
-    		results.add( formatAFEvent( "Pulsi_'s PrisonEnchants '&7PEExplosiveEvent&3'", AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
-    		results.add( formatAFEvent( "TokenEnchant '&7BlockExplodeEvent&3'", AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
-    		
-    		results.add( formatAFEvent( "CrazyEnchant '&7BlastUseEvent&3'", AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
-    		results.add( formatAFEvent( "RevEnchant '&7ExplosiveEvent&3'", AutoFeatures.RevEnchantsExplosiveEventPriority ) );
-    		results.add( formatAFEvent( "RevEnchant '&7JackHammerEvent&3'", AutoFeatures.RevEnchantsJackHammerEventPriority ) );
-    		results.add( formatAFEvent( "Zenchantments '&7BlockShredEvent&3'", AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
-    		
-    		results.add( formatAFEvent( "XPrison '&7ExplosionTriggerEvent&3'", AutoFeatures.XPrisonExplosionTriggerEventPriority ) );
-    		results.add( formatAFEvent( "XPrison '&7LayerTriggerEvent&3'", AutoFeatures.XPrisonLayerTriggerEventPriority ) );
-    		results.add( formatAFEvent( "XPrison '&7NukeTriggerEvent&3'", AutoFeatures.XPrisonNukeTriggerEventPriority ) );
 
-    		
-        	
+			double blksPerMine = minesEnabled == 0 ? 0 : minesBlocks / (double) minesEnabled;
+
+			String mineDetails = String.format(
+					"&7Mines Info:  &9Enabled: &b%d  &9Virtual: &b%d  &9Deleted: &b%d  &9AvgBlocks/Mine: &b%s",
+					minesEnabled, minesVirtual, minesDeleted,
+					dFmt.format( blksPerMine ) );
+
+			results.add( mineDetails );
+		}
+		else {
+			results.add( "&7Mines: &9Not Enabled." );
+		}
+
+
+		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
+		AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
+
+
+		boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );
+
+		String autoMangerHeader = "&7AutoManager: " +
+				( isAutoManagerEnabled ? "&9Enabled" : "&9Not Enabled" );
+
+		results.add( autoMangerHeader );
+
+		if ( isAutoManagerEnabled ) {
+
+
+			boolean bbeAbbtst = afw.isBoolean( AutoFeatures.applyBlockBreaksThroughSyncTask );
+			results.add( String.format( ".   Apply Block Breaks through Sync Tasks:&b %s",
+					Boolean.toString( bbeAbbtst ) ) );
+
+
+			boolean bbeCabbe = afw.isBoolean( AutoFeatures.cancelAllBlockBreakEvents );
+			results.add( String.format( ".   Cancel all Block Break Events:&b %s",
+					Boolean.toString( bbeCabbe ) ) );
+
+
+			boolean bbeCabebd = afw.isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops );
+			results.add( String.format( ".   Cancel All Block Break Events Block Drops:&b %s",
+					Boolean.toString( bbeCabebd ) ) );
+
+
+			results.add( formatAFEvent( "'&7org.bukkit.BlockBreakEvent&3'", AutoFeatures.blockBreakEventPriority ) );
+			results.add( formatAFEvent( "Prison's own '&7ExplosiveBlockBreakEvent&3'", AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
+			results.add( formatAFEvent( "Pulsi_'s PrisonEnchants '&7PEExplosiveEvent&3'", AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
+			results.add( formatAFEvent( "TokenEnchant '&7BlockExplodeEvent&3'", AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
+
+			results.add( formatAFEvent( "CrazyEnchant '&7BlastUseEvent&3'", AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
+			results.add( formatAFEvent( "RevEnchant '&7ExplosiveEvent&3'", AutoFeatures.RevEnchantsExplosiveEventPriority ) );
+			results.add( formatAFEvent( "RevEnchant '&7JackHammerEvent&3'", AutoFeatures.RevEnchantsJackHammerEventPriority ) );
+			results.add( formatAFEvent( "Zenchantments '&7BlockShredEvent&3'", AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
+
+			results.add( formatAFEvent( "XPrison '&7ExplosionTriggerEvent&3'", AutoFeatures.XPrisonExplosionTriggerEventPriority ) );
+			results.add( formatAFEvent( "XPrison '&7LayerTriggerEvent&3'", AutoFeatures.XPrisonLayerTriggerEventPriority ) );
+			results.add( formatAFEvent( "XPrison '&7NukeTriggerEvent&3'", AutoFeatures.XPrisonNukeTriggerEventPriority ) );
+
+
 //    		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
 //    		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
 //    		results.add( String.format(".   '&7org.bukkit.BlockBreakEvent&3' Priority:&b %s", 
 //    				blockBreakPriority.name() ) );
-    		
+
 //    		String pebbePriority = afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
 //    		boolean isPebbeEnabled = pebbePriority != null && !"DISABLED".equalsIgnoreCase( pebbePriority );
 //    		BlockBreakPriority pebbeEventPriority = BlockBreakPriority.fromString( pebbePriority );
@@ -2585,8 +2322,8 @@ public class SpigotPlatform
 //    				pebbeEventPriority.name(),
 //    				(isPebbeEnabled ? "&2Enabled" : "&cDisabled")
 //    				) );
-    		
-    		
+
+
 //    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
 //    		boolean isPeeeEnabled = peeePriority != null && !"DISABLED".equalsIgnoreCase( peeePriority );
 //    		BlockBreakPriority peeeEventPriority = BlockBreakPriority.fromString( peeePriority );
@@ -2604,8 +2341,8 @@ public class SpigotPlatform
 //    				tebEventPriority.name(),
 //    				(isTebeEnabled ? "&2Enabled" : "&cDisabled")
 //    				) );
-    		
-    		
+
+
 //    		String reeePriority = afw.getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority );
 //    		boolean isReeeEnabled = reeePriority != null && !"DISABLED".equalsIgnoreCase( reeePriority );
 //    		BlockBreakPriority reeEventPriority = BlockBreakPriority.fromString( reeePriority );
@@ -2623,8 +2360,8 @@ public class SpigotPlatform
 //    				rejhEventPriority.name(),
 //    				(isRejheEnabled ? "&2Enabled" : "&cDisabled")
 //    				) );
-    		
-    		
+
+
 //    		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
 //    		boolean isCebueEnabled = cebuePriority != null && !"DISABLED".equalsIgnoreCase( cebuePriority );
 //    		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
@@ -2643,10 +2380,7 @@ public class SpigotPlatform
 //    				(isZbseEnabled ? "&2Enabled" : "&cDisabled")
 //    				 ) );
 
-    		
-    		
-    		
-    		
+
 //    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
 //    		boolean isPeeeeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
 //    		BlockBreakPriority peeEventPriority = BlockBreakPriority.fromString( peeePriority );
@@ -2657,207 +2391,191 @@ public class SpigotPlatform
 //    				) );
 //    		
 //    		results.add( " " );
-    		
-    		
-    		boolean isAutoFeaturesEnabled = afw.isBoolean( AutoFeatures.isAutoFeaturesEnabled );
-    		if ( !isAutoFeaturesEnabled ) {
-    			results.add( ".  AutoFeatures are disabled:" );
-    		}
-    		
-    		boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
-    		results.add( String.format(".   Auto Pickup:&b %s", (!isAutoFeaturesEnabled ? "disabled" :
-    						isAutoPickup )) );
-    		
-    		results.add( String.format(".   Auto Smelt:&b %s", (!isAutoFeaturesEnabled ? "disabled" :
-    						afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
-    		
-    		results.add( String.format(".   Auto Block:&b %s", (!isAutoFeaturesEnabled ? "disabled" :
-    						afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
-    		
-    		
-    		results.add( String.format("%s.   Handle Normal Drops:&b %s %s", 
-    				(isAutoFeaturesEnabled ? "+" : ""), 
-    				(afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) ? "&2Enabled" : "&cDisabled" ),
-    				(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
-    		results.add( String.format("%s.   Normal Drop Smelt:&b %s", 
-    				(isAutoFeaturesEnabled ? "+" : ""), 
-    				(afw.isBoolean( AutoFeatures.normalDropSmelt ) ? "&2Enabled" : "&cDisabled" ),
-    				(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
-    				
-    		results.add( String.format("%s.   Normal Drop Block:&b %s", 
-    				(isAutoFeaturesEnabled ? "+" : ""), 
-		    		(afw.isBoolean( AutoFeatures.normalDropBlock ) ? "&2Enabled" : "&cDisabled" ),
-		    		(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
-    		
-    		results.add( String.format("%s.   Normal Drop Check for Full Inventory:&b %s", 
-    				(isAutoFeaturesEnabled ? "+" : ""), 
-    				(afw.isBoolean( AutoFeatures.normalDropCheckForFullInventory ) ? "&2Enabled" : "&cDisabled" ),
-    				(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
-    		
-    		
-    		
-    		results.add( " " );
-    		results.add( String.format(".   Include player inventory when smelting:&b%s", 
-    				(afw.isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting ) ? "&2Enabled" : "&cDisabled" )
-    				 ) );
-    		results.add( String.format(".   Include player inventory when blocking:&b%s", 
-    				(afw.isBoolean( AutoFeatures.includePlayerInventoryWhenBlocking ) ? "&2Enabled" : "&cDisabled" )
-    				) );
-
-    		
-    		
-    		results.add( " " );
-    		
-    		boolean isDurabilityEnabled = afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled );
-    		results.add( String.format("%s.   Calculate Durability:&b %s", 
-    				(isDurabilityEnabled ? "" : "+"), 
-    				isDurabilityEnabled) );
-    		
-    		boolean isPreventToolBreakage = afw.isBoolean( AutoFeatures.isPreventToolBreakage );
-    		results.add( String.format("%s.   Prevent Tool Breakage:&b %s", 
-    				(isPreventToolBreakage ? "" : "+"), 
-    				isPreventToolBreakage) );
-    		
-    		results.add( String.format("%s.   Prevent Tool Breakage Threshold:&b %s", 
-    				(isPreventToolBreakage ? "" : "+"), 
-    				afw.getInteger( AutoFeatures.preventToolBreakageThreshold )) );
-    		
-    		
-    		
-    		
-    		
-    		boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
-    		
-    		results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
-
-    		boolean isUseTEFortuneLevel = afw.isBoolean( AutoFeatures.isUseTokenEnchantsFortuneLevel );
-    		results.add( String.format("%s.  .  Use TokenEnchants Fortune Level:&b %b", 
-    				(isUseTEFortuneLevel ? "" : "+"), 
-    				isUseTEFortuneLevel) );
-    		
-    		boolean isUseRevFortuneLevel = afw.isBoolean( AutoFeatures.isUseRevEnchantsFortuneLevel );
-    		results.add( String.format("%s.  .  Use RevEnchants Fortune Level:&b %b", 
-    				(isUseRevFortuneLevel ? "" : "+"), 
-    				isUseRevFortuneLevel) );
-    		
-    		results.add( String.format("+.  .  Fortune Multiplier Global:&b %s", 
-    				afw.getInteger( AutoFeatures.fortuneMultiplierGlobal )) );
-    		results.add( String.format("+.  .  Max Fortune Level:&b %s  &3(0 = no max Level)", 
-    				afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
-    		results.add( String.format("+.  .  Fortune Bukkit Drops Multiplier:&b %s  &3", 
-    				afw.getDouble( AutoFeatures.fortuneBukkitDropsMultiplier )) );
-    		
-    		boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
-    		results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
-    				isExtendedBukkitFortune) );
-    		
-    		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s", 
-    				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow )) );
-    		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s", 
-    				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
-    		
-    		
-    		boolean isAltFortune = afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled);
-    		results.add( "+&3NOTE: If you enable Extended Bukkit Fortune, then it auto disables the following Alt Fortune Cals." );
-    		results.add( "+&3NOTE: First try Extended Bukkit Fortune and if it does not work, then disable it and use " +
-    				"Alt Fortune." );
-    		results.add( String.format("%s.  .  Calculate Alt Fortune Enabled:&b %s", 
-    				(isExtendedBukkitFortune ? "+" : "" ), 
-    				( isAltFortune ? "&2Enabled" : "&cDisabled")
-    				) );
-    		results.add( String.format("%s.  .  Calculate Alt Fortune on all Blocks:&b %s", 
-    				(isExtendedBukkitFortune ? "+" : "" ), 
-    				( afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled) ? "&2Enabled" : "&cDisabled")
-    				) );
-    		if ( isAltFortune && isExtendedBukkitFortune ) {
-    			results.add( "&dWarning: Alt Fortune is disabled by Exended Bukkit Fortune." );
-    		}
-    		
-    		
-    		boolean isGradientFortune = afw.isBoolean( AutoFeatures.isPercentGradientFortuneEnabled );
-
-    		results.add( String.format("%s.   Percent Gradient Fortune Enabled:&b %s", 
-    				(isGradientFortune ? "" : "+"),
-    				isGradientFortune ) );
-    		
-    		if ( isGradientFortune ) {
-    			
-    			if ( isExtendedBukkitFortune ) {
-    				results.add( "&dWarning: Percent Gradient Fortune is disabled by Exended Bukkit Fortune." );
-    			}
-    			if ( isAltFortune ) {
-    				results.add( "&dWarning: Percent Gradient Fortune is disabled by Alt Fortune." );
-    			}
-    			
-        		results.add( String.format(".  .  Percent Gradient Fortune: Max Fortune Level:&b %s", 
-        				afw.getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel )) );
-        		results.add( String.format(".  .  Percent Gradient Fortune: Max Bonus Blocks: &b %s", 
-        				afw.getInteger( AutoFeatures.percentGradientFortuneMaxBonusBlocks )) );
-        		results.add( String.format(".  .  Percent Gradient Fortune: Min Percent Randomness: &b%s", 
-        				afw.getDouble( AutoFeatures.percentGradientFortuneMinPercentRandomness )) );
-
-    		}
-    		
-    		
-    		results.add( " " );
-    		
-    		
-    		boolean isXpEnabled = afw.isBoolean( AutoFeatures.isCalculateXPEnabled );
-    		results.add( String.format("%s.   Calculate XP:&b %s", 
-    				(isXpEnabled ? "" : "+"),
-    				isXpEnabled ) );
-    		results.add( String.format("%s.   Drop XP as Orbs:&b %s", 
-    				(isXpEnabled ? "" : "+"),
-    				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
-    		
-    		boolean isFoodExhustionEnabled = afw.isBoolean( AutoFeatures.isCalculateFoodExhustion );
-    		results.add( String.format("%s.   Calculate Food Exhustion:&b %s", 
-    				(isFoodExhustionEnabled ? "" : "+"),
-    				isFoodExhustionEnabled ) );
-    		
-    		boolean isCalcAdditionalItemsEnabled = afw.isBoolean( AutoFeatures.isCalculateDropAdditionsEnabled );
-    		results.add( String.format("%s.   Calculate Additional Items in Drop:&b %s   (like flint in gravel)", 
-    				(isCalcAdditionalItemsEnabled ? "" : "+"),
-    				isCalcAdditionalItemsEnabled ) );
-    		
-    		
-    		
-    		
-    		
-    	}
-    	
-    	
-    	results.add( String.format("Prestiges Enabled:&b %s", 
-    										getConfigBooleanFalse( "prestige.enabled" )) );
-    	results.add( String.format(".   Reset Money:&b %s", 
-    										getConfigBooleanFalse( "prestige.resetMoney" )) );
-    	results.add( String.format(".   Reset Default Ladder:&b %s", 
-    										getConfigBooleanFalse( "prestige.resetDefaultLadder" )) );
 
 
-    	results.add( "" );
-    	
-    	
-    	boolean delayedPrisonStartup = getConfigBooleanFalse( "delayedCMIStartup" );
-    	if ( delayedPrisonStartup ) {
-    		
-    		results.add( String.format("Prison Delayed Start:&b %s", delayedPrisonStartup) );
-    	}
-    	
-    	
-    	results.add( String.format("GUI Enabled:&b %s", 
-    			getConfigBooleanFalse( "prison-gui-enabled" )) );
-    	
-    	
-    	results.add( String.format("Sellall Enabled:&b %s", 
-    										Boolean.toString( SpigotPrison.getInstance().isSellAllEnabled() )) );
-    		  
-    	
-    	results.add( String.format("Backpacks Enabled:&b %s", 
-    										getConfigBooleanFalse( "backpacks" )) );
-    	
+			boolean isAutoFeaturesEnabled = afw.isBoolean( AutoFeatures.isAutoFeaturesEnabled );
+			if ( !isAutoFeaturesEnabled ) {
+				results.add( ".  AutoFeatures are disabled:" );
+			}
 
-		
+			boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
+			results.add( String.format( ".   Auto Pickup:&b %s", ( !isAutoFeaturesEnabled ? "disabled" : isAutoPickup ) ) );
+
+			results.add( String.format( ".   Auto Smelt:&b %s", ( !isAutoFeaturesEnabled ? "disabled" : afw.isBoolean( AutoFeatures.autoSmeltEnabled ) ) ) );
+
+			results.add( String.format( ".   Auto Block:&b %s", ( !isAutoFeaturesEnabled ? "disabled" : afw.isBoolean( AutoFeatures.autoBlockEnabled ) ) ) );
+
+
+			results.add( String.format( "%s.   Handle Normal Drops:&b %s %s",
+					( isAutoFeaturesEnabled ? "+" : "" ),
+					( afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) ? "&2Enabled" : "&cDisabled" ),
+					( isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "" ) ) );
+			results.add( String.format( "%s.   Normal Drop Smelt:&b %s",
+					( isAutoFeaturesEnabled ? "+" : "" ),
+					( afw.isBoolean( AutoFeatures.normalDropSmelt ) ? "&2Enabled" : "&cDisabled" ),
+					( isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "" ) ) );
+
+			results.add( String.format( "%s.   Normal Drop Block:&b %s",
+					( isAutoFeaturesEnabled ? "+" : "" ),
+					( afw.isBoolean( AutoFeatures.normalDropBlock ) ? "&2Enabled" : "&cDisabled" ),
+					( isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "" ) ) );
+
+			results.add( String.format( "%s.   Normal Drop Check for Full Inventory:&b %s",
+					( isAutoFeaturesEnabled ? "+" : "" ),
+					( afw.isBoolean( AutoFeatures.normalDropCheckForFullInventory ) ? "&2Enabled" : "&cDisabled" ),
+					( isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "" ) ) );
+
+
+			results.add( " " );
+			results.add( String.format( ".   Include player inventory when smelting:&b%s",
+					( afw.isBoolean( AutoFeatures.includePlayerInventoryWhenSmelting ) ? "&2Enabled" : "&cDisabled" ) ) );
+			results.add( String.format( ".   Include player inventory when blocking:&b%s",
+					( afw.isBoolean( AutoFeatures.includePlayerInventoryWhenBlocking ) ? "&2Enabled" : "&cDisabled" ) ) );
+
+
+			results.add( " " );
+
+			boolean isDurabilityEnabled = afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled );
+			results.add( String.format( "%s.   Calculate Durability:&b %s",
+					( isDurabilityEnabled ? "" : "+" ),
+					isDurabilityEnabled ) );
+
+			boolean isPreventToolBreakage = afw.isBoolean( AutoFeatures.isPreventToolBreakage );
+			results.add( String.format( "%s.   Prevent Tool Breakage:&b %s",
+					( isPreventToolBreakage ? "" : "+" ),
+					isPreventToolBreakage ) );
+
+			results.add( String.format( "%s.   Prevent Tool Breakage Threshold:&b %s",
+					( isPreventToolBreakage ? "" : "+" ),
+					afw.getInteger( AutoFeatures.preventToolBreakageThreshold ) ) );
+
+
+			boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
+
+			results.add( String.format( ".   Calculate Fortune:&b %s", isCalcFortune ) );
+
+			boolean isUseTEFortuneLevel = afw.isBoolean( AutoFeatures.isUseTokenEnchantsFortuneLevel );
+			results.add( String.format( "%s.  .  Use TokenEnchants Fortune Level:&b %b",
+					( isUseTEFortuneLevel ? "" : "+" ),
+					isUseTEFortuneLevel ) );
+
+			boolean isUseRevFortuneLevel = afw.isBoolean( AutoFeatures.isUseRevEnchantsFortuneLevel );
+			results.add( String.format( "%s.  .  Use RevEnchants Fortune Level:&b %b",
+					( isUseRevFortuneLevel ? "" : "+" ),
+					isUseRevFortuneLevel ) );
+
+			results.add( String.format( "+.  .  Fortune Multiplier Global:&b %s",
+					afw.getInteger( AutoFeatures.fortuneMultiplierGlobal ) ) );
+			results.add( String.format( "+.  .  Max Fortune Level:&b %s  &3(0 = no max Level)",
+					afw.getInteger( AutoFeatures.fortuneMultiplierMax ) ) );
+			results.add( String.format( "+.  .  Fortune Bukkit Drops Multiplier:&b %s  &3",
+					afw.getDouble( AutoFeatures.fortuneBukkitDropsMultiplier ) ) );
+
+			boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
+			results.add( String.format( ".  .  Extended Bukkit Fortune Enabled:&b %s",
+					isExtendedBukkitFortune ) );
+
+			results.add( String.format( "+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s",
+					afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow ) ) );
+			results.add( String.format( "+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s",
+					afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh ) ) );
+
+
+			boolean isAltFortune = afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled );
+			results.add( "+&3NOTE: If you enable Extended Bukkit Fortune, then it auto disables the following Alt Fortune Cals." );
+			results.add( "+&3NOTE: First try Extended Bukkit Fortune and if it does not work, then disable it and use " +
+					"Alt Fortune." );
+			results.add( String.format( "%s.  .  Calculate Alt Fortune Enabled:&b %s",
+					( isExtendedBukkitFortune ? "+" : "" ),
+					( isAltFortune ? "&2Enabled" : "&cDisabled" ) ) );
+			results.add( String.format( "%s.  .  Calculate Alt Fortune on all Blocks:&b %s",
+					( isExtendedBukkitFortune ? "+" : "" ),
+					( afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ) ? "&2Enabled" : "&cDisabled" ) ) );
+			if ( isAltFortune && isExtendedBukkitFortune ) {
+				results.add( "&dWarning: Alt Fortune is disabled by Exended Bukkit Fortune." );
+			}
+
+
+			boolean isGradientFortune = afw.isBoolean( AutoFeatures.isPercentGradientFortuneEnabled );
+
+			results.add( String.format( "%s.   Percent Gradient Fortune Enabled:&b %s",
+					( isGradientFortune ? "" : "+" ),
+					isGradientFortune ) );
+
+			if ( isGradientFortune ) {
+
+				if ( isExtendedBukkitFortune ) {
+					results.add( "&dWarning: Percent Gradient Fortune is disabled by Exended Bukkit Fortune." );
+				}
+				if ( isAltFortune ) {
+					results.add( "&dWarning: Percent Gradient Fortune is disabled by Alt Fortune." );
+				}
+
+				results.add( String.format( ".  .  Percent Gradient Fortune: Max Fortune Level:&b %s",
+						afw.getInteger( AutoFeatures.percentGradientFortuneMaxFortuneLevel ) ) );
+				results.add( String.format( ".  .  Percent Gradient Fortune: Max Bonus Blocks: &b %s",
+						afw.getInteger( AutoFeatures.percentGradientFortuneMaxBonusBlocks ) ) );
+				results.add( String.format( ".  .  Percent Gradient Fortune: Min Percent Randomness: &b%s",
+						afw.getDouble( AutoFeatures.percentGradientFortuneMinPercentRandomness ) ) );
+
+			}
+
+
+			results.add( " " );
+
+
+			boolean isXpEnabled = afw.isBoolean( AutoFeatures.isCalculateXPEnabled );
+			results.add( String.format( "%s.   Calculate XP:&b %s",
+					( isXpEnabled ? "" : "+" ),
+					isXpEnabled ) );
+			results.add( String.format( "%s.   Drop XP as Orbs:&b %s",
+					( isXpEnabled ? "" : "+" ),
+					afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ) ) );
+
+			boolean isFoodExhustionEnabled = afw.isBoolean( AutoFeatures.isCalculateFoodExhustion );
+			results.add( String.format( "%s.   Calculate Food Exhustion:&b %s",
+					( isFoodExhustionEnabled ? "" : "+" ),
+					isFoodExhustionEnabled ) );
+
+			boolean isCalcAdditionalItemsEnabled = afw.isBoolean( AutoFeatures.isCalculateDropAdditionsEnabled );
+			results.add( String.format( "%s.   Calculate Additional Items in Drop:&b %s   (like flint in gravel)",
+					( isCalcAdditionalItemsEnabled ? "" : "+" ),
+					isCalcAdditionalItemsEnabled ) );
+
+
+		}
+
+
+		results.add( String.format( "Prestiges Enabled:&b %s",
+				getConfigBooleanFalse( "prestige.enabled" ) ) );
+		results.add( String.format( ".   Reset Money:&b %s",
+				getConfigBooleanFalse( "prestige.resetMoney" ) ) );
+		results.add( String.format( ".   Reset Default Ladder:&b %s",
+				getConfigBooleanFalse( "prestige.resetDefaultLadder" ) ) );
+
+
+		results.add( "" );
+
+
+		boolean delayedPrisonStartup = getConfigBooleanFalse( "delayedCMIStartup" );
+		if ( delayedPrisonStartup ) {
+
+			results.add( String.format( "Prison Delayed Start:&b %s", delayedPrisonStartup ) );
+		}
+
+
+		results.add( String.format( "GUI Enabled:&b %s",
+				getConfigBooleanFalse( "prison-gui-enabled" ) ) );
+
+
+		results.add( String.format( "Sellall Enabled:&b %s",
+				Boolean.toString( SpigotPrison.getInstance().isSellAllEnabled() ) ) );
+
+
+		results.add( String.format( "Backpacks Enabled:&b %s",
+				getConfigBooleanFalse( "backpacks" ) ) );
+
+
 		return results;
 	}
 	
@@ -2882,57 +2600,55 @@ public class SpigotPlatform
 	}
 
 	@Override
-	public void prisonVersionFeatures( ChatDisplay display, boolean isBasic, 
+	public void prisonVersionFeatures( ChatDisplay display, boolean isBasic,
 			boolean showLaddersAndRanks ) {
-		
-   
-        List<String> features = getActiveFeatures( showLaddersAndRanks );
-        if ( features.size() > 0 ) {
-        	
-        	display.addText("");
-        	for ( String feature : features ) {
-        		
-        		if ( !feature.startsWith( "+" ) ) {
-        			
-        			display.addText( feature );
-        		}
-        		else if ( !isBasic ) {
-        			
-        			display.addText( feature.substring( 1 ) );
-        		}
-        	}
-        }
-        
-        
-        display.addText("");
 
-        
-        // Active Modules:x's root Command: &3/prison");
-        
-        for ( Module module : Prison.get().getModuleManager().getModules() ) {
-        	
-        	display.addText( "&7Module: %s : %s %s", module.getName(), 
-        			module.getStatus().getStatusText(),
-        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
-        					"[" + module.getStatus().getMessage() + "]" : "")
-        			);
-        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
-        }
-        
-        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
-        if ( disabledModules.size() > 0 ) {
-        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
-        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
-        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
-        				disabledModule );
-        	}
-        }
-        
-        display.addText("");
-        display.addText("&7Integrations:");
 
-        IntegrationManager im = Prison.get().getIntegrationManager();
-        
+		List<String> features = getActiveFeatures( showLaddersAndRanks );
+		if ( features.size() > 0 ) {
+
+			display.addText( "" );
+			for ( String feature : features ) {
+
+				if ( !feature.startsWith( "+" ) ) {
+
+					display.addText( feature );
+				}
+				else if ( !isBasic ) {
+
+					display.addText( feature.substring( 1 ) );
+				}
+			}
+		}
+
+
+		display.addText( "" );
+
+
+		// Active Modules:x's root Command: &3/prison");
+
+		for ( Module module : Prison.get().getModuleManager().getModules() ) {
+
+			display.addText( "&7Module: %s : %s %s", module.getName(),
+					module.getStatus().getStatusText(),
+					( module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? "[" + module.getStatus().getMessage() + "]" : "" ) );
+			// display.addText( ". &7Base Commands: %s", module.getBaseCommands() );
+		}
+
+		List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
+		if ( disabledModules.size() > 0 ) {
+			display.addText( "&7Disabled Module%s:", ( disabledModules.size() > 1 ? "s" : "" ) );
+			for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
+				display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
+						disabledModule );
+			}
+		}
+
+		display.addText( "" );
+		display.addText( "&7Integrations:" );
+
+		IntegrationManager im = Prison.get().getIntegrationManager();
+
 //        Set<IntegrationType> inTypeKeys = im.getIntegrations().keySet();
 //        for (IntegrationType inTypeKey  : inTypeKeys ) {
 //        	List<Integration> integrations = im.getIntegrations().get( inTypeKey );
@@ -2943,62 +2659,54 @@ public class SpigotPlatform
 //        		
 //			}
 //		}
-        
-        String permissions =
-        		(im.hasForType(IntegrationType.PERMISSION) ?
-                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
-                "None");
 
-        display.addText(". . &7Permissions: " + permissions);
+		String permissions = ( im.hasForType( IntegrationType.PERMISSION ) ? " " + im.getForType( IntegrationType.PERMISSION ).get().getDisplayName() : "None" );
 
-        String economy =
-        		(im.hasForType(IntegrationType.ECONOMY) ?
-                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
-                "None");
+		display.addText( ". . &7Permissions: " + permissions );
 
-        display.addText(". . &7Economy: " + economy);
-        
-        
-        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
-        for ( DisplayComponent component : integrationRows )
-		{
-        	display.addComponent( component );
+		String economy = ( im.hasForType( IntegrationType.ECONOMY ) ? " " + im.getForType( IntegrationType.ECONOMY ).get().getDisplayName() : "None" );
+
+		display.addText( ". . &7Economy: " + economy );
+
+
+		List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
+		for ( DisplayComponent component : integrationRows ) {
+			display.addComponent( component );
 		}
-        
-        
 
-        display.addText("");
-        display.addText( TopNPlayers.getInstance().getTopNStats() );
-        
-        
-        display.addText("");
-        display.addText("&7Locale Settings:");
-        
-        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
+
+		display.addText( "" );
+		display.addText( TopNPlayers.getInstance().getTopNStats() );
+
+
+		display.addText( "" );
+		display.addText( "&7Locale Settings:" );
+
+		for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
 			display.addText( ". . " + localeInfo );
 		}
-        
-        
-        identifyRegisteredPlugins();
-        
-        List<String> registeredPlugins = Prison.get().getPrisonCommands().getRegisteredPlugins();
-        
-        
-        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
-        // Display all loaded plugins:
-        if ( registeredPlugins.size() > 0 ) {
-        	display.addText("");
-        	display.addText( "&7Registered Plugins: " );
-        	
+
+
+		identifyRegisteredPlugins();
+
+		List<String> registeredPlugins = Prison.get().getPrisonCommands().getRegisteredPlugins();
+
+
+		// NOTE: This list of plugins is good enough and the detailed does not have all the info.
+		// Display all loaded plugins:
+		if ( registeredPlugins.size() > 0 ) {
+			display.addText( "" );
+			display.addText( "&7Registered Plugins: " );
+
 //        	List<String> plugins = getRegisteredPlugins();
-        	Collections.sort( registeredPlugins );
-        	List<String> plugins2Cols = Text.formatColumnsFromList( registeredPlugins, 2 );
-        	
-        	for ( String rp : plugins2Cols ) {
-				
-        		display.addText( rp );
+			Collections.sort( registeredPlugins );
+			List<String> plugins2Cols = Text.formatColumnsFromList( registeredPlugins, 2 );
+
+			for ( String rp : plugins2Cols ) {
+
+				display.addText( rp );
 			}
-        	
+
 //        	StringBuilder sb = new StringBuilder();
 //        	for ( String plugin : getRegisteredPlugins() ) {
 //        		if ( sb.length() == 0) {
@@ -3014,9 +2722,9 @@ public class SpigotPlatform
 //        	if ( sb.length() > 0 ) {
 //        		display.addText( sb.toString());
 //        	}
-        }
-        
-        // This version of plugins does not have all the registered commands:
+		}
+
+		// This version of plugins does not have all the registered commands:
 //        // The new plugin listings:
 //        if ( getRegisteredPluginData().size() > 0 ) {
 //        	display.text( "&7Registered Plugins Detailed: " );
@@ -3040,37 +2748,35 @@ public class SpigotPlatform
 //        		display.text( sb.toString());
 //        	}
 //        }
-        
-        
+
+
 //        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
 //        String pluginDetails = plugin.getdetails();
 //        
 //        display.text( pluginDetails );
-        
+
 
 //        if ( !isBasic ) {
 //        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
 //        }
-        
-        
-        Prison.get().getPlatform().getWorldLoadErrors( display );
 
-        if ( !isBasic && Prison.get().getPrisonCommands().getPrisonStartupDetails().size() > 0 ) {
-        	display.addText("");
-        	
-        	for ( String msg : Prison.get().getPrisonCommands().getPrisonStartupDetails() ) {
+
+		Prison.get().getPlatform().getWorldLoadErrors( display );
+
+		if ( !isBasic && Prison.get().getPrisonCommands().getPrisonStartupDetails().size() > 0 ) {
+			display.addText( "" );
+
+			for ( String msg : Prison.get().getPrisonCommands().getPrisonStartupDetails() ) {
 				display.addText( msg );
 			}
-        }
+		}
 
-		
-		// REMOVE!  The following will "load" the WorldGuard settings and then dump them as json to console
-        //          to confirm they were loaded properly.  Remove when done with this test1
+
+		// REMOVE! The following will "load" the WorldGuard settings and then dump them as json to console
+		// to confirm they were loaded properly. Remove when done with this test1
 //        new WorldGuardSettings();
-        
-        
 
-	    
+
 	}
 	
 	
@@ -3443,73 +3149,70 @@ public class SpigotPlatform
 	
 	@Override
 	public String getMinesListString() {
+
 		String results = "";
-		
+
 		if ( PrisonMines.getInstance().isEnabled() ) {
-			
+
 			MinesCommands mc = PrisonMines.getInstance().getMinesCommands();
-			
-			
-			ChatDisplay display = new ChatDisplay("Mines");
-			
+
+
+			ChatDisplay display = new ChatDisplay( "Mines" );
+
 			display.addSupportHyperLinkData( "Mines List" );
-			
+
 			// get the mine list:
 			mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
-			
+
 			StringBuilder sb = display.toStringBuilder();
-			
+
 			sb.append( "\n" );
-			
+
 			// get the mine details for all mines:
 			mc.allMinesInfoDetails( sb );
-			
+
 			results = sb.toString();
 		}
-		
-    	return results;
-//    	return Text.stripColor( sb.toString() );
+
+		return results;
 	}
 	
 	@Override
 	public String getRanksListString() {
+
 		StringBuilder sb = new StringBuilder();
-		
+
 		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-			
-			LadderCommands lc = 
-					PrisonRanks.getInstance().getRankManager().getLadderCommands();
-			
-			RanksCommands rc = 
-					PrisonRanks.getInstance().getRankManager().getRanksCommands();
-			
+
+			LadderCommands lc = PrisonRanks.getInstance().getRankManager().getLadderCommands();
+
+			RanksCommands rc = PrisonRanks.getInstance().getRankManager().getRanksCommands();
+
 			sb.append( "\n\n" );
-			
+
 			ChatDisplay displayLadders = lc.getLadderList();
-			
+
 			sb.append( displayLadders.toStringBuilder() );
 			sb.append( "\n" );
-			
-			
+
+
 			RankPlayer rPlayer = null;
-			
-			ChatDisplay displayRanks = new ChatDisplay("Ranks");
+
+			ChatDisplay displayRanks = new ChatDisplay( "Ranks" );
 			rc.listAllRanksByLadders( displayRanks, true, rPlayer );
-			
+
 			sb.append( displayRanks.toStringBuilder() );
 			sb.append( "\n" );
-			
-			
+
+
 			rc.listAllRanksByInfo( sb );
-//    	rc.allRanksInfoDetails( sb );
 		}
 		else {
 			sb.append( "Ranks are disabled.\n\n" );
 		}
-		
-		
-    	return sb.toString();
-//		return Text.stripColor( sb.toString() );
+
+
+		return sb.toString();
 	}
 
 
@@ -3582,55 +3285,54 @@ public class SpigotPlatform
 	
 
 	@Override
-	public void listAllMines(tech.mcprison.prison.internal.CommandSender sender, Player player) {
+	public void listAllMines( tech.mcprison.prison.internal.CommandSender sender, Player player ) {
 
 		List<Mine> mines = new ArrayList<>();
 
 		RankPlayer rPlayer = null;
-		
+
 		if ( PrisonRanks.getInstance().isEnabled() ) {
-			rPlayer = 
-					PrisonRanks.getInstance().getPlayerManager().getPlayer(player);
+			rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( player );
 		}
-		
+
 		if ( rPlayer != null ) {
-			
+
 			Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
 			for ( RankLadder key : keys ) {
-				PlayerRank pRank = rPlayer.getLadderRanks().get(key);
-				
+				PlayerRank pRank = rPlayer.getLadderRanks().get( key );
+
 				listMines( sender, player, pRank, mines );
 			}
-			
-			
+
+
 			if ( mines.size() > 0 ) {
-				
+
 				// String builder will be used to track what the "real" text width is:
 				StringBuilder sb = new StringBuilder();
-				
+
 				RowComponent row = new RowComponent();
 				row.addTextComponent( "&3Mines: " );
 				sb.append( "&3Mines: " );
 
 				for ( Mine mine : mines ) {
-					
-		        	FancyMessage msgMine = new FancyMessage( String.format( "%s", mine.getTag() ) )
-		        			.suggest( "/mines tp " + mine.getName() )
-		        			.tooltip("Click to teleport to mine");
-		        	
-		        	row.addFancy( msgMine );
-		        	sb.append( mine.getTag() );
-					
-		        	row.addTextComponent( "   " );
-		        	sb.append( "   " );
-		        	
-		        	String noColor = Text.stripColor( sb.toString() );
-					
-					if ( noColor.length()  > 50 ) {
+
+					FancyMessage msgMine = new FancyMessage( String.format( "%s", mine.getTag() ) )
+							.suggest( "/mines tp " + mine.getName() )
+							.tooltip( "Click to teleport to mine" );
+
+					row.addFancy( msgMine );
+					sb.append( mine.getTag() );
+
+					row.addTextComponent( "   " );
+					sb.append( "   " );
+
+					String noColor = Text.stripColor( sb.toString() );
+
+					if ( noColor.length() > 50 ) {
 
 						// Send the player the mines list:
 						row.send( sender );
-						
+
 						// Reset the row and sb to start on the next row of mines:
 						row = new RowComponent();
 						sb.setLength( 0 );
@@ -3638,7 +3340,7 @@ public class SpigotPlatform
 						// Setup the start of the row:
 						row.addTextComponent( "&3Mines: " );
 						sb.append( "&3Mines: " );
-						
+
 					}
 				}
 				if ( sb.length() > 0 ) {
@@ -3646,7 +3348,7 @@ public class SpigotPlatform
 					row.send( sender );
 				}
 			}
-			
+
 		}
 	}
 
@@ -3825,39 +3527,6 @@ public class SpigotPlatform
 			e1.printStackTrace();
 		}
 		
-//		try {
-//			Class worldClass  = Class.forName( "org.bukkit.World" ); 
-//			YamlConfiguration yaml = SpigotPrison.getInstance().loadExternalConfig( file );
-//			
-//			if ( yaml != null ) {
-//				values = yaml.getValues( true );
-//				
-//				
-//				if ( yaml.contains( "teleport_location" ) ) {
-//					
-//					org.bukkit.Location loc = 
-//							(org.bukkit.Location) yaml.getObject( 
-//									"teleport_location", org.bukkit.Location.class );
-//					
-//					org.bukkit.World world = loc.getWorld();
-//					
-//					if ( loc != null ) {
-//						values.put( "teleport_location.world", world.getName() );
-//						values.put( "teleport_location.x", Double.valueOf( loc.getX()) );
-//						values.put( "teleport_location.y", Double.valueOf( loc.getY()) );
-//						values.put( "teleport_location.z", Double.valueOf( loc.getZ()) );
-//						values.put( "teleport_location.pitch", Double.valueOf( loc.getPitch()) );
-//						values.put( "teleport_location.yaw", Double.valueOf( loc.getYaw()) );
-//						
-//					}
-//				}
-//			}
-//			
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
-//		}
-		
-
 		return values;
 	}
 	

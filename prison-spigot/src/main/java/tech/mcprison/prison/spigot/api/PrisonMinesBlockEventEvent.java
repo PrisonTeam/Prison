@@ -73,8 +73,6 @@ private static final HandlerList handlers = new HandlerList();
 	private Mine mine;
 	private SpigotBlock spigotBlock;
 
-	//private SpigotBlock overRideSpigotBlock;
-	
 	private List<SpigotBlock> explodedBlocks;
 	
 	private BlockEventType blockEventType;
@@ -187,13 +185,6 @@ private static final HandlerList handlers = new HandlerList();
 		this.triggered = triggered;
 	}
 	
-//	public SpigotBlock getOverRideSpigotBlock() {
-//		return overRideSpigotBlock;
-//	}
-//	public void setOverRideSpigotBlock( SpigotBlock overRideSpigotBlock ) {
-//		this.overRideSpigotBlock = overRideSpigotBlock;
-//	}
-	
 	public String getParameter() {
 		return parameter;
 	}
@@ -201,8 +192,6 @@ private static final HandlerList handlers = new HandlerList();
 		this.parameter = parameter;
 	}
 
-	
-//	@Override
     public HandlerList getHandlers() {
         return handlers;
     }

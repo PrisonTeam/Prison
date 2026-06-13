@@ -768,7 +768,7 @@ public class RankPlayer
 	
 	    				// If access-to-prior-mines is enabled (defaults to true if does not exist), 
 	    				// then search prior ranks on this ladder until a match with target is found.
-	    				if ( Prison.get().getPlatform()
+	    				if ( !hasAccess && Prison.get().getPlatform()
 	    							.getConfigBooleanTrue( "prison-mines.access-to-prior-mines" ) ) {
 	    					
 	    					Rank priorRank = rank.getRankPrior();
