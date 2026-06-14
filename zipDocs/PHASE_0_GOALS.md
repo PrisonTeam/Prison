@@ -3,18 +3,22 @@
 ## Primary Objective
 Prepare the 91k-line legacy codebase for a massive V4.0 refactor. We are in a "Look but don't touch" state for features, focusing purely on stability and cleanup.
 
-## Current Tasks
+Prison has been stuck at v3.0.0.x for the longest time.  I'm wanting to move prison to v4.0.0, but there are some major house keeping tasks that need to be done first.  During these cleanups, prison will be versioned to v3.4.x as these cleanups happen.
+
+These phase document, this being phase_0_goals, will try to organize various tasks with the final task being the version bump.
+
+## Current Tasks - In progress - Preparing for v3.4.0
 1. **The Great Purge:** Identify and remove all commented-out code blocks, unused imports, and dead methods.
-2. **Hotspot Audit:** Identify "God Classes" (classes over 2,000 lines) that need to be broken down in Phase 1.
-3. **Dependency Cleanup:** Verify `libs.versions.toml` and align all modules to the same library versions.
-4. **Testing Prep:** Identify the 5 most "fragile" methods (like the 80k block explosion logic) to be the first targets for Unit Tests.
+
+2. **Dependency Cleanup:** Verify `libs.versions.toml` and check to see if there are any updates available.
+
+3. **Version 3.4.0:** Change version to 3.4.0.
 
 
-## Optional Tasks that should be completed before wrapping up V3.x
-1. **Sellall & Autosell:** These have been problematic and error prone. A lot of work has been done to them and they are much improved with functionality and stability, but there are still some weaknesses with them.  We should review what should be done before v4.0.  Autosell can sometimes be difficult to enable and is usually tied back to a conflicting configuration setting.
-2. **Backpacks:** The first attempt at adding backpacks failed with a lot of lag. They have been "disabled" and I would like to fix the backpack model and get them working.  Might be able to utilize the PlayerCache for persisting the backpack data.
-3. **Player Objects:** The player objects within Prison is has been refactored with the number of player types being reduced.  There could still be problems that should be ironed out and maybe create some unit tests too.
-4. **MineBombs:** These have been some new features added to mine bombs and they don't always work well and can glitch at times.  Should review MineBombs before v3.x is finalized.
+## Optional Tasks that should be addressed
+1. **Work on supporting documentation:** Update the road map documentation to provide a more focused number of tasks to include in each of the near future releases.  This will help keep the tasks focused and on track.
+
+2. **Bugs:** Bug fix any issues as they surface.
 
 
 ## AI Constraints (Rules for Gemini)

@@ -17,6 +17,10 @@ These change logs represent the work that has been going on within prison.
 # 3.3.0-alpha.19j 2026-06-13
 
 
+* **Update the version of XSeries x11.3.0 to support 1.8 through 1.21.x and the newer version v13.8.0 supports spigot 2026.**
+Update the goals for future development projects.
+
+
 * **Prison Cleanup: prison-spigot: Removed obsolete and unneeded comments and fix indentation where needed.** Fifth and final part.  All basic clean ups has been completed with this set.
 
 

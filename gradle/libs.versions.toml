@@ -34,12 +34,16 @@ commons-lang3 = "3.12.0"
 groovy = "3.0.9"
 gson = "2.10.1"
 spiget = "1.4.6-SNAPSHOT"
+
+# NOTE: xseries v13.8.0 is required for spigot v26.1.x, but will fail to run under java 1.8.
+#xseries = "13.8.0"
 xseries = "11.3.0"
 junit = "4.12"
 guava = "31.1-jre"
 spigotApi = "1.13.2-R0.1-SNAPSHOT"
 
-nbtApi = "2.15.5"
+nbtApi = "2.15.7"
+#nbtApi = "2.15.5"
 #nbtApi = "2.15.3"
 #nbtApi = "2.15.0"
 #nbtApi = "2.14.1"
