@@ -55,6 +55,9 @@ luckperms-v5 = "5.4"
 
 itemsAdder = "3.5.0b"
 
+worldedit-v6 = "6.0.1"
+worldedit-v7 = "7.2.15"
+worldguard-v7 = "7.0.4"
 
 
 
@@ -98,6 +101,20 @@ xseries = { module = "com.github.cryptomorin:XSeries", version.ref = "xseries" }
 # gson = { module = "com.google.code.gson:gson", version = "2.9.1" }
 
 
+worldedit-core-v6 = { module = "com.sk89q.worldedit:worldedit-core", version.ref = "worldedit-v6" }
+worldedit-bukkit-v6 = { module = "com.sk89q.worldedit:worldedit-bukkit", version.ref = "worldedit-v6" }
+
+
+## WARNING: v7.0.4 is the last release that is java 1.8 compatible
+## https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-core
+## https://mvnrepository.com/artifact/com.sk89q.worldguard/worldguard-bukkit
+## https://mvnrepository.com/artifact/com.sk89q.worldguard.worldguard-libs/core
+worldedit-core-v7 = { module = "com.sk89q.worldedit:worldedit-core", version.ref = "worldedit-v7" }
+worldedit-bukkit-v7 = { module = "com.sk89q.worldedit:worldedit-bukkit", version.ref = "worldedit-v7" }
+
+worldguard-core-v7 = { module = "com.sk89q.worldguard:worldguard-core", version.ref = "worldguard-v7" }
+worldguard-bukkit-v7 = { module = "com.sk89q.worldguard:worldguard-bukkit", version.ref = "worldguard-v7" }
+worldguard-libs-v7 = { module = "com.sk89q.worldguard.worldguard-libs:core", version.ref = "worldguard-v7" }
 
 
 

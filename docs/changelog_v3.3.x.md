@@ -13,6 +13,17 @@
 
 These change logs represent the work that has been going on within prison. 
 
+# 3.3.1 2026-06-15
+
+** v3.3.1  2026-06-15**
+
+  Prison-3.3.1.jar <-- Support for spigot 1.8 through spigot 1.20.x
+  Prison26-3.3.1.jar <-- Support for spigot 1.21.x and spigot 26 (manual build)
+  
+  NOTE: the latest release of paper will be fully supported in v3.4.0.
+
+* **Updated gradle config files && bumped to version 3.3.1**
+
 
 # 3.3.0-alpha.19j 2026-06-13
 

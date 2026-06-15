@@ -25,57 +25,6 @@ compileTestJava.options.encoding = "UTF-8"
 ext.targetArchiveClassifier = 'Java1.8'
 //ext.targetArchiveClassifier = 'Java16'
 
-// Lists all versions of java that are available to the toolchain
-// $ ./gradlew -q javaToolchains
-
-// Specify the java version's location as found in the javaToolchains.
-// $ ./gradlew build -Dorg.gradle.java.home="C:\Program Files\Java\jdk1.8.0_291"
-
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(8))
-//    languageVersion.set(JavaLanguageVersion.of(16))
-  }
-}
-
-
-repositories {
-
-//	maven {
-//	    url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-	
-	    // As of Gradle 5.1, you can limit this to only those
-	    // dependencies you expect from it
-//	    content {
-//	      includeGroup 'org.bukkit'
-//	      includeGroup 'org.spigotmc'
-//	    }
-//	 }
-
-
-	 /*
-	   As Spigot-API depends on the BungeeCord ChatComponent-API,
-	  we need to add the Sonatype OSS repository, as Gradle,
-	  in comparison to maven, doesn't want to understand the ~/.m2
-	  directory unless added using mavenLocal(). Maven usually just gets
-	  it from there, as most people have run the BuildTools at least once.
-	  This is therefore not needed if you're using the full Spigot/CraftBukkit,
-	  or if you're using the Bukkit API.
-	  */
-	 //maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-	 //maven { url = 'https://oss.sonatype.org/content/repositories/central' }
-	  
-  // mavenLocal() // This is needed for CraftBukkit and Spigot.
-    maven { 
-    	url "https://mvnrepository.com/artifact" 
-    }
-
-   // maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
-    
-    
-   // maven { url = "https://maven.enginehub.org/repo/" }
-}
-
 
 
 dependencies {
