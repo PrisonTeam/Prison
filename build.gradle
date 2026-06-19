@@ -22,15 +22,15 @@ import java.util.Date
 
 buildscript {
 
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        
-    }
+	repositories {
+		mavenCentral()
+		gradlePluginPortal()
+		
+	}
 
-    dependencies {
-        classpath 'com.github.johnrengelman:shadow:8.1.1'
-    }
+	dependencies {
+		classpath 'com.github.johnrengelman:shadow:8.1.1'
+	}
 
 }
 
@@ -39,13 +39,18 @@ plugins {
 	id 'java'
 	id 'base'
 	
-//    alias(libs.plugins.shadow)
+//	alias(libs.plugins.shadow)
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 
 base {
 	archivesName = 'Prison'
+}
+
+// Ensure all Java compilation across the entire project uses UTF-8 natively
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -65,8 +70,8 @@ ext.targetArchiveClassifier = 'Java1.8'
 
 java {
   toolchain {
-    languageVersion.set(JavaLanguageVersion.of(8))
-//    languageVersion.set(JavaLanguageVersion.of(16))
+	languageVersion.set(JavaLanguageVersion.of(8))
+//	languageVersion.set(JavaLanguageVersion.of(16))
   }
 }
 
@@ -74,20 +79,20 @@ java {
 /*
 task('Build-Java8', type: JavaCompile ) {
 
-    javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(8)
-    }
-    
-    ext.targetArchiveClassifier = 'java1.8'
+	javaCompiler = javaToolchains.compilerFor {
+		languageVersion = JavaLanguageVersion.of(8)
+	}
+	
+	ext.targetArchiveClassifier = 'java1.8'
 }
 
 task('Build-Java16', type: JavaCompile ) {
 
-    javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(16)
-    }
-    
-    ext.targetArchiveClassifier = 'java16'
+	javaCompiler = javaToolchains.compilerFor {
+		languageVersion = JavaLanguageVersion.of(16)
+	}
+	
+	ext.targetArchiveClassifier = 'java16'
 }
 */
 
@@ -104,14 +109,14 @@ println """
 ==========================================================================
 You are building the Prison plugin 
   Prison Version:  ${project.version} 
-  Build time:      ${getCurrentTimestamp()}
-  Java version:    
-  Test value:      ${targetArchiveClassifier}
+  Build time:	  ${getCurrentTimestamp()}
+  Java version:	
+  Test value:	  ${targetArchiveClassifier}
 
 Output files are located in [subproject]/build/libs.
 The runnable JAR is usually named Prison-<version>.jar.
 Example: The spigot build artifact is:
-             prison-spigot/build/libs/Prison-${project.version}.jar
+			 prison-spigot/build/libs/Prison-${project.version}.jar
 ==========================================================================
 """
 
@@ -119,53 +124,243 @@ Example: The spigot build artifact is:
 
 subprojects {
 
-    apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
-//    apply plugin: 'maven'
-//    apply plugin: 'maven-publish'
+	apply plugin: 'java'
+	apply plugin: 'com.github.johnrengelman.shadow'
+//	apply plugin: 'maven'
+//	apply plugin: 'maven-publish'
 
 
-//    archivesBaseName = 'Prison'
+//	archivesBaseName = 'Prison'
 
-    
-    group = 'tech.mcprison.prison'
-
-//    sourceCompatibility = 16
-//    targetCompatibility = 16
-//    sourceCompatibility = 1.8
-//    targetCompatibility = 1.8
-
-    repositories {
-        mavenCentral()
-       // maven { url "https://maven.sk89q.com/repo/" }
+		
+	group = 'tech.mcprison.prison'
+	
+	java {
+	  toolchain {
+		languageVersion.set(JavaLanguageVersion.of(8))
+	  }
+	}
 
 
-        maven { 
-        	url "https://mvnrepository.com/artifact" 
-        }
-    }
-        
+	configurations {
+		deployerJars
+	}
 
-    configurations {
-        deployerJars
-    }
-
-    dependencies {
-    
-    	implementation( libs.commons.lang3 ) 
+	dependencies {
+	
+		implementation( libs.commons.lang3 ) 
 
 		implementation( libs.gson )
 		implementation( libs.guava )
 	
-	    testImplementation( libs.junit )
-    
-    }
+		testImplementation( libs.junit )
+	
+	}
 
 }
 
 wrapper {
-    distributionType = Wrapper.DistributionType.ALL
+	distributionType = Wrapper.DistributionType.ALL
 }
+
+tasks.register('zipSource', Zip) {
+	group = 'prison'
+	description = 'Creates a versioned ZIP of source, resources, and all Gradle/AI metadata.'
+
+	archiveBaseName = "Prison-Context"
+	archiveVersion = project.version
+	destinationDirectory = file("$rootDir/zip_snapshots")
+
+	// 1. Root Orchestration Files
+	from(rootDir) {
+		include 'build.gradle'
+		include 'settings.gradle'
+		include 'gradle.properties'
+		include 'gradle/libs.versions.toml'
+	}
+
+	// 2. The "Brain" Folder (Your AI metadata)
+	from("$rootDir/zipDocs") {
+		into('metadata') 
+	}
+
+	// 3. Sub-project Source, Resources, and their specific build.gradle
+	subprojects.each { sub ->
+		from(sub.projectDir) {
+			include 'src/main/java/**'
+			include 'src/main/resources/**'
+			include 'build.gradle' // Each module's specific build file
+			
+			into(sub.name) 
+		}
+	}
+
+	// Exclusions to keep the "Millionaire" tokens focused
+	exclude '**/build/**'
+	exclude '**/.gradle/**'
+	exclude '**/.settings/**'
+	exclude '**/bin/**'
+	exclude '**/out/**'
+}
+
+
+tasks.register('concatSource') {
+	group = 'prison'
+	description = 'Concatenates source, resources, and metadata into a single AI-friendly text file.'
+
+	// Set the output directory and filename
+	def outputDir = file("$rootDir/zip_snapshots")
+	def outputFile = new File(outputDir, "Prison-Context-${project.version}.txt")
+
+	// The actual work must happen in the execution phase (doLast)
+	doLast {
+		outputDir.mkdirs()
+		
+		// Clear the file if it already exists from a previous run
+		if (outputFile.exists()) {
+			outputFile.text = ''
+		} else {
+			outputFile.createNewFile()
+		}
+
+		println "Generating AI context file at: ${outputFile.absolutePath}"
+
+		// Helper closure to process a file tree and append to the text file
+		def processTree = { FileTree tree ->
+			tree.matching {
+				// Your standard exclusions
+				exclude '**/build/**'
+				exclude '**/.gradle/**'
+				exclude '**/.settings/**'
+				exclude '**/bin/**'
+				exclude '**/out/**'
+				// Added safeguards: prevent sneaky binary files in resources from turning to gibberish
+				exclude '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.ico', '**/*.jar', '**/*.zip'
+			}.each { File f ->
+				if (f.isFile()) {
+					// Calculate the relative path from the root directory
+					def relativePath = rootDir.toPath().relativize(f.toPath()).toString()
+					
+					// Normalize separators so Windows backslashes become standard forward slashes
+					relativePath = relativePath.replace('\\', '/')
+
+					// Append the header and file contents
+					outputFile.append("================================================================\n")
+					outputFile.append("File: ${relativePath}\n")
+					outputFile.append("================================================================\n")
+					outputFile.append(f.text + "\n\n")
+				}
+			}
+		}
+
+		// 0. The Prime Directives (Force these to the absolute top)
+		//	The "Brain" Folder
+		def brainFilesSI = fileTree(dir: "$rootDir/zipDocs",
+					includes: ['SYSTEM_INSTRUCTIONS.md'])
+		processTree(brainFilesSI)
+
+		def brainFiles = fileTree(dir: "$rootDir/zipDocs",
+					excludes: ['SYSTEM_INSTRUCTIONS.md'])
+		processTree(brainFiles)
+
+		
+		// 1. Root Orchestration Files
+		def rootFiles = fileTree(dir: rootDir, includes: [
+			'build.gradle',
+			'settings.gradle',
+			'gradle.properties',
+			'gradle/libs.versions.toml'
+		])
+		processTree(rootFiles)
+
+		// 2. Sub-project Source, Resources, and specific build scripts
+		// Define the sub-projects you want to skip
+		def excludedProjects = ['prison-spigot-alt', 'prison-worldguard7']
+
+		subprojects.each { sub ->
+			// Only process the sub-project if its name is NOT in the excluded list
+			if (!excludedProjects.contains(sub.name)) {
+				def subFiles = fileTree(dir: sub.projectDir, includes: [
+					'src/main/java/**',
+					'src/main/resources/**',
+					'build.gradle'
+				])
+				processTree(subFiles)
+			}
+		}
+		
+		println "Successfully concatenated Millionaire tokens into ${outputFile.name}"
+	}
+}
+
+tasks.register('exportGradleConfigs') {
+	group = 'help'
+	description = 'Exports all Gradle configuration files into a single timestamped text file for review.'
+
+	doLast {
+		// Create the timestamped filename
+		def df = new SimpleDateFormat("yyyy-MM-dd_HH-mm")
+		def timestamp = df.format(new Date())
+		def outputFile = file("gradle_project_settings_${timestamp}.txt")
+
+		// Initialize/clear the file
+		outputFile.text = ""
+
+		// Define the explicit order of core files to pull from the root
+		def coreFiles = [
+		 "this_file_does_not_exist.txt",
+			"gradle/libs.versions.toml",
+			"gradle/wrapper/gradle-wrapper.properties",
+			"gradle.properties",
+			"settings.gradle",
+			"build.gradle"
+		]
+
+		// Helper closure to write a file's content with the requested formatting
+		def appendFile = { String relativePath ->
+			def targetFile = file(relativePath)
+			outputFile.append("=====================================================\n")
+			outputFile.append("-- File: ${relativePath}\n")
+			
+   if (targetFile.exists()) {
+				// Grab and format the file metadata
+				def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
+				def numFormat = new java.text.DecimalFormat("#,###")
+				
+				def lastModDate = sdf.format(new Date(targetFile.lastModified()))
+				def fileSize = numFormat.format(targetFile.length())
+				
+				outputFile.append("--   Modified: ${lastModDate}\n")
+				outputFile.append("--   Size: ${fileSize} bytes\n")
+				outputFile.append("--\n\n")
+				outputFile.append(targetFile.text + "\n\n")
+			} else {
+				outputFile.append("--   (File not found or empty)\n\n")
+			}
+		}
+
+		// 1. Process the explicitly ordered core files
+		coreFiles.each { appendFile(it) }
+
+		// 2. Iterate through all subprojects and grab their build.gradle files
+		subprojects.each { sub ->
+			def subBuildFile = sub.buildFile
+			if (subBuildFile.exists()) {
+				// Get the path relative to the root project (e.g., "aers-web/build.gradle")
+				def relativePath = rootProject.relativePath(subBuildFile)
+				// Normalize slashes for consistency in the text file
+				relativePath = relativePath.replace('\\', '/')
+				appendFile(relativePath)
+			}
+		}
+
+		println "==================================================="
+		println " SUCCESS: Configuration files consolidated!"
+		println " File saved to: ${outputFile.absolutePath}"
+		println "==================================================="
+	}
+}
+
 
 def getCurrentTimestamp()
 {

@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.backpacks.PlayerBackpack;
+import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
@@ -73,6 +74,24 @@ public interface Platform {
     public void getWorldLoadErrors( ChatDisplay display );
     
     
+    /**
+     * <p>Providing a RankPlayer, generate and return a
+     * platform player object, that is connected to the
+     * platform, such as bukkit through the spigot platform.
+     * </p>
+     * 
+     * @param rankPlayer
+     * @return
+     */
+    public Player getPlatformPlayer(RankPlayer rankPlayer);
+    
+    
+	public RankPlayer getRankPlayer(UUID uuid, String name);
+	
+	
+	public boolean saveRankPlayer(RankPlayer rPlayer);
+	
+	
     /**
      * Returns the player with the specified name.
      */
@@ -313,6 +332,16 @@ public interface Platform {
 	public List<String> getConfigHashKeys(String hashPrefix);
 
 	
+	/**
+	 * <p>This returns a value of true if the given config path exists.
+	 * </p>
+	 * 
+	 * @param section
+	 * @return
+	 */
+	public boolean isConfigSection( String section );
+	
+	
 	public boolean isWorldExcluded( String worldName );
 
 
@@ -495,5 +524,7 @@ public interface Platform {
 
 	public Map<String, Object> loadYaml(File file);
 
+
+	public MineBombEffectsData validateMineBombEffect(MineBombEffectsData mineBombEffectsData);
 
 }

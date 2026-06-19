@@ -59,6 +59,15 @@ public class PrisonJarReporter {
 		JavaSE_19("3f"),
 		JavaSE_20("40"),
 		JavaSE_21("41"),
+		JavaSE_22("42"),
+		JavaSE_23("43"),
+		JavaSE_24("44"),
+		JavaSE_25("45"),
+		
+		JavaSE_26("46"), // Confirm with wiki above when it's defined.
+		JavaSE_27("47"), // Confirm with wiki above when it's defined.
+		JavaSE_28("48"), // Confirm with wiki above when it's defined.
+		JavaSE_29("49"), // Confirm with wiki above when it's defined.
 		
 		JavaSE_UnknownVersion("UnknownJavaVersion")
 		;
@@ -93,6 +102,37 @@ public class PrisonJarReporter {
 		
 		this.jars = new ArrayList<>();
 		this.jarsByPluginName = new TreeMap<>();
+	}
+	
+	public List<Integer> getBukkitVersion() {
+		List<Integer> versionMajMin = new ArrayList<>();
+		
+		String version = getBukkitVersionRaw();
+
+		String versionStr = version.substring( 
+						version.indexOf( "(MC:" ) + 4, version.lastIndexOf( ")" ) );
+		String[] vMN = versionStr.split( "\\." );
+		
+		for ( int x = 0; x < vMN.length; x++ ) {
+			String ver = vMN[x];
+			
+			try {
+				versionMajMin.add( 
+						Integer.parseInt( ver.trim() ) );
+			}
+			catch ( NumberFormatException e ) {
+				// ignore... just break out:
+				break;
+			}
+		}
+		
+		return versionMajMin;
+	}
+	
+	public String getBukkitVersionRaw() {
+		
+		return Prison.get().getMinecraftVersion();
+//		return Bukkit.getVersion();
 	}
 	
 	public class JarFileData {
@@ -217,16 +257,6 @@ public class PrisonJarReporter {
 				// These are not our plugins, so if there is a problem, then it really does not matter
 				
 			}
-//			catch ( ZipException e )
-//			{
-//				e.printStackTrace();
-//			}
-//			catch ( IOException e )
-//			{
-//				e.printStackTrace();
-//			}
-			
-			
 		}
 		
 	}

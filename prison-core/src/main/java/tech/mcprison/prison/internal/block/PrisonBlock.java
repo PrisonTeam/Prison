@@ -6,6 +6,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 /**
  * <p>This class embodies the nature of the block and different behaviors, if
@@ -24,20 +25,17 @@ public class PrisonBlock
 	public static PrisonBlock AIR;
 	public static PrisonBlock GLASS;
 	public static PrisonBlock PINK_STAINED_GLASS;
+	public static PrisonBlock SELECTION_WAND;
 	public static PrisonBlock BLAZE_ROD;
 	public static PrisonBlock LAPIS_ORE;
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
-	private PrisonBlockType blockType;
 	private boolean useBlockTypeAsPrefix = false;
-	
-//	private String blockName;
-	
-//	private double chance;
 	
 	private boolean valid = true;
 	private boolean block = true;
+	private boolean sellallOnly = false;
 	
 	private boolean legacyBlock = false;
 	
@@ -52,6 +50,9 @@ public class PrisonBlock
 		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
 		GLASS = new PrisonBlock( InternalBlockTypes.GLASS.name(), true );
 		PINK_STAINED_GLASS = new PrisonBlock( InternalBlockTypes.PINK_STAINED_GLASS.name(), true );
+		SELECTION_WAND = new PrisonBlock( InternalBlockTypes.BLAZE_ROD.name(), false );
+		SELECTION_WAND.setDisplayName( "&6Selection Wand" );
+		
 		BLAZE_ROD = new PrisonBlock( InternalBlockTypes.BLAZE_ROD.name(), false );
 		LAPIS_ORE = new PrisonBlock( InternalBlockTypes.LAPIS_ORE.name(), true );
 		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), true );
@@ -77,6 +78,32 @@ public class PrisonBlock
 	 */
 	public PrisonBlock( String blockName ) {
 		this( PrisonBlockType.minecraft, blockName, 0, 0);
+		
+		// If the blockName as a PrisonBlockType, then strip it off of the blockName
+		// and set the new name for the block, plus set the BlockType.
+		for (PrisonBlockType bType : PrisonBlockType.values() ) {
+			String blockType = bType.name() + ":";
+			
+			if ( blockName.startsWith( blockType ) ) {
+				blockName = blockName.replace( blockType, blockName );
+				setBlockName( blockName );
+				setBlockType( bType );
+				
+				break;
+			}
+		}
+		
+		// If there is still a ':' then everything after that is a formatted displayName.
+		// Strip it off save it.
+		if ( getBlockName().contains( ":" ) ) {
+			String[] bNameDisplayName = getBlockName().split(":");
+			
+			if ( bNameDisplayName.length == 2 ) {
+				setBlockName( bNameDisplayName[0] );
+				setDisplayName( bNameDisplayName[1] );
+			}
+		}
+		
 	}
 	public PrisonBlock( String blockName, String displayName  ) {
 		this( PrisonBlockType.minecraft, blockName, 0, 0);
@@ -101,11 +128,6 @@ public class PrisonBlock
 	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
 		super( blockType, blockName, chance, blockCountTotal );
 
-		this.blockType = blockType;
-		
-//		this.blockName = blockName.toLowerCase();
-//		this.chance = chance;
-		
 	}
 	
 	public PrisonBlock( PrisonBlock clonable ) {
@@ -114,11 +136,18 @@ public class PrisonBlock
 				clonable.getChance(), 
 				clonable.getBlockCountTotal() );
 		
+		this.setDisplayName( clonable.getDisplayName() );
+
 		this.useBlockTypeAsPrefix = clonable.isUseBlockTypeAsPrefix();
 		this.valid = clonable.isValid();
 		this.block = clonable.isBlock();
+		this.sellallOnly = clonable.isSellallOnly();
+		
 		this.legacyBlock = clonable.isLegacyBlock();
 		
+		this.setLoreAllowed( clonable.isLoreAllowed() );
+		this.setSalePrice( clonable.getSalePrice() );
+		this.setPurchasePrice( clonable.getPurchasePrice() );
 		
 		this.location = clonable == null || clonable.getLocation() == null ? null : 
 									new Location( clonable.getLocation() );
@@ -126,23 +155,19 @@ public class PrisonBlock
 	
 	@Override
 	public String toString() {
-		return getBlockType().name() + ": " + getBlockName() +
-				( getChance() > 0 ? " " + Double.toString( getChance()) : "");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( getBlockNameSearch() );
+		
+		if ( getChance() > 0 ) {
+			sb.append( " " )
+				.append( Double.toString( getChance()) );
+		}
+		
+		return sb.toString();
 	}
 	
-	public PrisonBlockType getBlockType() {
-		return blockType;
-	}
-	public void setBlockType( PrisonBlockType blockType ) {
-		this.blockType = blockType;
-	}
-
-//	public String getBlockName() {
-//		return blockName;
-//	}
-//	public void setBlockName( String blockName ) {
-//		this.blockName = blockName;
-//	}
 	
 	/**
 	 * <p>This function always prefixes the block name with the BlockType.
@@ -172,6 +197,10 @@ public class PrisonBlock
 	 * a type of minecraft. 
 	 * </p>
 	 * 
+	 * <p>If the PrisonBlock has a display name, the color codes are stripped and then
+	 * set to lower case, and spaces are replaced with '_'. Then the block search name is
+	 * appended with the display name preceded with a ':'.
+	 * 
 	 * @return
 	 */
 	public String getBlockNameSearch() {
@@ -181,12 +210,27 @@ public class PrisonBlock
 		
 		String blockName = getBlockName().toLowerCase();
 		
-		String displayName = getDisplayName() != null ?
-					":" + getDisplayName().toLowerCase() : "";
 		
+		String displayName = getDisplayNameText();
+		if ( displayName != null ) {
+			displayName = ":" + displayName.toLowerCase().replace(" ", "_");
+		}
+		else {
+			displayName = "";
+		}
+				
 		return blockType + blockName + displayName;
 	}
 
+	public String getDisplayNameText() {
+		String results = getDisplayName();
+		
+		if ( results != null ) {
+			results = Text.stripColor( results.trim() );
+		}
+		
+		return results;
+	}
 	
 	public String getBlockCoordinates() {
 		StringBuilder sb = new StringBuilder();
@@ -250,13 +294,6 @@ public class PrisonBlock
 		this.useBlockTypeAsPrefix = useBlockTypeAsPrefix;
 	}
 	
-//	public double getChance() {
-//		return chance;
-//	}
-//	public void setChance( double chance ) {
-//		this.chance = chance;
-//	}
-
 	public boolean isValid() {
 		return valid;
 	}
@@ -271,6 +308,25 @@ public class PrisonBlock
 		this.block = isBlock;
 	}
 
+	/**
+	 * <p>If isSellallOnly, this item should never be used within a mine since prison
+	 * cannot regenerate the block to place it in the mines.  Custom blocks have
+	 * many uncontrollable aspects on how they create and use blocks, of which 
+	 * prison cannot begin to magically guess all of these requirements.
+	 * </p>
+	 * 
+	 * <p>If this value is set to true, then the PrisonBlock was added to prison as
+	 * a custom block that is supported only within sellall.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isSellallOnly() {
+		return sellallOnly;
+	}
+	public void setSellallOnly(boolean sellallOnly) {
+		this.sellallOnly = sellallOnly;
+	}
 	/**
 	 * <p>This value isLegacyBlock indicates that there was not a direct match
 	 * with the stored (saved) name of the block, and list of valid block types
@@ -380,8 +436,8 @@ public class PrisonBlock
 				
 				results = getBlockName().compareToIgnoreCase( block.getBlockName() );
 				
-				if ( results == 0 && getDisplayName() != null && block.getDisplayName() != null ) {
-					results = getDisplayName().compareToIgnoreCase( block.getDisplayName() );
+				if ( results == 0 && getBlockNameSearch() != null && block.getBlockNameSearch() != null ) {
+					results = getBlockNameSearch().compareToIgnoreCase( block.getBlockNameSearch() );
 				}
 			}
 		}
@@ -474,16 +530,6 @@ public class PrisonBlock
 
 			(( PrisonBlock ) relativeBlock).setPrisonBlock( this );
 			
-//			PrisonBlock cloned = this.clone();
-//			
-//			(( PrisonBlock ) relativeBlock).getLocation().setBlockAsync( cloned );
-//			
-//			PrisonBlockType blockType = getBlockType();
-//			
-//			// Set that block with this block's type:
-//			(( PrisonBlock ) relativeBlock).setBlockType( blockType );
-//			(( PrisonBlock ) relativeBlock).setBlockName( getBlockName() );
-			
 		}
 	}
 	
@@ -504,7 +550,6 @@ public class PrisonBlock
 	@Override
 	public List<ItemStack> getDrops()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -515,7 +560,6 @@ public class PrisonBlock
 	@Override
 	public List<ItemStack> getDrops( ItemStack tool )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

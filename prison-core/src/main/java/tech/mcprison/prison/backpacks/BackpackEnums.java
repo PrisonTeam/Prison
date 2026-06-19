@@ -6,7 +6,7 @@ public class BackpackEnums {
 		inventory, // Uses standard inventory object, up to 6 rows, 9 stacks each
 		silo; // Up to 54 silos per backpack, which will use a chest to display
 	}
-	
+
 	public enum BackpackFeatures {
 		soulboundBackpack, // If player dies, they keep the backpack
 		soulboundItems, // if soulboundBackpack is enabled, this will preserve items within

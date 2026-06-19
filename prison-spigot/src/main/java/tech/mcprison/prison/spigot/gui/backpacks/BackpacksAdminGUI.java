@@ -1,7 +1,9 @@
 package tech.mcprison.prison.spigot.gui.backpacks;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
@@ -24,7 +26,7 @@ public class BackpacksAdminGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        if (!BackpacksUtil.isEnabled()){
+        if (!BackpacksUtil.getInstance().isEnabled()){
             Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_backpack_disabled));
             p.closeInventory();
             return;

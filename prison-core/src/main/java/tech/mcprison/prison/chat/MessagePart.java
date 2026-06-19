@@ -97,7 +97,9 @@ public final class MessagePart implements JsonRepresentedObject, Cloneable {
         return text != null;
     }
 
-    @Override @SuppressWarnings("unchecked") public MessagePart clone()
+    @Override 
+    @SuppressWarnings("unchecked") 
+    public MessagePart clone()
         throws CloneNotSupportedException {
         MessagePart obj = (MessagePart) super.clone();
         obj.styles = (ArrayList<ChatColor>) styles.clone();

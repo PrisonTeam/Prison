@@ -11,7 +11,7 @@ import org.bukkit.plugin.RegisteredListener;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 
 public class OnBlockBreakExternalEvents {
 	
@@ -41,7 +41,7 @@ public class OnBlockBreakExternalEvents {
 		super();
 		
 		// if mc version is greater than or equal to 1.13.0.
-		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.13.0") >= 0 ) {
+		if ( new BluesSemanticVersionComparator().compareMCVersionTo("1.13.0") >= 0 ) {
 			this.isDropItemsSupported = true;
 		}
 		
@@ -49,15 +49,6 @@ public class OnBlockBreakExternalEvents {
 	}
 	
 	public static OnBlockBreakExternalEvents getInstance() {
-//		if ( instance != null ) {
-//			synchronized(OnBlockBreakExternalEvents.class) {
-//				
-//				if ( instance != null ) {
-//					instance = new OnBlockBreakExternalEvents();
-//					
-//				}
-//			}
-//		}
 		return instance;
 	}
 	
@@ -112,60 +103,9 @@ public class OnBlockBreakExternalEvents {
 			
 		}
 		
-		
-		
-		// Removed because there is a directly callable target with /prison debug now:
-//		if ( Output.get().isDebug( DebugTarget.blockBreakListeners ) ) {
-//			
-//			String eventType = "BlockBreakEvent";
-//			
-//			RegisteredListener[] listeners = BlockBreakEvent.getHandlerList().getRegisteredListeners();
-//			
-//	        ChatDisplay display = new ChatDisplay("Event Dump: " + eventType );
-//	        display.addText("&8All registered EventListeners (%d):", listeners.length );
-//
-//			for ( RegisteredListener eventListner : listeners ) {
-//				String plugin = eventListner.getPlugin().getName();
-//				EventPriority priority = eventListner.getPriority();
-//				String listener = eventListner.getListener().getClass().getName();
-//				
-//				String message = String.format( "&3  Plugin: &7%s   %s  &3(%s)", 
-//						plugin, priority.name(), listener);
-//
-//				display.addText( message );
-//			}
-//			
-//			display.toLog( LogLevel.DEBUG );
-//		}
-		
 	}
 
 	
-//	private void registerPriorityEvents() {
-//		
-//		// First priority plugins:
-//		List<String> fpPlugins = getListString( AutoFeatures.firstPriorityBlockBreakEventPlugins );
-//		
-//		
-//		// gather all plugins within the event:
-//		TreeMap<String, Plugin> registeredPlugins = new TreeMap<>();
-//		
-//		
-//		HandlerList handlers = BlockBreakEvent.getHandlerList();
-//		
-//		for ( RegisteredListener handler : handlers.getRegisteredListeners() ) {
-//			
-//			Plugin plugin = handler.getPlugin();
-//			String pluginName = plugin.getName();
-//			
-//			if ( !registeredPlugins.containsKey( pluginName ) ) {
-//				
-//				registeredPlugins.put( pluginName, plugin );
-//			}
-//		}
-//		
-//		//handlers.get
-//	}
 	
 	public StringBuilder checkAllExternalEvents( BlockBreakEvent e ) {
 		

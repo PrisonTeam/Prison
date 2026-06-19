@@ -27,7 +27,6 @@ public class SpigotLaddersGUI
     private int page;
     private String cmdPage;
     private String cmdReturn;
-//    private int counter;
 
     public SpigotLaddersGUI(Player p, int page, String cmdPage, String cmdReturn ) {
         this.p = p;
@@ -35,7 +34,6 @@ public class SpigotLaddersGUI
         this.page = page;
         this.cmdPage = cmdPage;
         this.cmdReturn = cmdReturn;
-//        this.counter = counter;
     }
 
     public void open(){
@@ -50,11 +48,10 @@ public class SpigotLaddersGUI
 
         // If the inventory is empty
         if (lm == null || lm.getLadders().size() == 0){
-        	guiRanksLadderIsEmptyMsg( new SpigotPlayer(p), "" );
+        		guiRanksLadderIsEmptyMsg( new SpigotPlayer(p), "" );
             p.closeInventory();
             return;
         }
-
         
         
         int totalArraySize = lm.getLadders().size();
@@ -65,11 +62,6 @@ public class SpigotLaddersGUI
         List<RankLadder> laddersDisplay = lm.getLadders().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
         
         
- 
-        
-//        // Get the dimensions and if needed increases them
-//        int dimension = 54;
-//        int pageSize = 45;
 
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3RanksManager -> Ladders");
 
@@ -79,7 +71,7 @@ public class SpigotLaddersGUI
 
         for ( RankLadder ladder : laddersDisplay ) {
 			
-        	gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, "&3" + ladder.getName() ));
+        		gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, "&3" + ladder.getName() ));
 		}
         
         
@@ -89,27 +81,6 @@ public class SpigotLaddersGUI
 
 
         
-//        // Only loop over the blocks that we need to show:
-//        int i = counter;
-//        for ( ; i < lm.getLadders().size() && i < counter + pageSize; i++ ) {
-//
-//        	// WARNING: This is wrong... a ladder's ID is NOT the same as it's position in a collection.
-//        	// The ladder ID is a damn magic number and cannot be predictable!
-//        	
-////            RankLadder ladder = lm.getLadder(i);
-//
-//            // Add the button to the inventory
-//            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, "&3" + ladder.getName())));
-//        }
-
-//        if (i < lm.getLadders().size()) {
-//            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
-//        }
-//        if (i >= (pageSize * 2)) {
-//            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null),
-//                    "&7Prior " + (i - (pageSize * 2) - 1)));
-//        }
-
         // Open the inventory
         gui.open();
     }

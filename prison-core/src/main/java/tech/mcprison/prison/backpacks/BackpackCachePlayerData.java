@@ -17,13 +17,6 @@ public class BackpackCachePlayerData
 	
 	private transient File playerFile = null;
 	
-//	/**
-//	 *  This Object lock is used to synchronized the public side of this class
-//	 *  and the protected side of this class which is the database transaction
-//	 *  side of things.
-//	 */
-//	@SuppressWarnings( "unused" )
-//	private transient final Object lock = new Object();
 	
 	private transient BackpackCacheRunnable task = null;
 	

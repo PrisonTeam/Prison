@@ -26,42 +26,21 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
     
     public void open(){
     	
-    	// Create the inventory
-    	int dimension = 9;
-    	PrisonGUI gui = new PrisonGUI( player, dimension, "&3Prestige -> Confirmation");
-    	
-    	ButtonLore confirmLore = new ButtonLore(createLore(
-    			guiClickToConfirmMsg()), lore );
-    	
-    	ButtonLore cancelLore = new ButtonLore( guiClickToCancelMsg(), null);
-    	
-    	
-    	// Create the button, set up the material, amount, lore and name
-    	gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, confirmLore, "&3Confirm: Prestige" ));
-    	gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, cancelLore, "&3Cancel: Don't Prestige" ));
-    	
-    	gui.open();
+	    	// Create the inventory
+	    	int dimension = 9;
+	    	PrisonGUI gui = new PrisonGUI( player, dimension, "&3Prestige -> Confirmation");
+	    	
+	    	ButtonLore confirmLore = new ButtonLore(createLore(
+	    			guiClickToConfirmMsg()), lore );
+	    	
+	    	ButtonLore cancelLore = new ButtonLore( guiClickToCancelMsg(), null);
+	    	
+	    	
+	    	// Create the button, set up the material, amount, lore and name
+	    	gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, confirmLore, "&3Confirm: Prestige" ));
+	    	gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, cancelLore, "&3Cancel: Don't Prestige" ));
+	    	
+	    	gui.open();
     }
 
-//    public void open(){
-//
-//        // Create the inventory
-//        int dimension = 9;
-//        PrisonGUI gui = new PrisonGUI(p, dimension, "&3Prestige -> Confirmation");
-//
-//        ButtonLore confirmLore = new ButtonLore(createLore(
-//        		guiClickToConfirmMsg()), createLore(
-//                messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_1),
-//                messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_2),
-//                messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_3)));
-//
-//        ButtonLore cancelLore = new ButtonLore( guiClickToCancelMsg(), null);
-//
-//
-//        // Create the button, set up the material, amount, lore and name
-//        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, confirmLore, "&3Confirm: Prestige" ));
-//        gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, cancelLore, "&3Cancel: Don't Prestige" ));
-//
-//        gui.open();
-//    }
 }

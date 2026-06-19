@@ -6,13 +6,27 @@ import tech.mcprison.prison.util.Location;
 public class MineTargetBlockKey
 	implements Comparable<MineTargetBlockKey>
 {
-	private final World world;
+	private final String worldName;
+	private final transient World world;
 	private final int x, y, z;
+	
+	public MineTargetBlockKey() {
+		super();
+
+		this.world = null;
+		this.worldName = null;
+		
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		
+	}
 	
 	public MineTargetBlockKey( World world, int x, int y, int z ) {
 		super();
 		
 		this.world = world;
+		this.worldName = world == null ? null : world.getName();
 		
 		this.x = x;
 		this.y = y;
@@ -42,6 +56,10 @@ public class MineTargetBlockKey
 
 	public World getWorld() {
 		return world;
+	}
+
+	public String getWorldName() {
+		return worldName;
 	}
 
 	public int getX() {
@@ -102,13 +120,7 @@ public class MineTargetBlockKey
 		
 		hash += x * 13 + y * 37 + z * 17;
 				
-		// TODO Auto-generated method stub
-//		return super.hashCode();
-		
 		return hash;
 	}
-	
-	
-	
 	
 }

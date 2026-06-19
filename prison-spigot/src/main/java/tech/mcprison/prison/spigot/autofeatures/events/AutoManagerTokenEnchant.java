@@ -19,6 +19,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.api.InventoryFullEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
@@ -82,48 +83,42 @@ public class AutoManagerTokenEnchant
     }
     
     
-    @Override
-    public void initialize() {
+	@Override
+	public void initialize() {
 
-    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
-		
-		setBbPriority( bbPriority );
-    	
+		String eP = getMessage(AutoFeatures.TokenEnchantBlockExplodeEventPriority);
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString(eP);
+
+		setBbPriority(bbPriority);
+
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-    	if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
-    		return;
-    	}
-    	
-    	// Check to see if the class TEBlockExplodeEvent even exists:
-    	try {
-    		Output.get().logInfo( "AutoManager: checking if loaded: TokenEnchant" );
-    		
-    		Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
-    				this.getClass().getClassLoader() );
-    		
-    		Output.get().logInfo( "AutoManager: Trying to register TokenEnchant" );
-    		
-    		
-    		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
-    			if ( bbPriority.isComponentCompound() ) {
-    				
-    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
-						
-    					createListener( subBBPriority );
+		if (getBbPriority() == BlockBreakPriority.DISABLED) {
+			return;
+		}
+
+		// Check to see if the class TEBlockExplodeEvent even exists:
+		try {
+			Output.get().logInfo("AutoManager: checking if loaded: TokenEnchant");
+
+			Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, this.getClass().getClassLoader());
+
+			Output.get().logInfo("AutoManager: Trying to register TokenEnchant");
+
+			if (getBbPriority() != BlockBreakPriority.DISABLED) {
+				if (bbPriority.isComponentCompound()) {
+
+					for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+
+						createListener(subBBPriority);
 					}
-    			}
-    			else {
-    				
-    				createListener(bbPriority);
-    			}
-    			
-    		}
-    		
-    		
-    		
-    		
+				} else {
+
+					createListener(bbPriority);
+				}
+
+			}
+
 //    		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 //    		
 //    		if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -182,18 +177,16 @@ public class AutoManagerTokenEnchant
 //    						prison);
 //    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
 //    			}
-    			
+
 //    		}
-    		
-    	}
-    	catch ( ClassNotFoundException e ) {
-    		// TokenEnchant is not loaded... so ignore.
-    		Output.get().logInfo( "AutoManager: TokenEnchant is not loaded" );
-    	}
-    	catch ( Exception e ) {
-    		Output.get().logInfo( "AutoManager: TokenEnchant failed to load. [%s]", e.getMessage() );
-    	}
-    }
+
+		} catch (ClassNotFoundException e) {
+			// TokenEnchant is not loaded... so ignore.
+			Output.get().logInfo("AutoManager: TokenEnchant is not loaded");
+		} catch (Exception e) {
+			Output.get().logInfo("AutoManager: TokenEnchant failed to load. [%s]", e.getMessage());
+		}
+	}
 
 	private void createListener( BlockBreakPriority bbPriority ) {
 
@@ -243,32 +236,28 @@ public class AutoManagerTokenEnchant
 	}
 	
 	
-    @Override
-	public void dumpEventListeners( StringBuilder sb ) {
-    	
-    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+	@Override
+	public void dumpEventListeners(StringBuilder sb) {
 
-    	if ( !isEventEnabled ) {
-    		return;
-    	}
-		
+		String eP = getMessage(AutoFeatures.TokenEnchantBlockExplodeEventPriority);
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase(eP);
+
+		if (!isEventEnabled) {
+			return;
+		}
+
 		// Check to see if the class TEBlockExplodeEvent even exists:
 		try {
-			
-			Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
-							this.getClass().getClassLoader() );
-			
-			
-			HandlerList handlers = TEBlockExplodeEvent.getHandlerList();
-			
-//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
-    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
-    		dumpEventListenersCore( "BlockBreakEvent", handlers, bbPriority, sb );
-    		
-  
-    		
+			Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, this.getClass().getClassLoader());
+
+			HandlerList handlers = TEBlockExplodeEvent.getHandlerList();
+
+//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
+			BlockBreakPriority bbPriority = BlockBreakPriority.fromString(eP);
+
+			dumpEventListenersCore("BlockBreakEvent", handlers, bbPriority, sb);
+
 //    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 //
 //			String title = String.format( 
@@ -300,156 +289,143 @@ public class AutoManagerTokenEnchant
 //				
 //				sb.append( msg ).append( "\n" );
 //			}
-		}
-		catch ( ClassNotFoundException e ) {
+		} catch (ClassNotFoundException e) {
 			// TokenEnchant is not loaded... so ignore.
-		}
-		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: TokenEnchant failed to load. [%s]", e.getMessage() );
+		} catch (Exception e) {
+			Output.get().logInfo("AutoManager: TokenEnchant failed to load. [%s]", e.getMessage());
 		}
 	}
     
 	/**
-	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
-	 * get the mine, then loop through those blocks to make sure they are within the mine.
+	 * <p>
+	 * Since there are multiple blocks associated with this event, pull out the
+	 * player first and get the mine, then loop through those blocks to make sure
+	 * they are within the mine.
 	 * </p>
 	 * 
-	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
-	 * event contains multiple blocks so it's far more efficient to process the player data once. 
-	 * So that basically needed a slight refactoring.
+	 * <p>
+	 * The logic in this function is slightly different compared to
+	 * genericBlockEvent() because this event contains multiple blocks so it's far
+	 * more efficient to process the player data once. So that basically needed a
+	 * slight refactoring.
 	 * </p>
 	 * 
 	 * @param e
 	 */
-	public void handleTEBlockExplodeEvent( TEBlockExplodeEvent e, BlockBreakPriority bbPriority ) {
-	
+	public void handleTEBlockExplodeEvent(TEBlockExplodeEvent e, BlockBreakPriority bbPriority) {
+
 		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
-		
-		// If the event is canceled, it still needs to be processed because of the 
+
+		// If the event is canceled, it still needs to be processed because of the
 		// MONITOR events:
-		// An event will be "canceled" and "ignored" if the block 
+		// An event will be "canceled" and "ignored" if the block
 		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
-		// or if the targetBlock has been set to ignore all block events which 
+		// or if the targetBlock has been set to ignore all block events which
 		// means the block has already been processed.
-    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, e.getPlayer(), 
-    									e.getBlock(), bbPriority, true );
-    	
-    	if ( eventResults.isIgnoreEvent() ) {
-    		return;
-    	}
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent(e, e.getPlayer(), e.getBlock(), bbPriority, true);
 
-    	
+		if (eventResults.isIgnoreEvent()) {
+			return;
+		}
+
 		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** genericBlockExplodeEvent ** ### " +
-				"(event: TEBlockExplodeEvent, config: %s, priority: %s, canceled: %s) ",
-				bbPriority.name(),
-				bbPriority.getBukkitEventPriority().name(),
-				(e.isCancelled() ? "TRUE " : "FALSE")
-				) );
-		
-		debugInfo.append( eventResults.getDebugInfo() );
-		
-		
-		// Process all priorities if the event has not been canceled, and 
+
+		debugInfo.append(String.format(
+				"&6### ** genericBlockExplodeEvent ** ###&3 "
+						+ "(event: &6TEBlockExplodeEvent&3, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(), bbPriority.getBukkitEventPriority().name(), (e.isCancelled() ? "TRUE " : "FALSE")));
+
+		debugInfo.append(eventResults.getDebugInfo());
+
+		// Process all priorities if the event has not been canceled, and
 		// process the MONITOR priority even if the event was canceled:
-    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
-    			bbPriority.isMonitor() ) {
+		if (!bbPriority.isMonitor() && !e.isCancelled() || bbPriority.isMonitor()) {
 
+			BlockEventType eventType = BlockEventType.TEXplosion;
+			String triggered = checkTEBlockExplodeEventTriggered(e);
 
-    		BlockEventType eventType = BlockEventType.TEXplosion;
-    		String triggered = checkTEBlockExplodeEventTriggered( e );
-    		
-    		pmEvent = new PrisonMinesBlockBreakEvent( 
-    					eventResults,
+			pmEvent = new PrisonMinesBlockBreakEvent(eventResults,
 //    					e.getBlock(), 
 //    					e.getPlayer(),
 //    					eventResults.getMine(),
 //    					bbPriority, 
-    					eventType, 
-    					triggered,
-    					debugInfo );
-    		
+					eventType, triggered, debugInfo);
 
-        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
-        	//       converted to just ACCESS at this point, and the other part will run under either
-        	//       BLOCKEVENTS or MONITOR.
-    		// This check has to be performed after creating the pmEvent object since it uses
-    		// a lot of the internal variables and objects.  There is not much of an impact since
-    		// the validateEvent() has not been ran yet.
-        	if ( checkIfNoAccess( pmEvent, start ) ) {
-        		
-        		e.setCancelled( true );
-        		return;
-        	}
-        	
-        	
-    		// NOTE: Token Enchant will pass the event's block to prison, but that block may 
-    		//       have already been processed by prison.  Therefore the PrisonMinesBlockBreakEvent
-    		//       must enable the feature setForceIfAirBlock( true ).  That block will not be used a 
-    		//       second time, but it will allow the explosion event to be processed.
-    		pmEvent.setForceIfAirBlock( true );
-    		
-    		pmEvent.setUnprocessedRawBlocks( e.blockList() );
-    		
-    		
-    		
-    		// Check to see if the blockConverter's EventTrigger should have
-    		// it's blocks suppressed from explosion events.  If they should be
-    		// removed, then it's removed within this funciton.
-    		removeEventTriggerBlocksFromExplosions( pmEvent );
-    		
-  
-    		
-    		
-    		if ( !validateEvent( pmEvent ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.setCancelled( true );
-    			}
-    			
-    			debugInfo.append( "(doAction failed validation) " );
-    		}
-    		
-    		
+			// NOTE: Check for the ACCESS priority and if someone does not have access, then
+			// return
+			// with a cancel on the event. Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+			// converted to just ACCESS at this point, and the other part will run under
+			// either
+			// BLOCKEVENTS or MONITOR.
+			// This check has to be performed after creating the pmEvent object since it
+			// uses
+			// a lot of the internal variables and objects. There is not much of an impact
+			// since
+			// the validateEvent() has not been ran yet.
+			if (checkIfNoAccess(pmEvent, start)) {
 
-    		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
-    		else if ( pmEvent.getBbPriority().isMonitor() ) {
-    			// Stop here, and prevent additional processing. 
-    			// Monitors should never process the event beyond this.
-    		}
-    		
+				e.setCancelled(true);
+				return;
+			}
 
-    		
-    		// This is where the processing actually happens:
-    		else {
-    			
+			// NOTE: Token Enchant will pass the event's block to prison, but that block may
+			// have already been processed by prison. Therefore the
+			// PrisonMinesBlockBreakEvent
+			// must enable the feature setForceIfAirBlock( true ). That block will not be
+			// used a
+			// second time, but it will allow the explosion event to be processed.
+			pmEvent.setForceIfAirBlock(true);
+
+			pmEvent.setUnprocessedRawBlocks(e.blockList());
+
+			// Check to see if the blockConverter's EventTrigger should have
+			// it's blocks suppressed from explosion events. If they should be
+			// removed, then it's removed within this funciton.
+			removeEventTriggerBlocksFromExplosions(pmEvent);
+
+			if (!validateEvent(pmEvent)) {
+
+				// The event has not passed validation. All logging and Errors have been
+				// recorded
+				// so do nothing more. This is to just prevent normal processing from occurring.
+
+				if (pmEvent.isCancelOriginalEvent()) {
+
+					e.setCancelled(true);
+				}
+
+				debugInfo.append("(doAction failed validation) ");
+			}
+
+			// The validation was successful, but stop processing for the MONITOR
+			// priorities.
+			// Note that BLOCKEVENTS processing occurred already within validateEvent():
+			else if (pmEvent.getBbPriority().isMonitor()) {
+				// Stop here, and prevent additional processing.
+				// Monitors should never process the event beyond this.
+			}
+
+			// This is where the processing actually happens:
+			else {
+
 //    			debugInfo.append( "(normal processing initiating) " );
-    			
-    			// check all external events such as mcMMO and EZBlocks:
+
+				// check all external events such as mcMMO and EZBlocks:
 //    			if ( e instanceof BlockBreakEvent ) {
 //    				processPMBBExternalEvents( pmEvent, debugInfo, e );
 //    			}
-    			
-    			
-    			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
-    			
-    			cancelBy = processPMBBEvent( pmEvent );
 
-    			
-    			if ( cancelBy != EventListenerCancelBy.none ) {
-    				
-    				e.setCancelled( true );
-    				debugInfo.append( "(event canceled) " );
-    			}
+				EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
+
+				cancelBy = processPMBBEvent(pmEvent);
+
+				if (cancelBy != EventListenerCancelBy.none) {
+
+					e.setCancelled(true);
+					debugInfo.append("(event canceled) ");
+				}
 //    			else if ( cancelBy == EventListenerCancelBy.drops ) {
 //					try
 //					{
@@ -471,12 +447,15 @@ public class AutoManagerTokenEnchant
 //					}
 //
 //    			}
-    		}
-    		
-    			
-    	}
-    	
-    	printDebugInfo( pmEvent, start );
+			}
+
+			if (pmEvent.getSpigotPlayer().isInventoryFull()) {
+
+				InventoryFullEvent.fireInventoryFullEvent(pmEvent.getPlayer());
+			}
+		}
+
+		printDebugInfo(pmEvent, start);
 	}
 
 	private String checkTEBlockExplodeEventTriggered( TEBlockExplodeEvent e )

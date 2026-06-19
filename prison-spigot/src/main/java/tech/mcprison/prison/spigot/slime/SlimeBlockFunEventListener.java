@@ -21,7 +21,7 @@ import org.bukkit.util.Vector;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
+import tech.mcprison.prison.util.BluesSemanticVersionData;
 
 public class SlimeBlockFunEventListener 
 	implements Listener {

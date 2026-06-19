@@ -42,7 +42,8 @@ public class WorldArgumentHandler extends ArgumentHandler<World> {
         });
     }
 
-    @Override public World transform(CommandSender sender, CommandArgument argument, String value)
+    @Override 
+    public World transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
         return Prison.get().getPlatform().getWorld(value).orElseThrow(() -> new TransformError(
             Prison.get().getLocaleManager().getLocalizable("worldNotFound").withReplacements(value)

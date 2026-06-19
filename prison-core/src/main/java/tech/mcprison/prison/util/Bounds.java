@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.util;
 
+import java.util.Optional;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 
@@ -298,16 +300,49 @@ public class Bounds {
     }
 
     
+
+	/**
+	 * <p>This function should be called after loading a mine from 
+	 * storage, and this function should reconnect all dynamic objects 
+	 * that could not be stored with the core Mine data.
+	 * </p>
+	 * 
+	 * <p>Examples: World objects.
+	 * </p>
+	 */
+	public void reconnectObjects() {
+
+		if ( getMin() != null && getMin().getWorld() == null ) {
+			String worldName = getMin().getWorldName();
+			
+			Optional<World> worldOpt = Prison.get().getPlatform().getWorld(worldName);
+			
+			if ( worldOpt.isPresent() ) {
+				World world = worldOpt.get();
+				
+				setWorld( world );
+			}
+		}
+	}
+    
+	/**
+	 * <p>Sets the world on the min, max, and center objects.
+	 * If the other locations have a different world set, it 
+	 * will be replaced with this new world.
+	 * </p>
+	 * 
+	 * @param world
+	 */
     public void setWorld( World world ) {
     	if ( world != null ) {
     		
-    		if ( getMin().getWorld() == null ) {
+    		if ( getMin() != null ) {
     			getMin().setWorld( world );
     		}
-    		if ( getMax().getWorld() == null ) {
+    		if ( getMax() != null ) {
     			getMax().setWorld( world );
     		}
-    		if ( getCenter().getWorld() == null ) {
+    		if ( getCenter() != null ) {
     			getCenter().setWorld( world );
     		}
     	}
@@ -355,11 +390,11 @@ public class Bounds {
     }
 
     public boolean within(Location location) {
-    	return within( location, false, false );
+    		return within( location, false, false );
     }
     
     public boolean withinIncludeTopBottomOfMine(Location location) {
-    	return within( location, true, true );
+    		return within( location, true, true );
     }
     
     /**
@@ -374,27 +409,27 @@ public class Bounds {
      * @return true if the location is within the bounds, false otherwise.
      */
     private boolean within(Location location, boolean includeTopOfMine, boolean includeOneBelowMine ) {
-    	boolean results = false;
-    	
-    	if ( withinSameWorld( location )) {
-
-    		double ourX = Math.floor(location.getX());
-    		double ourY = Math.floor(location.getY());
-    		double ourZ = Math.floor(location.getZ());
-    		
-    		results = ourX >= getxMin() && ourX <= getxMax() // Within X
-    				&& ourY >= (getyMin() - (includeOneBelowMine ? 1 : 0)) && 
-    					ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
-    				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
-    	}
+	    	boolean results = false;
+	    	
+	    	if ( withinSameWorld( location )) {
+	
+	    		double ourX = Math.floor(location.getX());
+	    		double ourY = Math.floor(location.getY());
+	    		double ourZ = Math.floor(location.getZ());
+	    		
+	    		results = ourX >= getxMin() && ourX <= getxMax() // Within X
+	    				&& ourY >= (getyMin() - (includeOneBelowMine ? 1 : 0)) && 
+	    					ourY <= (getyMax() + (includeTopOfMine ? 1 : 0)) // Within Y
+	    				&& ourZ >= getzMin() && ourZ <= getzMax(); // Within Z
+	    	}
 
         return results;
     }
     
     public boolean withinSameWorld(Location location) {
-    	return getCenter().getWorld() != null && location.getWorld() != null &&
-    			getCenter().getWorld().getName().equalsIgnoreCase( 
-    						location.getWorld().getName() );
+	    	return getCenter().getWorld() != null && location.getWorld() != null &&
+	    			getCenter().getWorld().getName().equalsIgnoreCase( 
+	    						location.getWorld().getName() );
     	}	
     
     /**
@@ -413,17 +448,17 @@ public class Bounds {
      * @return
      */
     public boolean within(Location location, long radius) {
-    	boolean results = false;
-    	
-    	if ( withinSameWorld( location ) ) {
+	    	boolean results = false;
+	    	
+	    	if ( withinSameWorld( location ) ) {
     		
-    		// Ignore y since this is radius from the center axis of the mine:
-    		double distance = getDistance(location);
-    		
-    		results = distance <= radius;
-    	}
+	    		// Ignore y since this is radius from the center axis of the mine:
+	    		double distance = getDistance(location);
+	    		
+	    		results = distance <= radius;
+	    	}
     	
-    	return results;
+	    	return results;
     }
 
     /**
@@ -432,38 +467,38 @@ public class Bounds {
      * @return
      */
     public double getDistance() {
-    	double deltaX = getMin().getX() - getMax().getX();
-    	double deltaZ = getMin().getZ() - getMax().getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
-    	return Math.round( distance );
+	    	double deltaX = getMin().getX() - getMax().getX();
+	    	double deltaZ = getMin().getZ() - getMax().getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+	    	return Math.round( distance );
     }
     
     public double getDistance3d() {
-    	double deltaX = getMin().getX() - getMax().getX();
-    	double deltaY = getMin().getY() - getMax().getY();
-    	double deltaZ = getMin().getZ() - getMax().getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
-    	return Math.round( distance );
+	    	double deltaX = getMin().getX() - getMax().getX();
+	    	double deltaY = getMin().getY() - getMax().getY();
+	    	double deltaZ = getMin().getZ() - getMax().getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
+	    	return Math.round( distance );
     }
   
     public double getDistance(Location location) {
-    	double deltaX = getCenter().getX() - location.getX();
-    	double deltaZ = getCenter().getZ() - location.getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
+	    	double deltaX = getCenter().getX() - location.getX();
+	    	double deltaZ = getCenter().getZ() - location.getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
 		return Math.round( distance );
     }    	
     
     public double getDistance3d(Location location) {
-    	double deltaX = getCenter().getX() - location.getX();
-    	double deltaY = getCenter().getY() - location.getY();
-    	double deltaZ = getCenter().getZ() - location.getZ();
-    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
-    	return distance;
+	    	double deltaX = getCenter().getX() - location.getX();
+	    	double deltaY = getCenter().getY() - location.getY();
+	    	double deltaZ = getCenter().getZ() - location.getZ();
+	    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
+	    	return distance;
     }    	
 
     public String getDimensions() {
-    	return "&7" + Math.round(getWidth()) + "&8x&7" +
-                Math.round(getHeight()) + "&8x&7" + Math.round(getLength());
+	    	return "&7" + Math.round(getWidth()) + "&8x&7" +
+	                Math.round(getHeight()) + "&8x&7" + Math.round(getLength());
     }
     
     public Location getMin() {
@@ -478,12 +513,28 @@ public class Bounds {
 	{
 		return center;
 	}
+    
 
-	@Override public String toString() {
+	public double getRadius() {
+		double radius = getDistance3d() / 2.0;
+		return radius;
+	}
+	
+
+	@Override 
+	public String toString() {
         return "Bounds{" + "min=" + min.toCoordinates() + ", max=" + max.toCoordinates() + '}';
     }
 
-    @Override public boolean equals(Object o) {
+	
+	/**
+	 * <p>This will check to see if two Bounds are equal.
+	 * If any point is null, then this should always return
+	 * false.
+	 * </p>
+	 */
+    @Override 
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -492,9 +543,16 @@ public class Bounds {
         }
 
         Bounds bounds = (Bounds) o;
-        return min != null ?
-            min.equals(bounds.min) :
-            bounds.min == null && (max != null ? max.equals(bounds.max) : bounds.max == null);
+        
+        // If any point is null, then this must return false:
+        if ( getMin() == null || getMax() == null || 
+        		bounds.getMin() == null || bounds.getMax() == null ) {
+        		return false;
+        }
+        
+        return getMin().equals(bounds.getMin()) &&
+        		getMax().equals(bounds.getMax());
+        
     }
 
     @Override public int hashCode() {

@@ -45,9 +45,6 @@ public class RankLadder
     
     
     
-//    private int maxPrestige;
-   
-    
     // The commands that are run when this rank is attained.
     private List<String> rankUpCommands;
 
@@ -55,24 +52,24 @@ public class RankLadder
     private double rankCostMultiplierPerRank = 0.0d;
     private boolean applyRankCostMultiplierToLadder = true;
     
-    private boolean dirty = false;
+    private transient boolean dirty = false;
 
 
     public RankLadder() {
-    	super();
-    	
-    	this.rankUpCommands = new ArrayList<>();
-    	
-    	this.ranks = new ArrayList<>();
-    	
-    	this.applyRankCostMultiplierToLadder = true;
+	    	super();
+	    	
+	    	this.rankUpCommands = new ArrayList<>();
+	    	
+	    	this.ranks = new ArrayList<>();
+	    	
+	    	this.applyRankCostMultiplierToLadder = true;
     }
     
     public RankLadder( int id, String name ) {
-    	this();
-    	
-    	this.id = id;
-    	this.name = name;
+	    	this();
+	    	
+	    	this.id = id;
+	    	this.name = name;
     }
 
 
@@ -85,140 +82,18 @@ public class RankLadder
 	}
 	
 	
-//    @SuppressWarnings( "unchecked" )
-//	public RankLadder(Document document, PrisonRanks prisonRanks) {
-//    	this();
-//    	
-//    	boolean isDirty = false;
-//    	
-//    	this.id = ConversionUtil.doubleToInt(document.get("id"));
-//    	this.name = (String) document.get("name");
-//    	
-//    	RankManager rankManager = prisonRanks.getRankManager();
-//    	
-//    	if ( rankManager == null ) {
-//
-//    		RankMessages rMessages = new RankMessages();
-//    		rMessages.rankFailureLoadingRankManagerMsg( getName(), getId() );
-//    		
-//    		return;
-//    	}
-//        
-//        List<LinkedTreeMap<String, Object>> ranksLocal =
-//                (List<LinkedTreeMap<String, Object>>) document.get("ranks");
-//
-//		getRankUpCommands().clear();
-//		Object cmds = document.get("commands");
-//		if ( cmds != null ) {
-//
-//			List<String> commands = (List<String>) cmds;
-//			for ( String cmd : commands ) {
-//				if ( cmd != null ) {
-//					getRankUpCommands().add( cmd );
-//				}
-//			}
-//			
-//			// This was allowing nulls to be added to the live commands... 
-////			this.rankUpCommands = (List<String>) cmds;
-//		}
-//
-//        
-//        this.ranks = new ArrayList<>();
-//        for (LinkedTreeMap<String, Object> rank : ranksLocal) {
-//        	
-//        	
-//        	// The only real field that is important here is rankId to tie the 
-//        	// rank back to this ladder.  Name helps clarify the contents of the 
-//        	// Ladder file. 
-//        	int rRankId = ConversionUtil.doubleToInt((rank.get("rankId")));
-//        	String rRankName = (String) rank.get( "rankName" );
-//        	
-//        	Rank rankPrison = rankManager.getRank( rRankId );
-//        	
-//        	if ( rankPrison != null && rankPrison.getLadder() != null ) {
-//        		
-//        		RankMessages rMessages = new RankMessages();
-//        		rMessages.rankFailureLoadingDuplicateRankMsg( 
-//        				rankPrison.getName(), rankPrison.getLadder().getName(), 
-//        						getName() );
-//
-//        		isDirty = true;
-//        	}
-//        	else if ( rankPrison != null) {
-//
-//        		addRank( rankPrison );
-//
-////        		Output.get().logInfo( "RankLadder load : " + getName() + 
-////        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
-////        				 );
-//        		
-////        		// if null look it up from loaded ranks:
-////        		if ( rRankName == null  ) {
-////        			rRankName = rankPrison.getName();
-////        			dirty = true;
-////        		}
-//        	}
-//        	else {
-//        		// Rank not found. Try to create it? The name maybe wrong.
-//        		String rankName = rRankName != null && !rRankName.trim().isEmpty() ?
-//        					rRankName : "Rank " + rRankId;
-//        		
-//        		// NOTE: The following is valid use of getCost():
-//        		double cost = getRanks().size() == 0 ? 0 : 
-//        					getRanks().get( getRanks().size() - 1 ).getCost() * 3;
-//        		Rank newRank = new Rank( rRankId, rankName, null, cost );
-//        		
-//        		addRank( newRank );
-//        		
-////        		String message = String.format( 
-////        				"Loading RankLadder Error: A rank for %s was not found so it was " +
-////        				"fabricated: %s  id=%d  tag=%s  cost=%d", getName(), newRank.getName(), newRank.getId(),
-////        				newRank.getTag(), newRank.getCost() );
-////        		Output.get().logError( message );
-//        	}
-//        	
-//        }
-//        
-////        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
-//        
-//        
-//        Double rankCostMultiplier = (Double) document.get( "rankCostMultiplierPerRank" );
-//        setRankCostMultiplierPerRank( rankCostMultiplier == null ? 0 : rankCostMultiplier );
-//        
-//		
-////		getPermissions().clear();
-////		Object perms = document.get( "permissions" );
-////		if ( perms != null ) {
-////			List<String> permissions = (List<String>) perms;
-////			for ( String permission : permissions ) {
-////				getPermissions().add( permission );
-////			}
-////		}
-////        
-////		
-////		getPermissionGroups().clear();
-////		Object permsGroups = document.get( "permissionGroups" );
-////		if ( perms != null ) {
-////			List<String> permissionGroups = (List<String>) permsGroups;
-////			for ( String permissionGroup : permissionGroups ) {
-////				getPermissionGroups().add( permissionGroup );
-////			}
-////		}
-//		
-//		if ( isDirty ) {
-//			PrisonRanks.getInstance().getLadderManager().save( this );
-//		}
-//
-//    }
 
     public Document toDocument() {
         Document ret = new Document();
-        ret.put("id", this.id);
+        
+        if ( this.id != -1 ) {
+        		ret.put("id", this.id);
+        }
         ret.put("name", this.name);
         
         List<String> cmds = new ArrayList<>();
         for ( String cmd : getRankUpCommands() ) {
-        	// Filters out possible nulls:
+        		// Filters out possible nulls:
 			if ( cmd != null ) {
 				cmds.add( cmd );
 			}
@@ -229,46 +104,39 @@ public class RankLadder
         List<LinkedTreeMap<String, Object>> ranksLocal =
                 						new ArrayList<LinkedTreeMap<String, Object>>();
         for ( Rank rank : getRanks() ) {
-        	LinkedTreeMap<String, Object> rnk = new LinkedTreeMap<String, Object>();
-        	
-//        	rnk.put( "position", rank.getPosition() );
-        	rnk.put( "rankId", rank.getId() );
-        	rnk.put( "rankName", rank.getName());
-
-        	ranksLocal.add( rnk );
+	        	LinkedTreeMap<String, Object> rnk = new LinkedTreeMap<String, Object>();
+	        	
+	        	
+	        	rnk.put( "rankName", rank.getName());
+	
+	        	ranksLocal.add( rnk );
 		}
         ret.put("ranks", ranksLocal);
-//        ret.put("ranks", this.ranks);
         
         
         ret.put( "rankCostMultiplierPerRank", getRankCostMultiplierPerRank() );
         
         ret.put( "applyRankCostMultiplierToLadder", isApplyRankCostMultiplierToLadder() );
         
-//        ret.put("maxPrestige", this.maxPrestige);
-        
-//        ret.put( "permissions", getPermissions() );
-//        ret.put( "permissionGroups", getPermissionGroups() );
-        
         return ret;
     }
 
     @Override 
     public String toString() {
-    	return "Ladder: " + name + "  ranks: " + (ranks == null ? 0 : ranks.size());
+    		return "Ladder: " + name + "  ranks: " + (ranks == null ? 0 : ranks.size());
     }
     
     public List<Rank> getRanks() {
-    	return ranks;
+    		return ranks;
     }
 
     @Override
 	public int compareTo( RankLadder rl )
 	{
-    	int results = -1;
-    	if ( rl != null ) {
-    		results = getName().compareTo( rl.getName() );
-    	}
+	    	int results = -1;
+	    	if ( rl != null ) {
+	    		results = getName().compareTo( rl.getName() );
+	    	}
 		return results;
 	}
 
@@ -281,16 +149,41 @@ public class RankLadder
      * @return
      */
     public Rank getRank( String rank ) {
-    	Rank results = null;
-    	
-    	for ( Rank r : ranks ) {
+	    	Rank results = null;
+	    	
+	    	for ( Rank r : ranks ) {
 			if ( r.getName().equalsIgnoreCase( rank ) ) {
 				results = r;
 				break;
 			}
 		}
     	
-    	return results;
+	    	return results;
+    }
+    
+    
+    /**
+     * This function should never be used since magic numbers as used in
+     * the rank ID are no longer valid.  This function is ONLY used when loading
+     * old player file data so it can be converted to the newer format.
+     * 
+     * @param rankId
+     * @return
+     */
+    public Rank getRank( int rankId ) {
+	    	Rank results = null;
+	    	
+	    	if ( rankId != -1 ) {
+	    		
+	    		for ( Rank r : ranks ) {
+	    			if ( r.getId() != -1 && r.getId() == rankId ) {
+	    				results = r;
+	    				break;
+	    			}
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
 	/**
@@ -302,17 +195,17 @@ public class RankLadder
      */
     public void addRank(int position, Rank rank) {
     	
-    	if ( position < 0 ) {
-    		position = 0;
-    	}
-    	else if ( position > getRanks().size() ) {
-    		getRanks().add( rank );
-    	}
-    	else {
-    		getRanks().add( position, rank );
-    	}
-
-    	rank.setLadder( this );
+	    	if ( position < 0 ) {
+	    		position = 0;
+	    	}
+	    	else if ( position > getRanks().size() ) {
+	    		getRanks().add( rank );
+	    	}
+	    	else {
+	    		getRanks().add( position, rank );
+	    	}
+	
+	    	rank.setLadder( this );
 
         // Update the rank positions along with next and prior:
         connectRanks();
@@ -329,33 +222,27 @@ public class RankLadder
      * @param rank The {@link Rank} to add.
      */
     public void addRank(Rank rank) {
-//    	int position = getRanks().size();
-//    	rank.setPosition( position );
-    	rank.setLadder( this );
-    	
-    	getRanks().add( rank );
-
-    	// Update the rank positions along with next and prior:
-    	connectRanks();
-    	
-//        ranks.add(new PositionRank(getNextAvailablePosition(), rank.getId(), rank.getName(), rank));
-        
-//        // Reset the rank relationships:
-//        PrisonRanks.getInstance().getRankManager().connectRanks();
+	    	rank.setLadder( this );
+	    	
+	    	getRanks().add( rank );
+	
+	    	// Update the rank positions along with next and prior:
+	    	connectRanks();
+	    	
     }
 
 
 
     public void removeRank( Rank rank ) {
     	
-    	boolean success = getRanks().remove( rank );
-    	
-    	if ( success ) {
-    		rank.setLadder( null );
-    		
-    		// Update the rank positions along with next and prior:
-    		connectRanks();
-    	}
+	    	boolean success = getRanks().remove( rank );
+	    	
+	    	if ( success ) {
+	    		rank.setLadder( null );
+	    		
+	    		// Update the rank positions along with next and prior:
+	    		connectRanks();
+	    	}
     }
     
     /**
@@ -372,52 +259,29 @@ public class RankLadder
      */
     private void connectRanks() {
     	
-    	Rank rankLast = null;
-    	
-    	// The inserted rank may not be at the end of ranks, so go through all ranks and
-    	// update their position value:
-    	for ( int i = 0; i < getRanks().size(); i++ ) {
-    		Rank rank = getRanks().get( i );
-    		
-    		rank.resetPosition();
-    		
-//    		if ( rank.getPosition() != i ) {
-//    			rank.setPosition( i );
-//    		}
-    		
-    		// reset the rankPrior and rankNext in case there are no hookups:
-    		// Important if ranks are removed, or inserted, or moved:
-    		rank.setRankPrior( null );
-    		rank.setRankNext( null );
-    		
-    		if ( rankLast != null ) {
-    			rank.setRankPrior( rankLast );
-    			rankLast.setRankNext( rank );
-    		}
-    		rankLast = rank;
-    		
-//    		String message = "Ladder " + getName() + " " + rank.getName() + 
-//    				"  position=" + rank.getPosition();
-//    		Output.get().logInfo( message );
-    	}
+	    	Rank rankLast = null;
+	    	
+	    	// The inserted rank may not be at the end of ranks, so go through all ranks and
+	    	// update their position value:
+	    	for ( int i = 0; i < getRanks().size(); i++ ) {
+	    		Rank rank = getRanks().get( i );
+	    		
+	    		rank.resetPosition();
+	    		
+	    		// reset the rankPrior and rankNext in case there are no hookups:
+	    		// Important if ranks are removed, or inserted, or moved:
+	    		rank.setRankPrior( null );
+	    		rank.setRankNext( null );
+	    		
+	    		if ( rankLast != null ) {
+	    			rank.setRankPrior( rankLast );
+	    			rankLast.setRankNext( rank );
+	    		}
+	    		rankLast = rank;
+	    		
+	    	}
     }
 
-//    /**
-//     * Orders the ranks in the rank list of this ladder by their position, in ascending order.
-//     */
-//    public void orderRanksByPosition() {
-//        
-//    	// Do not sort here:
-//    	//The ranks within a ladder will be sorted within the function connectRanks():
-//    	//ranks.sort(Comparator.comparingInt(PositionRank::getPosition));
-//        
-//        // Reset the rank relationships:
-//        PrisonRanks.getInstance().getRankManager().connectRanks();
-//    }
-
-    /*
-     * Getters & Setters
-     */
 
     /**
      * Returns true if this ladder contains the Rank.
@@ -426,7 +290,7 @@ public class RankLadder
      * @return True if the rank was found, false otherwise.
      */
     public boolean containsRank( Rank rank ) {
-    	return ranks.contains( rank );
+    		return ranks.contains( rank );
     }
 
     // This next method is sort of precautionary. Sure, positions start at 0, but if the user decides 
@@ -440,19 +304,13 @@ public class RankLadder
      * @return The rank option, or an empty optional if there are no ranks in this ladder.
      */
 	public Optional<Rank> getLowestRank() {
-    	Rank results = null;
-    	
-    	if ( getRanks().size() > 0 ) {
-    		results = getRanks().get( 0 );
-    	}
-    	
-//    	for ( Rank r : getRanks() ) {
-//			if ( results == null || r.getPosition() < results.getPosition() ) {
-//				results = r;
-//			}
-//		}
-    	
-    	return results == null ? Optional.empty() : Optional.of( results );
+	    	Rank results = null;
+	    	
+	    	if ( getRanks().size() > 0 ) {
+	    		results = getRanks().get( 0 );
+	    	}
+	    	
+	    	return results == null ? Optional.empty() : Optional.of( results );
     }
 
 
@@ -477,47 +335,6 @@ public class RankLadder
         return result;
     }
 
-    
-
-//    /**
-//     * <p>Identifies of the Ladder contains a permission.
-//     * </p>
-//     * 
-//     * @param permission
-//     * @return
-//     */
-//	public boolean hasPermission( String permission ) {
-//		boolean results = false;
-//		
-//		for ( String perm : getPermissions() ) {
-//			if ( perm.equalsIgnoreCase( permission ) ) {
-//				results = true;
-//				break;
-//			}
-//		}
-//		
-//		return results;
-//	}
-	
-//	/**
-//	 * <p>Identifies if the Ladder contains a permission group.
-//	 * </p>
-//	 * 
-//	 * @param permissionGroup
-//	 * @return
-//	 */
-//	public boolean hasPermissionGroup( String permissionGroup ) {
-//		boolean results = false;
-//		
-//		for ( String perm : getPermissionGroups() ) {
-//			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
-//				results = true;
-//				break;
-//			}
-//		}
-//		
-//		return results;
-//	}
 
 	public int getId() {
 		return id;
@@ -533,12 +350,6 @@ public class RankLadder
 		this.name = name;
 	}
 
-//	public int getMaxPrestige() {
-//		return maxPrestige;
-//	}
-//	public void setMaxPrestige( int maxPrestige ) {
-//		this.maxPrestige = maxPrestige;
-//	}
 
 	public List<String> getRankUpCommands() {
 		if ( rankUpCommands == null ) {

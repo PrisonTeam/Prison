@@ -18,7 +18,6 @@
 
 package tech.mcprison.prison.spigot;
 
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import tech.mcprison.prison.Prison;
@@ -40,6 +39,52 @@ public class SpigotScheduler implements Scheduler {
     }
 
     @Override 
+    public void cancelAll() {
+        scheduler.cancelTasks(plugin);
+    }
+
+    @Override 
+    public void cancelTask(int taskId) {
+        scheduler.cancelTask(taskId);
+    }
+
+	@Override
+	public void dispatchCommand( Player player, String command ) {
+
+		if ( player != null && player instanceof SpigotPlayer ) {
+			SpigotPlayer sPlayer = (SpigotPlayer) player;
+
+			sPlayer.dispatchCommand( command );
+
+//    		Bukkit.dispatchCommand( sPlayer.getWrapper(), command );
+		}
+	}
+
+	@Override
+	public boolean isPrimaryThread() {
+
+		return this.plugin.getServer().isPrimaryThread();
+	}
+    
+    @Override
+	public void performCommand( Player player, String command ) {
+
+		if ( player != null ) {
+
+			Player p = Prison.get().getPlatform().getPlayer( player.getUUID() ).orElse( null );
+
+			if ( p != null && p instanceof SpigotPlayer ) {
+
+				SpigotPlayer sPlayer = (SpigotPlayer) p;
+
+				sPlayer.dispatchCommand( command );
+
+//    			sPlayer.getWrapper().performCommand( command );
+			}
+		}
+	}
+    
+	@Override 
     public int runTaskLater(Runnable run, long delay) {
         return scheduler.runTaskLater(plugin, run, delay).getTaskId();
     }
@@ -53,55 +98,10 @@ public class SpigotScheduler implements Scheduler {
     public int runTaskTimer(Runnable run, long delay, long interval) {
         return scheduler.runTaskTimer(plugin, run, delay, interval).getTaskId();
     }
-
+    
     @Override 
     public int runTaskTimerAsync(Runnable run, long delay, long interval) {
         return scheduler.runTaskTimerAsynchronously(plugin, run, delay, interval).getTaskId();
-    }
-    
-    @Override
-    public void dispatchCommand(Player player, String command) {
-    	
-    	if ( player != null && player instanceof SpigotPlayer ) {
-    		SpigotPlayer sPlayer = (SpigotPlayer) player;
-    		
-    		sPlayer.dispatchCommand( command );
-    		
-//    		Bukkit.dispatchCommand( sPlayer.getWrapper(), command );
-    	}
-    }
-    
-    @Override
-    public void performCommand(Player player, String command) {
-    	
-    	if ( player != null ) {
-    		
-    		Player p = Prison.get().getPlatform().getPlayer( player.getUUID() ).orElse( null );
-    		
-    		if ( p != null && p instanceof SpigotPlayer ) {
-    			
-    			SpigotPlayer sPlayer = (SpigotPlayer) p;
-    			
-    			sPlayer.dispatchCommand( command );
-    			
-//    			sPlayer.getWrapper().performCommand( command );
-    		}
-    	}
-    }
-
-    @Override 
-    public void cancelTask(int taskId) {
-        scheduler.cancelTask(taskId);
-    }
-
-    @Override 
-    public void cancelAll() {
-        scheduler.cancelTasks(plugin);
-    }
-    
-    @Override
-    public boolean isPrimaryThread() {
-    	return this.plugin.getServer().isPrimaryThread();
     }
 
 }

@@ -356,8 +356,6 @@ public class PrisonPasteChat {
 		
 		
 		if ( rawJson != null ) {
-			//Output.get().logInfo( "### rawJson : " + rawJson );
-			// ### rawJson : {"key":"utozikecag"}
 			
 			Gson gson = new Gson();
 			JsonObject object = gson.fromJson( rawJson, JsonObject.class );

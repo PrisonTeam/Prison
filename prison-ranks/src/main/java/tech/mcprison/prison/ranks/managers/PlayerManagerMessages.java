@@ -87,7 +87,4 @@ public class PlayerManagerMessages
 				.localize();
 	}
 	
-
-
-	
 }

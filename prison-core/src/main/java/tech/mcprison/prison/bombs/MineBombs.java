@@ -7,21 +7,31 @@ import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 public class MineBombs
+	implements Comparable<MineBombs>
 {
+	public static final String MINE_BOMBS_NBT_KEY = "MineBombNbtKey";
+	public static final String MINE_BOMBS_NBT_THROWER_UUID = "MineBombNbtThrowerUUID";
+	public static final String MINE_BOMBS_NBT_OWNER_UUID = "MineBombNbtOwnerUUID";
+
 	public static final String MINE_BOMBS_FILE_NAME = "mineBombsConfig.json";
 	public static final String MINE_BOMBS_PATH_NAME = "module_conf/mines";
 	
-	public static final String MINE_BOMBS_NBT_BOMB_KEY = "PrisonMineBombNbtKey";
+//	public static final String MINE_BOMBS_NBT_BOMB_KEY = "PrisonMineBombNbtKey";
 	
 	
 	private static MineBombs instance;
+	
+	
 	
 	private MineBombsConfigData configData;
 	
@@ -77,10 +87,92 @@ public class MineBombs
 		y_axis,
 		z_axis,
 		
-		full
+		full;
+		
+		public static List<String> asList()
+		{
+			List<String> results = new ArrayList<>();
+			
+			for ( ExplosionOrientation orientation : values() )
+			{
+				results.add( orientation.name() );
+			}
+			
+			return results;
+		}
 	}
 	
-	private MineBombs() {
+	
+	public enum AnimationPattern {
+		none,
+		infinity,
+		infinityEight,
+		bounce,
+		orbital,
+		orbitalEight, 
+		starburst
+		
+		;
+		
+		public static final AnimationPattern fromString( String animationPattern ) {
+			AnimationPattern results = AnimationPattern.infinity;
+			
+			if ( animationPattern != null ) {
+				
+				for (AnimationPattern ap : values() ) {
+					if ( ap.name().equalsIgnoreCase( animationPattern) ) {
+						results = ap;
+						break;
+					}
+				}
+			}
+			
+			return results;
+		}
+		
+		public static List<String> asList()
+		{
+			List<String> results = new ArrayList<>();
+			
+			for ( AnimationPattern animation : values() )
+			{
+				results.add( animation.name() );
+			}
+			
+			return results;
+		}
+	}
+	
+	public enum AnimationArmorStandItemLocation {
+		hand,
+		head;
+		
+		public static final AnimationArmorStandItemLocation fromString( String animationItemLocation ) {
+			AnimationArmorStandItemLocation results = AnimationArmorStandItemLocation.hand;
+			
+			if ( animationItemLocation != null ) {
+				
+				for (AnimationArmorStandItemLocation ail : values() ) {
+					if ( ail.name().equalsIgnoreCase( animationItemLocation) ) {
+						results = ail;
+						break;
+					}
+				}
+			}
+			
+			return results;
+		}
+		
+	}
+	
+	
+	/**
+	 * DO NOT USE!
+	 * This has been set to protected only to be used by
+	 * junit tests!
+	 * DO NOT USE this constructor!
+	 */
+	protected MineBombs() {
 		super();
 		
 		this.configData = new MineBombsConfigData();
@@ -101,27 +193,133 @@ public class MineBombs
 		}
 		return instance;
 	}
-	
-	/**
-	 * <p>This finds a bomb with the given name, and returns a clone.  The clone is
-	 * important since individual instances will set the isActivated() variable to 
-	 * true if the bomb is active.  If it's activated, then that indicates the 
-	 * bomb will be used and the bomb was removed from the player's inventory.
-	 * </p>
-	 * 
-	 * @param bombName
-	 * @return
-	 */
-	public MineBombData findBomb( String bombName ) {
-		MineBombData bombOriginal = null;
 
-		if ( bombName != null ) {
-			
-			bombOriginal = getConfigData().getBombs().get( bombName.toLowerCase() );
+	
+	@Override
+	public int compareTo(MineBombs o) {
+
+		int results = 0;
+
+		if ( o == null ) {
+			results = -1;
 		}
 		
-		return bombOriginal.clone();
+		if ( results == 0 ) {
+			
+			MineBombsConfigData cData = getConfigData();
+			MineBombsConfigData cDataO = o.getConfigData();
+			
+			results = cData.compareTo( cDataO );
+		}
+		
+		return results;
 	}
+	
+	public static int checkPlayerCooldown( Player player ) {
+		
+		int cooldownTicks = MineBombCooldownTask.checkPlayerCooldown( player );
+		return cooldownTicks;
+	}
+	
+	public static boolean addPlayerCooldown( Player player, int ticks ) {
+		
+		boolean results = MineBombCooldownTask.addPlayerCooldown( player, ticks );
+		return results;
+	}
+	
+	
+	public MineBombData findBombByName( Player player, String bombName )
+			throws MineBombCooldownException
+	{
+		return findBombByName( player, bombName, true );	
+	}
+	
+	/**
+	 * <p>This finds a bomb based upon a bombName which may include formatting.
+	 * All formatting is removed from the search name, and the bomb names prior to
+	 * making any comparisons.  The bomb's key is also checked too for a match.
+	 * </p>
+	 * 
+	 * <p>When a mine bomb is found, it is cloned since some bomb values will 
+	 * change during the detonation sequence, so cloning prevents altering the
+	 * original source.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param bombName
+	 * @param enableCooldown If true, then will force a cooldown on finding minebombs
+	 * @return
+	 */
+	public MineBombData findBombByName( Player player, String bombName,
+				boolean enableCooldown )
+		throws MineBombCooldownException
+	{
+		MineBombData results = null;
+		
+		StringBuilder dbug = new StringBuilder();
+		
+		String cleanedBombName = Text.stripColor( bombName.toLowerCase() );
+
+		dbug.append( "&3## findBombByName: [&a" ).append( cleanedBombName ).append( "&3] ");
+		
+		if ( cleanedBombName != null && !cleanedBombName.isEmpty() ) {
+			for ( String bombKey : getConfigData().getBombs().keySet() )
+			{
+				MineBombData bomb = getConfigData().getBombs().get( bombKey );
+				
+				if ( bomb != null ) {
+					String cBombName = Text.stripColor( bomb.getName().toLowerCase() );
+
+					if ( cBombName != null && 
+							(cBombName.equalsIgnoreCase( cleanedBombName ) || 
+								cleanedBombName.equalsIgnoreCase( bombKey )) ) {
+						
+						dbug.append( " &aMatch! &3" );
+						
+						results = bomb;
+					}
+				}
+				
+				
+			}
+		}
+		
+		if ( results != null && enableCooldown ) {
+
+			int ticks = results.getCooldownTicks();
+			int cooldownTicks = MineBombCooldownTask.checkPlayerCooldown( player );
+			
+			if ( cooldownTicks <= 0 ) {
+				// Submit another cooldown:
+				MineBombCooldownTask.addPlayerCooldown( player, ticks );
+				
+				dbug.append( "&3 StartCoolDown: " ).append( ticks ).append( " ticks" );
+			}
+			else {
+				// The player is still in a cooldown using minebombs, so 
+				// return a null instead of the bomb.
+				
+				dbug.append( "&3 CoolDownIsInEffect: " )
+					.append( cooldownTicks ).append( " ticks remaining" ).append(" &aRejected! &3 " );
+				
+				MineBombCooldownException cooldownException = new MineBombCooldownException( cooldownTicks );
+				
+				throw cooldownException;
+				
+			}
+		}
+		
+		dbug.append( "  &3Results: ").append( results == null ? "&cFail-NoBomb" : "&aSuccess" );
+		
+		if ( Output.get().isDebug() ) {
+			Output.get().logInfo( dbug.toString() );
+		}
+		
+		return results == null ? null : results.clone();
+	}
+	
+
+
 	
 	public void saveConfigJson() {
 		
@@ -134,6 +332,22 @@ public class MineBombs
 		
 		fio.saveJsonFile( configFile, getConfigData() );
 		
+	}
+	
+	public String toJson() {
+		JsonFileIO fio = new JsonFileIO( null, null );
+		
+		String json = fio.toString( this );
+		
+		return json;
+	}
+	
+	public static MineBombs fromJson( String json ) {
+		JsonFileIO fio = new JsonFileIO();
+		
+		MineBombs mBombs = fio.fromString( json, MineBombs.class );
+
+		return mBombs;
 	}
 	
 	public File getConfigFile( JsonFileIO jsonFileIO ) {
@@ -153,8 +367,15 @@ public class MineBombs
 		boolean configExists = configFile.exists();
 		
 		if ( !configExists ) {
+			
+			
+			// The save file does not exist so regenerate the default bombs listing:
+			getConfigData().getBombs().clear();
+			
 			MineBombDefaultConfigSettings defaultConfigs = new MineBombDefaultConfigSettings();
+			
 			defaultConfigs.setupDefaultMineBombData( this );
+			
 			
 		}
 		
@@ -164,9 +385,13 @@ public class MineBombs
 					(MineBombsConfigData) fio.readJsonFile( configFile, getConfigData() );
 
 			if ( configs != null ) {
+				
+				boolean dirty = configs.validateMineBombEffects( true );
+				
 				setConfigData( configs );
 				
-				if ( configs.getDataFormatVersion() < 
+				if ( dirty ||
+						configs.getDataFormatVersion() < 
 								MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION ) {
 					
 					// Need to update the format version then save a new copy of the configs.
@@ -181,7 +406,7 @@ public class MineBombs
 
 					boolean renamed = configFile.renameTo( backupFile );
 					
-					if ( renamed ) {
+					if ( renamed || dirty ) {
 						configs.setDataFormatVersion( MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION );
 						
 						fio.saveJsonFile( configFile, configs );
@@ -263,6 +488,16 @@ public class MineBombs
 		
 		MineBombsConfigData config = getConfigData();
 		
+		
+		Module moduleMines = Prison.get().getModuleManager() == null ?
+								null : Prison.get().getModuleManager().getModule( ModuleElementType.MINE.name() );
+		boolean hasMines = moduleMines == null ? 
+								false : moduleMines.isEnabled() && moduleMines.getElementCount() > 0;
+		
+//		Module moduleRanks = Prison.get().getModuleManager().getModule( ModuleElementType.RANK.name() );
+//		boolean hasRanks = moduleRanks.isEnabled() && moduleRanks.getElementCount() > 0;
+		
+		
 		if ( config.getDataFormatVersion() > MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION || 
 				config.getDataFormatVersion() < 0 ) {
 			config.setDataFormatVersion( MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION );
@@ -277,24 +512,11 @@ public class MineBombs
 		{
 			MineBombData bomb = config.getBombs().get( key );
 			
-			// bombItemId is the first line of the lore and should id the bomb:
-//			String cleanBombItemId = Text.stripColor( bomb.getBombItemId().replace( " ", "" ));
-//			if ( !cleanBombItemId.equalsIgnoreCase( bomb.getBombItemId() ) ) {
-//				
-//				errors.add( String.format( 
-//						"Invalid bombItemId: was: [%s]  fixed: [%s].",
-//						bomb.getBombItemId(), 
-//						cleanBombItemId ) );
-//				bomb.setBombItemId( cleanBombItemId );
-//				isDirty = true;
-//			}
-			
 			
 			// Bomb names can contain color codes now, but not spaces, since that will 
 			// mess up commands related to bombs, since the commands would require the bomb names
 			// to not have a space.
 			String cleanName = bomb.getName().replace( " ", "_" );
-//			String cleanName = Text.stripColor( bomb.getName().replace( " ", "_" ));
 			if ( !cleanName.equalsIgnoreCase( bomb.getName() ) ) {
 				
 				errors.add( String.format( 
@@ -392,7 +614,10 @@ public class MineBombs
 						cleaned = true;
 					}
 
-					if ( !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
+					// Only purge mines if the mines module is enabled and there are more than one mines.
+					// If enabled and no mines, then could be that its clean startup and mines have not yet
+					// been added, so do not purge any mines.
+					if ( hasMines && !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
 						Output.get().log( "MineBomb %s: invalid mine name for allowedMines: %s  Removed.", 
 								LogLevel.WARNING,
 								bomb.getName(), cleanedMineName );
@@ -422,7 +647,10 @@ public class MineBombs
 						cleaned = true;
 					}
 
-					if ( !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
+					// Only purge mines if the mines module is enabled and there are more than one mines.
+					// If enabled and no mines, then could be that its clean startup and mines have not yet
+					// been added, so do not purge any mines.
+					if ( hasMines && !Prison.get().getPlatform().isMineNameValid(cleanedMineName) ) {
 						Output.get().log( "MineBomb %s: invalid mine name for prevented-Mines: %s  Removed.", 
 								LogLevel.WARNING,
 								bomb.getName(), cleanedMineName );
@@ -596,308 +824,11 @@ public class MineBombs
 	
 	
 	
-//	
-//	@SuppressWarnings( "unused" )
-//	public void setupDefaultMineBombData()
-//	{
-//		if ( getConfigData().getBombs().size() == 0 ) {
-//
-////			XMaterial.WOODEN_PICKAXE;
-////			XMaterial.STONE_PICKAXE;
-////			XMaterial.IRON_PICKAXE;
-////			XMaterial.GOLDEN_PICKAXE;
-////			XMaterial.DIAMOND_PICKAXE;
-////			XMaterial.NETHERITE_PICKAXE;
-//
-//			MineBombEffectsData mbeSound01 = new MineBombEffectsData( "ENTITY_CREEPER_PRIMED", EffectState.placed, 0 );
-//			MineBombEffectsData mbeSound02 = new MineBombEffectsData( "CAT_HISS", EffectState.placed, 0 );
-//			
-//			MineBombEffectsData mbeSound03 = new MineBombEffectsData( "ENTITY_GENERIC_EXPLODE", EffectState.explode, 0 );
-//			MineBombEffectsData mbeSound04 = new MineBombEffectsData( "ENTITY_DRAGON_FIREBALL_EXPLODE", EffectState.explode, 0 );
-//			
-//			// Does not work with spigot 1.8.x:
-//			MineBombEffectsData mbeExplode01 = new MineBombEffectsData( "FIREWORKS_SPARK", EffectState.placed, 0 );
-//			// Does not work with spigot 1.8.x:
-//			MineBombEffectsData mbeExplode02 = new MineBombEffectsData( "BUBBLE_COLUMN_UP", EffectState.placed, 0 );
-//			MineBombEffectsData mbeExplode03 = new MineBombEffectsData( "ENCHANTMENT_TABLE", EffectState.placed, 0 );
-//			
-////			MineBombEffectsData mbeExplode05 = new MineBombEffectsData( "END_ROD", EffectState.placed, 0 );
-//			MineBombEffectsData mbeExplode04 = new MineBombEffectsData( "FLAME", EffectState.placed, 0 );
-//			// Does not work with spigot 1.8.x:
-//			MineBombEffectsData mbeExplode08 = new MineBombEffectsData( "DRAGON_BREATH", EffectState.placed, 0 );
-//
-//			MineBombEffectsData mbeExplode06a = new MineBombEffectsData( "SMOKE", EffectState.placed, 0 );
-//			// Does not work with spigot 1.8.x:
-//			MineBombEffectsData mbeExplode06 = new MineBombEffectsData( "SMOKE_NORMAL", EffectState.placed, 0 );
-//			// Does not work with spigot 1.8.x:
-//			MineBombEffectsData mbeExplode07 = new MineBombEffectsData( "SMOKE_LARGE", EffectState.placed, 0 );
-//			
-//			MineBombEffectsData mbeExplode10 = new MineBombEffectsData( "EXPLOSION_NORMAL", EffectState.explode, 0 );
-//			MineBombEffectsData mbeExplode11 = new MineBombEffectsData( "EXPLOSION_LARGE", EffectState.explode, 0 );
-//			// Does not work with spigot 1.8.x:
-//			MineBombEffectsData mbeExplode12 = new MineBombEffectsData( "EXPLOSION_HUGE", EffectState.explode, 0 );
-//			
-//			
-//			{
-//				MineBombData mbd = new MineBombData( 
-//						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, "&dSmall &6Mine &eBomb &3(lore line 1)" );
-//				
-//				mbd.setNameTag( "&6&kABC&r&c-= &7{name}&c =-&6&kCBA" );
-//				
-//				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
-//				mbd.setToolInHandFortuneLevel( 0 );
-//				mbd.setDescription("A small mine bomb made with some chemicals and a brewing stand.");
-//				
-//				mbd.getLore().add( "&4Lore line 2" );
-//				mbd.getLore().add( "&aLore line &73" );
-//
-//				mbd.getSoundEffects().add( mbeSound01.clone() );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone() );
-//				
-//				mbd.getVisualEffects().add( mbeExplode04.clone() );
-//				mbd.getVisualEffects().add( mbeExplode03.clone().setOffsetTicks( 30 ) );
-//				
-//				mbd.getVisualEffects().add( mbeExplode06a.clone() );
-//				mbd.getVisualEffects().add( mbeExplode10.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06.clone() );
-//				
-//				mbd.setCooldownTicks( 10 );
-//
-//				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
-//				
-//			}
-//			
-//			{
-//				MineBombData mbd = new MineBombData( 
-//						"MediumBomb", "firework_rocket", ExplosionShape.sphere.name(), 5, "Medium Mine Bomb" );
-//				mbd.setDescription("A medium mine bomb made from leftover fireworks, " +
-//						"but supercharged with a strange green glowing liquid.");
-//				
-//				mbd.setNameTag( "&6&k1 23 456&r&a-=- &7{name}&a -=-&6&k654 32 1" );
-//
-//				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
-//				mbd.setToolInHandFortuneLevel( 3 );
-//				
-//				mbd.getSoundEffects().add( mbeSound01.clone() );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone() );
-//				
-//				mbd.getVisualEffects().add( mbeExplode04.clone() );
-//				mbd.getVisualEffects().add( mbeExplode03.clone().setOffsetTicks( 30 ) );
-//				
-//				mbd.getVisualEffects().add( mbeExplode10.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06.clone() );
-//
-//				mbd.setCooldownTicks( 60 );
-//				
-//				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
-//				
-//			}
-//
-//			{
-//				MineBombData mbd = new MineBombData( 
-//						"LargeBomb", "tnt", ExplosionShape.sphereHollow.name(), 12, "Large Mine Bomb" );
-//				mbd.setRadiusInner( 3 );
-//				mbd.setDescription("A large mine bomb made from TNT with some strange parts " +
-//						"that maybe be described as alien technology.");
-//				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
-//				mbd.setToolInHandFortuneLevel( 3 );
-//				
-//				mbd.getSoundEffects().add( mbeSound01.clone() );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone().setVolumne( 2.0f ) );
-//				
-//				mbd.getVisualEffects().add( mbeExplode04.clone() );
-//				mbd.getVisualEffects().add( mbeExplode03.clone().setOffsetTicks( 30 ) );
-//				
-//				mbd.getVisualEffects().add( mbeExplode10.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06a.clone() );
-//
-//				mbd.setCooldownTicks( 60 );
-//				
-//				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
-//			}
-//			
-//			{
-//				MineBombData mbd = new MineBombData( 
-//						"OofBomb", "tnt_minecart", ExplosionShape.sphereHollow.name(), 21, "Oof Mine Bomb" );
-//				mbd.setRadiusInner( 3 );
-//				
-//				mbd.setNameTag( "&c&k1&6&k23&e&k456&r&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&e&k654&6&k32&c&k1" );
-//				
-//				mbd.setDescription("An oof-ably large mine bomb made with a minecart heaping with TNT.  " +
-//						"Unlike the large mine bomb, this one obviously is built with alien technology.");
-//				
-//				mbd.setToolInHandName( "GOLDEN_PICKAXE" );
-//				mbd.setToolInHandFortuneLevel( 13 );
-//				
-//				mbd.getSoundEffects().add( mbeSound01.clone() );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 10 ).setVolumne( 0.25f ).setPitch( 0.25f ) );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 20 ).setVolumne( 0.5f ).setPitch( 0.5f ) );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ).setVolumne( 1.0f ).setPitch( 0.75f ) );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 40 ).setVolumne( 2.0f ).setPitch( 1.5f ) );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 50 ).setVolumne( 5.0f ).setPitch( 2.5f ) );
-//				
-//				mbd.getSoundEffects().add( mbeSound03.clone().setOffsetTicks( 0 ).setVolumne( 3.0f ) );
-//				mbd.getSoundEffects().add( mbeSound04.clone().setOffsetTicks( 5 ).setVolumne( 1.5f ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone().setOffsetTicks( 10 ).setVolumne( 2.5f ) );
-//				mbd.getSoundEffects().add( mbeSound04.clone().setOffsetTicks( 15 ).setVolumne( 1.0f ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone().setOffsetTicks( 20 ).setVolumne( 2.0f ) );
-//				mbd.getSoundEffects().add( mbeSound04.clone().setOffsetTicks( 25 ).setVolumne( 0.75f ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone().setOffsetTicks( 30 ).setVolumne( 1.5f ) );
-//				mbd.getSoundEffects().add( mbeSound04.clone().setOffsetTicks( 35 ).setVolumne( 0.55f ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone().setOffsetTicks( 40 ).setVolumne( 1.0f ) );
-//				mbd.getSoundEffects().add( mbeSound04.clone().setOffsetTicks( 45 ).setVolumne( 0.25f ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone().setOffsetTicks( 50 ).setVolumne( 0.5f ) );
-//				mbd.getSoundEffects().add( mbeSound04.clone().setOffsetTicks( 55 ).setVolumne( 0.15f ) );
-//				
-//				
-//				mbd.getVisualEffects().add( mbeExplode06.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06a.clone() );
-//				mbd.getVisualEffects().add( mbeExplode03.clone() );
-//				mbd.getVisualEffects().add( mbeExplode12.clone() );
-//				mbd.getVisualEffects().add( mbeExplode12.clone().setOffsetTicks( 30 ) );
-//				mbd.getVisualEffects().add( mbeExplode12.clone().setOffsetTicks( 60 ) );
-//				mbd.getVisualEffects().add( mbeExplode07.clone().setOffsetTicks( 60 ) );
-//				mbd.getVisualEffects().add( mbeExplode08.clone().setOffsetTicks( 90 ) );
-//				
-//				mbd.getVisualEffects().add( mbeExplode10.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06.clone().setOffsetTicks( 20 ) );
-//				
-//				mbd.setAutosell( true );
-//				mbd.setGlowing( true );
-//				mbd.setAutosell( true );
-//				
-//				mbd.setCooldownTicks( 60 );
-//				mbd.setFuseDelayTicks( 13 * 20 ); // 13 seconds
-//
-//				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
-//			}
-//			
-//			{
-//				MineBombData mbd = new MineBombData( 
-//						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 5, 
-//							"A Wimpy Mine Bomb" );
-////				mbd.setLoreBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
-//				
-//				mbd.setNameTag( "&7A &2Wimpy &cBomb" );
-//				
-//				mbd.setRadiusInner( 2 );
-//				mbd.setDescription("A whimpy bomb made with gunpowder and packs the punch of a " +
-//						"dull wooden pickaxe. For some reason, it only has a 40% chance of removing " +
-//						"a block.");
-//				
-//				mbd.getLore().add( "" );
-//				mbd.getLore().add( "A whimpy bomb made with gunpowder and packs the punch " );
-//				mbd.getLore().add( "of a dull wooden pickaxe. For some reason, it only " );
-//				mbd.getLore().add( "has a 40% chance of removing a block." );
-//				mbd.getLore().add( "" );
-//				mbd.getLore().add( "Not labeled for retail sale." );
-//				
-//				mbd.setToolInHandName( "WOODEN_PICKAXE" );
-//				mbd.setToolInHandFortuneLevel( 0 );
-//				mbd.setRemovalChance( 40.0d );
-//				
-//				mbd.getSoundEffects().add( mbeSound01.clone() );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone() );
-//				
-//				mbd.getVisualEffects().add( mbeExplode01.clone() );
-//				mbd.getVisualEffects().add( mbeExplode02.clone().setOffsetTicks( 30 ) );
-//				mbd.getVisualEffects().add( mbeExplode03.clone().setOffsetTicks( 10 ) );
-//				mbd.getVisualEffects().add( mbeExplode04.clone() );
-//				
-//				mbd.getVisualEffects().add( mbeExplode10.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06.clone() );
-//				mbd.getVisualEffects().add( mbeExplode06a.clone() );
-//				mbd.getVisualEffects().add( mbeExplode11.clone().setOffsetTicks( 05 ) );
-//				
-//				mbd.setCooldownTicks( 3 * 20 ); // 3 seconds
-//				mbd.setFuseDelayTicks( 2 * 20 ); // 2 seconds
-//
-//				mbd.setGlowing( true );
-//				mbd.setGravity( false );
-//				
-//				mbd.setCooldownTicks( 5 );
-//
-//				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
-//			}
-//			
-//			
-//			{
-//				MineBombData mbd = new MineBombData( 
-//						"CubeBomb", "SLIME_BLOCK", ExplosionShape.cube.name(), 2, 
-//						"A Cubic Bomb" );
-//				mbd.setDescription("The most anti-round bomb you will ever be able to find. " +
-//						"It's totally cubic.");
-//				
-//				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
-//				mbd.setToolInHandFortuneLevel( 7 );
-//				mbd.setRemovalChance( 100.0d );
-//				
-//				mbd.getSoundEffects().add( mbeSound01.clone() );
-//				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
-//				mbd.getSoundEffects().add( mbeSound03.clone() );
-//				
-//				mbd.getVisualEffects().add( mbeExplode04.clone() );
-//				mbd.getVisualEffects().add( mbeExplode02.clone().setOffsetTicks( 30 ) );
-//				
-//				mbd.setGlowing( true );
-//				
-//				mbd.setCooldownTicks( 60 );
-//
-//				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
-//			}
-//			
-//			
-//			saveConfigJson();
-//			
-//			Output.get().logInfo( "Mine bombs: setup default values." );
-//		}
-//		else {
-//			Output.get().logInfo( "Could not generate a mine bombs save file since at least one " +
-//						"mine bomb already exists." );
-//		}
-//		
-//	}
-
-	
 	public MineBombsConfigData getConfigData() {
 		return configData;
 	}
 	public void setConfigData( MineBombsConfigData configData ) {
 		this.configData = configData;
-	}
-
-	
-	public MineBombData findBombByName( String bombName )
-	{
-		MineBombData results = null;
-		
-		String cleanedBombName = Text.stripColor( bombName );
-		
-		if ( cleanedBombName != null && !cleanedBombName.isEmpty() ) {
-			for ( String bombKey : getConfigData().getBombs().keySet() )
-			{
-				MineBombData bomb = getConfigData().getBombs().get( bombKey );
-				
-				if ( bomb != null ) {
-					String cBombName = Text.stripColor( bomb.getName() );
-
-					if ( cBombName != null && 
-							cBombName.equalsIgnoreCase( cleanedBombName ) ) {
-						
-						results = bomb;
-					}
-				}
-				
-				
-			}
-		}
-		
-		return results;
 	}
 
 }

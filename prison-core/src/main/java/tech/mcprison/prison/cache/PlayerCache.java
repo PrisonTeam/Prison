@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
@@ -125,43 +126,52 @@ public class PlayerCache {
 		PrisonTaskSubmitter.cancelTask( saveAllTask.getTaskId() );
 
 		// Shutdown the timerTasks
-		PrisonTaskSubmitter.cancelTask( checkTimersTask.getTaskId() );
+		if ( checkTimersTask != null ) {
+			
+			PrisonTaskSubmitter.cancelTask( checkTimersTask.getTaskId() );
+		}
 
 		
 		// save all dirty cache items and purge cache:
 		if ( getPlayers().size() > 0 ) {
 
 
-			Set<String> keys = getPlayers().keySet();
-
+			Set<String> keys = null; 
+			
 			synchronized ( getPlayers() ) {
+				keys = new TreeSet<>( getPlayers().keySet() );
+			}
+
+			
+			for ( String key : keys ) {
+				// Remove the player from the cache and get the playerData:
+				PlayerCachePlayerData playerData = null; 
 				
-				for ( String key : keys ) {
-					// Remove the player from the cache and get the playerData:
-					PlayerCachePlayerData playerData = getPlayers().remove( key );
+				synchronized ( getPlayers() ) {
+					playerData = getPlayers().remove( key );
+				}
+				
+				if ( playerData != null ) {
 					
-					if ( playerData != null ) {
+					// Note: Since we are logging online time, then all players that are
+					//       in the cache are considered constantly dirty and needs to be
+					//       saved.
+					
+					// Since the disable function has been called, we can only assume the
+					// server is shutting down.  We need to save dirty player caches, but
+					// they must be done in-line so the shutdown process will wait for all
+					// players to be saved.
+					
+					getCacheFiles().toJsonFile( playerData );
+					
+					if ( playerData.getTask() != null ) {
 						
-						// Note: Since we are logging online time, then all players that are
-						//       in the cache are considered constantly dirty and needs to be
-						//       saved.
-						
-						// Since the disable function has been called, we can only assume the
-						// server is shutting down.  We need to save dirty player caches, but
-						// they must be done in-line so the shutdown process will wait for all
-						// players to be saved.
-						
-						getCacheFiles().toJsonFile( playerData );
-						
-						if ( playerData.getTask() != null ) {
+						synchronized( getTasks() ) {
 							
-							synchronized( getTasks() ) {
-								
-								getTasks().remove( playerData.getTask() );
-							}
-							
-							PrisonTaskSubmitter.cancelTask( playerData.getTask().getTaskId() );
+							getTasks().remove( playerData.getTask() );
 						}
+						
+						PrisonTaskSubmitter.cancelTask( playerData.getTask().getTaskId() );
 					}
 				}
 			}
@@ -259,6 +269,24 @@ public class PlayerCache {
 				
 		return playerData;
 	}
+	/**
+	 * <p>This function will only return a player cache object if it's 
+	 * already in the player cache.  If the player is not in the cache,
+	 * then this will return a null, and the player will not be loaded.
+	 * </p>
+	 * 
+	 * <p>Any player that is not in the cache will not be loaded because of
+	 * the usage of this function.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public PlayerCachePlayerData getOnlinePlayerCached( Player player ) {
+		PlayerCachePlayerData playerData = getPlayer( player, false );
+		
+		return playerData;
+	}
 	
 	private PlayerCachePlayerData getPlayer( Player player ) {
 		return getPlayer( player, true );
@@ -305,8 +333,6 @@ public class PlayerCache {
 				
 				// Save it to the cache:
 				addPlayerData( playerData );
-//			runLoadPlayerNow( player );
-//			submitAsyncLoadPlayer( player );
 			}
 			
 			if ( playerData != null  ) {
@@ -336,29 +362,6 @@ public class PlayerCache {
 		}
 	}
 	
-	
-//	/**
-//	 * <p>This loads the player cache object inline.  It does not run it as a 
-//	 * task in another thread.
-//	 * </p>
-//	 * 
-//	 * <p>This is not used anywhere.
-//	 * </p>
-//	 * 
-//	 * @param player
-//	 */
-//	protected void runLoadPlayerNow( Player player ) {
-//		
-//		if ( player != null ) {
-//			
-//			PlayerCacheLoadPlayerTask task = new PlayerCacheLoadPlayerTask( player );
-//			
-//			task.run();
-////			// Submit task to run right away:
-////			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
-////			task.setTaskId( taskId );
-//		}
-//	}
 	
 	
 	protected void submitAsyncUnloadPlayer( Player player ) {
@@ -399,17 +402,7 @@ public class PlayerCache {
 	
 	public PlayerCacheRunnable submitCacheUpdatePlayerStats() {
 		
-		PlayerCacheCheckTimersTask task = new PlayerCacheCheckTimersTask();
-		
-		int repeatTimeTicks = Prison.get().getPlatform()
-						.getConfigInt( PLAYER_CACHE_UPDATE_PLAYER_STATS_CONFIG_NAME, 
-									   PLAYER_CACHE_UPDATE_PLAYER_STATS_SEC ) * 20;
-		
-		// Submit Timer Task to start running in 30 seconds (600 ticks) and then
-		// refresh stats every 10 seconds (200 ticks). 
-		// This does not update any files or interacts with bukkit/spigot.
-		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, repeatTimeTicks );
-		task.setTaskId( taskId );
+		PlayerCacheRunnable task = PlayerCacheCheckTimersTask.submitPlayerStatsCacheUpdater();
 		
 		return task;
 	}
@@ -425,19 +418,10 @@ public class PlayerCache {
 		}
 		
 	}
-//	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
-//		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
-//	}
+
+
 	private void addPlayerBlocks( Player player, String mine, String blockName, int quantity ) {
 		PlayerCachePlayerData playerData = getPlayer( player );
-		
-//		Output.get().logInfo( "### addPlayerBlock: mine= " + (mine == null ? "null" : mine) +
-//				" block= " + (block == null ? "null" : block.getBlockName()) + " qty= " + quantity + "  playerData= " +
-//				(playerData == null ? "null" : playerData.toString() ));
-		
-//		if ( playerData != null && playerData.getBlocksTotal() % 20 == 0 ) {
-//			Output.get().logInfo( "#### PlayerCache: " + playerData.toString() );
-//		}
 		
 		playerData.addBlock( mine, blockName, quantity );
 		
@@ -556,12 +540,10 @@ public class PlayerCache {
 		this.stats = stats;
 	}
 	
-	
 
 	protected void log( String message ) {
 		Output.get().logInfo( message );
 	}
-	
 
 	public long getWriteDelay() {
 		return writeDelay;
@@ -578,6 +560,5 @@ public class PlayerCache {
 	public Map<PlayerCacheRunnable, PlayerCachePlayerData> getTasks() {
 		return tasks;
 	}
-
 
 }

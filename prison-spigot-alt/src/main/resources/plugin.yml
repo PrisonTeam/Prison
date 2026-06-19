@@ -37,6 +37,7 @@ softdepend:
   - PermissionsEx
   - GroupManagerX
   - GemsEconomy
+  - TheNewEconomy
   - TokenEnchant
   - CMI
   - CMILib

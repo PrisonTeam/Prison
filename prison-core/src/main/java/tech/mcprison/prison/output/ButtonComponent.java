@@ -72,7 +72,7 @@ public class ButtonComponent extends DisplayComponent {
     }
     
     public FancyMessage getFancyMessage() {
-    	return button;
+    		return button;
     }
 
     /**

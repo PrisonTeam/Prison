@@ -14,7 +14,6 @@ package tech.mcprison.prison.modules;
  */
 public interface ModuleElement {
 	
-	// private transient final ModuleElementType elementType;
 	public ModuleElementType getModuleElementType();
 	
 	public int getId();

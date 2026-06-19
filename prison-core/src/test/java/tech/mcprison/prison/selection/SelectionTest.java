@@ -59,7 +59,8 @@ public class SelectionTest {
         World ourWorld = new TestWorld("TestWorld");
         TestPlayer ourPlayer = new TestPlayer();
 
-        ItemStack coloredToolItemStack = SelectionManager.SELECTION_TOOL;
+        ItemStack coloredToolItemStack = ItemStack.SELECTION_WAND;
+
         coloredToolItemStack
             .setDisplayName(Text.translateAmpColorCodes(coloredToolItemStack.getDisplayName()));
 
@@ -88,10 +89,8 @@ public class SelectionTest {
         Prison.get().getEventBus().post(
             new PrisonPlayerInteractEvent(ourPlayer, new ItemStack("test", 1, acaciaSapling ),
                 PrisonPlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
-//        Prison.get().getEventBus().post(
-//        		new PrisonPlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING),
-//        				PrisonPlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
+        
         assertEquals(initialAmount, ourPlayer.getInput()
             .size()); // nothing should have happened because we have the wrong item in our hand
 

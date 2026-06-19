@@ -1,13 +1,11 @@
 package tech.mcprison.prison.spigot.utils;
 
-import java.util.Optional;
-
 import org.bukkit.Bukkit;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 public abstract class PrisonUtils
@@ -49,11 +47,11 @@ public abstract class PrisonUtils
 		
 		setPluginRegistered( Bukkit.getPluginManager().isPluginEnabled( getPluginName() ) );
 		
-    	setPluginVersion( isPluginRegistered() ? 
-    			Bukkit.getPluginManager().getPlugin( getPluginName() )
-    											.getDescription().getVersion() : null );
-		
-    	this.enabled = initialize();
+	    	setPluginVersion( isPluginRegistered() ? 
+	    			Bukkit.getPluginManager().getPlugin( getPluginName() )
+	    											.getDescription().getVersion() : null );
+			
+	    	this.enabled = initialize();
 	}
 	
 	@Override
@@ -96,49 +94,49 @@ public abstract class PrisonUtils
 		
 		boolean isConsole = !(sender instanceof org.bukkit.entity.Player);
 		
-    	SpigotPlayer player = getSpigotPlayer( playerName, false );
-    	
-    	// Player's name was not found then it's either being ran from console, or on self.
-    	if ( player == null ) {
-    		
-    		// Ran from console, so if player is null, then playerName was either not
-    		// specified or was invalid:
-    		if ( isConsole ) {
-    			sender.sendMessage( String.format(
-    					"&3PlayerName is incorrect or they are not online. [&7%s&3]", 
-    					(playerName == null ? "null" : playerName) ));
-    		}
-    		else if ( !sender.isOp() && !sender.hasPermission( permsSelf ) ) {
-    			sender.sendMessage( String.format(
-    					"&3You do not have the permission to use on another player. [&7%s&3]", 
-    					(playerName == null ? "null" : playerName) ));
-    				
-    		}
-    		else {
-    			
-    			// sender is able to use the command on their self:
-    			player = new SpigotPlayer( (org.bukkit.entity.Player) sender);
-    		}
-
-    	}
-    	else {
-    		
-    		// The provided playerName was valid.
-    		
-    		// Need to confirm the sender is either console, OP, or has perms to 
-    		// use command on someone else, if none of these apply, then reject
-    		// the request to run the command.
-    		if ( !isConsole && !sender.isOp() && !sender.hasPermission( permsOthers ) ) {
-    			sender.sendMessage( String.format(
-    					"&3You do not have the permission to use on another player. [%s]", 
-    					(playerName == null ? "null" : playerName) ));
-
-    			// Set player to null to indicate authentication failed:
-    			player = null;
-    		}
-    	}
-    	
-    	return player;
+	    	SpigotPlayer player = getSpigotPlayer( playerName );
+	    	
+	    	// Player's name was not found then it's either being ran from console, or on self.
+	    	if ( player == null ) {
+	    		
+	    		// Ran from console, so if player is null, then playerName was either not
+	    		// specified or was invalid:
+	    		if ( isConsole ) {
+	    			sender.sendMessage( String.format(
+	    					"&3PlayerName is incorrect or they are not online. [&7%s&3]", 
+	    					(playerName == null ? "null" : playerName) ));
+	    		}
+	    		else if ( !sender.isOp() && !sender.hasPermission( permsSelf ) ) {
+	    			sender.sendMessage( String.format(
+	    					"&3You do not have the permission to use on another player. [&7%s&3]", 
+	    					(playerName == null ? "null" : playerName) ));
+	    				
+	    		}
+	    		else {
+	    			
+	    			// sender is able to use the command on their self:
+	    			player = new SpigotPlayer( (org.bukkit.entity.Player) sender);
+	    		}
+	
+	    	}
+	    	else {
+	    		
+	    		// The provided playerName was valid.
+	    		
+	    		// Need to confirm the sender is either console, OP, or has perms to 
+	    		// use command on someone else, if none of these apply, then reject
+	    		// the request to run the command.
+	    		if ( !isConsole && !sender.isOp() && !sender.hasPermission( permsOthers ) ) {
+	    			sender.sendMessage( String.format(
+	    					"&3You do not have the permission to use on another player. [%s]", 
+	    					(playerName == null ? "null" : playerName) ));
+	
+	    			// Set player to null to indicate authentication failed:
+	    			player = null;
+	    		}
+	    	}
+	    	
+	    	return player;
 	}
 	
 	
@@ -151,31 +149,41 @@ public abstract class PrisonUtils
      * ensure a player is always returned, if its a valid player.
      * </p>
      * 
-     * @param sender
-     * @param playerName is optional, if not supplied, then sender will be used
+     * @param playerName 
      * @return Player if found, or null.
      */
-	protected SpigotPlayer getSpigotPlayer( String playerName, boolean useOfflinePlayer ) {
+	protected SpigotPlayer getSpigotPlayer( String playerName ) {
 		SpigotPlayer result = null;
 		
-		if ( playerName != null ) {
-			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
+		RankPlayer rPlayer = Prison.get().getPlatform().getRankPlayer( null, playerName );
+		
+		
+		if ( rPlayer == null ) {
+		
+			// The requested player name is not within prison. Could be a typo or they 
+			// don't have ranks enabled.  First get a temp SpigotPlayer and then use 
+			// the supplied name and UUID to create a new RankPlayer so we can 
+			// create a valid SpigotPlayer that includes the RankPlayer even with the
+			// Ranks disabled.
+			Player player = Prison.get().getPlatform().getPlayer( playerName ).orElse( null );
 			
-			if ( opt.isPresent() ) {
-				result = (SpigotPlayer) opt.get();
-			}
-			else if ( useOfflinePlayer ) {
-				Optional<Player> optOLP = Prison.get().getPlatform().getOfflinePlayer( playerName );
+			if ( player != null ) {
+				result = (SpigotPlayer) player;
 				
-				if ( optOLP.isPresent() ) {
-					
-					SpigotOfflinePlayer offlinePlayer = (SpigotOfflinePlayer) optOLP.get();
-					
-					result = new SpigotPlayer( offlinePlayer.getWrapper().getPlayer() );
-				}
+				// Create a 'false' RankPlayer object:
+				
+				RankPlayer rp = new RankPlayer( player.getUUID(), player.getDisplayName() );
+
+				rPlayer = rp;
 			}
-			
 		}
+		
+		
+		if ( rPlayer != null ) {
+			
+			result = SpigotPlayer.getSpigotPlayer( rPlayer );
+		}
+		
 		return result;
 	}
 	

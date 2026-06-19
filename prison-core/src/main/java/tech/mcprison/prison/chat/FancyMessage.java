@@ -75,17 +75,17 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
     }
     
     public FancyMessage(final List<FancyMessage> msgs) {
-    	messageParts = new ArrayList<>();
-    	for(FancyMessage msg : msgs) {
-    		messageParts.addAll(msg.messageParts);
-    	}
-    	jsonString = null;
-    	dirty = false;
+	    	messageParts = new ArrayList<>();
+	    	for(FancyMessage msg : msgs) {
+	    		messageParts.addAll(msg.messageParts);
+	    	}
+	    	jsonString = null;
+	    	dirty = false;
     }
 
     public void addFancy(FancyMessage fancyMessage) {
-    	messageParts.addAll( fancyMessage.messageParts );
-    	dirty = true;
+	    	messageParts.addAll( fancyMessage.messageParts );
+	    	dirty = true;
     }
     
     /**

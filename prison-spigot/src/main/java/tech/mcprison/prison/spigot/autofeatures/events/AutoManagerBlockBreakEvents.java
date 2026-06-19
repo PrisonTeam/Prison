@@ -21,6 +21,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.api.InventoryFullEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
@@ -99,39 +100,38 @@ public class AutoManagerBlockBreakEvents
 		
 	}
 	
-    public void initialize() {
-    	
-    	// Check to see if the class BlockBreakEvent even exists:
-    	try {
-    		
-    		Output.get().logInfo( "AutoManager: Trying to register BlockBreakEvent" );
-    		
-    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
-    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
-    		
-    		setBbPriority( bbPriority );
-    		
-    		
-    		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
-    			if ( bbPriority.isComponentCompound() ) {
-    				
-    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
-						
-    					createListener( subBBPriority );
+	public void initialize() {
+
+		// Check to see if the class BlockBreakEvent even exists:
+		try {
+
+			Output.get().logInfo( "AutoManager: Trying to register BlockBreakEvent" );
+
+			String eP = getMessage( AutoFeatures.blockBreakEventPriority );
+			BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+
+			setBbPriority( bbPriority );
+
+
+			if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
+				if ( bbPriority.isComponentCompound() ) {
+
+					for ( BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities() ) {
+
+						createListener( subBBPriority );
 					}
-    			}
-    			else {
-    				
-    				createListener(bbPriority);
-    			}
-    			
-    		}
-    		
-    	}
-    	catch ( Exception e ) {
-    		Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
-    	}
-    }
+				}
+				else {
+
+					createListener( bbPriority );
+				}
+
+			}
+
+		} catch ( Exception e ) {
+			Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
+		}
+	}
     
 	private void createListener( BlockBreakPriority bbPriority ) {
 		
@@ -248,190 +248,180 @@ public class AutoManagerBlockBreakEvents
     
 
 
-    /**
-     * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
-     * within a mine or not.  If it is happening within a mine, then we process it with the doAction()
-     * function.
-     * </p>
-     * 
-     * @param e
-     * @param montior Identifies that a monitor event called this function.  A monitor should only record
-     * 					block break counts.
-     */
+	/**
+	 * <p>
+	 * This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened within a mine or not. If it
+	 * is happening within a mine, then we process it with the doAction() function.
+	 * </p>
+	 * 
+	 * @param e
+	 * @param montior Identifies that a monitor event called this function. A monitor should only record block break counts.
+	 */
 	private void handleBlockBreakEvent( BlockBreakEvent e, BlockBreakPriority bbPriority ) {
-			
-		if ( e instanceof PrisonMinesBlockBreakEvent ) {
-			return;
-		}
-		
-		PrisonMinesBlockBreakEvent pmEvent = null;
-    	long start = System.nanoTime();
 
-		// If the event is canceled, it still needs to be processed because of the 
+		if ( e instanceof PrisonMinesBlockBreakEvent ) { return; }
+
+		PrisonMinesBlockBreakEvent pmEvent = null;
+		long start = System.nanoTime();
+
+		// If the event is canceled, it still needs to be processed because of the
 		// MONITOR events:
-		// An event will be "canceled" and "ignored" if the block 
+		// An event will be "canceled" and "ignored" if the block
 		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
-		// or if the targetBlock has been set to ignore all block events which 
+		// or if the targetBlock has been set to ignore all block events which
 		// means the block has already been processed.
-    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    						e.getPlayer(), e.getBlock(), bbPriority, false );
-    	
-    	if ( eventResults.isIgnoreEvent() ) {
-    		return;
-    	}
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e,
+				e.getPlayer(), e.getBlock(), bbPriority, false );
 
-		
+		if ( eventResults.isIgnoreEvent() ) { return; }
+
+
 		// Register all external events such as mcMMO and EZBlocks:
 //		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-		
+
 		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** handleBlockBreakEvent ** ### " +
-				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
+
+		debugInfo.append( String.format( "&6### ** handleBlockBreakEvent ** ###&3 " +
+				"(event: &6BlockBreakEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
-				(e.isCancelled() ? "TRUE " : "FALSE")
-				) );
-		
-		debugInfo.append( eventResults.getDebugInfo() );
-		
-		
-		
-		// Process all priorities if the event has not been canceled, and 
-		// process the MONITOR priority even if the event was canceled:
-    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
-    			bbPriority.isMonitor() ) {
+				( e.isCancelled() ? "TRUE " : "FALSE" ) ) );
 
-    		// Need to wrap in a Prison block so it can be used with the mines:
+		debugInfo.append( eventResults.getDebugInfo() );
+
+
+		// Process all priorities if the event has not been canceled, and
+		// process the MONITOR priority even if the event was canceled:
+		if ( !bbPriority.isMonitor() && !e.isCancelled() ||
+				bbPriority.isMonitor() ) {
+
+			// Need to wrap in a Prison block so it can be used with the mines:
 //    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
 //    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-    		
-    		BlockEventType eventType = BlockEventType.blockBreak;
-    		String triggered = null;
-    		
-    		pmEvent = new PrisonMinesBlockBreakEvent( 
-    				eventResults,
+
+			BlockEventType eventType = BlockEventType.blockBreak;
+			String triggered = null;
+
+			pmEvent = new PrisonMinesBlockBreakEvent(
+					eventResults,
 //    				e.getBlock(), 
 //    				e.getPlayer(),
 //    				eventResults.getMine(),
 ////    					sBlock, sPlayer, 
 //    					bbPriority, 
-    					eventType, 
-    					triggered,
-    					debugInfo );
-    		
+					eventType,
+					triggered,
+					debugInfo );
 
-        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
-        	//       converted to just ACCESS at this point, and the other part will run under either
-        	//       BLOCKEVENTS or MONITOR.
-    		// This check has to be performed after creating the pmEvent object since it uses
-    		// a lot of the internal variables and objects.  There is not much of an impact since
-    		// the validateEvent() has not been ran yet.
-        	if ( checkIfNoAccess( pmEvent, start ) ) {
-        		
-        		e.setCancelled( true );
-        		return;
-        	}
-    		
-        	
-    		// Check for BlockConverters Event Triggers:
-        	// If this function returns a true, then the event should be canceled so no other plugins
-        	// process the block after the triggered plugin has processed it.
-        	// If the eventTrigger is marked to remove block without drops, then the 
-        	// block break event priority will be set to MONITOR and will force the 
-        	// block to be removed by prison.
-    		if ( checkBlockConverterEventTrigger( pmEvent, e ) ) {
 
-    			e.setCancelled( true );
-    			
+			// NOTE: Check for the ACCESS priority and if someone does not have access, then return
+			// with a cancel on the event. Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+			// converted to just ACCESS at this point, and the other part will run under either
+			// BLOCKEVENTS or MONITOR.
+			// This check has to be performed after creating the pmEvent object since it uses
+			// a lot of the internal variables and objects. There is not much of an impact since
+			// the validateEvent() has not been ran yet.
+			if ( checkIfNoAccess( pmEvent, start ) ) {
+
+				e.setCancelled( true );
+				return;
+			}
+
+
+			// Check for BlockConverters Event Triggers:
+			// If this function returns a true, then the event should be canceled so no other plugins
+			// process the block after the triggered plugin has processed it.
+			// If the eventTrigger is marked to remove block without drops, then the
+			// block break event priority will be set to MONITOR and will force the
+			// block to be removed by prison.
+			if ( checkBlockConverterEventTrigger( pmEvent, e ) ) {
+
+				e.setCancelled( true );
+
 //    			printDebugInfo( pmEvent, start );
 //    			return;
-    		}
-    		
-        	
-    		// Validate the event. 
-    		if ( !validateEvent( pmEvent ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.setCancelled( true );
-    			}
-    			
-    			debugInfo.append( "(doAction failed validation) " );
-    		}
-    		
-    		
-    		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occured already within validateEvent():
-    		else if ( pmEvent.getBbPriority().isMonitor() ) {
-    			// Stop here, and prevent additional processing. 
-    			// Monitors should never process the event beyond this.
-    			
-    			// NOTE: BlockConverters EventTriggers will force processing to MONITOR
-    			//       plus require the block to be removed with no drops with 
-    			//       no block events.
-    			if ( pmEvent.isForceBlockRemoval() ) {
+			}
 
-    				finalizeBreakTheBlocks( pmEvent );
-    			}
-    		}
-    		
-    		
-    		// This is where the processing actually happens:
-    		else {
-    			
+
+			// Validate the event.
+			if ( !validateEvent( pmEvent ) ) {
+
+				// The event has not passed validation. All logging and Errors have been recorded
+				// so do nothing more. This is to just prevent normal processing from occurring.
+
+				if ( pmEvent.isCancelOriginalEvent() ) {
+
+					e.setCancelled( true );
+				}
+
+				debugInfo.append( "(doAction failed validation) " );
+			}
+
+
+			// The validation was successful, but stop processing for the MONITOR priorities.
+			// Note that BLOCKEVENTS processing occured already within validateEvent():
+			else if ( pmEvent.getBbPriority().isMonitor() ) {
+				// Stop here, and prevent additional processing.
+				// Monitors should never process the event beyond this.
+
+				// NOTE: BlockConverters EventTriggers will force processing to MONITOR
+				// plus require the block to be removed with no drops with
+				// no block events.
+				if ( pmEvent.isForceBlockRemoval() ) {
+
+					finalizeBreakTheBlocks( pmEvent );
+				}
+			}
+
+
+			// This is where the processing actually happens:
+			else {
+
 //    			debugInfo.append( "(normal processing initiating) " );
-    			
-    			// check all external events such as mcMMO and EZBlocks:
-    			if ( e instanceof BlockBreakEvent ) {
-    				processPMBBExternalEvents( pmEvent, e );
-    			}
-    			
-    			
-    			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
-    			
-    			cancelBy = processPMBBEvent( pmEvent );
 
-    			
-    			if ( cancelBy == EventListenerCancelBy.event ) {
-    				
-    				e.setCancelled( true );
-    				debugInfo.append( "(cancelByEvent) " );
-    			}
-    			else if ( cancelBy == EventListenerCancelBy.drops ) {
-					try
-					{
+				// check all external events such as mcMMO and EZBlocks:
+				if ( e instanceof BlockBreakEvent ) {
+					processPMBBExternalEvents( pmEvent, e );
+				}
+
+
+				EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
+
+				cancelBy = processPMBBEvent( pmEvent );
+
+
+				if ( cancelBy == EventListenerCancelBy.event ) {
+
+					e.setCancelled( true );
+					debugInfo.append( "(cancelByEvent) " );
+				}
+				else if ( cancelBy == EventListenerCancelBy.drops ) {
+					try {
 						e.setDropItems( false );
 						debugInfo.append( "(cancelByDrop) " );
-					}
-					catch ( NoSuchMethodError e1 )
-					{
-						String message = String.format( 
+					} catch ( NoSuchMethodError e1 ) {
+						String message = String.format(
 								"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
 										"is not valid for this version of Spigot. It's only vaid for spigot v1.12.x and higher. " +
 										"Modify the config settings and set this value to `false`.  For now, it is temporarily " +
 										"disabled. [%s]",
-										e1.getMessage() );
+								e1.getMessage() );
 						Output.get().logWarn( message );
-						
+
 						AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
 								.setFeature( AutoFeatures.cancelAllBlockEventBlockDrops, false );
 					}
 
-    			}
-    		}
-    			
+				}
+			}
+
 //    			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
 //    			// Needed since processing of the block will lose track of which mine it came from.
 //    			if ( pmEvent.getMine() != null ) {
 //    				sBlock.setPrisonBlockTypes( pmEvent.getMine().getPrisonBlockTypes() );
 //    			}
-    			
+
 //    			
 //    			List<SpigotBlock> explodedBlocks = new ArrayList<>();
 //    			pmEvent.setExplodedBlocks( explodedBlocks );
@@ -492,79 +482,83 @@ public class AutoManagerBlockBreakEvents
 //                	}
 //
 //                }
-    			
-    			
+
+
 //                debugInfo.append( "(normal processing completed) " );
 //    		}
 //    		else {
 //    			
 //    			debugInfo.append( "(logic bypass) " );
 //    		}
-    		
-    		
-    		boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
-    		
-    		
+
+
+			boolean isPlayerAutosellEnabled = pmEvent.getSpigotPlayer().isAutoSellEnabled( pmEvent.getDebugInfo() );
+
+
 //		// In the event, forceAutoSell is enabled, which means the drops must be sold.
 //		// The player's toggle cannot disable this.
 //		boolean forceAutoSell = isSellallEnabled && pmEvent.isForceAutoSell();
 //		
-    		
+
 //		// AutoFeature's autosell per block break - global setting
 //		boolean autoSellBySettings = 
 //						isPlayerAutosellEnabled &&
 //						isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled);
-    		
-    		
+
+
 //    		boolean isPlayerAutoSellByPerm = pmEvent.getSpigotPlayer().isAutoSellByPermEnabled( 
 //    							isPlayerAutosellEnabled,  pmEvent.getDebugInfo()  );
-    		
-    		
-    		
-    		
-    		if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
-    								isPlayerAutosellEnabled ) {
-    			
+
+
+			if ( pmEvent.getSpigotPlayer().isInventoryFull() ) {
+
+				InventoryFullEvent.fireInventoryFullEvent( pmEvent.getPlayer() );
+			}
+
+
+			if ( isBoolean( AutoFeatures.isForceSellAllOnInventoryWhenBukkitBlockBreakEventFires ) &&
+					isPlayerAutosellEnabled ) {
+
 //    			( isPlayerAutosellEnabled || isPlayerAutoSellByPerm )) {
-    			
-    			pmEvent.getDebugInfo().append( Output.get().getColorCodeWarning());
-    			pmEvent.performSellAllOnPlayerInventoryLogged( "FORCED BlockBreakEvent sellall");
-    			pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
-    		}
-    		
-    		if ( isBoolean( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires ) && 
-    								isPlayerAutosellEnabled ) {
-    			
+
+				pmEvent.getDebugInfo().append( Output.get().getColorCodeWarning() );
+				pmEvent.performSellAllOnPlayerInventoryLogged( "FORCED BlockBreakEvent sellall" );
+				pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug() );
+			}
+
+			if ( isBoolean( AutoFeatures.isEnabledDelayedSellAllOnInventoryWhenBukkitBlockBreakEventFires ) &&
+					isPlayerAutosellEnabled ) {
+
 //    			( isPlayerAutosellEnabled || isPlayerAutoSellByPerm ) ) {
-    			
-    			if ( !getDelayedSellallPlayers().contains( pmEvent.getSpigotPlayer() ) ) {
-    				
-    				getDelayedSellallPlayers().add( pmEvent.getSpigotPlayer() );
-    				
-    				int ticks = getInteger( AutoFeatures.isEnabledDelayedSellAllOnInventoryDelayInTicks );
-    				
-    				pmEvent.getDebugInfo().append( Output.get().getColorCodeError());
-    				pmEvent.getDebugInfo().append( "(BlockBreakEvent delayed sellall submitted: no details available, see sellall debug info) " );
-    				pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug());
-    				
-    				final PrisonMinesBlockBreakEvent pmEventFinal = pmEvent;
-    				
-    				new BukkitRunnable() {
-    					@Override
-    					public void run() {
-    						
-    						String message = pmEventFinal.performSellAllOnPlayerInventoryString("delayed sellall");
-    						getDelayedSellallPlayers().remove( pmEventFinal.getSpigotPlayer() );
-    						
-    						Output.get().logDebug(message);
-    					}
-    				}.runTaskLater( SpigotPrison.getInstance(), ticks );
-    			}
-    		}
-    		
-    		printDebugInfo( pmEvent, start );
-    	}
-    	
+
+				if ( !getDelayedSellallPlayers().contains( pmEvent.getSpigotPlayer() ) ) {
+
+					getDelayedSellallPlayers().add( pmEvent.getSpigotPlayer() );
+
+					int ticks = getInteger( AutoFeatures.isEnabledDelayedSellAllOnInventoryDelayInTicks );
+
+					pmEvent.getDebugInfo().append( Output.get().getColorCodeError() );
+					pmEvent.getDebugInfo().append( "(BlockBreakEvent delayed sellall submitted: no details available, see sellall debug info) " );
+					pmEvent.getDebugInfo().append( Output.get().getColorCodeDebug() );
+
+					final PrisonMinesBlockBreakEvent pmEventFinal = pmEvent;
+
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+
+							String message = pmEventFinal.performSellAllOnPlayerInventoryString( "delayed sellall" );
+							getDelayedSellallPlayers().remove( pmEventFinal.getSpigotPlayer() );
+
+							Output.get().logDebug( message );
+						}
+					}.runTaskLater( SpigotPrison.getInstance(), ticks );
+				}
+			}
+
+			printDebugInfo( pmEvent, start );
+		}
+
 	}
 	
 

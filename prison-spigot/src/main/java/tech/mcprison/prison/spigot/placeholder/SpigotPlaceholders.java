@@ -9,6 +9,9 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
+
+import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -22,6 +25,7 @@ import tech.mcprison.prison.placeholders.PlaceholderManagerUtils;
 import tech.mcprison.prison.placeholders.PlaceholderStatsData;
 import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.placeholders.PlaceholdersStats;
+import tech.mcprison.prison.placeholders.PrisonCustomPlaceholders;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -31,6 +35,8 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 public class SpigotPlaceholders
 	implements Placeholders {
 
+	private PrisonCustomPlaceholders cph = null;
+	
 	private MineManager mm = null;
 	private PlayerManager pm = null;
 	private RankManager rm = null;
@@ -46,6 +52,10 @@ public class SpigotPlaceholders
 //	private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
 //	private static final Pattern BRACKET_PLACEHOLDER_PATTERN = Pattern.compile("[{]([^{}]+)[}]");
 	  
+    private final boolean placeholderAPINotNull = 
+    		Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || 
+    		Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
+
 	
 	public SpigotPlaceholders() {
 		super();
@@ -59,6 +69,9 @@ public class SpigotPlaceholders
 	 * </p>
 	 */
 	private void initializePlaceholderManagers() {
+		
+		this.cph = new PrisonCustomPlaceholders();
+		
 		
 		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 			this.mm = PrisonMines.getInstance().getMineManager();
@@ -111,6 +124,11 @@ public class SpigotPlaceholders
     	
     	List<PlaceHolderKey> placeholders = new ArrayList<>();
     	
+    	if ( cph != null ) {
+    		placeholders.addAll( cph.getTranslatedPlaceHolderKeys() );
+    	}
+    	
+    	
     	if ( pm != null ) {
     		placeholders.addAll( pm.getTranslatedPlaceHolderKeys() );
     	}
@@ -143,6 +161,12 @@ public class SpigotPlaceholders
     public int getPlaceholderCount() {
     	int placeholdersRawCount = 0;
     	
+    	if ( cph != null ) {
+    		List<PlaceHolderKey> placeholderPlayerKeys = cph.getTranslatedPlaceHolderKeys();
+    		placeholdersRawCount += placeholderPlayerKeys.size();
+    		
+    	}
+    	
     	if ( pm != null ) {
     		List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
     		placeholdersRawCount += placeholderPlayerKeys.size();
@@ -167,6 +191,16 @@ public class SpigotPlaceholders
     @Override
     public int getPlaceholderRegistrationCount() {
     	int placeholdersRegistered = 0;
+    	
+    	if ( cph != null ) {
+    		List<PlaceHolderKey> placeholderPlayerKeys = cph.getTranslatedPlaceHolderKeys();
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    			if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    				placeholdersRegistered++;
+    			}
+    		}
+    	}
     	
     	if ( pm != null ) {
     		List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
@@ -233,21 +267,6 @@ public class SpigotPlaceholders
     	return processPlaceholderIdentifier( identifier );
 	}
 
-    // NOTE: This is obsolete since the player should always be included:
-//    /**
-//     * <p>This function is used in this class's placeholderTranslateText() and
-//     * also in tech.mcprison.prison.mines.MinesChatHandler.onPlayerChat().
-//     * </p>
-//     * 
-//     */
-//    @Override
-//    public String placeholderTranslateText( String text) {
-//    	PlaceholderIdentifier identifier = new PlaceholderIdentifier( text );
-//    	
-//    	
-//    	return placeholderTranslateText( identifier );
-//    }
-    	
     private String processPlaceholderIdentifier( PlaceholderIdentifier identifier ) {
     	
     	long nanoStart = System.nanoTime();
@@ -287,6 +306,21 @@ public class SpigotPlaceholders
 //		String results = text;
 
 		
+    	if ( cph != null ) {
+    		
+    		List<PlaceHolderKey> placeholderKeys = cph.getTranslatedPlaceHolderKeys();
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+    			
+    			if ( identifier.checkPlaceholderKey( placeHolderKey ) ) {
+    				cph.getTranslateCustomPlaceHolder( identifier );
+    				break;
+    			}
+    			
+    		}
+    	}
+    	
+    	
     	if ( mm != null ) {
     		
     		List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
@@ -344,7 +378,15 @@ public class SpigotPlaceholders
     	
     	if ( placeHolderKey != null && placeHolderKey.getPlaceholder() != null ) {
     		
-    		if ( mm != null && 
+    		
+    		if ( cph != null && placeHolderKey.getPlaceholder().isCustomPlaceholder() ) {
+    			if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+    				
+    				cph.getTranslateCustomPlaceHolder(identifier);
+    			}
+    		}
+    		
+    		else if ( mm != null && 
     				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) ||
     						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSMINES ) ||
     						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ||
@@ -386,25 +428,6 @@ public class SpigotPlaceholders
 		
     	return identifier.getText();
     }
-    
-//    /**
-//     * This provides for a case insensitive replacement of placeholders.
-//     * 
-//     * String target = "FOOBar";
-//	 * target = target.replaceAll("(?i)foo", "");
-//     * 
-//     * @param text The full text that contains one or more placeholders.  This is also the value that
-//     * 				will be returned, with the replacement of the contained placeholder.
-//     * @param placeholder The individual placeholder that should be replaced.  This should be the 
-//     * 				raw value of the identifier, including escape chaacters and placeholder attributes.
-//     * @param target The text that should replace the whole placeholder.
-//     * @return
-//     */
-//    private String placeholderReplace( String text, String placeholder, String target ) {
-//    	
-//    	return text == null || placeholder == null || target == null ?
-//    			text : text.replaceAll( "(?i)" + Pattern.quote(placeholder) , target );
-//    }
     
     
     /**
@@ -469,6 +492,7 @@ public class SpigotPlaceholders
 				results = results.replace( placeholderText, replacementText );
 			}
 			
+			
 		}
 		return results;
 	}
@@ -489,9 +513,15 @@ public class SpigotPlaceholders
 		
 		TreeMap<String, PlaceHolderKey> placeholderKeys = new TreeMap<>();
 		
+		PrisonCustomPlaceholders cph = null;
+		
 		PlayerManager pm = null;
 		RankManager rm = null;
 		MineManager mm = null;
+		
+		cph = new PrisonCustomPlaceholders();
+		addAllPlaceHolderKeys( placeholderKeys, cph.getTranslatedPlaceHolderKeys() );
+		
 		
 		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			pm = PrisonRanks.getInstance().getPlayerManager();
@@ -523,6 +553,24 @@ public class SpigotPlaceholders
 				String value = processPlaceholderHavePlaceholderKey( identifier );
 				
 				Player player = identifier.getPlayer();
+				
+				
+				// Process custom placeholders... after expanding all prison placeholders, then
+				// call PAPI so it can expand non-prison placeholders:
+				if ( placeHolderKey.getPlaceholder().isCustomPlaceholder() ) {
+					// Need to translate all placeholders within the custom placeholder:
+					
+					value = placeholderTranslateText( playerUuid, playerName, value );
+					
+					if ( value != null && value.trim().length() > 0 &&
+							placeHolderKey.isPapiExpansion() && 
+							placeholderAPINotNull ) {
+						
+						value = PlaceholderAPI.setPlaceholders(
+		            			Bukkit.getOfflinePlayer( playerUuid), value );
+						
+					}
+				}
 				
 				if ( player instanceof SpigotPlayer && 
 							ignorePlayerInDisabledWorlds( (SpigotPlayer) player )) {
@@ -631,9 +679,13 @@ public class SpigotPlaceholders
 		PlaceholderManagerUtils.getInstance().reloadPlaceholderBarConfig();
 		
 		initializePlaceholderManagers();
+		
+		if ( cph != null ) {
+			cph.reloadPlaceholders();
+		}
     	
     	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     		if ( pm != null ) {
     			 pm.reloadPlaceholders();
     		}
@@ -644,7 +696,7 @@ public class SpigotPlaceholders
     	}
 
     	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
+//    		MineManager mm = PrisonMines.getInstance().getMineManager();
     		if ( mm != null ) {
     			mm.reloadPlaceholders();
     		}

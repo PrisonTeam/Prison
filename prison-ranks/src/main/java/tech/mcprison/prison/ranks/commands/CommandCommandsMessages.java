@@ -113,19 +113,19 @@ public class CommandCommandsMessages
 	
     protected void rankRowNumberMustBeGreaterThanZero( CommandSender sender, Integer row ) {
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_commandCommands__command_row_number_must_be_greater_than_zero" )
-		.withReplacements( 
-				Integer.toString( row ) )
-		.sendTo( sender );
+			.getLocalizable( "ranks_commandCommands__command_row_number_must_be_greater_than_zero" )
+			.withReplacements( 
+					Integer.toString( row ) )
+			.sendTo( sender );
 	}
     
     protected void rankRowNumberTooHigh( CommandSender sender, Integer maxValue, Integer row ) {
-    	PrisonRanks.getInstance().getRanksMessages()
-    	.getLocalizable( "ranks_commandCommands__command_row_number_too_high" )
-    	.withReplacements( 
-    			Integer.toString( maxValue ),
-    			Integer.toString( row ) )
-    	.sendTo( sender );
+	    	PrisonRanks.getInstance().getRanksMessages()
+		    	.getLocalizable( "ranks_commandCommands__command_row_number_too_high" )
+		    	.withReplacements( 
+		    			Integer.toString( maxValue ),
+		    			Integer.toString( row ) )
+		    	.sendTo( sender );
     }
 	
 	

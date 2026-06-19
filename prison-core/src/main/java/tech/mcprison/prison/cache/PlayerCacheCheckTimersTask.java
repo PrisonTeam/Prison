@@ -3,6 +3,15 @@ package tech.mcprison.prison.cache;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleElementType;
+import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 /**
  * <p>This periodically ran task will go through all cached players and update 
@@ -47,6 +56,40 @@ public class PlayerCacheCheckTimersTask
 		this.processedKeys = new HashSet<>(); 
 	}
 	
+	/**
+	 * This will submit this task to run at regular intervals only if the rank
+	 * module is enabled.
+	 * 
+	 * If ranks are not enabled, then this task will not be started since there will be
+	 * no reason to use the player cache.
+	 * 
+	 * @return
+	 */
+	public static PlayerCacheRunnable submitPlayerStatsCacheUpdater() {
+		
+		PlayerCacheCheckTimersTask task = null;
+		
+		Module ranksModule = Prison.get().getModuleManager().getModule( 
+					ModuleElementType.RANK.name() );
+
+		if ( ranksModule != null && ranksModule.isEnabled()  ) {
+			
+			task = new PlayerCacheCheckTimersTask();
+			
+			int repeatTimeTicks = Prison.get().getPlatform()
+					.getConfigInt( PlayerCache.PLAYER_CACHE_UPDATE_PLAYER_STATS_CONFIG_NAME, 
+							PlayerCache.PLAYER_CACHE_UPDATE_PLAYER_STATS_SEC ) * 20;
+			
+			// Submit Timer Task to start running in 30 seconds (600 ticks) and then
+			// refresh stats every 10 seconds (200 ticks). 
+			// This does not update any files or interacts with bukkit/spigot.
+			int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, repeatTimeTicks );
+			task.setTaskId( taskId );
+		}
+		
+		return task;
+	}
+	
 	@Override
 	public void run()
 	{
@@ -58,14 +101,26 @@ public class PlayerCacheCheckTimersTask
 		processCache();
 		
 	}
+	
+	/**
+	 * Only allow the cache to be processed if ranks is enabled.
+	 */
 	private void processCache() {
 		PlayerCache pCache = PlayerCache.getInstance();
 		
-		if ( pCache.getPlayers() != null && pCache.getPlayers().keySet().size() > 0 ) {
+	      Module ranksModule = Prison.get().getModuleManager().getModule( 
+	    		  								ModuleElementType.RANK.name() );
+	        
+	      if ( ranksModule != null && ranksModule.isEnabled() &&
+				pCache.getPlayers() != null && pCache.getPlayers().keySet().size() > 0 ) {
 			
 			try
 			{
-				Set<String> keys = pCache.getPlayers().keySet();
+				Set<String> keys = null;
+				
+				synchronized ( pCache.getPlayers() ) {
+					keys = new TreeSet<>( pCache.getPlayers().keySet() );
+				}
 				
 				for ( String key : keys )
 				{
@@ -84,11 +139,32 @@ public class PlayerCacheCheckTimersTask
 					
 					if ( playerData != null ) {
 						
+						
 						playerData.checkTimers();
 						
 						// By adding a zero earnings, this will force the earnings "cache" to 
 						// progress, even if the player stopped mining.
 						playerData.addEarnings( 0, null );
+
+						RankPlayer rPlayer = null;
+						
+						Player player = playerData.getPlayer();
+						
+						if ( player != null ) {
+							rPlayer = player.getRankPlayer();
+						}
+						else {
+							UUID uuid = UUID.fromString( key );
+							
+							
+							rPlayer = Prison.get().getPlatform()
+									.getRankPlayer( uuid, 
+											playerData != null ? playerData.getPlayerName() : "" );
+						}
+						
+						if ( rPlayer != null ) {
+							rPlayer.updateTotalLastValues(playerData);
+						}
 					}
 					
 				}

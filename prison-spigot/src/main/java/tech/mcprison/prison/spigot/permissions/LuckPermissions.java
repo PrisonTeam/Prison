@@ -36,7 +36,7 @@ public class LuckPermissions
     private LuckPermissionsWrapper permsWrapper;
 
     public LuckPermissions() {
-    	super( "LuckPerms-Legacy", "LuckPerms" );
+    		super( "LuckPerms-Legacy", "LuckPerms" );
     }
 	
 	@Override
@@ -60,40 +60,40 @@ public class LuckPermissions
 
     @Override
     public void addPermission(Player holder, String permission) {
-    	if ( permsWrapper != null ) {
-    		permsWrapper.addPermission( holder, permission );
-    	}
+	    	if ( permsWrapper != null ) {
+	    		permsWrapper.addPermission( holder, permission );
+	    	}
     }
 
     @Override
     public void removePermission(Player holder, String permission) {
-    	if ( permsWrapper != null ) {
-    		permsWrapper.removePermission( holder, permission );
-    	}
+	    	if ( permsWrapper != null ) {
+	    		permsWrapper.removePermission( holder, permission );
+	    	}
     }
 	
     @Override 
     public void addGroupPermission(Player holder, String groupPermission) {
-    	if ( permsWrapper != null ) {
-    		permsWrapper.addGroupPermission( holder, groupPermission );
-    	}
+	    	if ( permsWrapper != null ) {
+	    		permsWrapper.addGroupPermission( holder, groupPermission );
+	    	}
     }
     
     @Override 
     public void removeGroupPermission(Player holder, String groupPermission) {
-    	if ( permsWrapper != null ) {
-    		permsWrapper.removeGroupPermission( holder, groupPermission );
-    	}
+	    	if ( permsWrapper != null ) {
+	    		permsWrapper.removeGroupPermission( holder, groupPermission );
+	    	}
     }
     @Override
     public List<String> getPermissions(Player holder, boolean detailed) {
-    	List<String> results = new ArrayList<>();
-    	
-    	if ( permsWrapper != null ) {
-    		results = permsWrapper.getPermissions(holder, detailed);
-    	}
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	if ( permsWrapper != null ) {
+	    		results = permsWrapper.getPermissions(holder, detailed);
+	    	}
+	    	
+	    	return results;
     }
     
         
@@ -105,7 +105,7 @@ public class LuckPermissions
     
     @Override
     public void disableIntegration() {
-    	permsWrapper = null;
+    		permsWrapper = null;
     }
 
 	@Override

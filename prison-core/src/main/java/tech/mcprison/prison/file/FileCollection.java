@@ -1,6 +1,7 @@
 package tech.mcprison.prison.file;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +23,8 @@ public class FileCollection
     private File collDir;
     
     public FileCollection(File collDir) {
-    	// This may be within a module. If so then pass these values...
-    	super(null, null);
+	    	// This may be within a module. If so then pass these values...
+	    	super(null, null);
     	
         this.collDir = collDir;
     }
@@ -53,66 +54,125 @@ public class FileCollection
      */
     @Override
     public List<Document> getAll() {
-    	List<Document> allDocs = new ArrayList<>();
-    	
-    	// Each folder in the root directory is its own database.
-    	// We'll initialize each of them here.
-    	File[] collectionFiles = this.collDir.listFiles((dir, name) -> name.endsWith(".json"));
-    	if (collectionFiles != null) {
-    		for (File dbFile : collectionFiles) {
-    			if ( isDeleted( dbFile ) ) {
-    				String message = "FileCollection.getAll skipping logically deleted FileDocument: " + 
-    							dbFile.getAbsolutePath();
-    				Output.get().logInfo( message );
-    			} else {
-    				Document doc = (Document) readJsonFile(dbFile, new Document());
-    				if ( doc != null )
-    				{
-    					allDocs.add( doc );
-    				}
-    			}
-    		}
-    	}
-    	
-    	return allDocs;
+	    	List<Document> allDocs = new ArrayList<>();
+	    	
+	    	FileFilter fFilter = JsonFileIO.getPrisonFileFilter();
+	    	
+	    	
+	    	// Each folder in the root directory is its own database.
+	    	// We'll initialize each of them here.
+	    	File[] collectionFiles = this.collDir.listFiles( fFilter );
+
+	    	if (collectionFiles != null) {
+	    		for (File dbFile : collectionFiles) {
+	    			if ( isDeleted( dbFile ) ) {
+	    				String message = "FileCollection.getAll skipping logically deleted FileDocument: " + 
+	    							dbFile.getAbsolutePath();
+	    				Output.get().logInfo( message );
+	    			} else {
+	    				Document doc = (Document) readJsonFile(dbFile, new Document());
+	    				if ( doc != null )
+	    				{
+	    					allDocs.add( doc );
+	    				}
+	    			}
+	    		}
+	    	}
+	    	
+	    	return allDocs;
     }
     
 
     @Override 
     public Optional<Document> get(String key) {
-    	File dbFile = new File(collDir, key + ".json");
-    	Document doc = (Document) readJsonFile(dbFile, new Document());
+    	
+	    	File dbFile = getFile(key);
+	    	Document doc = (Document) readJsonFile(dbFile, new Document());
     	
         return Optional.ofNullable(doc);
     }
     
-    @Override 
-    public void save(Document document)
-    {
-    	save((String)document.get("name"), document);
-    }
+
+	@Override
+	public void save(String filename, Document document, 
+				String oldFilename, String fileType ) {
+		
+		File dbFile = getFile(filename);
+	    	saveJsonFile( dbFile, document );
+	
+	    	if ( oldFilename != null ) {
+	    		
+	    		// Since the new file should have been saved by now...
+	    		File oldDbFile = getFile(oldFilename);
+	    		
+	    		// If both the new file and old file exists, then need to remove the old file:
+	    		if ( dbFile.exists() && dbFile.length() > 0 && oldDbFile.exists() ) {
+	    			
+	    			boolean deleted = oldDbFile.delete();
+	    			
+	    			if ( deleted ) {
+	    				
+	    				Output.get().logInfo( 
+	    						"&3%s File Converted: &7%s &3--> &7%s",
+	    								fileType,
+	    								oldFilename + FILE_SUFFIX_JSON, 
+	    								filename + FILE_SUFFIX_JSON
+	    						);
+	    			}
+	    			else {
+	    				Output.get().logInfo( 
+	    						"&3The old %s file could not be removed: "
+	    						+ "Old file &7%s &3. " +
+	    								"Reason unknown (check logs?). "
+	    								+ "New file name &7%s. [%s]",
+	    								fileType,
+	    								oldFilename + FILE_SUFFIX_JSON, 
+	    								filename + FILE_SUFFIX_JSON,
+	    								oldDbFile.getAbsolutePath() 
+	    						);
+	    				
+	    			}
+	    		}
+	    	}
+	}
     
-    @Override 
-    public void save(String filename, Document document)
-    {
-    	File dbFile = new File(collDir, filename + ".json");
-    	saveJsonFile( dbFile, document );
-    }
-    
+	
+	private File getFile(String name) 
+	{
+		String suffix = name.endsWith(FILE_SUFFIX_JSON) ? "" : FILE_SUFFIX_JSON;
+		File dbFile = new File(collDir, name + suffix);
+		return dbFile;
+	}
+	
+	@Override
+	public boolean exists(String name) 
+	{
+		boolean results = false;
+		
+		if ( name != null && name.trim().length() > 0 ) {
+			
+			File dbFile = getFile(name);
+			results = dbFile.exists();
+		}
+		
+		return results;
+	}
+	
     @Override 
     public boolean delete(String name)
     {
-    	File dbFile = new File(collDir, name + ".json");
-    	return virtualDelete( dbFile );
+	    	File dbFile = getFile(name);
+	    	return dbFile.exists() ? virtualDelete( dbFile ) : false;
     }
     
     @Override 
     public File backup( String name )
     {
-    	File dbFile = new File(collDir, name + ".json");
-    	File backupFile = virtualBackup( dbFile );
-    	
-    	return backupFile;
+	    	File dbFile = getFile(name);
+	    	File backupFile = dbFile.exists() ? virtualBackup( dbFile ) : null;
+	    	
+	    	return backupFile;
     }
+
 
 }

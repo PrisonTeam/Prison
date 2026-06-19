@@ -19,10 +19,6 @@ public class PlaceHolderAPIIntegrationUppercaseWrapper
 	}
 	
 
-//	public void registerPlaceholder(String placeholder, Function<Player, String> action) {
-//		this.register();
-//	}
-
     /**
      * This method should always return true unless we
      * have a dependency we need to make sure is on the server
@@ -78,14 +74,9 @@ public class PlaceHolderAPIIntegrationUppercaseWrapper
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
 		
-//		if ( !identifier.toLowerCase().startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED ) ) {
-//			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
-//		}
-		
 		UUID playerUuid = player == null ? null : player.getUniqueId();
 		String results = Prison.get().getPlatform().getPlaceholders()
 									.placeholderTranslate( playerUuid, player.getName(), identifier );
-
 		
 		return ChatColor.translateAlternateColorCodes( '&', results);
 	}

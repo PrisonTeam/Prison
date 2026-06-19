@@ -43,33 +43,33 @@ public class SpigotBlocksListGUI
         ButtonLore lore = new ButtonLore(guiRanksLoreClickToStartBlockSetupMsg(), null);
 
         // This will skip all BlockTypes that are invalid for the versions of MC that the server is running:
-    	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+        PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
         List<PrisonBlock> blockTypes = prisonBlockTypes.getBlockTypes();
         
         // Only loop over the blocks that we need to show:
         int i = counter;
         for ( ; i < blockTypes.size() && i < counter + pageSize; i++ ) {
-        	PrisonBlock prisonBlock = blockTypes.get( i );
-
-        	XMaterial xMat = SpigotUtil.getXMaterial( prisonBlock );
-
-        	if ( PrisonBlock.IGNORE.equals( prisonBlock )) {
-        		xMat = XMaterial.BARRIER;
-        	}
-        	if ( xMat == null ) {
-        		xMat = XMaterial.STONE;
-        	}
-
-        	gui.addButton(new Button(null, xMat, lore, "&a" +
-                    prisonBlock.getBlockName().toUpperCase() + " &0" + mineName + " " + counter));
+	        	PrisonBlock prisonBlock = blockTypes.get( i );
+	
+	        	XMaterial xMat = SpigotUtil.getXMaterial( prisonBlock );
+	
+	        	if ( PrisonBlock.IGNORE.equals( prisonBlock )) {
+	        		xMat = XMaterial.BARRIER;
+	        	}
+	        	if ( xMat == null ) {
+	        		xMat = XMaterial.STONE;
+	        	}
+	
+	        	gui.addButton(new Button(null, xMat, lore, "&a" +
+	                    prisonBlock.getBlockName().toUpperCase() + " &0" + mineName + " " + counter));
         }
         if ( i < blockTypes.size() ) {
-        	gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(
-        			guiPageNextMsg(), null), "&7Next &0" + mineName + " " + (i + 1)));
+	        	gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(
+	        			guiPageNextMsg(), null), "&7Next &0" + mineName + " " + (i + 1)));
         }
         if ( i >= (pageSize * 2) ) {
-        	gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(
-        			guiPagePriorMsg(), null), "&7Prior &0" + mineName + " " + (i - (pageSize * 2) - 1)));
+	        	gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(
+	        			guiPagePriorMsg(), null), "&7Prior &0" + mineName + " " + (i - (pageSize * 2) - 1)));
         }
 
         // Open the inventory

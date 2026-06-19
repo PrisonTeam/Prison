@@ -365,12 +365,6 @@ public class SpigotPlayerUtil
 			}
 		}
 		
-//		for ( Enchantment e : Enchantment.values() ) {
-//			if (e.getKey().getKey().equalsIgnoreCase( enchant ) ) {
-//				enchantment = e;
-//				break;
-//			}
-//		}
 		
 		if ( enchantment != null ) {
 			
@@ -425,36 +419,6 @@ public class SpigotPlayerUtil
 	}
 	
 
-//	public String getEnchantments() {
-//		StringBuilder sb = new StringBuilder();
-//		
-//		SpigotItemStack itemStack = getItemInHand();
-//		
-//		if ( itemStack != null && itemStack.getBukkitStack() != null) {
-//			try {
-//				
-//				Set<Enchantment> keys = itemStack.getBukkitStack().getEnchantments().keySet();
-//				
-//				for ( Enchantment key : keys ) {
-//					Integer value = itemStack.getBukkitStack().getEnchantments().get( key );
-//					
-//					if ( value != null ) {
-//						if ( sb.length() > 0 ) {
-//							sb.append( ", " );
-//						}
-//						sb.append( key.getName() ).append( ": " ).append( value );
-//						key.getItemTarget().toString()
-//					}
-//				}
-//				
-//			}
-//			catch ( NullPointerException e ) {
-//				// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
-//				// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
-//			}
-//		}
-//	}
-	
 	public String getItemInHandLore() {
 		StringBuilder sb = new StringBuilder();
 		
@@ -481,7 +445,5 @@ public class SpigotPlayerUtil
 	public void setSpigotPlayer( SpigotPlayer spigotPlayer ) {
 		this.spigotPlayer = spigotPlayer;
 	}
-
-
 
 }

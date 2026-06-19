@@ -58,12 +58,11 @@ public class PrisonBlockTypes {
 		
 		// Add in prison's internal block types here:
 		getBlockTypes().add( PrisonBlock.IGNORE );
-//		getBlockTypes().add( PrisonBlock.NULL_BLOCK );
 
 		
 		// Map all available blocks to the blockTypesByName map:
 		for ( PrisonBlock pb : getBlockTypes() ) {
-			getBlockTypesByName().put( pb.getBlockName().toLowerCase(), pb );
+			getBlockTypesByName().put( pb.getBlockNameSearch(), pb );
 		}
 	}
 	
@@ -86,30 +85,33 @@ public class PrisonBlockTypes {
 		
 		// Map all available blocks to the blockTypesByName map:
 		for ( PrisonBlock pb : blockTypes ) {
+
+			String blockKey = pb.getBlockNameSearch();
 			
 			// Check to see if this current block pb already exists, if it does
 			// then set the prefix usage:
-			if ( getBlockTypesByName().containsKey( pb.getBlockName().toLowerCase() )) {
+			if ( getBlockTypesByName().containsKey( blockKey ) ) {
 				
 				pb.setUseBlockTypeAsPrefix( true );
 			}
 			
-			getBlockTypesByName().put( pb.getBlockName().toLowerCase(), pb );
+			
+			getBlockTypesByName().put( blockKey, pb );
 			getBlockTypes().add( pb );
 			
-			if ( pb.getBlockType() != PrisonBlockType.minecraft ) {
-				
-				getBlockTypesByName().put( pb.getBlockNameSearch().toLowerCase(), pb );
-			}
 		}
 	}
 
 	public List<PrisonBlock> getBlockTypes( String searchTerm, boolean restrictToBlocks ) {
 		List<PrisonBlock> results = new ArrayList<>();
     	
+		searchTerm = searchTerm.toLowerCase().replace(" ", "_");
+		
     	for ( PrisonBlock pBlock : getBlockTypes() ) {
-    		if ( (!restrictToBlocks || restrictToBlocks && pBlock.isBlock()) && 
-    				pBlock.getBlockNameSearch().toLowerCase().contains( searchTerm.toLowerCase()  )) {
+    		if ( (!restrictToBlocks || 
+    				restrictToBlocks && 
+    					pBlock.isBlock() && !pBlock.isSellallOnly()) &&
+    				pBlock.getBlockNameSearch().contains( searchTerm  )) {
     			results.add( pBlock );
     		}
     	}
@@ -140,7 +142,10 @@ public class PrisonBlockTypes {
 			blockName = blockName.toLowerCase();
 			if ( "air".equals( blockName ) ) {
 				results = PrisonBlock.AIR;
+				return results;
 			}
+			
+			// only minecraft types should not have the prefix:
 			else if ( blockName.startsWith( PrisonBlockType.minecraft.name() + ":" )) {
 				blockName = blockName.replaceAll( PrisonBlockType.minecraft.name() + ":", "" );
 			}

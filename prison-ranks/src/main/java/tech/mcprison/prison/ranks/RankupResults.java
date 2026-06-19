@@ -17,7 +17,6 @@ public class RankupResults {
 	private RankupCommands command;
 	
 	RankPlayer rankPlayer;
-//	private String player;
 	private String executor;
 	
     private RankupStatus status;
@@ -51,12 +50,12 @@ public class RankupResults {
         
         this.status = RankupStatus.IN_PROGRESS;
         
-    	this.transactions = new ArrayList<>();
-        
-    	this.command = command;
-    	
-    	this.rankPlayer = rankPlayer;
-//        this.player = playerName;
+	    	this.transactions = new ArrayList<>();
+	        
+	    	this.command = command;
+	    	
+	    	this.rankPlayer = rankPlayer;
+	    	
         this.executor = executorName;
         
         this.ladderName = ladderName;
@@ -69,22 +68,22 @@ public class RankupResults {
     
     
     public RankupResults addTransaction( RankupStatus status, RankupTransactions transaction ) {
-    	setStatus( status );
-    	getTransactions().add( transaction );
-    	this.timestampStop = System.currentTimeMillis();
-    	return this;
+	    	setStatus( status );
+	    	getTransactions().add( transaction );
+	    	this.timestampStop = System.currentTimeMillis();
+	    	return this;
     }
     public RankupResults addTransaction( RankupTransactions transaction ) {
-    	getTransactions().add( transaction );
-    	this.timestampStop = System.currentTimeMillis();
-    	return this;
+	    	getTransactions().add( transaction );
+	    	this.timestampStop = System.currentTimeMillis();
+	    	return this;
     }
 
     
     public long getElapsedTime() {
-    	long elapsed = getTimestampStart() - getTimestampStop();
-    	
-    	return ( elapsed < 0 ? 0 : elapsed);
+	    	long elapsed = getTimestampStart() - getTimestampStop();
+	    	
+	    	return ( elapsed < 0 ? 0 : elapsed);
     }
     
     
@@ -102,14 +101,6 @@ public class RankupResults {
 		this.rankPlayer = rankPlayer;
 	}
 
-//	public String getPlayer() {
-//		return player;
-//	}
-//	public void setPlayer( String player ) {
-//		this.player = player;
-//	}
-
-	
 	public RankLadder getLadder() {
 		return ladder;
 	}
@@ -164,20 +155,10 @@ public class RankupResults {
 				getOriginalRank() != null && getOriginalRank().getRankNext() != null &&
 				targetRank != null ) {
 
-//			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-			
-//			PlayerRank pRank = rankPlayerFactory.createPlayerRank( getOriginalRank() );
 
 	        // This calculates the target rank, and takes in to consideration the player's existing rank:
 			playerRankTarget = rankPlayer.calculateTargetPlayerRank( targetRank );
 			
-//			playerRankTarget = pRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
-//	        playerRankTarget = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
-			
-//			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );
-//			PlayerRank pRankNext = new PlayerRank( targetRank, pRank.getRankMultiplier() );
-
-//			playerRankTarget = pRankNext;
 		}
 		return playerRankTarget;
 	}

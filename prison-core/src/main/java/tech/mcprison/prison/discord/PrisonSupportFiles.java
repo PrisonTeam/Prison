@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import tech.mcprison.prison.Prison;
 
@@ -22,6 +24,8 @@ public class PrisonSupportFiles {
 	private File supportFile;
 
 	private boolean colorMapping = true;
+	
+	private PrisonSupportFileLinkage linkage;
 	
 	public enum ColorMaps {
 		black( "&0", "<span class=\"cc0\">", "</span>" ),
@@ -81,20 +85,6 @@ public class PrisonSupportFiles {
 				String cc1 = cm.getColorCode();
 				String cc2 = cc1.replace("&", SECTION_CODE);
 
-//				char test = line.charAt(0);
-//				char test2 = '\u0167';
-//				
-//				String t = "Test: " + test + test2;
-//				
-//				String cc2 = cc1.replace("&", "§");
-//				String cc3 = cc1.replace("&", "\u0167"); // Section code: §, &#167; &#xA7; &sect;
-//				String cc4 = cc1.replace("&", Character.toString(test2) ); 
-//
-//				char test3 = cc2.charAt(0);
-				
-//				Character.getType( cc2.charAt(0));
-//				Character. ( cc2.charAt(0));
-				
 				if ( line.toLowerCase().startsWith( cc1 ) || line.startsWith( cc2 ) ) {
 					results = cm;
 					break;
@@ -134,20 +124,11 @@ public class PrisonSupportFiles {
 		
 	}
 	
-//	private void saveSupportDataToFile( StringBuilder text ) {
-//		File file = getSupportFile();
-//		
-//		try {
-//			Files.write( text.toString().getBytes(), file);
-//		} 
-//		catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
 	
 	private void saveSupportDataToFile( StringBuilder text, String supportName ) {
 		File file = getSupportFile();
+		
+		linkage = new PrisonSupportFileLinkage();
 		
 		try ( 
 				BufferedWriter bw = new BufferedWriter( new FileWriter( file, false )); // create file	
@@ -177,7 +158,6 @@ public class PrisonSupportFiles {
 			bw.write( "\n\n- = - = - = - = - = - = - = - = - = - = -\n\n");
 			
 			writeBufferedWriter( bw, text );
-//			bw.write( text.toString() );
 			
 		} 
 		catch (IOException e) {
@@ -208,7 +188,40 @@ public class PrisonSupportFiles {
 			
 		}
 	}
+
 	
+	
+	@SuppressWarnings("unused")
+	private List<String> extractAllHyperlinkPlaceholders( StringBuilder text ) {
+		
+		List<String> hlp = new ArrayList<>();
+		
+		try (
+				BufferedReader br = new BufferedReader( new StringReader( text.toString() ));
+			) {
+			
+			String line = br.readLine();
+			
+			while ( line != null ) {
+				
+				
+				if ( line.startsWith( "||`" ) ) {
+					
+					linkage.addLinkage( line );
+					hlp.add( line );
+				}
+				
+				line = br.readLine();
+			}
+			
+		}
+		catch ( Exception e ) {
+			
+		}
+		
+		return hlp;
+	}
+
 
 	protected String convertColorCodes(String line) {
 		StringBuilder sb = new StringBuilder();
@@ -345,13 +358,6 @@ public class PrisonSupportFiles {
 		File dir = new File( Prison.get().getDataFolder(), "backups" );
 		
 		File file = createSupportFile( dir, name );
-		
-//		File[] files = dir.listFiles( new FilenameFilter() {
-//			public boolean accept( File dir, String fileName ) {
-//				return fileName.startsWith("prison_support_") && 
-//						fileName.endsWith(".md");
-//			}
-//		});
 		
 		return file;
 	}

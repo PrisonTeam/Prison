@@ -1,7 +1,8 @@
 package tech.mcprison.prison.spigot.spiget;
 
-import org.bukkit.Bukkit;
 import org.inventivetalent.update.spiget.comparator.VersionComparator;
+
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
 
 /**
  * <p>This class provides a <i>real</i> comparator for semantic versioning 
@@ -40,124 +41,127 @@ public class BluesSpigetSemVerComparator
 	
 	@Override
 	public boolean isNewer(String currentVersion, String checkVersion) {
-		return performComparisons( currentVersion, checkVersion);
+		BluesSemanticVersionComparator semVer = new BluesSemanticVersionComparator();
+		
+		return semVer.performComparisons(currentVersion, checkVersion);
+//		return performComparisons( currentVersion, checkVersion);
 	}
 	
-	/**
-	 * <p>This function will take two String values and convert both to a 
-	 * SemanticVersioningData objects, that in turn, will parse the string 
-	 * and encapsulate the full representation as an object.  Since this object 
-	 * implements comparable, its then as simple as comparing the new semVer to the
-	 * current semVer to find out if it is actually newer.
-	 * </p>
-	 * 
-	 * <p>The semantic versions must be valid.  At a minimum they have to 
-	 * have a format such as 1.0.0.  If one is invalid, then compareTo will
-	 * favor the valid semVer.  If both are invalid then compareTo will return 
-	 * a negative -1000, which will equate to false result.  
-	 * </p>
-	 * 
-	 * @param currentVersion A String value representing the current semVer
-	 * @param checkVersion A String value representing the checked semVer
-	 * @return True if the checkVersion is a higher semVer than the current version
-	 */
-	public boolean performComparisons( String currentVersion, String checkVersion ) {
-		
-		BluesSemanticVersionData currentSemVer = new BluesSemanticVersionData(currentVersion);
-		BluesSemanticVersionData checkSemVer = new BluesSemanticVersionData(checkVersion);
-
-		return (checkSemVer.compareTo( currentSemVer ) > 0);
-	}
-		
-	/**
-	 * <p>Example how to use:
-	 * </p>
-	 * 
-	 * <pre>
-	 * String ver = Bukkit.getVersion().trim();
-	 * ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
-	 * if ( new BluesSpigetSemVerComparator().compareTo(ver, "1.9.0") ) {
-	 *     // if mc version is less than 1.9.0
-	 * }
-	 * </pre>
-	 * 
-	 * @param currentVersion
-	 * @param checkVersion
-	 * @return
-	 */
-	public int compareTo( String currentVersion, String checkVersion ) {
-		
-		BluesSemanticVersionData currentSemVer = new BluesSemanticVersionData(currentVersion);
-		BluesSemanticVersionData checkSemVer = new BluesSemanticVersionData(checkVersion);
-
-		return currentSemVer.compareTo( checkSemVer );
-	}
-
-	/**
-	 * <p>This uses the minecraft version of the server to compare to the provided version.
-	 * </p>
-	 * 
-	 * <p>Samples of what a bukkit, spigot, and paper version would look like. Notice
-	 * they all have the version at the end between <b>(MC:</b> and <b>)</b>.
-	 * </p>
-	 * 
-	 * <ul>
-	 *     <li>Spigot 1.8.8: git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)</li>
-	 *     <li>Spigot 1.10.2: git-Spigot-de459a2-51263e9 (MC: 1.10.2)</li>
-	 *     <li>Spigot 1.12.2: git-Spigot-79a30d7-acbc348 (MC: 1.12.2)</li>
-	 *     <li>Spigot 1.15.2: git-Spigot-2040c4c-893ad93 (MC: 1.15.2)</li>
-	 *     <li>Paper 1.10.2: git-Paper-916.2 (MC: 1.10.2)</li>
-	 *     <li>Paper 1.14.2: git-Paper-234 (MC: 1.14.4)</li>
-	 * </ul>
-	 * 
-	 * 	 * <p>Example how to use:
-	 * </p>
-	 * 
-	 * <pre>
-	 * if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
-	 *     // if mc version is less than 1.9.0
-	 * }
-	 * </pre>
-	 * 
-	 * @param checkVersion
-	 * @return
-	 */
-	public int compareMCVersionTo( String checkVersion ) {
-		int results = -1;
-		String currentVersion = getBukkitVersion();
-		if ( currentVersion != null ) {
-			
-			results = compareTo( currentVersion, checkVersion );
-		}
-		return results;
-	}
-	
-	public String getBukkitVersion() {
-		// Minecraft version: git-Paper-21 (MC: 1.15)
-		
-		return getBukkitVersion( getBukkitVersionRaw() );
-	}
-	private String getBukkitVersionRaw() {
-		return Bukkit.getVersion();
-	}
-	
-	protected String getBukkitVersion( String currentVersion ) {
-		String results = null;
-		
-		if ( currentVersion != null ) {
-			currentVersion = currentVersion.trim().toLowerCase();
-			int i = currentVersion.indexOf("(mc:");
-			int len = currentVersion.length();
-			if ( i >= 0 && (i+4 < len)) {
-				results = currentVersion.substring( i + 4, len - 1 ).trim();
-			}
-		}
-		
-//		if ( results !=  null && "1.17".equals( results ) ) {
-//			results = "1.17.0";
+//	/**
+//	 * <p>This function will take two String values and convert both to a 
+//	 * SemanticVersioningData objects, that in turn, will parse the string 
+//	 * and encapsulate the full representation as an object.  Since this object 
+//	 * implements comparable, its then as simple as comparing the new semVer to the
+//	 * current semVer to find out if it is actually newer.
+//	 * </p>
+//	 * 
+//	 * <p>The semantic versions must be valid.  At a minimum they have to 
+//	 * have a format such as 1.0.0.  If one is invalid, then compareTo will
+//	 * favor the valid semVer.  If both are invalid then compareTo will return 
+//	 * a negative -1000, which will equate to false result.  
+//	 * </p>
+//	 * 
+//	 * @param currentVersion A String value representing the current semVer
+//	 * @param checkVersion A String value representing the checked semVer
+//	 * @return True if the checkVersion is a higher semVer than the current version
+//	 */
+//	public boolean performComparisons( String currentVersion, String checkVersion ) {
+//		
+//		BluesSemanticVersionData currentSemVer = new BluesSemanticVersionData(currentVersion);
+//		BluesSemanticVersionData checkSemVer = new BluesSemanticVersionData(checkVersion);
+//
+//		return (checkSemVer.compareTo( currentSemVer ) > 0);
+//	}
+//		
+//	/**
+//	 * <p>Example how to use:
+//	 * </p>
+//	 * 
+//	 * <pre>
+//	 * String ver = Bukkit.getVersion().trim();
+//	 * ver = ver.substring( ver.indexOf("(MC: ") + 5, ver.length() -1 );
+//	 * if ( new BluesSpigetSemVerComparator().compareTo(ver, "1.9.0") ) {
+//	 *     // if mc version is less than 1.9.0
+//	 * }
+//	 * </pre>
+//	 * 
+//	 * @param currentVersion
+//	 * @param checkVersion
+//	 * @return
+//	 */
+//	public int compareTo( String currentVersion, String checkVersion ) {
+//		
+//		BluesSemanticVersionData currentSemVer = new BluesSemanticVersionData(currentVersion);
+//		BluesSemanticVersionData checkSemVer = new BluesSemanticVersionData(checkVersion);
+//
+//		return currentSemVer.compareTo( checkSemVer );
+//	}
+//
+//	/**
+//	 * <p>This uses the minecraft version of the server to compare to the provided version.
+//	 * </p>
+//	 * 
+//	 * <p>Samples of what a bukkit, spigot, and paper version would look like. Notice
+//	 * they all have the version at the end between <b>(MC:</b> and <b>)</b>.
+//	 * </p>
+//	 * 
+//	 * <ul>
+//	 *     <li>Spigot 1.8.8: git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)</li>
+//	 *     <li>Spigot 1.10.2: git-Spigot-de459a2-51263e9 (MC: 1.10.2)</li>
+//	 *     <li>Spigot 1.12.2: git-Spigot-79a30d7-acbc348 (MC: 1.12.2)</li>
+//	 *     <li>Spigot 1.15.2: git-Spigot-2040c4c-893ad93 (MC: 1.15.2)</li>
+//	 *     <li>Paper 1.10.2: git-Paper-916.2 (MC: 1.10.2)</li>
+//	 *     <li>Paper 1.14.2: git-Paper-234 (MC: 1.14.4)</li>
+//	 * </ul>
+//	 * 
+//	 * 	 * <p>Example how to use:
+//	 * </p>
+//	 * 
+//	 * <pre>
+//	 * if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
+//	 *     // if mc version is less than 1.9.0
+//	 * }
+//	 * </pre>
+//	 * 
+//	 * @param checkVersion
+//	 * @return
+//	 */
+//	public int compareMCVersionTo( String checkVersion ) {
+//		int results = -1;
+//		String currentVersion = getBukkitVersion();
+//		if ( currentVersion != null ) {
+//			
+//			results = compareTo( currentVersion, checkVersion );
 //		}
-		
-		return results;
-	}
+//		return results;
+//	}
+//	
+//	public String getBukkitVersion() {
+//		// Minecraft version: git-Paper-21 (MC: 1.15)
+//		
+//		return getBukkitVersion( getBukkitVersionRaw() );
+//	}
+//	private String getBukkitVersionRaw() {
+//		return Bukkit.getVersion();
+//	}
+//	
+//	protected String getBukkitVersion( String currentVersion ) {
+//		String results = null;
+//		
+//		if ( currentVersion != null ) {
+//			currentVersion = currentVersion.trim().toLowerCase();
+//			int i = currentVersion.indexOf("(mc:");
+//			int len = currentVersion.length();
+//			if ( i >= 0 && (i+4 < len)) {
+//				results = currentVersion.substring( i + 4, len - 1 ).trim();
+//			}
+//		}
+//		
+////		if ( results !=  null && "1.17".equals( results ) ) {
+////			results = "1.17.0";
+////		}
+//		
+//		return results;
+//	}
 
 }

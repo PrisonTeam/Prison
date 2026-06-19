@@ -3,6 +3,12 @@ group 'tech.mcprison'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = "UTF-8"
 
+
+ext.targetArchiveClassifier = 'Java1.8'
+//ext.targetArchiveClassifier = 'Java16'
+
+
+
 dependencies {
     implementation project(':prison-core')
     testImplementation group: 'junit', name: 'junit', version: '4.12'

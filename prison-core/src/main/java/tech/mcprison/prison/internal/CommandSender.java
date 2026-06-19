@@ -31,13 +31,6 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 public interface CommandSender 
 					extends PlayerPermissions {
 
-//	/**
-//	 * Returns the UUID for CommandSender if they are a bukkit Player.
-//	 * 
-//	 * @return
-//	 */
-//	public UUID getUUID();
-	
     /**
      * Returns the name of the command sender.
      */
@@ -89,18 +82,6 @@ public interface CommandSender
     public void sendRaw(String json);
     
     
-//    public boolean isOp();
-//    
-//    public void recalculatePermissions();
-//    
-//    /**
-//     * Returns true if the command sender has access to the permission specified.
-//     *
-//     * @param perm The permission to check.
-//     */
-//    boolean hasPermission(String perm);
-
-    
     public boolean isPlayer();
 
 	public List<String> getSellAllMultiplierListings();
@@ -120,5 +101,15 @@ public interface CommandSender
 	
 	public RankPlayer getRankPlayer();
 
+	
+	/**
+	 * This miscText is not used for any specific purpose other than to hold a String 
+	 * value.  It can be used to return a message from a function, but it should always
+	 * be cleared when done using it.
+	 * 
+	 * @return
+	 */
+	public String getMiscText();
+	public void setMiscText( String text );
 
 }

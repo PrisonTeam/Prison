@@ -66,7 +66,7 @@ public class GuiConfig extends SpigotConfigComponents{
         }
 
         if ( conf.getList( "EditableLore.README-Updated-2022-12-22" ) == null ) {
-        	 List<String> lore = new ArrayList<>();
+        		List<String> lore = new ArrayList<>();
              lore.add(" ");
              lore.add("&8-----------------------");
              lore.add("&7 WARNING!! DO NOT EDIT THESE!!");
@@ -130,16 +130,16 @@ public class GuiConfig extends SpigotConfigComponents{
         }
         
         if (conf.getList("EditableLore.Rank.default.Z") == null){
-        	List<String> lore = new ArrayList<>();
-        	lore.add(" ");
-        	lore.add("&8-----------------------");
-        	lore.add("&3The end of the most amazing adventure.");
-        	lore.add("&3But... if you do '/prestige' you can start");
-        	lore.add("&3start over and have even more fun!");
-        	lore.add("&8-----------------------");
-        	
-        	conf.set("EditableLore.Rank.default.Z", lore);
-        	changeCount++;
+	        	List<String> lore = new ArrayList<>();
+	        	lore.add(" ");
+	        	lore.add("&8-----------------------");
+	        	lore.add("&3The end of the most amazing adventure.");
+	        	lore.add("&3But... if you do '/prestige' you can start");
+	        	lore.add("&3start over and have even more fun!");
+	        	lore.add("&8-----------------------");
+	        	
+	        	conf.set("EditableLore.Rank.default.Z", lore);
+	        	changeCount++;
         }
 
         if (conf.getList("EditableLore.Rank.prestiges.p1") == null){
@@ -186,182 +186,188 @@ public class GuiConfig extends SpigotConfigComponents{
         }
         
         if (conf.getList("EditableLore.Mine.Z") == null){
-        	List<String> lore = new ArrayList<>();
-        	lore.add(" ");
-        	lore.add("&8-----------------------");
-        	lore.add("&3Time to get ready to prestige, and restart the fun adventure!");
-        	lore.add("&8-----------------------");
-        	
-        	conf.set("EditableLore.Mine.Z", lore);
-        	changeCount++;
+	        	List<String> lore = new ArrayList<>();
+	        	lore.add(" ");
+	        	lore.add("&8-----------------------");
+	        	lore.add("&3Time to get ready to prestige, and restart the fun adventure!");
+	        	lore.add("&8-----------------------");
+	        	
+	        	conf.set("EditableLore.Mine.Z", lore);
+	        	changeCount++;
         }
         
         if ( conf.get( "Options.Mines.MaterialType" ) == null ) {
         	
-        	if ( PrisonMines.getInstance() != null ) {
-
-        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
-        		
-        		map.put("NoMineAccess", XMaterial.REDSTONE_BLOCK.name() );
-        				
-        		
-        		if ( PrisonMines.getInstance().getMineManager() != null && 
-        				PrisonMines.getInstance().getMineManager().getMines() != null && 
-        				PrisonMines.getInstance().getMineManager().getMines().size() > 0 ) {
-        			
-        			for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
-        				if ( mine.getPrisonBlocks().size() > 0 ) {
-        					map.put( mine.getName(), mine.getPrisonBlocks().get(0).getBlockName() );
-        				}
-        			}
-        		}
-        		
-        		conf.set("Options.Mines.MaterialType", map);
-        		changeCount++;
-        	}
+	        	if ( PrisonMines.getInstance() != null ) {
+	
+	        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+	        		
+	        		map.put("NoMineAccess", XMaterial.REDSTONE_BLOCK.name() );
+	        				
+	        		
+	        		if ( PrisonMines.getInstance().getMineManager() != null && 
+	        				PrisonMines.getInstance().getMineManager().getMines() != null && 
+	        				PrisonMines.getInstance().getMineManager().getMines().size() > 0 ) {
+	        			
+	        			for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
+	        				if ( mine.getPrisonBlocks().size() > 0 ) {
+	        					map.put( mine.getName(), mine.getPrisonBlocks().get(0).getBlockName() );
+	        				}
+	        			}
+	        		}
+	        		
+	        		conf.set("Options.Mines.MaterialType", map);
+	        		changeCount++;
+	        	}
         }
         else if ( conf.get( "Options.Mines.MaterialType.NoMineAccess" ) == null ) {
         	
-        	String noMineAccess = XMaterial.REDSTONE_BLOCK.name();
-        	
-        	conf.set("Options.Mines.MaterialType.NoMineAccess", noMineAccess );
-        	changeCount++;
+	        	String noMineAccess = XMaterial.REDSTONE_BLOCK.name();
+	        	
+	        	conf.set("Options.Mines.MaterialType.NoMineAccess", noMineAccess );
+	        	changeCount++;
         }
+        
+        
+        
         if ( conf.get( "Options.Mines.MaterialType.HasMineAccess" ) == null ) {
         	
-        	String hasMineAccess = XMaterial.COAL_ORE.name();
-        	
-        	conf.set("Options.Mines.MaterialType.HasMineAccess", hasMineAccess );
-        	changeCount++;
-        }       
+	        	String hasMineAccess = XMaterial.COAL_ORE.name();
+	        	
+	        	conf.set("Options.Mines.MaterialType.HasMineAccess", hasMineAccess );
+	        	changeCount++;
+        }   
         
 
         
         if ( conf.get( "Options.Ranks.MaterialType" ) == null ) {
         	
-        	if ( PrisonRanks.getInstance() != null ) {
-        		
-        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
-        		
-        		map.put("NoRankAccess", XMaterial.REDSTONE_BLOCK.name() );
-
-        		if ( PrisonRanks.getInstance().getRankManager() != null && 
-        				PrisonRanks.getInstance().getRankManager().getRanks() != null &&
-        				PrisonRanks.getInstance().getRankManager().getRanks().size() > 0 ) {
-        			
-        			// Example to preset all ranks: Only do the first 10:
-        			int count = 0;
-        			for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
-        				map.put( rank.getName(), XMaterial.TRIPWIRE_HOOK.name() );
-        				if ( ++count >= 10 ) {
-        					break;
-        				}
-        			}
-        		}
-        		
-        		conf.set("Options.Ranks.MaterialType", map);
-        		changeCount++;
-        	}
+	        	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+	        		
+	        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+	        		
+	        		map.put("NoRankAccess", XMaterial.REDSTONE_BLOCK.name() );
+	
+	        		if ( PrisonRanks.getInstance().getRankManager() != null && 
+	        				PrisonRanks.getInstance().getRankManager().getRanks() != null &&
+	        				PrisonRanks.getInstance().getRankManager().getRanks().size() > 0 ) {
+	        			
+	        			// Example to preset all ranks: Only do the first 10:
+	        			int count = 0;
+	        			for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
+	        				map.put( rank.getName(), XMaterial.TRIPWIRE_HOOK.name() );
+	        				if ( ++count >= 10 ) {
+	        					break;
+	        				}
+	        			}
+	        		}
+	        		
+	        		conf.set("Options.Ranks.MaterialType", map);
+	        		changeCount++;
+	        	}
         }
         else if ( conf.get( "Options.Ranks.MaterialType.NoRankAccess" ) == null ) {
-        	
-        	String noRankAccess = XMaterial.REDSTONE_BLOCK.name();
-        	
-        	conf.set("Options.Ranks.MaterialType.NoRankAccess", noRankAccess );
-        	changeCount++;
+	        	
+	        	String noRankAccess = XMaterial.REDSTONE_BLOCK.name();
+	        	
+	        	conf.set("Options.Ranks.MaterialType.NoRankAccess", noRankAccess );
+	        	changeCount++;
         }
+        
+        
         if ( conf.get( "Options.Ranks.MaterialType.HasRankAccess" ) == null ) {
         	
-        	String hasRankAccess = XMaterial.TRIPWIRE_HOOK.name();
-        	
-        	conf.set("Options.Ranks.MaterialType.HasRankAccess", hasRankAccess );
-        	changeCount++;
+	        	String hasRankAccess = XMaterial.TRIPWIRE_HOOK.name();
+	        	
+	        	conf.set("Options.Ranks.MaterialType.HasRankAccess", hasRankAccess );
+	        	changeCount++;
         }
         
         // The following is an error and should be removed if it is found:
         if ( conf.get( "Options.Ranks.MaterialType.NoMineAccess" ) == null ) {
-
-        	conf.set("Options.Ranks.MaterialType.NoMineAccess", null );
-        	changeCount++;
+	
+	        	conf.set("Options.Ranks.MaterialType.NoMineAccess", null );
+	        	changeCount++;
         }
         if ( conf.get( "Options.Ranks.Item_gotten_rank" ) == null ) {
         	
-        	conf.set("Options.Ranks.Item_gotten_rank", null );
-        	changeCount++;
+	        	conf.set("Options.Ranks.Item_gotten_rank", null );
+	        	changeCount++;
         }
         if ( conf.get( "Options.Ranks.Item_not_gotten_rank" ) == null ) {
-        	
-        	conf.set("Options.Ranks.Item_not_gotten_rank", null );
-        	changeCount++;
+	        	
+	        	conf.set("Options.Ranks.Item_not_gotten_rank", null );
+	        	changeCount++;
         }
         
         
         
         if ( conf.get( "Options.Mines.GuiItemNameDefault" ) == null ) {
         	
-        	String defaultName = "{mineTag}";
-        	
-        	conf.set("Options.Mines.GuiItemNameDefault", defaultName );
-        	changeCount++;
+	        	String defaultName = "{mineTag}";
+	        	
+	        	conf.set("Options.Mines.GuiItemNameDefault", defaultName );
+	        	changeCount++;
         }
         
         if ( conf.get( "Options.Mines.GuiItemNames" ) == null ) {
         	
-        	if ( PrisonMines.getInstance() != null &&
-        			PrisonMines.getInstance().getMineManager() != null && 
-        				PrisonMines.getInstance().getMineManager().getMines() != null && 
-        				PrisonMines.getInstance().getMineManager().getMines().size() > 0 ) {
-        		
-        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
-        		
-        		// Example to preset all mines: Only do the first 10:
-        		int count = 0;
-        		for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
-        			map.put( mine.getName(), mine.getTag() );
-        			if ( ++count >= 10 ) {
-        				break;
-        			}
-        		}
-        		
-        		conf.set("Options.Mines.GuiItemNames", map);
-        		changeCount++;
-        	}
+	        	if ( PrisonMines.getInstance() != null &&
+	        			PrisonMines.getInstance().getMineManager() != null && 
+	        				PrisonMines.getInstance().getMineManager().getMines() != null && 
+	        				PrisonMines.getInstance().getMineManager().getMines().size() > 0 ) {
+	        		
+	        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+	        		
+	        		// Example to preset all mines: Only do the first 10:
+	        		int count = 0;
+	        		for ( Mine mine : PrisonMines.getInstance().getMineManager().getMines() ) {
+	        			map.put( mine.getName(), mine.getTag() );
+	        			if ( ++count >= 10 ) {
+	        				break;
+	        			}
+	        		}
+	        		
+	        		conf.set("Options.Mines.GuiItemNames", map);
+	        		changeCount++;
+	        	}
         }
 
         
         if ( conf.get( "Options.Ranks.GuiItemNameDefault" ) == null ) {
         	
-        	String defaultName = "{rankTag}";
-        	
-        	conf.set("Options.Ranks.GuiItemNameDefault", defaultName );
-        	changeCount++;
+	        	String defaultName = "{rankTag}";
+	        	
+	        	conf.set("Options.Ranks.GuiItemNameDefault", defaultName );
+	        	changeCount++;
         }
         if ( conf.get( "Options.Ranks.GuiItemNames" ) == null ) {
         	
-        	if ( PrisonRanks.getInstance() != null &&
-        			PrisonRanks.getInstance().getRankManager() != null && 
-    					PrisonRanks.getInstance().getRankManager().getRanks() != null &&
-    						PrisonRanks.getInstance().getRankManager().getRanks().size() > 0 ) {
-        		
-        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
-        		
-        		// Example to preset all ranks: Only do the first 10:
-        		int count = 0;
-        		for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
-        			map.put( rank.getName(), rank.getTag() );
-        			if ( ++count >= 10 ) {
-        				break;
-        			}
-        		}
-        		
-        		conf.set("Options.Ranks.GuiItemNames", map);
-        		changeCount++;
-        	}
+	        	if ( PrisonRanks.getInstance() != null &&
+	        			PrisonRanks.getInstance().isEnabled() &&
+	        			PrisonRanks.getInstance().getRankManager() != null && 
+	    					PrisonRanks.getInstance().getRankManager().getRanks() != null &&
+	    						PrisonRanks.getInstance().getRankManager().getRanks().size() > 0 ) {
+	        		
+	        		LinkedHashMap<String,String> map = new LinkedHashMap<>();
+	        		
+	        		// Example to preset all ranks: Only do the first 10:
+	        		int count = 0;
+	        		for ( Rank rank : PrisonRanks.getInstance().getRankManager().getRanks() ) {
+	        			map.put( rank.getName(), rank.getTag() );
+	        			if ( ++count >= 10 ) {
+	        				break;
+	        			}
+	        		}
+	        		
+	        		conf.set("Options.Ranks.GuiItemNames", map);
+	        		changeCount++;
+	        	}
         }
         
         // Count and save
         if (changeCount > 0) {
-        	try {
+        		try {
 				conf.save(file);
 				Output.get().logInfo("&aThere were &b%d &anew values added to the GuiConfig.yml file located at &b%s", changeCount, file.getAbsoluteFile());
 			}
@@ -374,10 +380,10 @@ public class GuiConfig extends SpigotConfigComponents{
     }
 
     private void dataConfig(String key, Object value){
-    	if (conf.getString(key) == null) {
-    		conf.set(key, value);
-    		changeCount++;
-    	}
+	    	if (conf.getString(key) == null) {
+	    		conf.set(key, value);
+	    		changeCount++;
+	    	}
     }
 
     // All the strings of the config should be here

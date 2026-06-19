@@ -32,27 +32,15 @@ import java.util.LinkedList;
  */
 public class ChatDisplay {
 
-  /*
-   * Fields & Constants
-   */
-
     private String title;
     private LinkedList<DisplayComponent> displayComponents;
     
     private boolean showTitle = true;
 
-  /*
-   * Constructor
-   */
-
     public ChatDisplay(String title) {
         this.title = Text.titleize(title);
         this.displayComponents = new LinkedList<>();
     }
-
-  /*
-   * Methods
-   */
 
     public ChatDisplay addComponent(DisplayComponent component) {
         component.setDisplay(this);
@@ -71,19 +59,19 @@ public class ChatDisplay {
     }
 
     public void send(CommandSender sender) {
-    	if ( isShowTitle() ) {
-    		sender.sendMessage(title);
-    	}
-    	
+	    	if ( isShowTitle() ) {
+	    		sender.sendMessage(title);
+	    	}
+	    	
         for (DisplayComponent component : displayComponents) {
             component.send(sender);
         }
     }
     
     public void toLog(LogLevel logLevel) {
-    	if ( isShowTitle() ) {
-    		Output.get().log( title, logLevel );
-    	}
+	    	if ( isShowTitle() ) {
+	    		Output.get().log( title, logLevel );
+	    	}
     	
         for (DisplayComponent component : displayComponents) {
         	Output.get().log( component.text(), logLevel );
@@ -91,9 +79,9 @@ public class ChatDisplay {
     }
     
     public void sendtoOutputLogInfo() {
-    	if ( isShowTitle() ) {
-    		Output.get().logInfo( title );
-    	}
+	    	if ( isShowTitle() ) {
+	    		Output.get().logInfo( title );
+	    	}
     	
         for (DisplayComponent component : displayComponents) {
         	Output.get().logInfo( component.text() );
@@ -101,11 +89,11 @@ public class ChatDisplay {
     }
 
     public StringBuilder toStringBuilder() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	if ( isShowTitle() ) {
-    		sb.append( title ).append( "\n" );
-    	}
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	if ( isShowTitle() ) {
+	    		sb.append( title ).append( "\n" );
+	    	}
     	
         for (DisplayComponent component : displayComponents) {
         	sb.append( component.text() ).append( "\n" );
@@ -115,17 +103,17 @@ public class ChatDisplay {
     }
     
     public StringBuilder toStringBuilderEscaped() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	if ( isShowTitle() ) {
-    		sb.append( title ).append( "\\n" );
-    	}
-    	
-    	for (DisplayComponent component : displayComponents) {
-    		sb.append( component.text() ).append( "\\n" );
-    	}
-    	
-    	return sb;
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	if ( isShowTitle() ) {
+	    		sb.append( title ).append( "\\n" );
+	    	}
+	    	
+	    	for (DisplayComponent component : displayComponents) {
+	    		sb.append( component.text() ).append( "\\n" );
+	    	}
+	    	
+	    	return sb;
     }
 
 	public void addChatDisplay( ChatDisplay cDisp )
@@ -133,9 +121,9 @@ public class ChatDisplay {
 
 		addComponent(new TextComponent(cDisp.getTitle()));
 		
-    	for (DisplayComponent component : cDisp.getDisplayComponents() ) {
-    		addComponent( component );
-    	}
+	    	for (DisplayComponent component : cDisp.getDisplayComponents() ) {
+	    		addComponent( component );
+	    	}
 	}
 
 	protected String getTitle() {

@@ -39,39 +39,66 @@ public class ItemStack {
     private int amount;
     private PrisonBlock material;
     private List<String> lore;
-//    private Map<Integer, Integer> enchantments;
 
+    public static final ItemStack SELECTION_WAND;
     
+    static {
+	    	SELECTION_WAND = new ItemStack( 1, PrisonBlock.SELECTION_WAND, 
+					"&7Corner 1 - Left click",
+		            "&7Corner 2 - Right click");
+    }
+    
+    /**
+     * Do not use this constructor, it is for unit testing.
+     */
     protected ItemStack() {
-    	super();
-    	
-    	this.lore = new ArrayList<>();
-//    	this.enchantments = new HashMap<>();
+	    	super();
+	    	
+	    	this.lore = new ArrayList<>();
     }
     
     public ItemStack(String displayName, int amount, PrisonBlock material, String... lore) {
         this.displayName = displayName;
         this.amount = amount;
-        this.material = material;
+        this.material = material.clone();
         this.lore = new ArrayList<>(Arrays.asList(lore));
-//        this.enchantments = new HashMap<>();
+        
+        if ( displayName != null && displayName.trim().length() > 0 ) {
+        	this.material.setDisplayName( displayName.trim() );
+        }
+        
     }
 
     public ItemStack(int amount, PrisonBlock material, String... lore) {
         this.amount = amount;
         this.material = material;
         this.lore = new ArrayList<>(Arrays.asList(lore));
+        
+        if ( material.getDisplayName() != null && material.getDisplayName().trim().length() > 0 ) {
+        		setDisplayName( material.getDisplayName() );
+        }
     }
 
+    public ItemStack( ItemStack iStack ) {
+	    	this.displayName = iStack.getDisplayName();
+	    	this.amount = iStack.getAmount();
+	    	this.material = iStack.getMaterial().clone();
+	    	this.lore = new ArrayList<>( iStack.getLore() );
+        
+        if ( displayName != null && displayName.trim().length() > 0 ) {
+        		this.material.setDisplayName( displayName.trim() );
+        }
+    }
+    
     /**
      * Returns the name of the item stack, derived from its BlockType name.
      */
     public String getName() {
-    	String name = (material != null ? 
-    						material.getBlockName() : 
-    						( getDisplayName() != null ? 
-    								getDisplayName() : 
-    								"none"));
+	    	String name = (material != null ? 
+	    						material.getBlockName() : 
+	    						( getDisplayName() != null ? 
+	    								getDisplayName() : 
+	    								"none"));
         return StringUtils.capitalize(name.replaceAll("_", " ").toLowerCase());
     }
 
@@ -99,11 +126,28 @@ public class ItemStack {
      * Returns the type of items in this stack.
      */
     public PrisonBlock getMaterial() {
+    	
+	    	if ( getDisplayName() != null && getDisplayName().trim().length() > 0 && 
+	    			material.getDisplayName() == null || 
+	    					material.getDisplayName() != null && material.getDisplayName().trim().length() == 0 ) {
+	    		material.setDisplayName( getDisplayName() );
+	    	}
+    	
         return material;
     }
     public void setMaterial( PrisonBlock material ) {
 		this.material = material;
 	}
+    
+    /**
+     * <p>The material for an item stack is the PrisonBlock.
+     * </p>
+     * 
+     * @return
+     */
+    public PrisonBlock getPrisonBlock() {
+    		return getMaterial();
+    }
 
 	public List<String> getLore() {
         return lore;
@@ -112,23 +156,9 @@ public class ItemStack {
 		this.lore = lore;
 	}
 
-//	public Map<Object, Integer> getEnchantments() {
-//        return enchantments;
-//    }
-//
-//    public void addEnchantment(Object enchantment, int level) {
-//        enchantments.put(enchantment, level);
-//    }
-//
-//    public boolean hasEnchantments() {
-//        return !enchantments.isEmpty();
-//    }
-//
-//    public boolean hasEnchantment(int enchantment) {
-//        return enchantments.containsKey(enchantment);
-//    }
 
-    @Override public boolean equals(Object o) {
+    @Override 
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -147,16 +177,17 @@ public class ItemStack {
         		material.compareTo( stack.material ) == 0;
     }
 
-    @Override public int hashCode() {
+    @Override 
+    public int hashCode() {
         int result = amount;
         result = 31 * result + material.hashCode();
         return result;
     }
 
-    @Override public String toString() {
+    @Override 
+    public String toString() {
         return "ItemStack{" + "displayName='" + displayName + '\'' + ", amount=" + amount
             + ", material=" + material + ", lore=" + lore +
             "}";
-            //", enchantments=" + enchantments + '}';
     }
 }

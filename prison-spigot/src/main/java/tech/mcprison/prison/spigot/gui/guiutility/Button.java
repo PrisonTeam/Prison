@@ -105,25 +105,6 @@ public class Button extends SpigotGUIComponents{
         }
     }
 
-//    /**
-//     * Bug: Cannot correctly create a button with Material variants with spigot versions less than 1.13:
-//     * 
-//     * Create button.
-//     *
-//     * @param position - int.
-//     * @param buttonMaterial - Material.
-//     * @param amount - int.
-//     * @param title - String.
-//     * */
-//    public Button(Integer position, Material buttonMaterial, int amount, String title){
-//    	if ( amount > 64 ) {
-//    		amount = 1;
-//    	}
-//        if ((position == null || position < 54) && amount <= 64) {
-//            this.position = position;
-//            this.buttonItem = createButton(buttonMaterial, amount, null, SpigotPrison.format(title));
-//        }
-//    }
 
     /**
      * Create button.
@@ -135,9 +116,9 @@ public class Button extends SpigotGUIComponents{
      * @param title - String.
      * */
     public Button(Integer position, XMaterial buttonMaterial, int amount, ButtonLore lore, String title){
-    	if ( amount > 64 ) {
-    		amount = 1;
-    	}
+	    	if ( amount > 64 ) {
+	    		amount = 1;
+	    	}
         if (position == null || position < 54) {
             this.position = position;
             this.buttonItem = createButton(buttonMaterial.parseItem(), amount, 

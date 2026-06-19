@@ -29,6 +29,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 /**
@@ -47,7 +48,7 @@ public class Spigot_1_8
     
     @Override 
     public EquipmentSlot getHand(BlockPlaceEvent e) {
-    	return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
+    		return EquipmentSlot.HAND; // Spigot 1.8 only has one hand
     }
 
 	@Override 
@@ -57,26 +58,34 @@ public class Spigot_1_8
 
     @Override 
     public ItemStack getItemInMainHand(Player player ) {
-    	return getItemInMainHand( player.getInventory() );
+    		return getItemInMainHand( player.getInventory() );
     }
     
     @SuppressWarnings( "deprecation" )
 	@Override 
     public ItemStack getItemInMainHand(PlayerInventory playerInventory) {
-    	return playerInventory.getItemInHand();
+    		return playerInventory.getItemInHand();
     }
     
     
     public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e) {
-    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
+    		return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
     }
     
     public SpigotItemStack getPrisonItemInMainHand(Player player) {
-    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    		return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    }
+    
+    public SpigotItemStack getPrisonItemInMainHand(SpigotPlayer player) {
+    		return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player.getWrapper() ) );
     }
     
     public SpigotItemStack getPrisonItemInOffHand(Player player) {
-    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    		return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    }
+    
+    public SpigotItemStack getPrisonItemInOffHand(SpigotPlayer player) {
+    		return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player.getWrapper() ) );
     }
 
 	@Override 
@@ -86,22 +95,40 @@ public class Spigot_1_8
 
     @Override 
     public ItemStack getItemInOffHand(Player player ) {
-    	return getItemInOffHand( player.getInventory() );
+    		return getItemInOffHand( player.getInventory() );
     }
     
     /**
      * This function does not exist in v1.8 so returns null.
      */
+    @Override
     public ItemStack getItemInOffHand(PlayerInventory playerInventory) {
-    	return null;
+    		return null;
     }
     
+    /**
+     * This function does not exist in v1.8 so returns null.
+     */
+	@Override
+	public ItemStack getItemInOffHandStrict(Player player) {
+		return null;
+	}
+
+	/**
+	 * This function does not exist in v1.8 so do nothing.
+	 */
+	@Override
+	public void setItemStackInOffHandStrict(Player player, ItemStack itemStack) {
+		
+	}
+	
+	
     @SuppressWarnings( "deprecation" )
 	@Override
     public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
-    	
-    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
-    			.setItemInHand( itemStack.getBukkitStack() );
+	    	
+	    	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
+	    			.setItemInHand( itemStack.getBukkitStack() );
     }
 
     @SuppressWarnings("deprecation")
@@ -109,13 +136,19 @@ public class Spigot_1_8
     public void setItemInMainHand(Player p, ItemStack itemStack) {
         p.getInventory().setItemInHand(itemStack);
     }
+    
+    @SuppressWarnings("deprecation")
+    @Override
+    public void setItemInMainHand(SpigotPlayer p, ItemStack itemStack) {
+    		p.getWrapper().getInventory().setItemInHand(itemStack);
+    }
 
     /**
      * Spigot v1.8 does not have an off hand, so set it to main hand.
      */
 	@Override
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
-    	setItemStackInMainHand( inventory, itemStack );
+		setItemStackInMainHand( inventory, itemStack );
     }
     
     @Override 

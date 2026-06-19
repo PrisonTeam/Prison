@@ -21,7 +21,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
-import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.BlockEventCustomPlaceholders;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.tasks.PrisonCommandTasks;
@@ -44,10 +44,9 @@ public abstract class MineScheduler
 	 * once a workflow cycle has been completed.
 	 * </p>
 	 */
-	private List<MineJob> jobWorkflow;
-	private Stack<MineJob> jobStack;
-//	private MineJob currentJob;
-	private Integer taskId = null;
+	private transient List<MineJob> jobWorkflow;
+	private transient Stack<MineJob> jobStack;
+	private transient Integer taskId = null;
 	
 	private transient long mineResetStartTimestamp;
 	
@@ -69,11 +68,11 @@ public abstract class MineScheduler
      */
 	@Override
 	protected void initialize() {
-    	super.initialize();
-    	
-    	// need to rebuild JobWorkflow if reset time ever changes:
-    	setJobWorkflow( initializeJobWorkflow() );
-    	resetJobStack();
+	    	super.initialize();
+	    	
+	    	// need to rebuild JobWorkflow if reset time ever changes:
+	    	setJobWorkflow( initializeJobWorkflow() );
+	    	resetJobStack();
     }
 	
 	public enum JobType {
@@ -280,7 +279,6 @@ public abstract class MineScheduler
 		
 		if ( includeMessages ) {
 			// Need to ensure that the reset warning times are sorted in ascending order:
-//			ArrayList<Integer> rwTimes = PrisonMines.getInstance().getConfig().resetWarningTimes;
 			Collections.sort( resetWarningTimes );
 			
 			double total = 0;
@@ -352,10 +350,10 @@ public abstract class MineScheduler
 			return;
 		}
 		
-    	boolean skip = !forced && 
-    			isSkipResetEnabled() && 
-    				getPercentRemainingBlockCount() >= getSkipResetPercent() &&
-    				getSkipResetBypassCount() < getSkipResetBypassLimit();
+	    	boolean skip = !forced && 
+	    			isSkipResetEnabled() && 
+	    				getPercentRemainingBlockCount() >= getSkipResetPercent() &&
+	    				getSkipResetBypassCount() < getSkipResetBypassLimit();
     	
 //    	Output.get().logInfo( "Mine Reset: Run: Mine= %s action= %s skip= %s forced= %s ", 
 //    			this.getName(), getCurrentJob().getAction().name(),
@@ -395,9 +393,8 @@ public abstract class MineScheduler
 					MinePagedResetAsyncTask resetTask = 
 								new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions, resetScheduleType );
 					
-		    		resetTask.submitTaskAsync();
+		    			resetTask.submitTaskAsync();
 		    		
-//					resetAsynchonously();
 				} 
 				else {
 					incrementSkipResetBypassCount();
@@ -406,35 +403,11 @@ public abstract class MineScheduler
 				
 				break;
 				
-//			case RESET_SYNC:
-//				// synchronous reset.  Will be phased out in the future?
-//				if ( !skip ) {
-//
-//					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
-//					
-//					MinePagedResetAsyncTask resetTask = 
-//							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
-//					
-//					resetTask.submitTaskAsync();
-//					
-////					resetSynchonously();
-//				} else {
-//					incrementSkipResetBypassCount();
-//				}
-//				
-//				break;
 				
 			default:
 				break;
 		}
 		
-//		if ( getCurrentJob().getAction() == MineJobAction.RESET ) {
-//			resetSynchonously();
-//		} else {
-//			// Send reset message:
-//			broadcastPendingResetMessageToAllPlayersWithRadius(getCurrentJob(), MINE_RESET_BROADCAST_RADIUS_BLOCKS );
-//		}
-//		
 		
 		// this may be an issue for disabled resetTimes... may still need to be submitted?
 		// disabled resets may not need to be submitted at all.
@@ -466,9 +439,9 @@ public abstract class MineScheduler
 	            		"This is serious. &aworldName= " + getWorldName() );
 	        }
 	        else {
-	        	World world = worldOptional.get();
-	        	
-	        	setWorld( world );
+		        	World world = worldOptional.get();
+		        	
+		        	setWorld( world );
 	        }
 		}
 	}
@@ -555,10 +528,11 @@ public abstract class MineScheduler
 	 * @param blockCount
 	 * @param player 
 	 */
-	public void processBlockBreakEventCommands( PrisonBlock prisonBlock,
+	public int processBlockBreakEventCommands( PrisonBlock prisonBlock,
 						MineTargetPrisonBlock targetBlock,
 						Player player, 
 							BlockEventType eventType, String triggered ) {
+		int blockEventsRan = 0;
 		
 		// Only one block is processed here:
 		if ( getBlockEvents().size() > 0 ) {
@@ -571,52 +545,28 @@ public abstract class MineScheduler
 			for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 				double chance = random.nextDouble() * 100;
 				
-				processBlockEventDetails( player, prisonBlock,
-						targetBlock, eventType, chance, blockEvent, triggered,
-						cmdTasks, ++row );
+				blockEventsRan +=
+						processBlockEventDetails( player, prisonBlock,
+								targetBlock, eventType, chance, blockEvent, triggered,
+								cmdTasks, ++row );
 			}
 			
 			
 			PrisonCommandTasks.submitTasks( player, cmdTasks );
 		}
+		
+		return blockEventsRan;
 	}
 
-	
-//	/**
-//	 * <p>This function checks if the block break event should execute a 
-//	 * given command or not. If it needs to, then it will submit them to run as 
-//	 * a task instead of running them in this thread.
-//	 * </p>
-//	 * 
-//	 * @param blockCount
-//	 * @param player 
-//	 */
-//	@Deprecated
-//	public void processBlockBreakEventCommands( int blockCount, Player player, 
-//							BlockEventType eventType, String triggered ) {
-//		
-//		if ( getBlockEvents().size() > 0 ) {
-//			Random random = new Random();
-//			
-//			for ( int i = 0; i < blockCount; i ++ ) {
-//				
-//				for ( MineBlockEvent blockEvent : getBlockEvents() ) {
-//					double chance = random.nextDouble() * 100;
-//					
-//					processBlockEventDetails( player, null, eventType, chance, blockEvent, triggered );
-//				}
-//				
-//			}
-//		}
-//	}
 
-	private void processBlockEventDetails( Player player, PrisonBlock prisonBlock,
+	private int processBlockEventDetails( Player player, PrisonBlock prisonBlock,
 							MineTargetPrisonBlock targetBlock, BlockEventType eventType, 
 				double chance, 
 					MineBlockEvent blockEvent, String triggered, 
 					List<PrisonCommandTaskData> cmdTasks, int row )
 	{
-
+		int blockEventsRan = 0;
+		
 		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, 
 							targetBlock, triggered );
 		
@@ -629,6 +579,8 @@ public abstract class MineScheduler
 					perms == null || 
 					perms.trim().length() == 0
 					) {
+
+				blockEventsRan++;
 				
 				DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
 				
@@ -639,110 +591,58 @@ public abstract class MineScheduler
 				cmdTask.setTaskMode( blockEvent.getTaskMode() );
 				
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineName, getName() );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockName, originalBlock.getBlockName() );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.mineName, getName() );
 				
 				if ( targetBlock.getLocation() != null ) {
 					Location location = targetBlock.getLocation();
 					
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, location.getWorld().getName() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( location.getBlockX() ));
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( location.getBlockY() ));
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( location.getBlockZ() ));
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.locationWorld, location.getWorld().getName() );
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.locationX, Integer.toString( location.getBlockX() ));
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.locationY, Integer.toString( location.getBlockY() ));
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.locationZ, Integer.toString( location.getBlockZ() ));
 					
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, location.toCoordinates() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, location.toWorldCoordinates() );
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.coordinates, location.toCoordinates() );
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.worldCoordinates, location.toWorldCoordinates() );
 					
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, targetBlock.getBlockCoordinates() );
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockCoordinates, targetBlock.getBlockCoordinates() );
 					
 				}
 //				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, prisonBlock.getBlockCoordinates() );
 
 
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockChance, dFmt.format( originalBlock.getChance() ) );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockChance, dFmt.format( originalBlock.getChance() ) );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getBlockPlacedCount() ));
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockRemaining, Long.toString( originalBlock.getBlockCountUnsaved() ));
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getBlockPlacedCount() ));
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockRemaining, Long.toString( originalBlock.getBlockCountUnsaved() ));
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, Long.toString( originalBlock.getBlockCountSession() ) );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blocksMinedTotal, Long.toString( originalBlock.getBlockCountSession() ) );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemaining, Integer.toString( getRemainingBlockCount() ));
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemainingPercent, Double.toString( getPercentRemainingBlockCount() ) );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksTotalMined, Long.toString( getTotalBlocksMined() ));
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksSize, Integer.toString( getBounds().getTotalBlockCount() ));
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.mineBlocksRemaining, Integer.toString( getRemainingBlockCount() ));
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.mineBlocksRemainingPercent, Double.toString( getPercentRemainingBlockCount() ) );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.mineBlocksTotalMined, Long.toString( getTotalBlocksMined() ));
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.mineBlocksSize, Integer.toString( getBounds().getTotalBlockCount() ));
 
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockIsAir, Boolean.toString( targetBlock.getPrisonBlock().isAir() ));
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockIsAir, Boolean.toString( targetBlock.getPrisonBlock().isAir() ));
 				
 				if ( prisonBlock != null ) {
 					
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedName, prisonBlock.getBlockName() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedNameFormal, prisonBlock.getBlockNameFormal() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedBlockType, prisonBlock.getBlockType().name() );
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockMinedName, prisonBlock.getBlockName() );
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockMinedNameFormal, prisonBlock.getBlockNameFormal() );
+					cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.blockMinedBlockType, prisonBlock.getBlockType().name() );
 				}
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventType, eventType.name() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventTriggered, triggered );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.eventType, eventType.name() );
+				cmdTask.addCustomPlaceholder( BlockEventCustomPlaceholders.eventTriggered, triggered );
 				
 				
 				cmdTasks.add( cmdTask );
 				
-				
-//				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
-					
-//				{
-//					
-//					String formatted = blockEvent.getCommand()
-//							.replace( "{msg}", "prison utils msg {player} " )
-//							.replace( "{broadcast}", "prison utils broadcast " )
-//							.replace("{player}", player.getName())
-//							.replace("{player_uid}", player.getUUID().toString());
-//					
-//					// Split multiple commands in to a List of individual tasks:
-//					List<String> tasks = new ArrayList<>( 
-//							Arrays.asList( formatted.split( ";" ) ));
-//					
-//					
-//					if ( tasks.size() > 0 ) {
-//						
-//						String errorMessage = "BlockEvent: Player: " + player.getName();
-//						
-//						boolean playerTask = blockEvent.getTaskMode() == TaskMode.inlinePlayer || 
-//											 blockEvent.getTaskMode() == TaskMode.syncPlayer;
-//						
-//						PrisonDispatchCommandTask task = 
-//								new PrisonDispatchCommandTask( tasks, errorMessage, 
-//												player, playerTask );
-//						
-//						
-//						switch ( blockEvent.getTaskMode() )
-//						{
-//							case inline:
-//							case inlinePlayer:
-//								// Don't submit, but run it here within this thread:
-//								task.run();
-//								break;
-//								
-//							case sync:
-//							case syncPlayer:
-//							//case "async": // async will cause failures so run as sync:
-//								
-//								// submit task: 
-//								@SuppressWarnings( "unused" ) 
-//								int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
-//								break;
-//								
-//							default:
-//								break;
-//						}
-//						
-//					}
-//					
-//					
-////					PrisonAPI.dispatchCommand(formatted);
-//				}
 			}
 		}
+		
+		return blockEventsRan;
 	}
 	
 	@Override
@@ -778,9 +678,6 @@ public abstract class MineScheduler
 	 * triggered by a player.
 	 * 
 	 */
-//	public void manualReset() {
-//		manualReset( MineResetScheduleType.FORCED );
-//	}
 	public void manualReset( MineResetScheduleType resetType ) {
 		
 		if ( !isVirtual() ) {
@@ -852,37 +749,6 @@ public abstract class MineScheduler
 			setMineResetStartTimestamp( System.currentTimeMillis() );
 
 			
-//			// Lock the mine's mutex if it's still minable.  Otherwise skip it since the
-//			// state has been incremented by one already.
-//			if ( getMineStateMutex().isMinable() ) {
-//				
-//				getMineStateMutex().setMineStateResetStart();
-//			}
-//			else if ( getMineStateMutex().getMineStateSn() > 1 ) {
-//				
-//				// synchronizing on the mutex this will allow only one thread to be
-//				// processed at a time, which will weed out extra threads from being 
-//				// wrongfully shutdown. Based upon this "technique" the last thread to
-//				// be paused by this synchronized block will be the one that will actually
-//				// initiate the reset.
-//				if ( getMineStateMutex().getMineStateSn() > 1 ) {
-//					
-//					// This may be a double submission sinc the mineStateSn should only be 1 at this 
-//					// point.  So release this lock and shutdown this duplicate submission.
-//					getMineStateMutex().setMineStateResetFinished();
-//					
-//					// duplicate reset request, so exit...
-//					return;
-//				}
-//				
-//			}
-			
-			
-			
-			// cancel existing job:
-			if ( getTaskId() != null ) {
-				PrisonTaskSubmitter.cancelTask( getTaskId() );
-			}
 			
 			// Clear jobStack and set currentJob to run the RESET with zero delay:
 			getJobStack().clear();

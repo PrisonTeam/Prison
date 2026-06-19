@@ -40,17 +40,14 @@ public class BlockPlaceEvent implements Cancelable {
         this.blockLocation = blockLocation;
         this.player = player;
     }
-//    public BlockPlaceEvent(BlockType block, Location blockLocation, Player player) {
-//    	this.block = block;
-//    	this.blockLocation = blockLocation;
-//    	this.player = player;
-//    }
 
-    @Override public boolean isCanceled() {
+    @Override 
+    public boolean isCanceled() {
         return canceled;
     }
 
-    @Override public void setCanceled(boolean canceled) {
+    @Override 
+    public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
 

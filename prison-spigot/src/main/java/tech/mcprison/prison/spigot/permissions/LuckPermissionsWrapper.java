@@ -45,10 +45,10 @@ public class LuckPermissionsWrapper
         editPermission(holder.getUUID(), permission, LPPermissionType.PERM_REMOVE );
     }
     protected void addGroupPermission(Player holder, String permission) {
-    	editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_ADD );
+    		editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_ADD );
     }
     protected void removeGroupPermission(Player holder, String permission) {
-    	editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_REMOVE );
+    		editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_REMOVE );
     }
 
     @SuppressWarnings( "deprecation" )
@@ -91,11 +91,6 @@ public class LuckPermissionsWrapper
 				break;
 		}
         
-//        if(add) {
-//            result = user.setPermission(node);
-//        } else {
-//            result = user.unsetPermission(node);
-//        }
 
         // wasn't successful.
         // they most likely already have (or didn't have if add = false) the permission
@@ -119,64 +114,64 @@ public class LuckPermissionsWrapper
     
     
     public List<String> getPermissions(Player holder, boolean detailed) {
-    	List<String> results = new ArrayList<>();
-    	
-    	UUID uuid = holder.getUUID();
-    	
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	UUID uuid = holder.getUUID();
+	    	
         // get the user
         User user = api.getUser(uuid);
         if (user != null) {
-        	// user loaded
-        	
-        	SortedSet<? extends Node> permNodes = user.getPermissions();
-        	
-        	for ( Node node : permNodes ) {
-        		String perm = node.getPermission();
-        		StringBuilder details = new StringBuilder();
-        		
-        		if ( detailed ) {
-        			
-        			if ( node.isTemporary() ) {
-        				long seconds = node.getSecondsTilExpiry();
-        				String expiry = PlaceholdersUtil.formattedTime( seconds );
-        				
-        				details.append(expiry);
-        			}
-        			
-        			if ( node.isGroupNode() ) {
-        				if ( details.length() > 0 ) {
-        					details.append( ":" );
-        				}
-        				details.append( "group=" ).append( node.getGroupName() );
-        			}
-        			
-        			if ( node.isWorldSpecific() ) {
-        				if ( details.length() > 0 ) {
-        					details.append( ":" );
-        				}
-        				details.append( "world=" ).append( node.getWorld() );
-        			}
-        			
-        			if ( node.isMeta() ) {
-        				if ( details.length() > 0 ) {
-        					details.append( ":" );
-        				}
-        				
-        				Entry<String, String> meta = node.getMeta();
-        				
-        				details.append( "meta={" ).append( meta.getKey() )
-        				.append( "=" ).append( meta.getValue() ).append( "}" );
-        			}
-        			
-        			if ( details.length() > 0 ) {
-        				details.insert( 0, "::" );
-        			}
-        			
-        		}
-        		details.insert( 0, perm );
-        		
-        		results.add( details.toString() );
-        	}
+	        	// user loaded
+	        	
+	        	SortedSet<? extends Node> permNodes = user.getPermissions();
+	        	
+	        	for ( Node node : permNodes ) {
+	        		String perm = node.getPermission();
+	        		StringBuilder details = new StringBuilder();
+	        		
+	        		if ( detailed ) {
+	        			
+	        			if ( node.isTemporary() ) {
+	        				long seconds = node.getSecondsTilExpiry();
+	        				String expiry = PlaceholdersUtil.formattedTime( seconds );
+	        				
+	        				details.append(expiry);
+	        			}
+	        			
+	        			if ( node.isGroupNode() ) {
+	        				if ( details.length() > 0 ) {
+	        					details.append( ":" );
+	        				}
+	        				details.append( "group=" ).append( node.getGroupName() );
+	        			}
+	        			
+	        			if ( node.isWorldSpecific() ) {
+	        				if ( details.length() > 0 ) {
+	        					details.append( ":" );
+	        				}
+	        				details.append( "world=" ).append( node.getWorld() );
+	        			}
+	        			
+	        			if ( node.isMeta() ) {
+	        				if ( details.length() > 0 ) {
+	        					details.append( ":" );
+	        				}
+	        				
+	        				Entry<String, String> meta = node.getMeta();
+	        				
+	        				details.append( "meta={" ).append( meta.getKey() )
+	        				.append( "=" ).append( meta.getValue() ).append( "}" );
+	        			}
+	        			
+	        			if ( details.length() > 0 ) {
+	        				details.insert( 0, "::" );
+	        			}
+	        			
+	        		}
+	        		details.insert( 0, perm );
+	        		
+	        		results.add( details.toString() );
+	        	}
         }
 
         

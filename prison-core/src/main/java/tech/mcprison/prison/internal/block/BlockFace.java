@@ -33,21 +33,21 @@ public enum BlockFace {
 	        case NORTH:
 	            return SOUTH;
 	        case SOUTH:
-	        	return NORTH;
+	        		return NORTH;
 	        case EAST:
-	        	return WEST;
+	        		return WEST;
 	        case WEST:
-	        	return EAST;
+	        		return EAST;
 	        case TOP:
-	        	return BOTTOM;
+	        		return BOTTOM;
 	        case BOTTOM:
-	        	return TOP;
+	        		return TOP;
 	        case UP:
-	        	return DOWN;
+	        		return DOWN;
 	        case DOWN:
-	        	return UP;
+	        		return UP;
 	        default:
-	        	return NORTH;
+	        		return NORTH;
 
 	        }
 	 }

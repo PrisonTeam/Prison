@@ -109,6 +109,9 @@ public class AutoFeaturesFileConfig {
 
 	    		
 	    		blockBreakEventPriority(blockBreakEvents, "LOW"),
+	    		entityExplodeEventPriority(blockBreakEvents, "DISABLED"),
+	    		
+	    		
 	    		
 	    		ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "LOW"),
 
@@ -135,7 +138,7 @@ public class AutoFeaturesFileConfig {
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 
 		    			"Use the following event priorities with the blockBreakEvents: " +
 		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, BLOCKEVENTS, MONITOR, " +
-		    			"ACESS, ACCESSBLOCKEVENTS, ACCESSMONITOR"),
+		    			"ACCESS, ACCESSBLOCKEVENTS, ACCESSMONITOR"),
 		    	
 		    	blockBreakEvents__ReadMe2(blockBreakEvents, 
 		    			"MONITOR: Processed even if event is canceled. Includes block counts, "
@@ -163,6 +166,8 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	isCalculateXPEnabled(general, true),
 		    	givePlayerXPAsOrbDrops(general, false),
+		    	
+		    	validateBlocksWerePlacedByPrison(general, true),
 		    	
 		    	ifBlockIsAlreadyCountedThenCancelEvent(general, true),
 		    	
@@ -248,7 +253,9 @@ public class AutoFeaturesFileConfig {
 				actionBarMessageIfInventoryIsFull(inventory, true),
 //				hologramIfInventoryIsFull(general, false),
 
-				
+
+				includePlayerInventoryWhenSmelting(inventory, false),
+				includePlayerInventoryWhenBlocking(inventory, false),
 			
 			tokens(options),
 				
@@ -262,13 +269,31 @@ public class AutoFeaturesFileConfig {
 				permissionAutoSmelt(permissions, "prison.automanager.smelt"),
 				permissionAutoBlock(permissions, "prison.automanager.block"),
 			
-				permissionAuto__readme(permissions, "If permmissions are enabled, of which they are by default, " + 
+				permissionAuto__readme(permissions, "If permissions are enabled, of which they are enabled by default, " + 
 										"and 'isAutoFeaturesEnabled' is enabled, then all OPs will automatically " +
 										"enable auto pickup, auto smelt, and auto block because bukkit will always " +
 										"test 'true' for any permmission when OP'd. There is no way around this, " +
 										"other than just turning off these perms, which is not advisable because " +
 										"players should not be playing as OP'd. To disable these perms, then " +
 										"use a value of 'disable'."),
+				
+				
+			customEnchants(options),
+			
+				isCustomEnchantsEnabled(customEnchants, false),
+				
+				customEnchantsAutoPickup(customEnchants, "disable"),
+				customEnchantsAutoSmelt(customEnchants, "disable"),
+				customEnchantsAutoBlock(customEnchants, "disable"),
+				
+				customEnchants__readme(customEnchants, "If customEnchants are enabled, of which they " +
+						"are disabled by default, " + 
+						"and 'isCustomEnchantsEnabled' is enabled, then Prison can use custom " +
+						"enchantments to trigger auto pickup, auto smelt, and auto blocking. " +
+						"Use '/sellall item inspect' to find out what the actual enchantment name " +
+						"is for easier setup of these features. A value of 'disable' will also prevent " + 
+						"the individual enchantments from being used."),
+				
 				
 			lore(options),
 			
@@ -320,6 +345,8 @@ public class AutoFeaturesFileConfig {
 	    		isCalculateFortuneEnabled(fortuneFeature, true),
 
 	    		isUseTokenEnchantsFortuneLevel(fortuneFeature, false ),
+	    		
+	    		isUseRevEnchantsFortuneLevel(fortuneFeature, false ),
 	    		
 	    		
 	    		fortuneMultiplierGlobal(fortuneFeature, 1.0 ),
@@ -427,19 +454,36 @@ public class AutoFeaturesFileConfig {
 		    	blockAllBlocks(blockFeature, true),
 
 		    	
-		    	blockGoldBlock(blockFeature, true),
-		    	blockIronBlock(blockFeature, true),
-		    	blockCoalBlock(blockFeature, true),
-		    	blockDiamondBlock(blockFeature, true),
-		    	blockRedstoneBlock(blockFeature, true),
-		    	blockEmeraldBlock(blockFeature, true),
-		    	blockQuartzBlock(blockFeature, true),
-		    	blockPrismarineBlock(blockFeature, true),
-		    	blockLapisBlock(blockFeature, true),
-		    	blockSnowBlock(blockFeature, true),
-		    	blockGlowstone(blockFeature, true),
+		    	blockRawCopperBlock(blockFeature, true),
 		    	blockCopperBlock(blockFeature, true),
-		   
+		    	
+		    	blockGoldIngot(blockFeature, true), 
+		    	blockRawGoldBlock(blockFeature, true),
+		    	blockGoldBlock(blockFeature, true),
+
+		    	blockIronIngot(blockFeature, true), 
+		    	blockRawIronBlock(blockFeature, true),
+		    	blockIronBlock(blockFeature, true),
+		    	
+		    	blockAmethystBlock(blockFeature, true), 
+		    	blockDiamondBlock(blockFeature, true),
+		    	blockEmeraldBlock(blockFeature, true),
+		    	blockRedstoneBlock(blockFeature, true),
+
+		    	blockCoalBlock(blockFeature, true),
+		    	blockLapisBlock(blockFeature, true),
+		    	blockPrismarineBlock(blockFeature, true),
+		    	blockQuartzBlock(blockFeature, true),
+		    	
+		    	blockBoneBlock(blockFeature, true), 
+		    	blockDriedKelpBlock(blockFeature, true), 
+		    	blockGlowstone(blockFeature, true),
+		    	blockHayBlock(blockFeature, true), 
+		    	blockNetherWartBlock(blockFeature, true), 
+		    	blockMelon(blockFeature, true), 
+		    	blockPackedIceBlock(blockFeature, true), 
+		    	blockSnowBlock(blockFeature, true),
+
 		    	
 		    	
 		    blockConverters(options),
@@ -452,7 +496,7 @@ public class AutoFeaturesFileConfig {
 		    			+ "this will replace the list of hard coded blocks listed above for "
 		    			+ "blocking and smelting."),
     	
-    			isEnabledBlockConvertersEventTriggers(blockConverters, false )
+    			isEnabledBlockConvertersEventTriggers(blockConverters, false ), 
 		    	
     			
     			
@@ -1206,8 +1250,22 @@ public class AutoFeaturesFileConfig {
 			bStatsDetailBoolean( AutoFeatures.isLoreEnabled, tm );
 			if ( isFeatureBoolean( AutoFeatures.isLoreEnabled )) {
 				
+				bStatsDetailBoolean( AutoFeatures.lorePickupValue, tm );
+				bStatsDetailBoolean( AutoFeatures.loreSmeltValue, tm );
+				bStatsDetailBoolean( AutoFeatures.loreBlockValue, tm );
+
 				bStatsDetailBoolean( AutoFeatures.loreTrackBlockBreakCount, tm );
 				bStatsDetailBoolean( AutoFeatures.loreDurabiltyResistance, tm );
+			}
+			
+			
+			
+			bStatsDetailBoolean( AutoFeatures.isCustomEnchantsEnabled, tm );
+			if ( isFeatureBoolean( AutoFeatures.isCustomEnchantsEnabled )) {
+				
+				bStatsDetailBoolean( AutoFeatures.customEnchantsAutoPickup, tm );
+				bStatsDetailBoolean( AutoFeatures.customEnchantsAutoSmelt, tm );
+				bStatsDetailBoolean( AutoFeatures.customEnchantsAutoBlock, tm );
 			}
 			
 			

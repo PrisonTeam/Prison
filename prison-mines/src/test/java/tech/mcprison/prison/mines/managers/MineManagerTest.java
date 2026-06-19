@@ -23,15 +23,6 @@ public class MineManagerTest
 		Mine c = new Mine( MineUnitTestUsage.TRUE, "C" );
 		Mine d = new Mine( MineUnitTestUsage.TRUE, "D" );
 		
-//		Mine a = new Mine();
-//		a.setName( "A" );
-//		Mine b = new Mine();
-//		b.setName( "b" );
-//		Mine c = new Mine();
-//		c.setName( "C" );
-//		Mine d = new Mine();
-//		d.setName( "D" );
-
 		mines.add( d );
 		mines.add( b );
 		mines.add( a );

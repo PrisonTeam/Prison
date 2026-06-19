@@ -21,8 +21,6 @@ public class MineSweeperTask
 			this.mine.submitAsyncTask( callbackAsync, 0 );
 		}
 		
-
 	}
-
 
 }

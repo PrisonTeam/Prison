@@ -26,7 +26,6 @@ public class HeadsCustomBlocks
 	@Override
 	public String getCustomBlockId( Block block )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -34,7 +33,6 @@ public class HeadsCustomBlocks
 	@Override
 	public PrisonBlock getCustomBlock( Block block )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -42,7 +40,6 @@ public class HeadsCustomBlocks
 	@Override
 	public Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate )
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -50,7 +47,6 @@ public class HeadsCustomBlocks
 	@Override
 	public void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location )
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -63,21 +59,18 @@ public class HeadsCustomBlocks
 		return results;
 	}
 
-
-//	@Override
-//	public List<? extends ItemStack> getDrops( PrisonBlock prisonBlock )
-//	{
-//		List<? extends ItemStack> results = new ArrayList<>();
-//		
-//		return results;
-//	}
-
-
 	@Override
 	public List<? extends ItemStack> getDrops(Player player, PrisonBlock prisonBlock, ItemStack tool) {
 		List<? extends ItemStack> results = new ArrayList<>();
 		
 		return results;
+	}
+
+	protected HeadsCustomBlocksWrapper getHeadsCustomBlocksWrapper() {
+		return headsCustomBlocksWrapper;
+	}
+	protected void setHeadsCustomBlocksWrapper(HeadsCustomBlocksWrapper headsCustomBlocksWrapper) {
+		this.headsCustomBlocksWrapper = headsCustomBlocksWrapper;
 	}
 	
 }

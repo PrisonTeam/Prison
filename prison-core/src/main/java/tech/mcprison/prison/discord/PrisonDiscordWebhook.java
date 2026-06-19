@@ -11,7 +11,6 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.discord.DiscordWebhook.EmbedObject;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -64,6 +63,7 @@ public class PrisonDiscordWebhook
 		return results;
 	}
 	
+	@SuppressWarnings("unused")
 	public void send( CommandSender sender, String title, String message, boolean addPrisonStats ) {
 		
 		int totalSize = 0;
@@ -76,7 +76,7 @@ public class PrisonDiscordWebhook
 	    
 	    
 	    if ( addPrisonStats ) {
-	    	totalSize += addPrisonStats( title, webhook );
+	    		totalSize += addPrisonStats( title, webhook );
 	    }
 
 	    

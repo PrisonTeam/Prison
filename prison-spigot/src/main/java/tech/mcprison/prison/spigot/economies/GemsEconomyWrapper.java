@@ -52,14 +52,6 @@ public class GemsEconomyWrapper
 		
 		return supported;
 	}
-//	
-//	public boolean supportedCurrency( String currencyName ) {
-//		Currency currency = getCurrency( currencyName );
-//		
-//		boolean supported = (currency != null);
-//		
-//		return supported;
-//	}
 	
 	private Object getCurrencyRefection( String currencyName ) {
 		Object results = null;
@@ -79,18 +71,9 @@ public class GemsEconomyWrapper
 		return results;
 	}
 	
-//	public Currency getCurrency( String currencyName ) {
-//		Currency currency = null;
-//		if (economy != null && 
-//				currencyName != null && currencyName.trim().length() > 0) {
-//			currency = economy.getCurrency( currencyName );
-//		}
-//		return currency;
-//	}
-	
     
     public boolean hasAccount( Player player ) {
-    	return true;
+    		return true;
     }
 	
 	public double getBalance(Player player) {
@@ -164,18 +147,6 @@ public class GemsEconomyWrapper
 		return results;
 	}
 	
-//	public double getBalance(Player player, String currencyName) {
-//		double results = 0;
-//		if (economy != null) {
-//			Currency currency = getCurrency( currencyName );
-//			if ( currency == null ) {
-//				results = economy.getBalance(player.getUUID());
-//			} else {
-//				results = economy.getBalance(player.getUUID(), currency);
-//			}
-//		}
-//		return results;
-//	}
 	
 	
 	public void addBalance(Player player, double amount) {
@@ -188,8 +159,6 @@ public class GemsEconomyWrapper
 				economy.deposit(player.getUUID(), amount);
 			} 
 			else {
-//				Currency currency = getCurrency( currencyName );
-//				economy.deposit(player.getUUID(), amount, currency);
 				addBalanceReflection( player.getUUID(), amount, currencyName );
 			}
 		}
@@ -227,16 +196,6 @@ public class GemsEconomyWrapper
 		
 	}
 	
-//	public void addBalance(Player player, double amount, String currencyName) {
-//		if (economy != null) {
-//			Currency currency = getCurrency( currencyName );
-//			if ( currency == null ) {
-//				economy.deposit(player.getUUID(), amount);
-//			} else {
-//				economy.deposit(player.getUUID(), amount, currency);
-//			}
-//		}
-//	}
 	
 	
 	public void withdraw(Player player, double amount) {
@@ -249,8 +208,6 @@ public class GemsEconomyWrapper
 				economy.withdraw(player.getUUID(), amount);
 			} 
 			else {
-//				Currency currency = getCurrency( currencyName );
-//				economy.withdraw(player.getUUID(), amount, currency);
 				withdrawReflection( player.getUUID(), amount, currencyName );
 			}
 		}
@@ -289,15 +246,5 @@ public class GemsEconomyWrapper
 		}
 		
 	}
-//	public void withdraw(Player player, double amount, String currencyName) {
-//		if (economy != null) {
-//			Currency currency = getCurrency( currencyName );
-//			if ( currency == null ) {
-//				economy.withdraw(player.getUUID(), amount);
-//			} else {
-//				economy.withdraw(player.getUUID(), amount, currency);
-//			}
-//		}
-//	}
 	
 }

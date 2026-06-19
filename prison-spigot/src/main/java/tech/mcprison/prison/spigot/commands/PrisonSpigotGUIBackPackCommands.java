@@ -76,7 +76,6 @@ public class PrisonSpigotGUIBackPackCommands
             if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
                 Output.get().sendWarn(sender, SpigotPrison.format(
                 		messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) 
-//                		+ " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"
                 		));
                 return;
             }

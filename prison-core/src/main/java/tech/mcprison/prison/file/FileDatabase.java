@@ -39,22 +39,22 @@ public class FileDatabase
      *  </p>
      */
     public void refresh() {
-    	collectionMap.clear();
-    	
-    	// Each folder in the db directory is its own collection.
-    	// We'll initialize each of them here.
-    	File[] collectionDirs = dbDir.listFiles(File::isDirectory);
-    	if (collectionDirs != null) {
-    		for (File collDir : collectionDirs) {
-    			if ( isDeleted( collDir ) ) {
-    				String message = "FileDatabase.refresh skipping logically deleted FileCollection: " + 
-    						collDir.getAbsolutePath();
-    				Output.get().logInfo( message );
-    			} else {
-    				collectionMap.put(collDir.getName(), new FileCollection(collDir));
-    			}
-    		}
-    	}
+	    	collectionMap.clear();
+	    	
+	    	// Each folder in the db directory is its own collection.
+	    	// We'll initialize each of them here.
+	    	File[] collectionDirs = dbDir.listFiles(File::isDirectory);
+	    	if (collectionDirs != null) {
+	    		for (File collDir : collectionDirs) {
+	    			if ( isDeleted( collDir ) ) {
+	    				String message = "FileDatabase.refresh skipping logically deleted FileCollection: " + 
+	    						collDir.getAbsolutePath();
+	    				Output.get().logInfo( message );
+	    			} else {
+	    				collectionMap.put(collDir.getName(), new FileCollection(collDir));
+	    			}
+	    		}
+	    	}
     	
     }
 
@@ -67,24 +67,25 @@ public class FileDatabase
     @Override 
     public Optional<Collection> getCollection(String name) 
     {
-    	Collection results = collectionMap.get(name);
-    	
-    	if ( results == null )
-    	{
-    		// try to create the FileCollection:
-    		createCollection(name);
-    		results = collectionMap.get(name);
-    	}
-    	
+	    	Collection results = collectionMap.get(name);
+	    	
+	    	if ( results == null )
+	    	{
+	    		// try to create the FileCollection:
+	    		createCollection(name);
+	    		results = collectionMap.get(name);
+	    	}
+	    	
         return Optional.ofNullable(results);
     }
 
     /**
      * <p>This function will create a new FileCollection on the file system (a directory).
-     * It will generate the new directory with the provided name.  If there is already
-     * a directory by that name, then this function will fail and it will log a
-     * warning.  If successful, then it will add a File entry Collection to the 
-     * collectionMap.
+     * It will generate the new directory with the provided name, and all parents.
+     * If successful, then it will add a File entry Collection to the collectionMap.
+     * </p>
+     * 
+     * <p>If the directory already exists, then all is good (return true) and move on.
      * </p>
      * 
      * @param name
@@ -92,17 +93,17 @@ public class FileDatabase
      */
     @Override 
     public boolean createCollection(String name) {
-    	boolean results = false;
+    		boolean results = false;
     	
         File collDir = new File(dbDir, name);
         if (!collDir.exists()) {
-        	results = collDir.mkdir();
-        	collectionMap.put(name, new FileCollection(collDir));
-        } else {
-        	String message = "The attempt to create a new FileCollection named " + name + 
-        			" failed because a directory on the file system already exists by that name.";
-        	Output.get().logWarn( message );
+        		results = collDir.mkdirs();
+        } 
+        else {
+	        	// the directory already exist... who cares?  Let's use it:
+	        	results = true;
         }
+        collectionMap.put(name, new FileCollection(collDir));
         
         return results;
     }
@@ -131,24 +132,21 @@ public class FileDatabase
      */
     @Override 
     public boolean deleteCollection(String name) {
-    	boolean results = false;
+    		boolean results = false;
     	
         File collDir = new File(dbDir, name);
         Collection coll = collectionMap.get(name);
 
         if (collDir.exists() && coll != null) {
-        	// Perform a logical delete on the collection so it can be manually recovered if this is an error:
-        	virtualDelete( collDir );
-        	
-        	// This dispose just removes the entries from the collection and deletes nothing from the file system:
-        	//coll.dispose();
-        	//results = collDir.delete();
-        	collectionMap.remove(name);
-        	results = true;
+	        	// Perform a logical delete on the collection so it can be manually recovered if this is an error:
+	        	virtualDelete( collDir );
+	        	
+	        	collectionMap.remove(name);
+	        	results = true;
         } else {
-        	String message = "The attempt to delete a FileCollection named " + name + 
-        			" failed because either the directory does not exist or it was not in the collectionMap.";
-        	Output.get().logWarn( message );
+	        	String message = "The attempt to delete a FileCollection named " + name + 
+	        			" failed because either the directory does not exist or it was not in the collectionMap.";
+	        	Output.get().logWarn( message );
         }
 
         return results;

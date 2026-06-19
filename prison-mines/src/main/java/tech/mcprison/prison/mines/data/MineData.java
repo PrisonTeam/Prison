@@ -14,6 +14,7 @@ import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
+import tech.mcprison.prison.mines.data.Mine.MineNotificationMode;
 import tech.mcprison.prison.mines.data.Mine.MineType;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
@@ -25,24 +26,20 @@ import tech.mcprison.prison.util.Location;
 
 public abstract class MineData
 		implements ModuleElement {
-	
-	public static final int MINE_RESET__TIME_SEC__DEFAULT = 15 * 60; // 15 minutes
-	public static final int MINE_RESET__TIME_SEC__MINIMUM = 30; // 30 seconds
-	public static final long MINE_RESET__BROADCAST_RADIUS_BLOCKS = 150;
-	
-	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";
+
+	private int dataVersion = 1;
 	
 	private transient final ModuleElementType elementType;
 		
 	private String name;
 	private String tag;
 	
-	private boolean enabled = false;
+	private transient boolean enabled = false;
 	private boolean virtual = false;
 	
 	
 	// Controls if a mine is able to be used during a mine reset:
-	private MineStateMutex mineStateMutex;
+	private transient MineStateMutex mineStateMutex;
 	
 	
 	private MineType mineType;
@@ -73,10 +70,10 @@ public abstract class MineData
 	private long notificationRadius;
 	private boolean useNotificationPermission = false;
     
-	private long targetResetTime;
-	private int resetCount = 0;
+	private transient long targetResetTime;
+	private transient int resetCount = 0;
 	
-	private long lastResetTimeLong = 0;
+	private transient long lastResetTimeLong = 0;
 	
 	/**
 	 * These blocks are obsolete, and are no longer used in prison, but they
@@ -87,7 +84,7 @@ public abstract class MineData
 	 * supporting magic values with the older bukkit versions.
 	 */
     @SuppressWarnings( "deprecation" )
-	private List<BlockOld> blocks;
+	private transient List<BlockOld> blocks;
     
     /**
      * This list of PrisonBlocks represents the new Prison block model. Its 
@@ -107,7 +104,7 @@ public abstract class MineData
     private transient Set<PrisonBlockType> prisonBlockTypes;
     
     
-    private TreeMap<String, PrisonBlockStatusData> blockStats;
+    private transient TreeMap<String, PrisonBlock> blockStats;
     
     /**
      * <p>If any of the mine's blocks are effected by gravity, then this field
@@ -134,13 +131,12 @@ public abstract class MineData
     private boolean skipResetEnabled = false;
     private double skipResetPercent;
     private int skipResetBypassLimit;
-    private transient int skipResetBypassCount;
+    private int skipResetBypassCount;
     
     private List<String> resetCommands;
     
-//    private boolean usePagingOnReset = false;
     
-    private ModuleElement rank;
+    private transient ModuleElement rank;
     /**
      * When loading mines, ranks will not have been loaded yet, so must
      * save the rankString to be paired to the Ranks later.
@@ -155,43 +151,14 @@ public abstract class MineData
     
     
     private boolean mineSweeperEnabled;
-    private int mineSweeperCount;
-    private long mineSweeperTotalMs;
-    private long mineSweeperBlocksChanged;
+    private transient int mineSweeperCount;
+    private transient long mineSweeperTotalMs;
+    private transient long mineSweeperBlocksChanged;
     
     private transient boolean isDeleted = false; 
     
 
-    public enum MineNotificationMode {
-    	disabled,
-    	disable,
-    	within,
-    	radius,
-    	
-    	displayOptions
-    	;
-    	
-    	public static MineNotificationMode fromString(String mode) {
-    		return fromString(mode, radius);
-    	}
-    	public static MineNotificationMode fromString(String mode, MineNotificationMode defaultValue) {
-    		MineNotificationMode results = defaultValue;
-    		
-    		if ( mode != null && mode.trim().length() > 0 ) {
-    			for ( MineNotificationMode mnm : values() ) {
-    				if ( mnm.name().equalsIgnoreCase( mode )) {
-    					results = mnm;
-    				}
-    			}
-    		}
-    		
-    		if ( results == disable ) {
-    			results = disabled;
-    		}
-    		
-    		return results;
-    	}
-    }
+
     
     public MineData() {
 
@@ -221,9 +188,9 @@ public abstract class MineData
     	 */
     	this.sortOrder = 0;
     	
-    	this.resetTime = MINE_RESET__TIME_SEC__DEFAULT;
+    	this.resetTime = Mine.MINE_RESET__TIME_SEC__DEFAULT;
     	this.notificationMode = MineNotificationMode.radius;
-    	this.notificationRadius = MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    	this.notificationRadius = Mine.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
     	this.useNotificationPermission = false;
     	
     	this.targetResetTime = 0;
@@ -240,7 +207,6 @@ public abstract class MineData
         
         this.resetCommands = new ArrayList<>();
         
-//        this.usePagingOnReset = false;
         
         this.rank = null;
         this.rankString = null;
@@ -267,6 +233,34 @@ public abstract class MineData
     }
     
   
+	/**
+	 * <p>This function should be called after loading a mine from 
+	 * storage, and this function should reconnect all dynamic objects 
+	 * that could not be stored with the core Mine data.
+	 * </p>
+	 * 
+	 * <p>Note: getWorld() is actually a helper to get a world object out of 
+	 * getBounds() and setWorld() sets the world on both getBounds() and getSpawn().
+	 * </p>
+	 * 
+	 * <p>Examples: World objects. There may be other objects that need to be reconnected.
+	 * </p>
+	 */
+	public void reconnectObjects() {
+		
+		if ( !isVirtual() ) {
+			
+			if ( getBounds() != null ) {
+				getBounds().reconnectObjects();
+			}
+			
+			if ( getSpawn() != null ) {
+				getSpawn().reconnectObects();
+			}
+			
+		}
+
+	}
 	
   
     public boolean isEnabled() {
@@ -309,17 +303,17 @@ public abstract class MineData
     }
 
     public String getTag() {
-    	return ( tag == null || tag.trim().isEmpty() ? getName() : tag );
+    		return ( tag == null || tag.trim().isEmpty() ? getName() : tag );
     }
     public void setTag( String tag ) {
-    	this.tag = tag;
+    		this.tag = tag;
     }
     
     public int getSortOrder() {
-    	return sortOrder;
+    		return sortOrder;
     }
     public void setSortOrder( int sortOrder ) {
-    	this.sortOrder = sortOrder;
+    		this.sortOrder = sortOrder;
     }
     
 
@@ -329,10 +323,10 @@ public abstract class MineData
      * set.  An id is forced by Ranks and Ladders.
      */
     public int getId() {
-    	return -1;
+    		return -1;
     }
     public void setId( int idIsIgnored ) {
-    	// ignore
+    		// ignore
     }
     
     /**
@@ -374,7 +368,6 @@ public abstract class MineData
 	 */
 	public Optional<World> getWorld() {
 		return Optional.ofNullable( isVirtual() ? null : getBounds().getMin().getWorld() );
-//        return Prison.get().getPlatform().getWorld(worldName);
     }
 	
 	/**
@@ -399,7 +392,7 @@ public abstract class MineData
 			}
 		}
 
-    	setEnabled( world != null );
+		setEnabled( world != null );
 	}
 
     public Bounds getBounds() {
@@ -407,7 +400,7 @@ public abstract class MineData
     }
 
     public void setBounds(Bounds bounds ) {
-    	setBounds( bounds, true );
+    		setBounds( bounds, true );
     }
     
     /**
@@ -432,51 +425,51 @@ public abstract class MineData
      * @param bounds the new boundaries
      */
     public void setBounds(Bounds bounds, boolean logInfo ) {
-    	this.bounds = bounds;
-    	
-    	// if Bounds is null, then clear out the world fields and set mine to virtual and disable the mine:
-    	if ( bounds == null ) {
-    		
-    		setSpawn( null );
-    		
-    		setWorld( null );
-    		setWorldName( null );
-    		setVirtual( true );
-    		setEnabled( false );
-    	}
-    	
-    	else if ( isVirtual() || !getWorld().isPresent() ||
-    			getWorldName() == null || getWorldName().trim().length() == 0 ||
-    			getWorldName().equalsIgnoreCase( "Virtually-Undefined" ) ) {
-    		 
-        	World world = bounds.getMin().getWorld();
-        	
-        	if ( world != null ) {
-        		
-        		setWorld( world );
-        		setWorldName( world.getName() );
-        		setVirtual( false );
-        		setEnabled( true );
-        		
-        		if ( logInfo ) {
-        			Output.get().logInfo( "&7Mine " + getTag() + "&7: world has been set and is now enabled." );
-        		}
-        		
-        	}
-        	else {
-        		setEnabled( false );
-        		Output.get().logWarn( 
-        				String.format( "&cCould not activate mine &7%s &cbecause the " +
-        				"world object cannot be aquired. Bounds failed be set correctly " +
-        				"and this mine is &ddisabled&c.", getName()) );
-        	}
-    	}
-        
-    	// The world name MUST NEVER be changed.  If world is null then it will screw
-    	// up the original location of when the mine was created.  World name is set
-    	// in the document loader under Mine.loadFromDocument as the first field
-    	// that is set when restoring from the file.
-    	//this.worldName = bounds.getMin().getWorld().getName();
+	    	this.bounds = bounds;
+	    	
+	    	// if Bounds is null, then clear out the world fields and set mine to virtual and disable the mine:
+	    	if ( bounds == null ) {
+	    		
+	    		setSpawn( null );
+	    		
+	    		setWorld( null );
+	    		setWorldName( null );
+	    		setVirtual( true );
+	    		setEnabled( false );
+	    	}
+	    	
+	    	else if ( isVirtual() || !getWorld().isPresent() ||
+	    			getWorldName() == null || getWorldName().trim().length() == 0 ||
+	    			getWorldName().equalsIgnoreCase( "Virtually-Undefined" ) ) {
+	    		 
+	        	World world = bounds.getMin().getWorld();
+	        	
+	        	if ( world != null ) {
+	        		
+	        		setWorld( world );
+	        		setWorldName( world.getName() );
+	        		setVirtual( false );
+	        		setEnabled( true );
+	        		
+	        		if ( logInfo ) {
+	        			Output.get().logInfo( "&7Mine " + getTag() + "&7: world has been set and is now enabled." );
+	        		}
+	        		
+	        	}
+	        	else {
+	        		setEnabled( false );
+	        		Output.get().logWarn( 
+	        				String.format( "&cCould not activate mine &7%s &cbecause the " +
+	        				"world object cannot be aquired. Bounds failed be set correctly " +
+	        				"and this mine is &ddisabled&c.", getName()) );
+	        	}
+	    	}
+	        
+	    	// The world name MUST NEVER be changed.  If world is null then it will screw
+	    	// up the original location of when the mine was created.  World name is set
+	    	// in the document loader under Mine.loadFromDocument as the first field
+	    	// that is set when restoring from the file.
+	    	//this.worldName = bounds.getMin().getWorld().getName();
     }
 
     
@@ -535,157 +528,34 @@ public abstract class MineData
 		return results;
 	}
 	
-   // Obsolete... the old block model:
-//	/**
-//	 * This is only used in an obsolete conversion utility.
-//	 * 
-//	 * Adding the newer PrisonBlocks for compatibility.
-//	 * 
-//     * Sets the blocks for this mine
-//     *
-//     * @param blockMap the new blockmap with the {@link BlockType} as the key, and the chance of the
-//     * block appearing as the value.
-//     */
-//    public void setBlocks(HashMap<BlockType, Integer> blockMap) {
-//        this.blocks.clear();
-//        this.prisonBlocks.clear();
-//        
-//        for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
-//            blocks.add(new BlockOld(entry.getKey(), entry.getValue(), 0));
-//            
-//            PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
-//            if ( prisonBlock != null ) {
-//            	prisonBlock.setChance( entry.getValue() );
-//            	prisonBlocks.add( prisonBlock );
-//            }
-//        }
-//    }
     
     public PrisonBlock getPrisonBlock(String blockName ) {
-    	PrisonBlock results = null;
-    	
-    	if ( blockName != null && !blockName.trim().isEmpty() ) {
-    		for ( PrisonBlock b : getPrisonBlocks() ) {
-    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
-    				results = b;
-    				break;
-    			}
-    		}
-    	}
-    	
-    	return results;
+	    	PrisonBlock results = null;
+	    	
+	    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+	    		for ( PrisonBlock b : getPrisonBlocks() ) {
+	    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+	    				results = b;
+	    				break;
+	    			}
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
-//    public BlockOld getBlockOld(String blockName ) {
-//    	BlockOld results = null;
-//    	
-//    	if ( blockName != null && !blockName.trim().isEmpty() ) {
-//    		for ( BlockOld b : getBlocks() ) {
-//    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
-//    				results = b;
-//    				break;
-//    			}
-//    		}
-//    	}
-//    	
-//    	return results;
-//    }
     
     public boolean hasBlock( String blockName ) {
-    	boolean results = false;
-    	
-    	if ( blockName != null && !blockName.trim().isEmpty() ) {
-    		
-    		results = getPrisonBlock( blockName ) != null;
-    	}
+	    	boolean results = false;
+	    	
+	    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+	    		
+	    		results = getPrisonBlock( blockName ) != null;
+	    	}
         
         return results;
     }
     
-//    public boolean incrementBlockMiningCount( Block block ) {
-//    	boolean results = false;
-//    	
-//    	String blockName = block.getPrisonBlock().getBlockName().toLowerCase();
-//
-//    	// Need to always get the target block so it can be marked as counted:
-//    	MineTargetPrisonBlock targetPrisonBlock = getTargetPrisonBlock( block );
-//
-//    	if ( targetPrisonBlock != null && targetPrisonBlock.isAirBroke() ) {
-//    		// If this targetPrisonBlock was originally air or already counted
-//    		// then skip so it is not double counted:
-//    		results = false;
-//    	}
-//    	else if ( targetPrisonBlock != null ){
-//    		
-//    		// If the block is AIR get the original block name:
-//    		if ( block.getPrisonBlock().isAir() ) {
-//    			
-//    			String targetBlockName = targetPrisonBlock.getPrisonBlock().getBlockName();
-//    			blockName = targetBlockName;
-//    		}
-//    		
-////    		Output.get().logInfo( "#### MineData.incrementBlockCount: " +
-////    							"oBlock= AIR  tBlock= %s  target= [%s]", blockName,
-////    				(targetPrisonBlock == null ? "null" : targetPrisonBlock.toString()));
-//
-//    		// Set the targetPrisonBlock's airBroke to true to indicate it is being
-//    		// counted during this transaction so it won't be counted again:
-//    		targetPrisonBlock.setAirBroke( true );
-//    		
-//    		results = incrementBlockMiningCount( blockName );
-//    	}
-//    	
-//    	return results;
-//    }
-    
-//    public boolean incrementBlockMiningCount( BlockOld block ) {
-//    	String blockName = block.getType().name().toLowerCase();
-//    	return incrementBlockMiningCount( blockName );
-//    }
-    
-    
-    
-    // MineTargetPrisonBlock getTargetPrisonBlock( Block block )
-    
-//    /**
-//     * <p>This function is not as obvious it appears. Basically when this function 
-//     * should be called, it may be too late to get the correct block value before 
-//     * it is lost (set to AIR).  So it is critical that getTargetPrisonBlockName( Block block )
-//     * is called first before the original block is processed (broke or auto picked up).
-//     * </p>
-//     * 
-//     * <p>The end result of calling getTargetPrisonBlockName( Block block ) first is that
-//     * the block name will have already been resolved to the correct original block name.
-//     * There is also a higher chance that the block name extracted then, may never
-//     * be AIR to begin with.
-//     * </p> 
-//     * 
-//     * <p>Keep in mind, that if the original block was AIR before being processed for
-//     * a natural break, or auto pickup, then it may not have been properly mined since
-//     * AIR cannot be mined.  That said, if another process intercepted prison's 
-//     * event handlers, then the targetBlocks will not exist until the mine is reset 
-//     * for the first time when the server starts up.  So server startups will
-//     * have higher risk of not being able to resolve the correct block type to 
-//     * report.
-//     * </p>
-//     * 
-//     * @param blockName
-//     * @return
-//     */
-//    private boolean incrementBlockMiningCount( String targetBlockName ) {
-//    	boolean results = false;
-//    	
-//		incrementBlockBreakCount();
-//		incrementTotalBlocksMined();
-//
-//    	PrisonBlockStatusData sBlock = getBlockStats( targetBlockName );
-//    	if ( sBlock != null ) {
-//    		
-//    		sBlock.incrementMiningBlockCount();
-//    	}
-//    	
-//    	return results;
-//    }
     
     /**
      * <p>This is actually the more correct way to count a block that has been mined
@@ -703,112 +573,100 @@ public abstract class MineData
      * @param targetPrisonBlock
      */
     public boolean incrementBlockMiningCount( MineTargetPrisonBlock targetPrisonBlock ) {
-    	boolean results = false;
-    	
-    	// Only count the block as being broke if it was not originally air and
-    	// and it has not been broke before.
-    	
-    	// NOTE: setAirBroke() and setMined() will be set to true if the mine reset
-    	//       places an air block. That will prevent the air from being processed.
-    	if ( targetPrisonBlock != null && !targetPrisonBlock.isCounted() ) {
-    		
-    		targetPrisonBlock.setAirBroke( true );
-    		targetPrisonBlock.setCounted( true );
-    		
-    		// The field isMined() is used to "reserve" a block to indicate that it is in 
-    		// the stages of being processed, since much later in the processing will the
-    		// block be set to setAirBreak() or even setCounted().  This prevents 
-    		// high-speed or concurrent operations from multiple players from trying to 
-    		// process the same block. So set it to true here, if it has not already 
-    		// been set.
-    		if ( !targetPrisonBlock.isMined() ) {
-    			
-    			targetPrisonBlock.setMined( true );
-    		}
-
-    		incrementBlockBreakCount();
-    		incrementTotalBlocksMined();
-    		
-    		if ( targetPrisonBlock.getPrisonBlock() != null ) {
-    			
-    			targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
-    		}
-    		
-    		results = true;
-    	}
-    	
-    	return results;
+	    	boolean results = false;
+	    	
+	    	// Only count the block as being broke if it was not originally air and
+	    	// and it has not been broke before.
+	    	
+	    	// NOTE: setAirBroke() and setMined() will be set to true if the mine reset
+	    	//       places an air block. That will prevent the air from being processed.
+	    	if ( targetPrisonBlock != null && !targetPrisonBlock.isCounted() ) {
+	    		
+	    		targetPrisonBlock.setAirBroke( true );
+	    		targetPrisonBlock.setCounted( true );
+	    		
+	    		// The field isMined() is used to "reserve" a block to indicate that it is in 
+	    		// the stages of being processed, since much later in the processing will the
+	    		// block be set to setAirBreak() or even setCounted().  This prevents 
+	    		// high-speed or concurrent operations from multiple players from trying to 
+	    		// process the same block. So set it to true here, if it has not already 
+	    		// been set.
+	    		if ( !targetPrisonBlock.isMined() ) {
+	    			
+	    			targetPrisonBlock.setMined( true );
+	    		}
+	
+	    		incrementBlockBreakCount();
+	    		incrementTotalBlocksMined();
+	    		
+	    		if ( targetPrisonBlock.getPrisonBlock() != null ) {
+	    			
+	    			targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
+	    		}
+	    		
+	    		results = true;
+	    	}
+	    	
+	    	return results;
     }
-    
-//    public void incrementBlockMiningCount( Block block ) {
-//    	
-//    	MineTargetPrisonBlock targetBlock = getTargetPrisonBlock( block );
-//    	incrementBlockMiningCount( targetBlock );
-//  
-//    }
     
     
     abstract public MineTargetPrisonBlock getTargetPrisonBlock( PrisonBlock block );
     
-//    abstract public String getTargetPrisonBlockName( Block block );
     
     abstract public boolean checkZeroBlockReset();
     
     
     public boolean hasUnsavedBlockCounts() {
-    	return getUnsavedBlockCount() > 0;
+    		return getUnsavedBlockCount() > 0;
     }
     
     public long getUnsavedBlockCount() {
-    	long results = 0;
-    	
-    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
-			results += blockStats.getBlockCountUnsaved();
-		}
-
-    	return results;
+	    	long results = 0;
+	    	
+	    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+				results += blockStats.getBlockCountUnsaved();
+			}
+	
+	    	return results;
     }
     
     
     public void resetUnsavedBlockCounts() {
     	
-    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
-    		// Since the mine was just saved reset the unsaved value :
-    		blockStats.setBlockCountUnsaved( 0 );
-    		
-    		// Reset the block count for the reset event since the mine will be regenerated:
-    		blockStats.setBlockPlacedCount( 0 );
-    	}
+	    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
+	    		// Since the mine was just saved reset the unsaved value :
+	    		blockStats.setBlockCountUnsaved( 0 );
+	    		
+	    		// Reset the block count for the reset event since the mine will be regenerated:
+	    		blockStats.setBlockPlacedCount( 0 );
+	    	}
     }
 
     public void resetResetBlockCounts() {
 
-    	for ( PrisonBlockStatusData block : getBlocks() ) {
-			
-    		// Reset the block count for the reset event since the mine will be regenerated:
-    		block.setBlockPlacedCount( 0 );
-    		block.setRangeBlockCountLow( -1 );
-    		block.setRangeBlockCountHigh( -1 );
-    		block.setRangeBlockCountLowLimit( -1 );
-    		block.setRangeBlockCountHighLimit( -1 );
-//    		block.setIncludeInLayerCalculations( true );
-		}
+//	    	for ( PrisonBlockStatusData block : getBlocks() ) {
+//				
+//	    		// Reset the block count for the reset event since the mine will be regenerated:
+//	    		block.setBlockPlacedCount( 0 );
+//	    		block.setRangeBlockCountLow( -1 );
+//	    		block.setRangeBlockCountHigh( -1 );
+//	    		block.setRangeBlockCountLowLimit( -1 );
+//	    		block.setRangeBlockCountHighLimit( -1 );
+//	//    		block.setIncludeInLayerCalculations( true );
+//			}
+	    	
+	    	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
+	    		
+	    		// Reset the block count for the reset event since the mine will be regenerated:
+	    		block.setBlockPlacedCount( 0 );
+	    		block.setRangeBlockCountLow( -1 );
+	    		block.setRangeBlockCountHigh( -1 );
+	    		block.setRangeBlockCountLowLimit( -1 );
+	    		block.setRangeBlockCountHighLimit( -1 );
+	//    		block.setIncludeInLayerCalculations( true );
+	    	}
     	
-    	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
-    		
-    		// Reset the block count for the reset event since the mine will be regenerated:
-    		block.setBlockPlacedCount( 0 );
-    		block.setRangeBlockCountLow( -1 );
-    		block.setRangeBlockCountHigh( -1 );
-    		block.setRangeBlockCountLowLimit( -1 );
-    		block.setRangeBlockCountHighLimit( -1 );
-//    		block.setIncludeInLayerCalculations( true );
-    	}
-    	
-//    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
-//    		// Reset the block count for the reset event since the mine will be regenerated:
-//    		blockStats.setResetBlockCount( 0 );
-//    	}
     }
     
     /**
@@ -819,118 +677,102 @@ public abstract class MineData
      * @param statsBlock
      */
     public PrisonBlockStatusData incrementResetBlockCount( PrisonBlockStatusData statsBlock ) {
-    	
-    	PrisonBlockStatusData sBlock = null;
-    	
-    	if ( statsBlock != null ) {
-    		sBlock = getBlockStats( statsBlock );
-    		
-    		if ( sBlock != null ) {
-    			
-    			sBlock.incrementResetBlockCount();
-    		}
-    	}
-    			
-    	return sBlock;
+	    	
+	    	PrisonBlockStatusData sBlock = null;
+	    	
+	    	if ( statsBlock != null ) {
+	    		sBlock = getBlockStats( statsBlock );
+	    		
+	    		if ( sBlock != null ) {
+	    			
+	    			sBlock.incrementResetBlockCount();
+	    		}
+	    	}
+	    			
+	    	return sBlock;
     }
     
     public PrisonBlockStatusData getBlockStats( PrisonBlockStatusData statsBlock ) {
-    	return getBlockStats( statsBlock.getBlockName() );
+    		return getBlockStats( statsBlock.getBlockName() );
     }
     
     public PrisonBlockStatusData getBlockStats( String blockName ) {
-    	PrisonBlockStatusData results = null;
-    	
-    	if ( blockName != null && !blockName.trim().isEmpty() ) {
-    		
-    		if ( !getBlockStats().containsKey( blockName ) ) {
-
-    			for ( PrisonBlock block : getPrisonBlocks() ) {
-    				if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
-    					getBlockStats().put( block.getBlockName(), block );
-    					
-    					results = block;
-    					break;
-    				}
-    			}
-    			
-    		}
-    		else {
-    			
-    			results = getBlockStats().get( blockName );
-    		}
-    	}
-    	
-    	return results;
+	    	PrisonBlockStatusData results = null;
+	    	
+	    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+	    		
+	    		if ( !getBlockStats().containsKey( blockName ) ) {
+	
+	    			for ( PrisonBlock block : getPrisonBlocks() ) {
+	    				if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
+	    					getBlockStats().put( block.getBlockName(), block );
+	    					
+	    					results = block;
+	    					break;
+	    				}
+	    			}
+	    			
+	    		}
+	    		else {
+	    			
+	    			results = getBlockStats().get( blockName );
+	    		}
+	    	}
+	    	
+	    	return results;
     }
     
-	public TreeMap<String, PrisonBlockStatusData> getBlockStats() {
+	public TreeMap<String, PrisonBlock> getBlockStats() {
 		return blockStats;
 	}
     
 	
 
     public boolean isInMineExact(Location location) {
-    	if ( isVirtual() ) {
-    		return false;
-    	}
-        return getBounds().within(location);
+    	
+        return !isVirtual() && getBounds().within(location);
     }
     
     public boolean isInMineIncludeTopBottomOfMine(Location location) {
-    	if ( isVirtual() ) {
-    		return false;
-    	}
-    	return getBounds().withinIncludeTopBottomOfMine( location );
+	    	if ( isVirtual() ) {
+	    		return false;
+	    	}
+	    	return getBounds().withinIncludeTopBottomOfMine( location );
     }
     
-    // Obsolete... the old block model:
-//    public boolean isInMine(BlockType blockType) {
-//    	//TODO Not sure if virtual should return false... they do have blocks.
-////    	if ( isVirtual() ) {
-////    		return false;
-////    	}
-//        for (BlockOld block : getBlocks()) {
-//            if (blockType == block.getType()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     public boolean isInMine(PrisonBlock blockType) {
-    	//TODO Not sure if virtual should return false... they do have blocks.
-    	if ( isVirtual() ) {
-    		return false;
-    	}
-    	for (PrisonBlock block : getPrisonBlocks()) {
-    		if (blockType.getBlockNameFormal().equalsIgnoreCase( block.getBlockNameFormal())) {
-    			return true;
-    		}
-    	}
-    	return false;
+	    	//TODO Not sure if virtual should return false... they do have blocks.
+	    	if ( isVirtual() ) {
+	    		return false;
+	    	}
+	    	for (PrisonBlock block : getPrisonBlocks()) {
+	    		if (blockType.getBlockNameFormal().equalsIgnoreCase( block.getBlockNameFormal())) {
+	    			return true;
+	    		}
+	    	}
+	    	return false;
     }
     
     public PrisonBlock getPrisonBlock( PrisonBlock blockType ) {
-    	PrisonBlock results = null;
-    	
-    	if ( blockType != null && blockType.getBlockNameFormal() != null ) {
-    		
-    		for (PrisonBlock block : getPrisonBlocks()) {
-    			if ( block.getBlockNameFormal().equalsIgnoreCase( blockType.getBlockNameFormal() )) {
-    				results = block;
-    				break;
-    			}
-    		}
-    	}
-    	
-    	return results;
+	    	PrisonBlock results = null;
+	    	
+	    	if ( blockType != null && blockType.getBlockNameFormal() != null ) {
+	    		
+	    		for (PrisonBlock block : getPrisonBlocks()) {
+	    			if ( block.getBlockNameFormal().equalsIgnoreCase( blockType.getBlockNameFormal() )) {
+	    				results = block;
+	    				break;
+	    			}
+	    		}
+	    	}
+	    	
+	    	return results;
     }
 
     public double area() {
-    	if ( isVirtual() ) {
-    		return 0;
-    	}
+	    	if ( isVirtual() ) {
+	    		return 0;
+	    	}
         return getBounds().getArea();
     }
 
@@ -962,18 +804,18 @@ public abstract class MineData
      * @return
      */
     public boolean hasTPAccess( Player player ) {
-    	boolean results = false;
-    	
-    	String minePermission = "mines.tp." + getName().toLowerCase();
-    	
-    	if ( isTpAccessByRank() && Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
-    			player.hasPermission("mines.tp") || 
-    			!isTpAccessByRank() && player.hasPermission( minePermission ) ) {
-    		
-    		results = true;
-    	}
-    	
-    	return results;
+	    	boolean results = false;
+	    	
+	    	String minePermission = "mines.tp." + getName().toLowerCase();
+	    	
+	    	if ( isTpAccessByRank() && Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
+	    			player.hasPermission("mines.tp") || 
+	    			!isTpAccessByRank() && player.hasPermission( minePermission ) ) {
+	    		
+	    		results = true;
+	    	}
+	    	
+	    	return results;
     }
     
     /**
@@ -1004,25 +846,81 @@ public abstract class MineData
      * @return
      */
     public boolean hasMiningAccess( Player player ) {
-    	boolean results = false;
-    	
-    	if ( isMineAccessByRank() && 
-				Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
-				!isMineAccessByRank() &&
-    					isAccessPermissionEnabled() && player.hasPermission( getAccessPermission() ) 
-    					
-    			/// Note: the following cannot be added here since it will grant access if both are disabled
-    			//		|| !isMineAccessByRank() && !isAccessPermissionEnabled() 
-    			 ) {
-
-    		results = true;
-    	}
-    				
-    	return results;
+	    	boolean results = false;
+	    	
+	    	StringBuilder dbug = new StringBuilder();
+	    	boolean isDebug = Output.get().isDebug();
+	    	
+	    	// The mine setting:
+	    	boolean isAccessByRank = isMineAccessByRank();
+	    	
+	    	dbug.append( "&3## hasMineAccess: mineAccessByRank: [" )
+	    			.append( getName() ).append( " " )
+	    			.append( isAccessByRank ).append( "]  " );	    	
+	    	/// Note: the following cannot be added here since it will grant access if both are disabled
+	    	//		|| !isMineAccessByRank() && !isAccessPermissionEnabled() 
+	
+	    	if ( isAccessByRank ) {
+	    		 
+	    		if ( Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ) {
+	    			
+	    			dbug.append( "Success!" );
+	    			results = true;
+	    		}
+	    		else {
+	    			String mineRank = getRank().getName();
+	    			
+	    			if ( isDebug ) {
+	    				
+	    				dbug.append( "&cFailed! &aPlayer does not have access based upon their rank.  " )
+	    					.append( "mineRank: " ).append( mineRank );
+	    				
+	    				
+	    			}
+	    		}
+	    			
+	    		
+	    	}
+	    	else {
+	
+	    		dbug.append( "  accessByPerms: " ).append( isAccessPermissionEnabled() );
+	    		
+	    		if ( isAccessPermissionEnabled() ) {
+	    			
+	    			if ( player.hasPermission( getAccessPermission() )) {
+	
+	    				dbug.append( "Success!" );
+	    				results = true;
+	    			}
+	    			else {
+	    				dbug.append( "&cFailed! &aPlayer does not have access based upon the permission: [" )
+	    					.append( getAccessPermission() == null ? "null" : getAccessPermission()  );
+	    			}
+	    		}
+	    		else {
+	    			
+	    			dbug.append( " &cFailed! &aMust have either accessByRank or accessByPerm enabled. " );
+	    		}
+	    				
+	    	}
+	    	
+	    	if ( isDebug ) {
+	    		String setting = Prison.get().getPlatform().getConfigString( "prison-mines.access-to-prior-mines" );
+	    		if ( setting != null ) {
+	    			dbug.append( "Config.yml: prison-mines.access-to-prior-mines: " ).append( setting.trim() );
+	    			
+	    		}
+	    	}
+	    	
+	    	if ( isDebug ) {
+	    		Output.get().logInfo( dbug.toString() );
+	    	}
+	    				
+	    	return results;
     }
     
     public boolean isAccessPermissionEnabled() {
-    	return accessPermission != null && !accessPermission.trim().isEmpty();
+		return accessPermission != null && !accessPermission.trim().isEmpty();
     }
     public String getAccessPermission() {
 		return accessPermission;
@@ -1031,6 +929,13 @@ public abstract class MineData
 		this.accessPermission = accessPermission;
 	}
 	
+
+	public int getDataVersion() {
+		return dataVersion;
+	}
+	public void setDataVersion(int dataVersion) {
+		this.dataVersion = dataVersion;
+	}
 
 	public MineType getMineType() {
 		return mineType;
@@ -1067,7 +972,7 @@ public abstract class MineData
      * world can't be found
      */
     public Location getSpawn() {
-    	return spawn;
+    		return spawn;
     }
 
     /**
@@ -1077,11 +982,11 @@ public abstract class MineData
      * @return this instance for chaining
      */
     public void setSpawn(Location location) {
-    	// cannot set spawn when virtual:
-    	if ( !isVirtual() ) {
-    		hasSpawn = (location != null);
-    		spawn = location;
-    	}
+	    	// cannot set spawn when virtual:
+	    	if ( !isVirtual() ) {
+	    		hasSpawn = (location != null);
+	    		spawn = location;
+	    	}
     }
     
 	public boolean isHasSpawn() {
@@ -1145,7 +1050,7 @@ public abstract class MineData
 	}
 
 	public String getMineNotificationPermissionName() {
-		return MINE_NOTIFICATION_PERMISSION_PREFIX + getName().toLowerCase();
+		return Mine.MINE_NOTIFICATION_PERMISSION_PREFIX + getName().toLowerCase();
 	}
 	
 	/**
@@ -1270,13 +1175,6 @@ public abstract class MineData
 	public void setResetCommands( List<String> resetCommands ) {
 		this.resetCommands = resetCommands;
 	}
-
-//	public boolean isUsePagingOnReset() {
-//		return usePagingOnReset;
-//	}
-//	public void setUsePagingOnReset( boolean usePagingOnReset ) {
-//		this.usePagingOnReset = usePagingOnReset;
-//	}
 
 	public ModuleElement getRank() {
 		return rank;

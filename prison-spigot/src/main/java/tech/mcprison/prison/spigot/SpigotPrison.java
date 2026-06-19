@@ -60,8 +60,10 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.sellall.PrisonSellall;
 import tech.mcprison.prison.sellall.commands.SellallCommands;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
+import tech.mcprison.prison.spigot.autofeatures.PrisonDebugBlockInspectorCommand;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.bstats.PrisonBStats;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
@@ -84,8 +86,11 @@ import tech.mcprison.prison.spigot.economies.EdPrisonEconomy;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
 import tech.mcprison.prison.spigot.economies.SaneEconomy;
+import tech.mcprison.prison.spigot.economies.TheNewEconomy;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.integrations.IntegrationBackpackAPI;
+import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
@@ -118,10 +123,8 @@ public class SpigotPrison
     boolean debug = false;
 
     private File dataDirectory;
-//    private boolean doAlertAboutConvert = false;
     
     private AutoManagerFeatures autoFeatures = null;
-//    private FileConfiguration autoFeaturesConfig = null;
     
     private OnBlockBreakEventListener blockBreakEventListeners;
 
@@ -143,8 +146,6 @@ public class SpigotPrison
     
     
     private PrisonBStats prisonBStats;
-//    private Metrics bStatsMetrics = null;
-//    private PrisonMetrics bStatsMetrics = null;
 
     
     public static SpigotPrison getInstance(){
@@ -196,111 +197,108 @@ public class SpigotPrison
         
     }
 
-    @Override
-    public void onEnable() {
-    	
-    	
-    	// Setup the config.yml file and set debug mode:
-    	// config = this;
-        this.saveDefaultConfig();
-        this.debug = getConfig().getBoolean("debug", false);
+	@Override
+	public void onEnable() {
 
 
-        // Create the core directory structure if it is missing:
-        initDataDir();
+		// Setup the config.yml file and set debug mode:
+		// config = this;
+		this.saveDefaultConfig();
+		this.debug = getConfig().getBoolean( "debug", false );
+
+
+		// Create the core directory structure if it is missing:
+		initDataDir();
 
 //        // Setup the localManager (when instantiating Prison) and set the default language:
 //        Prison.get().getLocaleManager().setDefaultLocale(
 //        		getConfig().getString("default-language", "en_US"));
 
-        // Setup some of the key data structures and object required to be in place
-        // prior to starting up:
-        initCommandMap();
-        this.scheduler = new SpigotScheduler(this);
-
-        
-        Prison.get();
-        
-        SpigotPlatform platform = new SpigotPlatform(this);
-
-        Prison.get().init( platform, Bukkit.getVersion() );
-        
-        // Initialize storage after setting the platformm in the Prison.get():
-        platform.initStorage();
+		// Setup some of the key data structures and object required to be in place
+		// prior to starting up:
+		initCommandMap();
+		this.scheduler = new SpigotScheduler( this );
 
 
-        // Show Prison's splash screen and setup the core components:
-        Prison.get().init( getDataFolder() );
+		Prison.get();
 
-        
-        
-        // If prison version is new, then make a copy of all config files that may change on startup:
-        PrisonBackups backups = new PrisonBackups();
-        backups.initialStartupVersionCheck();
-        
+		SpigotPlatform platform = new SpigotPlatform( this );
 
-        
-        
-        // Enable the spigot locale manager:
-        getLocaleManager();
-        
-        if ( debug ) {
-        	Output.get().setDebug( debug );
-        }
-        
-        // Load the Text's language configs:
-        Text.initialize();
-        
-        
-        this.compatibility = SpigotCompatibility.getInstance();
+		Prison.get().init( platform, Bukkit.getVersion() );
+
+		// Initialize storage after setting the platformm in the Prison.get():
+		platform.initStorage();
+
+
+		// Show Prison's splash screen and setup the core components:
+		Prison.get().init( getDataFolder() );
+
+
+		// If prison version is new, then make a copy of all config files that may change on startup:
+		PrisonBackups backups = new PrisonBackups();
+		backups.initialStartupVersionCheck();
+
+
+		// Enable the spigot locale manager:
+		getLocaleManager();
+
+		if ( debug ) {
+			Output.get().setDebug( debug );
+		}
+
+		// Load the Text's language configs:
+		Text.initialize();
+
+
+		this.compatibility = SpigotCompatibility.getInstance();
 //        initCompatibility();  Obsolete...
-        
-        
-        initUpdater();
-        
-        
-    	boolean delayedPrisonStartup = getConfig().getBoolean("delayedPrisonStartup.enabled", false);
 
-    	
-    	if ( !delayedPrisonStartup ) {
-    		
-    		// Check to see if CMI is an active plugin.  If it is, then let's enable the delayed startup.
-    		// It should be noted that just because CMI is detected, it does not mean that the CMI Economy
-    		// is being used.  Use a flexible startup which means it will start if any vault economy 
-    		// is found.
-    		RegisteredPluginsData cmiPlugin = platform.identifyRegisteredPlugin( "CMI" );
-    		if ( cmiPlugin != null ) {
-    			String cmiMessage = String.format( 
-    					"CMI was detected and Prison's delayed startup has been enabled: %s - %s ", 
-    					cmiPlugin.getPluginName(), cmiPlugin.getPluginVersion() );
-    			Output.get().logInfo( cmiMessage );
-    		
-    			onEnableDelayedStartFlexible();
-    		}
-    		else {
-    			
-    			onEnableStartup();
-    		}
-    	}
-    	else {
-    		onEnableDelayedStart();
-    	}
-    	
-    }
+
+		initUpdater();
+
+
+		boolean delayedPrisonStartup = getConfig().getBoolean( "delayedPrisonStartup.enabled", false );
+
+
+		if ( !delayedPrisonStartup ) {
+
+			// Check to see if CMI is an active plugin. If it is, then let's enable the delayed startup.
+			// It should be noted that just because CMI is detected, it does not mean that the CMI Economy
+			// is being used. Use a flexible startup which means it will start if any vault economy
+			// is found.
+			RegisteredPluginsData cmiPlugin = platform.identifyRegisteredPlugin( "CMI" );
+			if ( cmiPlugin != null ) {
+				String cmiMessage = String.format(
+						"CMI was detected and Prison's delayed startup has been enabled: %s - %s ",
+						cmiPlugin.getPluginName(), cmiPlugin.getPluginVersion() );
+				Output.get().logInfo( cmiMessage );
+
+				onEnableDelayedStartFlexible();
+			}
+			else {
+
+				onEnableStartup();
+			}
+		}
+		else {
+			onEnableDelayedStart();
+		}
+
+	}
     
     
-    protected void onEnableDelayedStartFlexible() {
-    	
-    	SpigotPrisonDelayedStartupTask delayedStartupTask = new SpigotPrisonDelayedStartupTask( this );
-    	delayedStartupTask.setUseAnyVaultEconomy( true );
-    	delayedStartupTask.submit();
-    }
+	protected void onEnableDelayedStartFlexible() {
+
+		SpigotPrisonDelayedStartupTask delayedStartupTask = new SpigotPrisonDelayedStartupTask( this );
+		delayedStartupTask.setUseAnyVaultEconomy( true );
+		delayedStartupTask.submit();
+	}
     
-    protected void onEnableDelayedStart() {
-    	
-    	SpigotPrisonDelayedStartupTask delayedStartupTask = new SpigotPrisonDelayedStartupTask( this );
-    	delayedStartupTask.submit();
-    }
+	protected void onEnableDelayedStart() {
+
+		SpigotPrisonDelayedStartupTask delayedStartupTask = new SpigotPrisonDelayedStartupTask( this );
+		delayedStartupTask.submit();
+	}
     
     
     public void onEnableFail() {
@@ -313,48 +311,48 @@ public class SpigotPrison
 
     }
     	
-   public void onEnableStartup() {
-	   
+	public void onEnableStartup() {
 
-        
-        // Manually register Listeners with Bukkit:
-        Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
 
-        
-        boolean slimeFunEnabled1 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun");
-		boolean slimeFunEnabled2 = SpigotPrison.getInstance().getConfig().getBoolean("slime-fun.enabled");
-		
-        if ( slimeFunEnabled1 || slimeFunEnabled2 ) {
-        	Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
-        }
-        
-        Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
+		// Manually register Listeners with Bukkit:
+		Bukkit.getPluginManager().registerEvents( new ListenersPrisonManager(), this );
 
-        try {
-            isBackPacksEnabled = getConfig().getBoolean("backpacks");
-        } catch (NullPointerException ignored){}
 
-        if (isBackPacksEnabled){
-            Bukkit.getPluginManager().registerEvents(new BackpacksListeners(), this);
-        }
+		boolean slimeFunEnabled1 = SpigotPrison.getInstance().getConfig().getBoolean( "slime-fun" );
+		boolean slimeFunEnabled2 = SpigotPrison.getInstance().getConfig().getBoolean( "slime-fun.enabled" );
 
-        initIntegrations();
-        
-        // Sellall set to disabled since it will be set to the correct value in enableModulesAndCommands():
-        isSellAllEnabled = false;
-        
+		if ( slimeFunEnabled1 || slimeFunEnabled2 ) {
+			Bukkit.getPluginManager().registerEvents( new SlimeBlockFunEventListener(), this );
+		}
 
-        
+		Bukkit.getPluginManager().registerEvents( new SpigotListener(), this );
+
+
+		try {
+			isBackPacksEnabled = getConfig().getBoolean( "backpacks" );
+		} 
+		catch ( NullPointerException ignored ) {
+		}
+
+		if ( isBackPacksEnabled ) {
+			Bukkit.getPluginManager().registerEvents( new BackpacksListeners(), this );
+		}
+
+		initIntegrations();
+
+		// Sellall set to disabled since it will be set to the correct value in enableModulesAndCommands():
+		isSellAllEnabled = false;
+
+
 		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
-    	AutoFeaturesWrapper.getInstance();
-    	AutoFeaturesWrapper.getBlockConvertersInstance();
-    	
-        
-		
-        // This is the loader for modules and commands:
-        enableModulesAndCommands();
+		AutoFeaturesWrapper.getInstance();
+		AutoFeaturesWrapper.getBlockConvertersInstance();
 
-        
+
+		// This is the loader for modules and commands:
+		enableModulesAndCommands();
+
+
 //        // NOTE: Put all commands within the initModulesAndCommands() function.
 //        initModulesAndCommands();
 //        
@@ -364,18 +362,18 @@ public class SpigotPrison
 //        // After all the integrations have been loaded and the deferred tasks ran, 
 //        // then run the deferred Module setups:
 //        initDeferredModules();
-        
-        
-        // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
-        // Auto features will prevent this if it's disabled.
-        getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
-        
-        
-        // These stats are displayed within the initDeferredModules():
-        //Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
-        
-        
-        @SuppressWarnings("unused")
+
+
+		// The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
+		// Auto features will prevent this if it's disabled.
+		getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
+
+
+		// These stats are displayed within the initDeferredModules():
+		// Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
+
+
+		@SuppressWarnings( "unused" )
 		PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 
 //        if (doAlertAboutConvert) {
@@ -383,7 +381,7 @@ public class SpigotPrison
 //                    "&7An old installation of Prison has been detected. &3Type /prison convert to convert your old data automatically. &7If you already converted, delete the 'Prison.old' folder so that we stop nagging you.");
 //        }
 
-        // Finally print the version after loading the prison plugin:
+		// Finally print the version after loading the prison plugin:
 
 //        // Store all loaded plugins within the PrisonCommand for later inclusion:
 //        for ( Plugin plugin : Bukkit.getPluginManager().getPlugins() ) {
@@ -393,122 +391,122 @@ public class SpigotPrison
 //        	cmdVersion.getRegisteredPlugins().add( value );
 //		}
 
-        
-        ChatDisplay cdVersion = new ChatDisplay("A suppressed title");
-        cdVersion.setShowTitle( false );
-//		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
-		
 
-        // This generates the module listing, the autoFeatures overview, 
-        // the integrations listings, and the plugins listings.
-        // Used in the command: /prison version
+		ChatDisplay cdVersion = new ChatDisplay( "A suppressed title" );
+		cdVersion.setShowTitle( false );
+//		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
+
+
+		// This generates the module listing, the autoFeatures overview,
+		// the integrations listings, and the plugins listings.
+		// Used in the command: /prison version
 		boolean isBasic = true;
 		boolean showLaddersAndRanks = false;
-        Prison.get().getPlatform().prisonVersionFeatures( cdVersion, isBasic, showLaddersAndRanks );
+		Prison.get().getPlatform().prisonVersionFeatures( cdVersion, isBasic, showLaddersAndRanks );
 
 
 		cdVersion.toLog( LogLevel.INFO );
-		
+
 		// Provides a startup test of blocks available for the version of spigot that being used:
-		if ( getConfig().getBoolean("prison-block-compatibility-report") ) {
+		if ( getConfig().getBoolean( "prison-block-compatibility-report" ) ) {
 			SpigotUtil.testAllPrisonBlockTypes();
 		}
 
-		
-       // Force a backup if prison version is new:
-       PrisonBackups backups = new PrisonBackups();
-       backups.serverStartupVersionCheck();
-	       
 
-       // Reload guiConfigs since ranks and mines have now been loaded:
-       guiConfig.initialize();
-       
-       
-       
-       // Setup mine bombs and validate to spigot version:
-       PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();
-       PrisonUtilsMineBombs.getInstance().validateMineBombsSpigotVersion();
+		// Force a backup if prison version is new:
+		PrisonBackups backups = new PrisonBackups();
+		backups.serverStartupVersionCheck();
 
-       // Enable Temp spigot commands:
-       new SpigotCommand();
-		
-       // Startup bStats:
-       prisonBStats.initMetricsOnEnable();
-       
-       
-       
+
+		// Reload guiConfigs since ranks and mines have now been loaded:
+		guiConfig.initialize();
+
+
+		// Setup mine bombs and validate to spigot version:
+		PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();
+		PrisonUtilsMineBombs.getInstance().validateMineBombsSpigotVersion();
+
+		// Enable Temp spigot commands:
+		new SpigotCommand();
+
+		// Startup bStats:
+		prisonBStats.initMetricsOnEnable();
+
+
 		Output.get().logInfo( "Prison - Finished loading." );
-		
-		
+
+
 		if ( PrisonInitialStartupTask.isInitialStartup() ) {
-			
+
 			PrisonInitialStartupTask startupTask = new PrisonInitialStartupTask( this );
 			startupTask.submit();
 		}
-    }
+	}
 
-    @Override
-    public void onDisable() {
-    	if (this.scheduler != null ) {
-    		this.scheduler.cancelAll();
-    	}
-    	
-    	Prison.get().getPlatform().unregisterAllCommands();
-    	
-    	Prison.get().deinit();
-    }
+	@Override
+	public void onDisable() {
+
+		if ( this.scheduler != null ) {
+			this.scheduler.cancelAll();
+		}
+
+		Prison.get().getPlatform().unregisterAllCommands();
+
+		Prison.get().deinit();
+	}
 
     
     
 
-    /**
-     * Lazy load LocalManager which ensures Prison is already loaded so 
-     * can get the default language to use from the plugin configs.
-     * 
-     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
-     * uses to run its command library, and the like. {@link Module}s have their own {@link
-     * LocaleManager}s, so that each module can have independent localization.
-     *
-     * @return The global locale manager instance.
-     */
-    public LocaleManager getLocaleManager() {
-    		
-    	if ( this.localeManager == null ) {
-    		
-    		this.localeManager = new LocaleManager(this, "lang/spigot");
-    	}
-        return localeManager;
-    }
+	/**
+	 * Lazy load LocalManager which ensures Prison is already loaded so can get the default language to use from the plugin
+	 * configs.
+	 * 
+	 * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison uses to run its
+	 * command library, and the like. {@link Module}s have their own {@link LocaleManager}s, so that each module can have
+	 * independent localization.
+	 *
+	 * @return The global locale manager instance.
+	 */
+	public LocaleManager getLocaleManager() {
 
-    /**
-     * Returns this module's data folder, where all data can be stored.
-     * It is located in the Prison data folder, and has the name of the module.
-     * It is automatically generated.
-     *
-     * @return The {@link File} representing the data folder.
-     */
-    public File getModuleDataFolder() {
-    	
-    	if ( moduleDataFolder == null ) {
-    		this.moduleDataFolder = Module.setupModuleDataFolder( "spigot" );
-    	}
-        return moduleDataFolder;
-    }
+		if ( this.localeManager == null ) {
+
+			this.localeManager = new LocaleManager( this, "lang/spigot" );
+		}
+		return localeManager;
+	}
+
+	/**
+	 * Returns this module's data folder, where all data can be stored. It is located in the Prison data folder, and has the
+	 * name of the module. It is automatically generated.
+	 *
+	 * @return The {@link File} representing the data folder.
+	 */
+	public File getModuleDataFolder() {
+
+		if ( moduleDataFolder == null ) {
+			this.moduleDataFolder = Module.setupModuleDataFolder( "spigot" );
+		}
+		return moduleDataFolder;
+	}
     
     
-    public OnBlockBreakEventListener getBlockBreakEventListeners() {
-    	if ( blockBreakEventListeners == null ) {
-            this.blockBreakEventListeners = new OnBlockBreakEventListener();
-    	}
+	public OnBlockBreakEventListener getBlockBreakEventListeners() {
+
+		if ( blockBreakEventListeners == null ) {
+			this.blockBreakEventListeners = new OnBlockBreakEventListener();
+		}
 		return blockBreakEventListeners;
 	}
 
 	public FileConfiguration getGuiConfig() {
-    	if (guiConfig == null) {
-    		guiConfig = new GuiConfig();
-    	}
-        return guiConfig.getFileGuiConfig();
-    }
+
+		if ( guiConfig == null ) {
+			guiConfig = new GuiConfig();
+		}
+		return guiConfig.getFileGuiConfig();
+	}
 
     public FileConfiguration getSellAllConfig(){
         return sellAllConfig.getFileSellAllConfig();
@@ -517,7 +515,6 @@ public class SpigotPrison
     public FileConfiguration updateSellAllConfig() {
         // Let this like this or it won't update when you do /Sellall etc and will need a server restart.
         sellAllConfig = new SellAllConfig();
-        sellAllConfig.initialize();
         return sellAllConfig.getFileSellAllConfig();
     }
 
@@ -581,307 +578,11 @@ public class SpigotPrison
         return format == null ? "" : ChatColor.translateAlternateColorCodes('&', format);
     }
 
-    public static String stripColor(String format){
-    	return Text.stripColor(format);
-//    	format = format(format);
-    	
-//    	return format == null ? null : ChatColor.stripColor(format);
-    }
-    
-//    /**
-//     * <p>bStats reporting</p>
-//     * 
-//     * https://github.com/Bastian/bStats-Metrics/tree/master/base/src/main/java/org/bstats/charts
-//     * 
-//     */
-//    private void initMetricsOnLoad() {
-//    	if (!getConfig().getBoolean("send-metrics", true)) {
-//    		return; // Don't check if they don't want it
-//    	}
-//    	
-//    	int pluginId = 657;
-//    	bStatsMetrics = new Metrics( this, pluginId );
-////    	bStatsMetrics = new PrisonMetrics( this, pluginId );
-//    	
-////    	Metrics metrics = new Metrics( this, pluginId );
-//    }
-//    
-//    private void initMetricsOnEnable() {
-//        if (!getConfig().getBoolean("send-metrics", true)) {
-//            return; // Don't check if they don't want it
-//        }
-//        
-//        
-//        if ( bStatsMetrics == null ) {
-//        	int pluginId = 657;
-//        	
-//        	bStatsMetrics = new Metrics( this, pluginId );
-////        	bStatsMetrics = new PrisonMetrics( this, pluginId );
-//        }
-//
-//        // Report the modules being used
-//        SimpleBarChart sbcModulesUsed = new SimpleBarChart("modules_used", () -> {
-//            Map<String, Integer> valueMap = new HashMap<>();
-//            for (Module m : PrisonAPI.getModuleManager().getModules()) {
-//                valueMap.put(m.getName(), 1);
-//            }
-//            return valueMap;
-//        });
-//        bStatsMetrics.addCustomChart( sbcModulesUsed );
-//
-//        // Report the API level
-//        SimplePie spApiLevel = 
-//                new SimplePie("api_level", () -> 
-//                	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR );
-//        bStatsMetrics.addCustomChart( spApiLevel );
-//        
-//        
-//        Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-//        Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-//        
-//        int mineCount = prisonMinesOpt.map(module -> ((PrisonMines) module).getMineManager().getMines().size()).orElse(0);
-//        int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
-//        
-//        int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
-//        int prestigesRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPrestigesLadderRankCount()).orElse(0);
-//        int otherRankCount = rankCount - defaultRankCount - prestigesRankCount;
-//        
-//        int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
-//        int playerCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPlayersCount()).orElse(0);
-//        
-//        
-//        
-//        DrilldownPie mlcPrisonRanksAndLadders = new DrilldownPie("mines_ranks_and_ladders", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//        	Map<String, Integer> ranks = new HashMap<>();
-//        	ranks.put( Integer.toString( mineCount ), 1 );
-//        	map.put( "mines", ranks );
-//        	
-//        	Map<String, Integer> defRanks = new HashMap<>();
-//        	defRanks.put( Integer.toString( rankCount ), 1 );
-//        	map.put( "ranks", defRanks );
-//    	
-//        	Map<String, Integer> prestigesRanks = new HashMap<>();
-//        	prestigesRanks.put( Integer.toString( ladderCount ), 1 );
-//        	map.put( "ladders", prestigesRanks );
-//        	
-//        	Map<String, Integer> otherRanks = new HashMap<>();
-//        	otherRanks.put( Integer.toString( playerCount ), 1 );
-//        	map.put( "players", otherRanks );
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonRanksAndLadders );
-//        
-////        MultiLineChart mlcMinesRanksAndLadders = 
-////        		new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
-////            @Override
-////            public Map<String, Integer> call() throws Exception {
-////                Map<String, Integer> valueMap = new HashMap<>();
-////                valueMap.put("mines", mineCount);
-////                valueMap.put("ranks", rankCount);
-////                valueMap.put("ladders", ladderCount);
-////                valueMap.put("players", playerCount);
-////                return valueMap;
-////            }
-////        });
-////        bStatsMetrics.addCustomChart( mlcMinesRanksAndLadders );
-//        
-//        
-//        
-//        DrilldownPie mlcPrisonPrisonRanks = new DrilldownPie("prison_ranks", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//        	Map<String, Integer> ranks = new HashMap<>();
-//        	ranks.put( Integer.toString( rankCount ), 1 );
-//        	map.put( "ranks", ranks );
-//        	
-//        	Map<String, Integer> defRanks = new HashMap<>();
-//        	defRanks.put( Integer.toString( defaultRankCount ), 1 );
-//        	map.put( "defaultRanks", defRanks );
-//    	
-//        	Map<String, Integer> prestigesRanks = new HashMap<>();
-//        	prestigesRanks.put( Integer.toString( prestigesRankCount ), 1 );
-//        	map.put( "prestigesRanks", prestigesRanks );
-//        	
-//        	Map<String, Integer> otherRanks = new HashMap<>();
-//        	otherRanks.put( Integer.toString( otherRankCount ), 1 );
-//        	map.put( "otherRanks", otherRanks );
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonPrisonRanks );
-//        
-////        MultiLineChart mlcPrisonRanks = new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
-////        	@Override
-////        	public Map<String, Integer> call() throws Exception {
-////        		Map<String, Integer> valueMap = new HashMap<>();
-////        		valueMap.put("ranks", rankCount);
-////        		valueMap.put("defaultRanks", defaultRankCount);
-////        		valueMap.put("prestigesRanks", prestigesRankCount);
-////        		valueMap.put("otherRanks", otherRankCount);
-////        		return valueMap;
-////        	}
-////        });
-////        bStatsMetrics.addCustomChart( mlcPrisonRanks );
-//        
-//        
-//        DrilldownPie mlcPrisonPrisonLadders = new DrilldownPie("prison_ladders", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//    		
-//    		PrisonRanks pRanks = (PrisonRanks) prisonRanksOpt.orElseGet( null );
-//    		for ( RankLadder ladder : pRanks.getLadderManager().getLadders() ) {
-//    	
-//    			Map<String, Integer> entry = new HashMap<>();
-//        		entry.put( Integer.toString( ladder.getRanks().size() ), 1 );
-//        		
-//        		map.put( ladder.getName(), entry );
-//    		}
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonPrisonLadders );
-//        
-//        
-////        MultiLineChart mlcPrisonladders = new MultiLineChart("prison_ladders", new Callable<Map<String, Integer>>() {
-////        	@Override
-////        	public Map<String, Integer> call() throws Exception {
-////        		Map<String, Integer> valueMap = new HashMap<>();
-////        		
-////        		PrisonRanks pRanks = (PrisonRanks) prisonRanksOpt.orElseGet( null );
-////        		for ( RankLadder ladder : pRanks.getLadderManager().getLadders() ) {
-////        	
-////        			valueMap.put( ladder.getName(), ladder.getRanks().size() );
-////        		}
-////        		
-////        		return valueMap;
-////        	}
-////        });
-////        bStatsMetrics.addCustomChart( mlcPrisonladders );
-//
-//        TreeMap<String, RegisteredPluginsData> plugins = Prison.get().getPrisonCommands().getRegisteredPluginData();
-//
-//        TreeMap<String, RegisteredPluginsData> pluginsAtoE = getSubsetOfPlugins(plugins, 'a', 'f', false );
-//        TreeMap<String, RegisteredPluginsData> pluginsFtoM = getSubsetOfPlugins(plugins, 'f', 'n', false );
-//        TreeMap<String, RegisteredPluginsData> pluginsNtoS = getSubsetOfPlugins(plugins, 'n', 't', false );
-//        TreeMap<String, RegisteredPluginsData> pluginsTto9 = getSubsetOfPlugins(plugins, 't', 'z', true );
-//        
-//        DrilldownPie mlcPrisonPlugins = new DrilldownPie("plugins", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//        	for (String pluginName : plugins.keySet() ) {
-//        		RegisteredPluginsData pluginData = plugins.get( pluginName );
-//				
-//        		Map<String, Integer> entry = new HashMap<>();
-//        		entry.put( pluginData.getPluginVersion(), 1 );
-//        		
-//        		map.put( pluginData.getPluginName(), entry );
-//			}
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonPlugins );
-//        
-//        
-//        DrilldownPie mlcPrisonPluginsAtoE = new DrilldownPie("plugins_a_to_e", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//        	for (String pluginName : pluginsAtoE.keySet() ) {
-//        		RegisteredPluginsData pluginData = pluginsAtoE.get( pluginName );
-//        		
-//        		Map<String, Integer> entry = new HashMap<>();
-//        		entry.put( pluginData.getPluginVersion(), 1 );
-//        		
-//        		map.put( pluginData.getPluginName(), entry );
-//        	}
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonPluginsAtoE );
-//        
-//        
-//        DrilldownPie mlcPrisonPluginsFtoM = new DrilldownPie("plugins_f_to_m", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//        	for (String pluginName : pluginsFtoM.keySet() ) {
-//        		RegisteredPluginsData pluginData = pluginsFtoM.get( pluginName );
-//        		
-//        		Map<String, Integer> entry = new HashMap<>();
-//        		entry.put( pluginData.getPluginVersion(), 1 );
-//        		
-//        		map.put( pluginData.getPluginName(), entry );
-//        	}
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonPluginsFtoM );
-//        
-//        
-//        DrilldownPie mlcPrisonPluginsNtoS = new DrilldownPie("plugins_n_to_s", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//        	for (String pluginName : pluginsNtoS.keySet() ) {
-//        		RegisteredPluginsData pluginData = pluginsNtoS.get( pluginName );
-//        		
-//        		Map<String, Integer> entry = new HashMap<>();
-//        		entry.put( pluginData.getPluginVersion(), 1 );
-//        		
-//        		map.put( pluginData.getPluginName(), entry );
-//        	}
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonPluginsNtoS );
-//        
-//        
-//        DrilldownPie mlcPrisonPluginsTto9 = new DrilldownPie("plugins_t_to_z_plus_others", () -> {
-//        	Map<String, Map<String, Integer>> map = new HashMap<>();
-//        	
-//        	for (String pluginName : pluginsTto9.keySet() ) {
-//        		RegisteredPluginsData pluginData = pluginsTto9.get( pluginName );
-//        		
-//        		Map<String, Integer> entry = new HashMap<>();
-//        		entry.put( pluginData.getPluginVersion(), 1 );
-//        		
-//        		map.put( pluginData.getPluginName(), entry );
-//        	}
-//        	
-//        	return map;
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonPluginsTto9 );
-//        
-//        
-//        
-//    }
+	public static String stripColor( String format ) {
 
-//    private TreeMap<String, RegisteredPluginsData> getSubsetOfPlugins(
-//    			TreeMap<String, RegisteredPluginsData> plugins,
-//    			char rangeLow, char rangeHigh,
-//    			boolean includeNonAlpha ) {
-//    	TreeMap<String, RegisteredPluginsData> results = new TreeMap<>();
-//    	
-//    	Set<String> keys = plugins.keySet();
-//    	for (String key : keys) {
-//			char keyFirstChar = key.toLowerCase().charAt(0);
-//			
-//			if ( Character.isAlphabetic(keyFirstChar) ) {
-//				
-//				if ( Character.compare(keyFirstChar, rangeLow) >= 0 && Character.compare( keyFirstChar, rangeHigh) < 0 ) {
-//					
-//					results.put( key, plugins.get(key) );
-//				}
-//			}
-//			else {
-//				
-//				// Add all non-alpha plugins to this result:
-//				results.put( key, plugins.get(key) );
-//			}
-//		}
-//    	
-//		return results;
-//	}
+		return Text.stripColor( format );
+	}
+    
 
 	/**
      * Checks to see if there is a newer version of prison that has been released.
@@ -898,32 +599,6 @@ public class SpigotPrison
         PrisonSpigetUpdateCheckTask updateCheck = new PrisonSpigetUpdateCheckTask();
         updateCheck.submit();
         
-////        String currentVersion = getDescription().getVersion();
-//
-//        SpigetUpdate updater = new SpigetUpdate(this, Prison.SPIGOTMC_ORG_PROJECT_ID);
-////        SpigetUpdate updater = new SpigetUpdate(this, 1223);
-//        
-//        
-//        BluesSpigetSemVerComparator aRealSemVerComparator = new BluesSpigetSemVerComparator();
-//        updater.setVersionComparator( aRealSemVerComparator );
-////        updater.setVersionComparator(VersionComparator.EQUAL);
-//
-//        updater.checkForUpdate( new PrisonSpigetUpdateCallback() );
-//        
-////        updater.checkForUpdate(new UpdateCallback() {
-////            @Override
-////            public void updateAvailable(String newVersion, String downloadUrl,
-////                                        boolean hasDirectDownload) {
-////                Alerts.getInstance().sendAlert(
-////                        "&3%s is now available. &7Go to the &lSpigot&r&7 page to download the latest release with new features and fixes :)",
-////                        newVersion);
-////            }
-////
-////            @Override
-////            public void upToDate() {
-////                // Plugin is up-to-date
-////            }
-////        });
     }
 
     private void initDataDir() {
@@ -933,15 +608,24 @@ public class SpigotPrison
         }
     }
 
+    /**
+     * This will initialize the two fields, commandMap and knownCommands, which are from the
+     * Bukkit server.  These will give prison's command handler the ability to easily access
+     * these fields, which are not normally accessible.
+     */
     private void initCommandMap() {
         try {
             commandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             commandMap.setAccessible(true);
+            
             knownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
             knownCommands.setAccessible(true);
-        } catch (NoSuchFieldException e) {
+        } 
+        catch (NoSuchFieldException e) {
             getLogger().severe(
-                    "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison.");
+                    "&c&lReflection error: &7Ensure that you're using the latest version of Spigot and Prison. "
+                    + "Unable to access Bukkit.getServer().commandMap field. "
+                    + "or the org.bukkit.command.SimpleCommandMap.knownCommands field.");
             e.printStackTrace();
         }
     }
@@ -959,6 +643,7 @@ public class SpigotPrison
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
         registerIntegration(new GemsEconomy());
+        registerIntegration(new TheNewEconomy());
         registerIntegration(new CoinsEngineEconomy());
         registerIntegration(new EdPrisonEconomy());
         
@@ -973,13 +658,22 @@ public class SpigotPrison
         
         registerIntegration(new CustomItems());
 
+        
+        registerIntegration( IntegrationMinepacksPlugin.getInstance() );
+        registerIntegration( BackpacksUtil.get() );
+        
+        // Force the registration since IntegrationPackpackAPI is not based
+        // upon any other plugin:
+        registerIntegrationForce( IntegrationBackpackAPI.getInstance() );
+        
+        
 //        registerIntegration(new WorldGuard6Integration());
 //        registerIntegration(new WorldGuard7Integration());
     }
 
 	public boolean isIntegrationRegistered( Integration integration ) {
-		
-    	return isPluginRegistered( integration.getProviderName() );
+
+		return isPluginRegistered( integration.getProviderName() );
 	}
 	
 	protected boolean isPluginRegistered( String pluginName ) {
@@ -1003,25 +697,44 @@ public class SpigotPrison
 	 */
 	public void reloadIntegrationsPlaceholders() {
 		
-//		MVdWPlaceholderIntegration ph1 = new MVdWPlaceholderIntegration();
 		PlaceHolderAPIIntegration ph2 = new PlaceHolderAPIIntegration();
 		
-//		registerIntegration(ph1);
 		registerIntegration(ph2);
 		
-//		ph1.deferredInitialization();
 		ph2.deferredInitialization();
 	}
     
-    public void registerIntegration(Integration integration) {
+	/**
+	 * This is the normal way to register integrations that are based upon other loaded plugins. They must be active, or
+	 * they will not be registered.
+	 * 
+	 * @param integration
+	 */
+	public void registerIntegration( Integration integration ) {
 
-    	boolean isRegistered = isIntegrationRegistered( integration );
-    	String version = ( isRegistered ? Bukkit.getPluginManager()
-    									.getPlugin( integration.getProviderName() )
-    											.getDescription().getVersion() : null );
-    	
-    	PrisonAPI.getIntegrationManager().register(integration, isRegistered, version );
-    }
+		boolean isRegistered = isIntegrationRegistered( integration );
+		String version = ( isRegistered ? Bukkit.getPluginManager()
+				.getPlugin( integration.getProviderName() )
+				.getDescription().getVersion() : null );
+
+		PrisonAPI.getIntegrationManager().register( integration, isRegistered, version );
+	}
+    
+	/**
+	 * This should only be used by Integrations that are not based upon another plugin, such as the IntegrationBackpackAPI,
+	 * which any code in any plugin, can register dynamically as a backpackAPI listener.
+	 * 
+	 * This will always treat it as a successful registration, although that does not mean it will be active.
+	 * 
+	 * @param integration
+	 */
+	public void registerIntegrationForce( Integration integration ) {
+
+		boolean isRegistered = true;
+		String version = "api";
+
+		PrisonAPI.getIntegrationManager().register( integration, isRegistered, version );
+	}
 
     
     private void enableModulesAndCommands() {
@@ -1038,302 +751,305 @@ public class SpigotPrison
 
     }
     
-    private void disableModulesAndCommands() {
-    	
-    	for ( Module module : Prison.get().getModuleManager().getModules() ) {
-    		if ( module.isEnabled() ) {
-    			module.disable();
-    		}
-    	}
-    	
-    	Prison.get().getCommandHandler().getAllRegisteredCommands();
-    }
+	private void disableModulesAndCommands() {
+
+		for ( Module module : Prison.get().getModuleManager().getModules() ) {
+			if ( module.isEnabled() ) {
+				module.disable();
+			}
+		}
+
+		Prison.get().getCommandHandler().getAllRegisteredCommands();
+	}
     
-    public void resetModulesAndCommands() {
-    	
-    	disableModulesAndCommands();
-    	
-    	enableModulesAndCommands();
-    }
+	public void resetModulesAndCommands() {
+
+		disableModulesAndCommands();
+
+		enableModulesAndCommands();
+	}
     
-    /**
-     * This function registers all of the modules in prison.  It should also manage
-     * the registration of "extra" commands that are outside of the modules, such
-     * as gui related commands.
-     * 
-     */
-    private void initModulesAndCommands() {
+	/**
+	 * This function registers all of the modules in prison. It should also manage the registration of "extra" commands that
+	 * are outside of the modules, such as gui related commands.
+	 * 
+	 */
+	private void initModulesAndCommands() {
 
-        YamlConfiguration modulesConf = loadConfig("modules.yml");
-        
-        boolean isMinesEnabled = false;
-        boolean isRanksEnabled = false;
+		YamlConfiguration modulesConf = loadConfig( "modules.yml" );
 
-        // TODO: This business logic needs to be moved to the Module Manager:
-        if (modulesConf.getBoolean("mines")) {
-        	isMinesEnabled = true;
-        	
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonMines(getDescription().getVersion()));
+		boolean isMinesEnabled = false;
+		boolean isRanksEnabled = false;
 
-            // The GUI handler for mines... cannot be hooked up here:
+		// TO DO: This business logic needs to be moved to the Module Manager:
+		if ( modulesConf.getBoolean( "mines" ) ) {
+			isMinesEnabled = true;
+
+			Prison.get().getModuleManager()
+					.registerModule( new PrisonMines( getDescription().getVersion() ) );
+
+			// The GUI handler for mines... cannot be hooked up here:
 //            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
-            
-        } else {
-            Output.get().logInfo("&7Modules: &cPrison Mines are disabled and were not Loaded. ");
-            Output.get().logInfo("&7  Prison Mines have been disabled in &2plugins/Prison/modules.yml&7.");
-            Prison.get().getModuleManager().getDisabledModules().add( PrisonMines.MODULE_NAME );
-        }
 
-        if (modulesConf.getBoolean("ranks") ) {
-        	PrisonRanks rankModule = new PrisonRanks(getDescription().getVersion() );
-        	
-        	// Register and enable Ranks:
-            Prison.get().getModuleManager().registerModule( rankModule );
+		}
+		else {
+			Output.get().logInfo( "&7Modules: &cPrison Mines are disabled and were not Loaded. " );
+			Output.get().logInfo( "&7  Prison Mines have been disabled in &2plugins/Prison/modules.yml&7." );
+			Prison.get().getModuleManager().getDisabledModules().add( PrisonMines.MODULE_NAME );
+		}
 
-            if ( rankModule.isEnabled() && PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY) ) {
-            	
-            	isRanksEnabled = true;
-            }
-        } 
-        else {
-        	Output.get().logInfo("&3Modules: &cPrison Ranks, Ladders, and Players are disabled and were not Loaded. ");
-        	Output.get().logInfo("&7  Prestiges cannot be enabled without ranks being enabled. ");
-        	Output.get().logInfo("&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7.");
-        	Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
-        }
-        
-       
-        // If the sellall module is defined in modules.yml, then use that setting, otherwise
-        // use the sellall config setting within the config.yml file.
-        String sellallModuleName = PrisonSellall.MODULE_NAME.toLowerCase();
-        boolean isDefined = modulesConf.contains(sellallModuleName);
-        
-        // First check to see if the module is enabled (sellall):
-        if ( isDefined && modulesConf.getBoolean(sellallModuleName) ||
-        		// if not, then check to see if sellall is enabled within config.yml:
-        		!isDefined && getConfig().contains("sellall") && getConfig().isBoolean("sellall") ) {
-        		
-        	PrisonSellall sellallModule = new PrisonSellall(getDescription().getVersion() );
-        	
-        	// Register and enable the sellall module:
-            Prison.get().getModuleManager().registerModule( sellallModule );
-            
-            Prison.get().getCommandHandler().registerCommands( new SellallCommands() );
-            
+		if ( modulesConf.getBoolean( "ranks" ) ) {
+			PrisonRanks rankModule = new PrisonRanks( getDescription().getVersion() );
 
-            isSellAllEnabled = true;
-            
-            
-            // If sellall is enabled, then allow it to initialize.
+			// Register and enable Ranks:
+			Prison.get().getModuleManager().registerModule( rankModule );
+
+			if ( rankModule.isEnabled() && PrisonAPI.getIntegrationManager().hasForType( IntegrationType.ECONOMY ) ) {
+
+				isRanksEnabled = true;
+			}
+		}
+		else {
+			Output.get().logInfo( "&3Modules: &cPrison Ranks, Ladders, and Players are disabled and were not Loaded. " );
+			Output.get().logInfo( "&7  Prestiges cannot be enabled without ranks being enabled. " );
+			Output.get().logInfo( "&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7." );
+			Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
+		}
+
+
+		// If the sellall module is defined in modules.yml, then use that setting, otherwise
+		// use the sellall config setting within the config.yml file.
+		String sellallModuleName = PrisonSellall.MODULE_NAME.toLowerCase();
+		boolean isDefined = modulesConf.contains( sellallModuleName );
+
+		// First check to see if the module is enabled (sellall):
+		if ( isDefined && modulesConf.getBoolean( sellallModuleName ) ||
+		// if not, then check to see if sellall is enabled within config.yml:
+				!isDefined && getConfig().contains( "sellall" ) && getConfig().isBoolean( "sellall" ) ) {
+
+			PrisonSellall sellallModule = new PrisonSellall( getDescription().getVersion() );
+
+			// Register and enable the sellall module:
+			Prison.get().getModuleManager().registerModule( sellallModule );
+
+			Prison.get().getCommandHandler().registerCommands( new SellallCommands() );
+
+
+			isSellAllEnabled = true;
+
+
+			// If sellall is enabled, then allow it to initialize.
 //            if (isSellAllEnabled){
-            	SellAllUtil.get();
+			SellAllUtil.get();
 //            }
 
-            // Load sellAll if enabled
+			// Load sellAll if enabled
 //            if (isSellAllEnabled){
-            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
+			Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
 //            }
 
-        } 
-        else {
-        	Output.get().logInfo("&3Modules: &cPrison sellall module is disabled and was not Loaded. ");
-        	Prison.get().getModuleManager().getDisabledModules().add( PrisonSellall.MODULE_NAME );
-        }
-        
+		}
+		else {
+			Output.get().logInfo( "&3Modules: &cPrison sellall module is disabled and was not Loaded. " );
+			Prison.get().getModuleManager().getDisabledModules().add( PrisonSellall.MODULE_NAME );
+		}
 
-        
-        // The following linkMinesAndRanks() function must be called only after the 
-        // Module deferred tasks are ran.
+
+		// The following linkMinesAndRanks() function must be called only after the
+		// Module deferred tasks are ran.
 //        // Try to load the mines and ranks that have the ModuleElement placeholders:
 //        // Both the mine and ranks modules must be enabled.
 //        if (modulesConf.getBoolean("mines") && modulesConf.getBoolean("ranks")) {
 //        	linkMinesAndRanks();
 //        }
 
-        
-        // Do not enable sellall if ranks is not loaded since it uses player ranks:
-        if ( isRanksEnabled ) {
-        	
-        	// enable under GUI:
+
+		// Do not enable sellall if ranks is not loaded since it uses player ranks:
+		if ( isRanksEnabled ) {
+
+			// enable under GUI:
 //        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
-        	
+
 //        	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
 //        	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
 //        		// Enable the setup of the prestige related commands only if prestiges is enabled:
 //        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
 //        	}
-        	
-            
-        }
 
-        // Load backpacks commands if enabled
-        if (isBackPacksEnabled){
-        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotBackpackCommands() );
-        }
 
-        
-        // The following will enable all of the GUI related commands.  It's important that they
-        // cannot be enabled elsewhere, or at least the 'prison-gui-enabled' must control 
-        // their registration:
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "prison-gui-enabled" ) ) {
+		}
 
-        	// Prison's primary GUI commands:
-        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
-        	
-        	
-        	if ( isMinesEnabled ) {
-              // The GUI handler for mines... cannot be hooked up here:
-              Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
-        	}
-        	
-        	
-        	if ( isRanksEnabled ) {
-        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
-        		
-            	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
-            	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
-            		// Enable the setup of the prestige related commands only if prestiges is enabled:
-            		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
-            	}
-        	}
-        	
-        	
-        	if ( isBackPacksEnabled ) {
-        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUIBackPackCommands() );	
-        	}
-        	
-        	
-        	if ( isSellAllEnabled ) {
-        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUISellAllCommands() );	
-        	}
-        }
-        
+		// Load backpacks commands if enabled
+		if ( isBackPacksEnabled ) {
+			Prison.get().getCommandHandler().registerCommands( new PrisonSpigotBackpackCommands() );
+		}
+
+
+		// The following will enable all of the GUI related commands. It's important that they
+		// cannot be enabled elsewhere, or at least the 'prison-gui-enabled' must control
+		// their registration:
+		if ( Prison.get().getPlatform().getConfigBooleanFalse( "prison-gui-enabled" ) ) {
+
+			// Prison's primary GUI commands:
+			Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
+
+
+			if ( isMinesEnabled ) {
+				// The GUI handler for mines... cannot be hooked up here:
+				Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+			}
+
+
+			if ( isRanksEnabled ) {
+				Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+
+				// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+				if ( isPrisonConfig( "prestiges" ) || isPrisonConfig( "prestige.enabled" ) ) {
+					// Enable the setup of the prestige related commands only if prestiges is enabled:
+					Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+				}
+			}
+
+
+			if ( isBackPacksEnabled ) {
+				Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUIBackPackCommands() );
+			}
+
+
+			if ( isSellAllEnabled ) {
+				Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUISellAllCommands() );
+			}
+		}
+
 //        // This registers the admin's /gui commands
 //        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
 //        if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
 //        }
 
-        
-        // Register prison utility commands:
-        if (modulesConf.getBoolean("utils.enabled", true)) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonUtilsModule(getDescription().getVersion(), modulesConf));
+
+		// Register prison utility commands:
+		if ( modulesConf.getBoolean( "utils.enabled", true ) ) {
+			Prison.get().getModuleManager()
+					.registerModule( new PrisonUtilsModule( getDescription().getVersion(), modulesConf ) );
 
 //            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
-            
-        } else {
-            Output.get().logInfo("&7Modules: &cPrison Utils are disabled and were not Loaded. ");
-            Output.get().logInfo("&7  Prison Utils have been disabled in &2plugins/Prison/modules.yml&7.");
-            Prison.get().getModuleManager().getDisabledModules().add( PrisonUtilsModule.MODULE_NAME );
-        }
-        
-        
-    }
+
+		}
+		else {
+			Output.get().logInfo( "&7Modules: &cPrison Utils are disabled and were not Loaded. " );
+			Output.get().logInfo( "&7  Prison Utils have been disabled in &2plugins/Prison/modules.yml&7." );
+			Prison.get().getModuleManager().getDisabledModules().add( PrisonUtilsModule.MODULE_NAME );
+		}
 
 
-    /**
-     * This will initialize any process that has been setup in the modules that
-     * needs to be ran after all of the integrations have been fully loaded and initialized.
-     *  
-     */
-    private void initDeferredModules() {
-    	
-    	for ( Module module : Prison.get().getModuleManager().getModules() ) {
-    		
-    		module.deferredStartup();
-    	}
-    	
-    	
-    	// Reload placeholders:
-    	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
-    	
-    	
-    	// Finally link mines and ranks if both are loaded:
-    	linkMinesAndRanks();
-    }
+		// Register the '/mines debugBlockBreak' command:
+		Prison.get().getCommandHandler().registerCommands( new PrisonDebugBlockInspectorCommand() );
+
+
+	}
+
+
+	/**
+	 * This will initialize any process that has been setup in the modules that needs to be ran after all of the
+	 * integrations have been fully loaded and initialized.
+	 * 
+	 */
+	private void initDeferredModules() {
+
+		for ( Module module : Prison.get().getModuleManager().getModules() ) {
+
+			module.deferredStartup();
+		}
+
+
+		// Reload placeholders:
+		Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+
+
+		// Finally link mines and ranks if both are loaded:
+		linkMinesAndRanks();
+	}
     
     
-    /**
-     * Try to link the mines and ranks that have the ModuleElement placeholders:
-     * Both the mine and ranks modules must be enabled to try to link them all
-     * together.
-     */
-    private void linkMinesAndRanks() {
+	/**
+	 * Try to link the mines and ranks that have the ModuleElement placeholders: Both the mine and ranks modules must be
+	 * enabled to try to link them all together.
+	 */
+	private void linkMinesAndRanks() {
 
-    	
-    	if (PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() && 
-    			PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled()) {
 
-    		RankManager rm = PrisonRanks.getInstance().getRankManager();
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() &&
+				PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 
-    		// go through all mines and link them to the Ranks and link that
-    		// rank back to the mine. 
-    		// So just by linking mines, will also link all of the ranks too.
-    		// It's important to understand the primary source is within the Mine 
-    		// since a mine can only have one rank.
-    		rm.getRanks();
-    		mm.getMines();
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			MineManager mm = PrisonMines.getInstance().getMineManager();
 
-    		int count = 0;
-    		for (Mine mine : mm.getMines()) {
+			// go through all mines and link them to the Ranks and link that
+			// rank back to the mine.
+			// So just by linking mines, will also link all of the ranks too.
+			// It's important to understand the primary source is within the Mine
+			// since a mine can only have one rank.
+			rm.getRanks();
+			mm.getMines();
+
+			int count = 0;
+			for ( Mine mine : mm.getMines() ) {
 				if ( mine.getRank() == null && mine.getRankString() != null ) {
 					String[] rParts = mine.getRankString().split( "," );
-					
-					if (rParts.length > 2) {
+
+					if ( rParts.length > 2 ) {
 						ModuleElementType meType = ModuleElementType.fromString( rParts[0] );
 						String rankName = rParts[1];
-						
-						if (meType == ModuleElementType.RANK) {
-							Rank rank = rm.getRank(rankName);
-							
-							if (rank != null) {
-								mine.setRank(rank);
-								rank.getMines().add(mine);
+
+						if ( meType == ModuleElementType.RANK ) {
+							Rank rank = rm.getRank( rankName );
+
+							if ( rank != null ) {
+								mine.setRank( rank );
+								rank.getMines().add( mine );
 								count++;
 							}
 						}
 					}
 				}
 			}
-    		Output.get().logInfo("A total of %s Mines and Ranks have been linked together.", Integer.toString(count));
-    	}
+			Output.get().logInfo( "A total of %s Mines and Ranks have been linked together.", Integer.toString( count ) );
+		}
 	}
 
 	private void applyDeferredIntegrationInitializations() {
-    	for ( Integration deferredIntegration : PrisonAPI.getIntegrationManager().getDeferredIntegrations() ) {
-    		
-    		try {
-    			if ( deferredIntegration.isRegistered() && deferredIntegration.hasIntegrated() ) {
-    				
-    				deferredIntegration.deferredInitialization();
-    			}
-    		}
-    		catch ( Exception e ) {
-    			
 
-    			PrisonAPI.getIntegrationManager().removeIntegration( deferredIntegration );
-    			
-        		Output.get().logWarn( 
-        				String.format( "Warning: An integration failed during deferred integration. " +
-        				"Disabling the integration to protect Prison: %s %s %s[%s]", 
-        				deferredIntegration.getKeyName(), deferredIntegration.getVersion(),
-        				(deferredIntegration.getDebugInfo() == null ? 
-        							"no debug info" : deferredIntegration.getDebugInfo()) ));
-    			
-    		}
+		for ( Integration deferredIntegration : PrisonAPI.getIntegrationManager().getDeferredIntegrations() ) {
 
-    	}
-    }
+			try {
+				if ( deferredIntegration.isRegistered() && deferredIntegration.hasIntegrated() ) {
+
+					deferredIntegration.deferredInitialization();
+				}
+			} catch ( Exception e ) {
+
+
+				PrisonAPI.getIntegrationManager().removeIntegration( deferredIntegration );
+
+				Output.get().logWarn(
+						String.format( "Warning: An integration failed during deferred integration. " +
+								"Disabling the integration to protect Prison: %s %s %s[%s]",
+								deferredIntegration.getKeyName(), deferredIntegration.getVersion(),
+								( deferredIntegration.getDebugInfo() == null ? "no debug info" : deferredIntegration.getDebugInfo() ) ) );
+
+			}
+
+		}
+	}
     
     public SpigotScheduler getScheduler() {
 		return scheduler;
 	}
 
 	public Compatibility getCompatibility() {
-    	return compatibility;
-    }
+
+		return compatibility;
+	}
     
     private File getBundledFile(String name) {
         getDataFolder().mkdirs();
@@ -1348,39 +1064,41 @@ public class SpigotPrison
         return YamlConfiguration.loadConfiguration(getBundledFile(file));
     }
     
-    public YamlConfiguration loadExternalConfig(File file) {
-    	return YamlConfiguration.loadConfiguration( file );
-    }
+	public YamlConfiguration loadExternalConfig( File file ) {
+
+		return YamlConfiguration.loadConfiguration( file );
+	}
     
-    public YamlConfiguration loadExternalConfig( Reader reader ) {
-    	return YamlConfiguration.loadConfiguration( reader );
-    }
+	public YamlConfiguration loadExternalConfig( Reader reader ) {
+
+		return YamlConfiguration.loadConfiguration( reader );
+	}
     
-    public void saveConfig(String fileName, YamlConfiguration config ) {
-    	if ( config != null ) {
-    		File file = getBundledFile(fileName);
-    		try {
+	public void saveConfig( String fileName, YamlConfiguration config ) {
+
+		if ( config != null ) {
+			File file = getBundledFile( fileName );
+			try {
 				config.save( file );
-			} 
-    		catch (IOException e) {
-    			String message = String.format( "Error saving config file: %s  [%s]", 
-    					file.getAbsoluteFile(), e.getMessage() );
-    			
-    			Output.get().logError( message );
+			} catch ( IOException e ) {
+				String message = String.format( "Error saving config file: %s  [%s]",
+						file.getAbsoluteFile(), e.getMessage() );
+
+				Output.get().logError( message );
 			}
-    	}
-    }
+		}
+	}
 
     File getDataDirectory() {
         return dataDirectory;
     }
     
-    public boolean isPrisonConfig( String configId ) {
+	public boolean isPrisonConfig( String configId ) {
 
-    	String config = SpigotPrison.getInstance().getConfig().getString( configId );
-    	boolean results = config != null && config.equalsIgnoreCase( "true" );
-    	return results;
-    }
+		String config = SpigotPrison.getInstance().getConfig().getString( configId );
+		boolean results = config != null && config.equalsIgnoreCase( "true" );
+		return results;
+	}
     
     /**
      * Setup hooks in to the valid prison block types.  This will be only the 

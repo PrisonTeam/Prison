@@ -1,10 +1,12 @@
 package tech.mcprison.prison.spigot.utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -13,23 +15,31 @@ import org.bukkit.entity.Player;
 //import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import com.cryptomorin.xseries.XEntityType;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.bombs.MineBombCooldownException;
 import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombDetonateTask;
 import tech.mcprison.prison.bombs.MineBombEffectsData;
+import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
 import tech.mcprison.prison.bombs.MineBombs;
+import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
+import tech.mcprison.prison.bombs.animations.BombAnimationsTask;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
+import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Entity;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
-import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
 import tech.mcprison.prison.spigot.block.PrisonItemStackNotSupportedRuntimeException;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -37,9 +47,13 @@ import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.game.entity.SpigotArmorStand;
+import tech.mcprison.prison.spigot.game.entity.SpigotEntity;
+import tech.mcprison.prison.spigot.game.entity.SpigotEntityType;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.BluesSemanticVersionComparator;
+import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -89,9 +103,246 @@ public class PrisonUtilsMineBombs
 	@Override
 	protected Boolean initialize()
 	{
-		//validateMineBombs();
-		
 		return true;
+	}
+
+	
+	
+	@Command(identifier = "prison utils bomb findArmorStands", 
+			description = "This will remove abandonded/zombi armor stands within "
+					+ "a radius of a player, or self.",
+		onlyPlayers = false, 
+		permissions = "prison.utils.bombs",
+		altPermissions = "prison.utils.bombs.others")
+	public void utilsFindMineBombsArmorStands( CommandSender sender, 
+			@Arg(name = "playerName", description = "Player name") String playerName,
+			@Arg(name = "radius", def = "10",
+			description = "Number of blocks in a radius from the player "
+					+ "to search for armor stands to remove.") int radius,
+			@Wildcard(join=true)
+			@Arg(name = "options", def = "list",
+					description = "Action to perform. 'list' will list all armor stands within"
+							+ "the general cubic-radius that are marked with the mine bomb NBT Id."
+							+ "To include 'any' armor stand include the keyword '*any*'. "
+							+ "'show' will make the armor stands visible for a few minutes "
+							+ "and optionally provide an id for showing only one.  "
+							+ "removeAll' will remove all armor stands "
+							+ "within the general cubic-radius. And 'removeId' will remove "
+							+ "only one armor stand that matches the supplied ID. "
+							+ " [list, show <id>, removeAll, removeId <id>, any]") String options
+			
+			) {
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else {
+			
+			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
+					"prison.utils.bomb", "prison.utils.bomb.others" );
+
+			sender.sendMessage( "#### findArmorStands: radius: " + radius );
+
+			boolean list = false;
+			boolean show = false;
+			boolean removeAll = false;
+			boolean removeId = false;
+			boolean any = false;
+			
+			
+			String uuid = null;
+			
+			options = options.toLowerCase().trim();
+			
+			if ( options.contains( "any" ) ) {
+				any = true;
+				options = options.replace( "any", "" ).trim();
+			}
+			if ( options.contains( "list" ) ) {
+				list = true;
+				options = options.replace( "list", "" ).trim();
+			}
+			if ( options.contains( "show" ) ) {
+				show = true;
+				options = options.replace( "show", "" ).trim();
+				uuid = options;
+			}
+			if ( options.contains( "removeall" ) ) {
+				removeAll = true;
+				options = options.replace( "removeall", "" ).trim();
+			}
+			if ( options.contains( "removeid" ) ) {
+				removeId = true;
+				options = options.replace( "removeid", "" ).trim();
+				uuid = options;
+			}
+			
+			if ( player != null ) {
+
+				if ( show ) {
+					Output.get().logInfo( "&3Sorry 'show' is not yet implemented. "
+							+ "Please ping Blue on discord. ");
+				}
+				
+				Location loc = player.getLocation();
+				SpigotEntityType seType = new SpigotEntityType( XEntityType.ARMOR_STAND );
+				
+				List<Entity> entities = player.getNearbyEntities(radius, seType);
+				
+				DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
+				DecimalFormat dFmt = Prison.getDecimalFormatStatic( "#,##0.0");
+				
+				int count = 0;
+				for (Entity entity : entities) {
+					SpigotEntity sEntity = (SpigotEntity) entity;
+					
+					SpigotArmorStand sArmorStand = new SpigotArmorStand( entity );
+					
+					String bombName = getBombName( sEntity, sArmorStand );
+					
+					boolean hasId = false;
+					
+//					String bombName = sEntity.getNbtString( MineBombs.MINE_BOMBS_NBT_KEY );
+					if ( bombName != null && bombName.trim().length() > 0 ) {
+						hasId = true;
+					}
+					
+					if ( !any && !hasId ) {
+						// Not a mine bomb armor stand so continue and bypass processing:
+						continue;
+					}
+
+					
+					tech.mcprison.prison.internal.Player owner = getOwner(sEntity, sArmorStand);
+					
+					tech.mcprison.prison.internal.Player thrower = getThrower(sEntity, sArmorStand);
+					
+					
+					Location l = entity.getLocation();
+					
+					String id = entity.getUniqueId().toString().substring(30);
+					
+					int ticks = entity.getTicksLived();
+					double times = ticks / 20.0;
+					String sfx = "secs";
+					if ( times > 60 ) {
+						times /= 60;
+						sfx = "mins";
+					}
+					if ( times > 60 ) {
+						times /= 60;
+						sfx = "hrs";
+					}
+					
+					Bounds bounds = new Bounds( loc, l );
+					
+					String status = "";
+					
+					// actions:
+					if ( show ) {
+						
+					}
+					if ( list ) {
+						// Do nothing:
+					}
+					else if ( removeAll ||
+								removeId && id.equalsIgnoreCase( uuid ) 
+							) {
+						sEntity.remove();
+						status = "&a** removed **";
+					}
+					
+					String msg = String.format(
+							"&3ArmorStand: distance &7%4s  &3id: &7%s  "
+							+ "&3x:%4s y:%4s z: %4s  "
+							+ "&3age: &7%5s " // Age
+							+ "&3%-4s  "      // Age unit
+							+ "&3%s  " // sfx
+							+ "&3bombName: &c%s  "
+							+ "&3owner: &a%s  "
+							+ "&3usedBy: &a%s ",
+							iFmt.format( bounds.getDistance3d() ),
+							id,
+							dFmt.format( l.getX() ),
+							dFmt.format( l.getY() ),
+							dFmt.format( l.getZ() ),
+							dFmt.format( times ), // age
+							sfx, 
+							status,
+							bombName != null && bombName.trim().length() > 0 ? 
+									bombName : "none",
+							owner != null ? owner.getName() : "&dunknown",
+							thrower != null ? thrower.getName() : "&dunknown"
+							);
+					
+					sender.sendMessage( msg );
+					
+					count++;
+				}
+				
+				if ( count == 0 ) {
+					sender.sendMessage( "&3-= No ArmmorStands were located with the selected filters =-");
+				}
+				
+			}
+		}
+
+	}
+	
+	
+	/**
+	 * <p>This tries to get the bomb name from the armor stand, if it cannot get it 
+	 * directly from the armor stand, then it will try to get it from the 
+	 * item that the armor stand is holding.
+	 * </p>
+	 * 
+	 * @param sEntity
+	 * @param sArmorStand
+	 * @return
+	 */
+	private String getBombName(SpigotEntity sEntity, SpigotArmorStand sArmorStand) {
+		String key = MineBombs.MINE_BOMBS_NBT_KEY;
+		return getNBTString( sEntity, sArmorStand, key );
+	}
+	private tech.mcprison.prison.internal.Player getOwner(SpigotEntity sEntity, SpigotArmorStand sArmorStand) {
+		tech.mcprison.prison.internal.Player results = null;
+		String key = MineBombs.MINE_BOMBS_NBT_OWNER_UUID;
+		String uuid = getNBTString( sEntity, sArmorStand, key );
+		if ( uuid != null && uuid.trim().length() > 0 ) {
+			results = Prison.get().getPlatform().getPlayer( UUID.fromString(uuid)).orElse(null);
+		}
+		return results;
+	}
+	private tech.mcprison.prison.internal.Player getThrower(SpigotEntity sEntity, SpigotArmorStand sArmorStand) {
+		tech.mcprison.prison.internal.Player results = null;
+		String key = MineBombs.MINE_BOMBS_NBT_THROWER_UUID;
+		String uuid = getNBTString( sEntity, sArmorStand, key );
+		if ( uuid != null && uuid.trim().length() > 0 ) {
+			results = Prison.get().getPlatform().getPlayer( UUID.fromString(uuid)).orElse(null);
+		}
+		return results;
+	}
+	
+	private String getNBTString(SpigotEntity sEntity, SpigotArmorStand sArmorStand, String key) {
+		String bombName = null;
+		
+		bombName = sEntity.getNbtString( key );
+		if ( bombName == null || bombName.trim().length() == 0 ) {
+			
+			SpigotItemStack iStack = (SpigotItemStack) sArmorStand.getItemInHand();
+			
+			if ( iStack != null && !iStack.isAir() ) {
+				
+				bombName = PrisonNBTUtil.getNBTString( iStack.getBukkitStack(), key );
+				
+				if ( bombName == null || bombName.trim().length() == 0 ) {
+					
+					bombName = PrisonNBTUtil.getNBTString( iStack.getBukkitStack(), key );
+				}
+			}
+		}
+		
+		return bombName;
 	}
 
 	@Command(identifier = "prison utils bombs", 
@@ -224,13 +475,17 @@ public class PrisonUtilsMineBombs
 
 	@Command(identifier = "prison utils bomb list", 
 			description = "A list of all available bombs, including their full details.  " +
-					"This command also shows a list of settings for shapes, sounds, and visual effects.",
+					"This command also shows a list of settings for the animation patterns, "
+					+ "shapes, sounds, and visual effects. This command is best ran in the console.",
 		onlyPlayers = false, 
 		permissions = "prison.utils.bombs" )
 	public void utilsMineBombsList( CommandSender sender,
-			@Arg(name = "option", description = "Options: Show 'all' bomb details. " +
-					"'shapes', 'sounds', and 'visuals' lists valid settings " +
-					"to be used with the bombs. [all shapes sounds visuals]", def = "" ) String options
+			@Arg(name = "option", description = "Options: By default, the abbreviated list of "
+					+ "mine bombs are shown, with the 'all' options shows a lot mmore of the "
+					+ "bomb details. " +
+					"The options of 'animations', 'shapes', 'sounds', and 'visuals' lists valid settings " +
+					"to be used with the bombs. [all animations shapes sounds visuals]", def = "" ) 
+			String options
 			
 			) {
 		
@@ -244,12 +499,30 @@ public class PrisonUtilsMineBombs
 			
 			List<String> messages = new ArrayList<>();
 			
-			boolean optAll = options != null && options.toLowerCase().contains( "all" );
+			boolean optAll = false;
+			
+			if ( options != null && options.toLowerCase().contains( "all" ) ) {
+				options = options.replace( "all", "" ).trim();
+				optAll = true;
+			}
+			
+			if ( options != null && options.toLowerCase().contains( "animations" ) ) {
+				// exit after showing the list of mine bomb animations:
+				
+				messages.add( "&7Mine Bomb Animation Patterns:" );
+				
+				List<String> animations = AnimationPattern.asList();
+				messages.addAll( Text.formatColumnsFromList( animations, 4 ) );
+				
+				sender.sendMessage( messages.toArray( new String[0] ) );
+				return;
+			}
+			
 			
 			if ( options != null && options.toLowerCase().contains( "shapes" ) ) {
 				// exit after showing shapes:
 				
-				messages.add( "&7Shapes:" );
+				messages.add( "&7Mine Bomb Shapes:" );
 				List<String> shapes = ExplosionShape.asList();
 				messages.addAll( Text.formatColumnsFromList( shapes, 4 ) );
 				
@@ -293,6 +566,9 @@ public class PrisonUtilsMineBombs
 				return;
 			}
 			
+			
+			
+			
 			if ( options != null && options.toLowerCase().contains( "visuals" ) ) {
 				List<String> visuals = new ArrayList<>();
 				
@@ -300,16 +576,17 @@ public class PrisonUtilsMineBombs
 //				Effect.values()
 				
 				// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
-				boolean is18 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+				boolean is18 = new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
 
 				if ( is18 ) {
 					for ( Effect p : Effect.values() ) {
 						visuals.add( p.name() );
 					}
 					Collections.sort( visuals );
-//				for ( Particle p : Particle.values() ) {
-//					visuals.add( p.name() );
-//				}
+					
+//					for ( Particle p : Particle.values() ) {
+//						visuals.add( p.name() );
+//					}
 					
 					messages.add( "&7Visual Effects (bukkit 1.8.x: Effect):" );
 					for ( String line : Text.formatColumnsFromList( visuals, 4 ) ) {
@@ -323,9 +600,10 @@ public class PrisonUtilsMineBombs
 						visuals.add( p.name() );
 					}
 					Collections.sort( visuals );
-//				for ( Particle p : Particle.values() ) {
-//					visuals.add( p.name() );
-//				}
+					
+//					for ( Particle p : Particle.values() ) {
+//						visuals.add( p.name() );
+//					}
 					
 					messages.add( "&7Visual Effects (Particle):" );
 					for ( String line : Text.formatColumnsFromList( visuals, 4 ) ) {
@@ -340,20 +618,79 @@ public class PrisonUtilsMineBombs
 				return;
 			}
 			
+			
+			// support bomb name fragments? 
+			
+			DecimalFormat dFmt = new DecimalFormat( "#,##0.000" );
+			DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+			
+			
+			String h1 = "&3Prison Mine Bomb Listing:";
+			messages.add( h1 );
+
+			// Footers:
+			String f1 = "  &b(&cThrSp&b=Throw Speed, &cCDwn&b=Cool Down Ticks, &cFuse&b=Fuse Delay Ticks)";
+			String f2 = "  &b(&cAutoSell&b=Forced AutoSell, &cBlkCnt&b=Add to player block counts)";
+			
+			String f3 = "  &b(&cAPat&b=Animation Pattern, &cASp&b=Animation Speed, &cARad&b=Animation Radius)";
+			String f4 = "  &b(&cARadDel&b=Animation Radius Delta)";
+
+			
 			Set<String> keys = mBombs.getConfigData().getBombs().keySet();
 			for ( String key : keys ) {
 				
+				
 				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
 				
-				String message = String.format( 
-						"&7%-12s    &3Autosell: &7%b   &3FuseDelayTicks: &7%d   &3CooldownTicks: &7%d", 
-						bomb.getName(), 
-						bomb.isAutosell(),
-						bomb.getFuseDelayTicks(),
-						bomb.getCooldownTicks()
+				String bombName = bomb.getName().trim();
+				
+				if ( bombName.length() > 0 && options != null &&
+						!bombName.toLowerCase().contains(options.toLowerCase().trim())) {
+					continue;
+				}
+				
+				
+				String msg1 = String.format( 
+						"&7%s", 
+						bombName
+						);
+				messages.add( msg1 );
+				
+				
+				
+				String msg2 = String.format( 
+						"  &3ThrSp: &7(%s - %s)  &3CDwn: &7%s   &3Fuse: &7%s   &3AutoSell: &7%s   "
+						+ "&3BlkCnt: &7%s   &3Small: &7%s", 
+						dFmt.format( bomb.getThrowVelocityLow() ),
+						dFmt.format( bomb.getThrowVelocityHigh() ),
+						iFmt.format( bomb.getCooldownTicks() ),
+						iFmt.format( bomb.getFuseDelayTicks() ),
+						(bomb.isAutosell() ? "&aOn" : "&cOff"),
+						(bomb.isApplyToPlayersBlockCount() ? "&aOn" : "&cOff"),
+						(bomb.isSmall() ? "&aOn" : "&cOff")
 						);
 				
-				messages.add( message );
+				messages.add( msg2 );
+				
+				
+
+				
+				String msg3 = String.format( 
+						"  &3APat: &7%s  &3ASp: &7%s   &3ARad: &7%s   &3ARadDel: &7%s   "
+						+ "&3ASpn: &7%s", 
+						bomb.getAnimationPattern().name(),
+						dFmt.format( bomb.getAnimationSpeed() ),
+						dFmt.format( bomb.getAnimationRadius() ),
+						dFmt.format( bomb.getAnimationRadiusDelta() ),
+						dFmt.format( bomb.getAnimationSpinSpeed() )
+						);
+				
+//				bomb.getAnimationOffset();
+				
+				
+				
+				messages.add( msg3 );
+				
 				
 				
 				
@@ -365,7 +702,7 @@ public class PrisonUtilsMineBombs
 						{
 							int lenght = 1 + (bomb.getRadius() * 2);
 							messageShape = String.format( 
-									"      &3Shape: &7%s   &3Size: &7%d &3x &7%d &3x &7%d   &3Based on Radius: &7%d.5", 
+									"  &3Shape: &7%s   &3Size: &7%d &3x &7%d &3x &7%d   &3Based on Radius: &7%d.5", 
 									bomb.getExplosionShape(), 
 									lenght, lenght, lenght,
 									bomb.getRadius() );
@@ -378,7 +715,7 @@ public class PrisonUtilsMineBombs
 					case ring_z:
 					{
 						messageShape = String.format( 
-								"      &3Shape: &7%s   &3Radius: &7%d.5   &3RadiusInner: &7%d.5", 
+								"  &3Shape: &7%s   &3Radius: &7%d.5   &3RadiusInner: &7%d.5", 
 								bomb.getExplosionShape(), bomb.getRadius(), bomb.getRadiusInner() );
 						break;
 					}
@@ -389,38 +726,74 @@ public class PrisonUtilsMineBombs
 					case disk_z:
 					{
 						messageShape = String.format( 
-								"      &3Shape: &7%s   &3Radius: &7%d.5", 
+								"  &3Shape: &7%s   &3Radius: &7%d.5", 
 								bomb.getExplosionShape(), bomb.getRadius() );
 						break;
 					}
 					default:
 					{
-						messageShape = "      &4(no shape defined)";
+						messageShape = "  &4(no shape defined)";
 					}
 				}
+				
+				
 				if ( messageShape != null && !messageShape.isEmpty() ) {
 					
 					messages.add( messageShape );
 				}
 				
 				
-				String message2 = String.format( 
-						"      &3ToolInHand: &7%s  &3Fortune: &7%d  &3Percent Chance: &7%f",
-						bomb.getToolInHandName(), 
-						bomb.getToolInHandFortuneLevel(),
-						bomb.getRemovalChance() );
-				messages.add( message2 );
-				
-				
-				String message3 = String.format( 
-						"      &3ItemType: &7%s   &3Glowng: &7%b   &3Gravity: &7%b",
-						bomb.getItemType(), 
-						bomb.isGlowing(),
-						bomb.isGravity() );
-				messages.add( message3 );
+				if ( optAll ) {
+					
+					String message2 = String.format( 
+							"      &3ToolInHand: &7%s  &3Fortune: &7%d  &3Percent Chance: &7%f",
+							bomb.getToolInHandName(), 
+							bomb.getToolInHandFortuneLevel(),
+							bomb.getRemovalChance() );
+					messages.add( message2 );
+					
+					
+					String message3 = String.format( 
+							"      &3ItemType: &7%s  &3Autosell: &7%b  &3Glowng: &7%b   &3Gravity: &7%b",
+							bomb.getItemType(), 
+							bomb.isAutosell(),
+							bomb.isGlowing(),
+							bomb.isGravity() );
+					messages.add( message3 );
+				}
 				
 				
 				messages.add( "      " + bomb.getDescription() );
+				
+				
+				if ( bomb.getAllowedMines().size() > 0 ) {
+					StringBuilder sb = new StringBuilder();
+					for (String mineName : bomb.getAllowedMines() ) {
+						if ( sb.length() > 0 ) {
+							sb.append( ", " );
+						}
+						sb.append( mineName );
+					}
+
+					String msgMines = String.format( 
+							"      &3Allowed on in mines: &7%s",
+							sb.toString() );
+					messages.add( msgMines );
+				}
+				if ( bomb.getPreventedMines().size() > 0 ) {
+					StringBuilder sb = new StringBuilder();
+					for (String mineName : bomb.getPreventedMines() ) {
+						if ( sb.length() > 0 ) {
+							sb.append( ", " );
+						}
+						sb.append( mineName );
+					}
+					
+					String msgMines = String.format( 
+							"      &3Excluded from mines: &7%s",
+							sb.toString() );
+					messages.add( msgMines );
+				}
 				
 				
 				if ( optAll ) {
@@ -455,6 +828,11 @@ public class PrisonUtilsMineBombs
 				
 //				Output.get().log( message, LogLevel.PLAIN );
 			}
+			
+			messages.add( f1 );
+			messages.add( f2 );
+			messages.add( f3 );
+			messages.add( f4 );
 			
 			sender.sendMessage( messages.toArray( new String[0] ) );
 		}
@@ -499,6 +877,11 @@ public class PrisonUtilsMineBombs
 				return;
 			}
 			
+			
+			// Get a SpigotPlayer object, which will be returned if the player has 
+			// access to those perms too. If ranks are disabled, then allow it to check
+			// bukkit's offline players.
+
 			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
 					"prison.utils.bomb", "prison.utils.bomb.others" );
 			
@@ -521,43 +904,85 @@ public class PrisonUtilsMineBombs
 				
 				count = Integer.parseInt( quantity );
 				
-				MineBombs mBombs = MineBombs.getInstance();
+//				MineBombs mBombs = MineBombs.getInstance();
 				
-				MineBombData bomb = null;
-				
-				// Remove color codes from bomb's name for matching:
-				bombName = Text.stripColor( bombName );
-				
-				Set<String> keys = mBombs.getConfigData().getBombs().keySet();
-				for ( String key : keys ) {
-					MineBombData mbd = mBombs.getConfigData().getBombs().get( key );
-					String cleanedBombName = Text.stripColor( mbd.getName() );
-					if ( cleanedBombName.equalsIgnoreCase( bombName ) ) {
-						bomb = mbd;
-						break;
-					}
+	        		MineBombData bomb = null;
+	        		
+	        		try {
+	        			// Give command. Do not enable cooldowns:
+						bomb = MineBombs.getInstance().findBombByName( player, bombName, false );
+					} 
+	        		catch (MineBombCooldownException e) {
+					String msg = e.getLocalizedMessage();
+					
+					player.sendMessage(msg);
+					
+					return;
 				}
+				
+//				MineBombData bomb = mBombs.findBombByName( player, bombName);
+				
+//				// Remove color codes from bomb's name for matching:
+//				bombName = Text.stripColor( bombName );
+//				
+//				Set<String> keys = mBombs.getConfigData().getBombs().keySet();
+//				for ( String key : keys ) {
+//					MineBombData mbd = mBombs.getConfigData().getBombs().get( key );
+//					String cleanedBombName = Text.stripColor( mbd.getName() );
+//					if ( cleanedBombName.equalsIgnoreCase( bombName ) ) {
+//						bomb = mbd;
+//						break;
+//					}
+//				}
 				
 				if ( bomb != null ) {
 					
-					ItemStack bombs = getItemStackBomb( bomb );
+					SpigotItemStack bombs = getItemStackBomb( bomb, player, count );
 					
-					if ( bombs != null ) {
+//					ItemStack bombs = getItemStackBomb( bomb, player );
+					
+					String testBombName = PrisonNBTUtil.getNBTString( bombs.getBukkitStack(), MineBombs.MINE_BOMBS_NBT_KEY );
+					
+					if ( testBombName == null || 
+							testBombName.trim().length() == 0 ) {
+						String msg = "WARNING: The mine bomb give command failed to properly set the "
+								+ "internal NBT data to identify this item as a mine bomb. This will "
+								+ "fail to work. This is a failure of the NBT library that prison is using, "
+								+ "and it may need to be updated.";
+						sender.sendMessage(msg);
 						
-						bombs.setAmount( count );
-						player.getWrapper().getInventory().addItem( bombs );
-						
-						player.getWrapper().updateInventory();
-//						player.updateInventory();
+						Output.get().logWarn( msg );
 					}
-					else {
-						
-						String message = "A mine bomb with the name of %s, has an invalid itemType value. " +
-								"'%s' does not exist in the XMaterial types. Contact Prison support for help " +
-								"in finding the correct values to use. Google: 'XSeries XMaterial'";
-						
-						sender.sendMessage( String.format( message, bombName, bomb.getItemType() ) );
-					}
+					
+					player.getInventory().addItem( bombs );
+					player.updateInventory();
+					
+//					else if ( bombs != null ) {
+//						
+//						bombs.setAmount( count );
+//						player.getWrapper().getInventory().addItem( bombs );
+//						player.getWrapper().updateInventory();
+//						
+//						// NOTE: The following is not working... the NBTs are not 
+//						//       being copied over, so the mine bombs are losing their
+//						//       NBT signatures.
+////						SpigotItemStack sBombs = new SpigotItemStack( bombs );
+////						
+////						sBombs.setAmount( count );
+////						player.getInventory().addItem( sBombs );
+//////						player.getWrapper().getInventory().addItem( bombs );
+////						
+////						player.getWrapper().updateInventory();
+//////						player.updateInventory();
+//					}
+//					else {
+//						
+//						String message = "A mine bomb with the name of %s, has an invalid itemType value. " +
+//								"'%s' does not exist in the XMaterial types. Contact Prison support for help " +
+//								"in finding the correct values to use. Google: 'XSeries XMaterial'";
+//						
+//						sender.sendMessage( String.format( message, bombName, bomb.getItemType() ) );
+//					}
 					
 //					XMaterial xBomb = XMaterial.matchXMaterial( bomb.getItemType() ).orElse( null );
 //					
@@ -634,42 +1059,35 @@ public class PrisonUtilsMineBombs
 					sender.sendMessage( String.format( message, bombName ) );
 				}
 				
-//				if ( "list".equalsIgnoreCase( bombName ) ) {
-//					
-//					Set<String> keys = mBombs.getConfigData().getBombs().keySet();
-//					for ( String key : keys ) {
-//						
-//						MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
-//						
-//						String message = String.format( 
-//								"%-12s %-7s Radius= %s (%s)\n  %s", 
-//								bomb.getName(), bomb.getExplosionShape(), Integer.toString(bomb.getRadius()),
-//								bomb.getItemType(), bomb.getDescription() );
-//						
-//						sender.sendMessage( message );
-//					}
-//				}
-				
-				
 			}
 		}
 	}
 	
 	
-	public static ItemStack getItemStackBomb( MineBombData bombData ) {
-		ItemStack sItemStack = null;
+	/**
+	 * <p>This function will take the MineBombData and construct an SpigotItemStack for that
+	 * bomb.
+	 * </p>
+	 * 
+	 * @param bombData
+	 * @param player
+	 * @param count
+	 * @return
+	 */
+	public SpigotItemStack getItemStackBomb( MineBombData bombData, SpigotPlayer player, int count ) {
 		SpigotItemStack bombs = null;
 //		NBTItem nbtItem = null;
 		
 		XMaterial xBomb = XMaterial.matchXMaterial( bombData.getItemType() ).orElse( null );
 		
+//		ItemStack sItemStack;
 		if ( xBomb != null ) {
 			
 			
 			try {
 				
 				// Create the spigot/bukkit ItemStack:
-				sItemStack = xBomb.parseItem();
+				ItemStack sItemStack = xBomb.parseItem();
 				
 				if ( sItemStack != null ) {
 					
@@ -681,6 +1099,8 @@ public class PrisonUtilsMineBombs
 			}
 			
 			if ( bombs != null ) {
+
+				bombs.setAmount( count );
 				
 				bombs.setDisplayName( bombData.getName() );
 
@@ -695,34 +1115,106 @@ public class PrisonUtilsMineBombs
 //				if ( bomb.isGlowing() ) {
 //					bombs.addEnchantment(  );
 //				}
+
 				
-				List<String> lore = new ArrayList<>( bombData.getLore() );
+				// Add lore to the mine bomb's SpigotItemStack:
+				bombs.setLore( bombData.getLore() );
+				
+//				if ( Output.get().isDebug() ) {
+//					List<String> lore = new ArrayList<>();
+//					
+//					lore.add( "## Lore from bombdata: " );
+//					lore.addAll( bombData.getLore() );
+//					
+//					lore.add( "## Lore from bomb ItemStack: " );
+//					lore.addAll( bombs.getLore() );
+//					
+//					for (String l : lore ) {
+//						
+//						Output.get().logInfo( "Bomb name: %s  lore: "
+//								+ "bombName: &7%s&r &3::  nbt: &r\\Q%s\\E", 
+//								bombData.getNameTag(),
+//								l, l
+//								);
+//					}
+//				}
+				
+				
+				
+//				List<String> lore = new ArrayList<>( bombData.getLore() );
+//				for (String bLore : bombData.getLore()) {
+//					bombs.getLore();
+//				}
 				
 				// lore.add( 0, bombData.getLoreBombItemId() );
 				
-				bombs.setLore( lore );
+				{
+//					List<String> lore = bombs.getLore();
+//					
+//					lore.add( MINE_BOMBS_LORE_1 );
+//					lore.add( MINE_BOMBS_LORE_2_PREFIX + bombData.getName() );
+//					lore.add( " " );
+//					
+//					lore.add( "Size, Diameter: " + ( 1 + 2 * bomb.getRadius()) );
+//					lore.add( "Shape: " + bomb.getExplosionShape() );
+//					
+//					String[] desc = bomb.getDescription().split( " " );
+//					StringBuilder sb = new StringBuilder();
+//					
+//					for ( String d : desc ) {
+//						
+//						sb.append( d ).append( " " );
+//						
+//						if ( sb.length() > 30 ) {
+//							sb.insert( 0, "  " );
+//							
+//							lore.add( sb.toString() );
+//							sb.setLength( 0 );
+//						}
+//					}
+//					if ( sb.length() > 0 ) {
+//						sb.insert( 0, "  " );
+//						
+//						lore.add( sb.toString() );
+//					}
+////					lore.add( " " + bomb.getDescription() );
+//					
+//					lore.add( " " );
+//					
+//					bombs.setLore( lore );
+				}
+				
+//				bombs.setLore( lore );
 
 				// SpigotCompatibility.getInstance().setCustomModelData( bombs, bombData.getCustomModelData() );
 				
-				sItemStack = bombs.getBukkitStack();
-			}
-			
-			if ( sItemStack != null ) {
+//				sItemStack = bombs.getBukkitStack();
 				
-				// Set the NBT String key-value pair:
-				PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+				if ( bombs.getBukkitStack() != null ) {
+					
+					ItemStack sItemStack = bombs.getBukkitStack();
+					
+					// Set the NBT String key-value pair:
+					PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_KEY, bombData.getName() );
+					PrisonNBTUtil.setNBTString(sItemStack, MineBombs.MINE_BOMBS_NBT_OWNER_UUID, player.getUUID().toString() );
+					
+					
 //				nbtItem = new NBTItem( sItemStack, true );
 //				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
-
-				
-				// Set the customModelData on the bomb to allow for custom skins:
-				SpigotCompatibility.getInstance().setCustomModelData( sItemStack, bombData.getCustomModelData() );
-
-				
-				if ( Output.get().isDebug() ) {
-					Output.get().logInfo( "getItemStackBombs ntb: %s", PrisonNBTUtil.nbtDebugString(sItemStack) );
+					
+					
+					// Set the customModelData on the bomb to allow for custom skins:
+					SpigotCompatibility.getInstance().setCustomModelData( sItemStack, bombData.getCustomModelData() );
+					
+					
+					if ( Output.get().isDebug() ) {
+						Output.get().logInfo( "getItemStackBombs ntb: %s", 
+								Text.translateAmpColorCodes( PrisonNBTUtil.nbtDebugString(sItemStack) )
+								);
+					}
 				}
 			}
+			
 			
 		}
 		else {
@@ -735,7 +1227,7 @@ public class PrisonUtilsMineBombs
 			Output.get().logError( message );
 		}
 		
-		return sItemStack;
+		return bombs;
 	}
 	
 	
@@ -761,22 +1253,37 @@ public class PrisonUtilsMineBombs
 		
 		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
-		if ( itemInHand != null && itemInHand.hasNBTKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
+		if ( itemInHand != null && itemInHand.hasNBTKey( MineBombs.MINE_BOMBS_NBT_KEY ) ) {
 			
-			String bombName = itemInHand.getNBTString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+			String bombName = itemInHand.getNBTString( MineBombs.MINE_BOMBS_NBT_KEY );
 			
-			bomb = getBombItem( bombName );
+			SpigotPlayer sPlayer = new SpigotPlayer( player );
+			
+    		try {
+    			// Checking to see if an item in the player's inventory is a 
+    			// minebomb or not.  So disable cooldown for this:
+				bomb = MineBombs.getInstance().findBombByName( sPlayer, bombName, false);
+			} 
+    		catch (MineBombCooldownException e) {
+				String msg = e.getLocalizedMessage();
+				
+				sPlayer.sendMessage(msg);
+
+    		}
+    		
+//			bomb = MineBombs.getInstance().findBombByName( sPlayer, bombName );
+//			bomb = getBombItem( bombName );
 		}
 		
 		return bomb;
 	}
 	
-	public MineBombData getBombItem( String bombName ) {
-		
-		MineBombData bomb = MineBombs.getInstance().findBombByName( bombName );
-		
-		return bomb;
-	}
+//	public MineBombData getBombItem( tech.mcprison.prison.internal.Player player, String bombName ) {
+//		
+//		MineBombData bomb = MineBombs.getInstance().findBombByName( player, bombName );
+//		
+//		return bomb;
+//	}
 	
 	/**
 	 * <p>This takes a player and checks their main hand to see if it contains a bomb.  
@@ -788,13 +1295,22 @@ public class PrisonUtilsMineBombs
 	 * bomb cannot be activated.
 	 * </p>
 	 * 
-	 * @param player
+	 * @param sPlayer
+	 * @param mine2 
 	 * @param bomb 
+	 * @param sBlock 
+	 * @param hand
+	 * @param owner 
+	 * @param thrower 
 	 * @return
 	 */
-	public boolean setBombInHand( Player player, 
-					MineBombData bomb, SpigotBlock sBlock, 
-					tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot hand ) {
+	public boolean setBombInHand( SpigotPlayer sPlayer, 
+					Mine mine, 
+					MineBombData bomb, 
+					SpigotBlock sBlock, 
+					tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot hand, 
+					String thrower, 
+					String owner ) {
 		boolean isABomb = false;
 		
 //		MineBombData bomb = getBombItem( player );
@@ -841,18 +1357,24 @@ public class PrisonUtilsMineBombs
 					bomb.setToolInHandName( xMat.name() );
 				}
 				
-				SpigotPlayer sPlayer = new SpigotPlayer( player );
+//				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				
-				String playerUUID = player.getUniqueId().toString();
-				int cooldownTicks = checkPlayerCooldown( playerUUID );
+//				String playerUUID = sPlayer.getUniqueId().toString();
+//				String playerUUID = player.getUniqueId().toString();
+
+
+//				int cooldownTicks = MineBombs.checkPlayerCooldown( sPlayer );
 				
-				if ( cooldownTicks == 0 ) {
+//				if ( cooldownTicks <= 0 ) 
+				{
 					
 					
+					// NOTE: cooldown is set when using MineBombs.findBombByName();
 					// Set cooldown:
-					addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
+//					MineBombs.addPlayerCooldown( sPlayer, bomb.getCooldownTicks() );
 					
-					SpigotItemStack bombs = new SpigotItemStack( PrisonUtilsMineBombs.getItemStackBomb( bomb ));
+					SpigotItemStack bombs = new SpigotItemStack( 
+							getItemStackBomb( bomb, sPlayer, 1 ));
 					
 					if ( bombs != null ) {
 						
@@ -884,24 +1406,49 @@ public class PrisonUtilsMineBombs
 						
 						
 						
-						// For mine bombs, take the block below where the bomb's item was dropped.  The floating 
-						// item is not the block that needs to be the target block for the explosion.  Also, the block
-						// if it is on top of the mine, would be identified as being outside of the mine.
-						int count = 0;
-						boolean isAir = bombBlock.isEmpty();
-						while (  (count++ <= ( isAir ? 1 : 0 ) || bombBlock.isEmpty()) && bombBlock.getLocation().getBlockY() > 1 ) {
+						// For mine bombs, apply any y adjustments for each bomb. This would either raise
+						// or lower the bomb block.
+						int adjustY = bomb.getPlacementAdjustmentY();
+						
+						if ( adjustY != 0 ) {
 							
-							int adjustY = bomb.getPlacementAdjustmentY();
-							
-							Block tempBlock = bombBlock.getLocation().getBlockAtDelta( 0, adjustY, 0 );
-							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
-								bombBlock = (SpigotBlock) tempBlock;
-							}
-							
-//    							Output.get().logInfo( 
-//    									"#### PrisonUtilsMineBombs:  bomb y loc: " + bombBlock.getWrapper().getLocation().getBlockY() + 
-//    										"  " + bombBlock.getLocation().getBlockY() + "  count= " + count );
+							bombBlock = getNextBlockInTheMine(mine, bombBlock, adjustY);
 						}
+						
+						
+						// if the block is air, then try 3 times to get a non-air block by taking
+						// the next lower block:
+						int i = 0;
+						while ( i++ <= 3 && bombBlock.isAir() || 
+								!mine.isInMineExact( bombBlock.getLocation() )) {
+							
+							bombBlock = getNextBlockInTheMine(mine, bombBlock, -1 );
+						}
+						
+//						// This did not help... the block was not in the mine, 
+//						// but it did not help with setting it off...
+//						if ( !mine.isInMine( bombBlock ) ) {
+//							// if selected block is not in the mine, then it's probably on top.
+//							// Take the block that is under it:
+//							
+//							bombBlock = getNextLowerBlockInTheMine(mine, bombBlock, 1 );
+//
+//						}
+						
+						// DO NOT USE: If placementAdjustmentY is zero then this goes in to endless loop:
+//						int count = 0;
+//						while (  (count++ <= ( isAir ? 1 : 0 ) || bombBlock.isEmpty()) && bombBlock.getLocation().getBlockY() > 1 ) {
+//							
+//							
+//							Block tempBlock = bombBlock.getLocation().getBlockAtDelta( 0, adjustY, 0 );
+//							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
+//								bombBlock = (SpigotBlock) tempBlock;
+//							}
+//							
+////    							Output.get().logInfo( 
+////    									"#### PrisonUtilsMineBombs:  bomb y loc: " + bombBlock.getWrapper().getLocation().getBlockY() + 
+////    										"  " + bombBlock.getLocation().getBlockY() + "  count= " + count );
+//						}
 						
 						bomb.setPlacedBombBlock( bombBlock );
 						
@@ -911,15 +1458,15 @@ public class PrisonUtilsMineBombs
 						//int throwSpeed = 2;
 						
 						
-						
+						// NOTE: we already got the correct mine:
 						// check if in a mine:
-						OnBlockBreakMines obbm = new OnBlockBreakMines();
-						Mine mine = obbm.findMine( player, bombBlock, null, null );
+//						OnBlockBreakMines obbm = new OnBlockBreakMines();
+//						Mine mine = obbm.findMine( sPlayer, bombBlock, null, null );
 						
-						if ( mine == null ) {
-							// Cannot set the bomb outside of a mine, so cancel:
-							return isABomb;
-						}
+//						if ( mine == null ) {
+//							// Cannot set the bomb outside of a mine, so cancel:
+//							return isABomb;
+//						}
 						
 						// Setting activated to true indicates the bomb is live and it has
 						// been removed from the player's inventory:
@@ -928,8 +1475,8 @@ public class PrisonUtilsMineBombs
 						
 						SpigotItemStack itemInHand = 
 								hand == EquipmentSlot.HAND ? 
-										SpigotCompatibility.getInstance().getPrisonItemInMainHand( player ) :
-											SpigotCompatibility.getInstance().getPrisonItemInOffHand( player )
+										SpigotCompatibility.getInstance().getPrisonItemInMainHand( sPlayer ) :
+											SpigotCompatibility.getInstance().getPrisonItemInOffHand( sPlayer )
 											;
 						
 						// Remove from inventory:
@@ -938,7 +1485,7 @@ public class PrisonUtilsMineBombs
 							if ( hand == EquipmentSlot.HAND ) {
 								
 								SpigotCompatibility.getInstance()
-											.setItemInMainHand( player, null );
+											.setItemInMainHand( sPlayer, null );
 							}
 							else {
 								
@@ -955,19 +1502,39 @@ public class PrisonUtilsMineBombs
 						}
 
 
-						
-						
 						// Apply updates to the player's inventory:
-						player.updateInventory();
-					
+						sPlayer.updateInventory();
 						
+						
+					
+						final SpigotBlock sBombBlock = bombBlock;
+						MineBombDetonateTask detonateBomb = new MineBombDetonateTask() {
+
+							@Override
+							public void runDetonation() {
+								
+								// Submit the bomb's task to go off:
+								setoffBombDelayed( sPlayer, bomb, sBombBlock, mine );
+							}
+						};
+						
+						
+						// This setups the animations that are assigned to each bomb type and 
+						// will submit the tasks, unless no animations are chosen.
+						BombAnimationsTask animationsTask = new BombAnimationsTask();
+						
+						animationsTask.animatorFactory( bomb, bombBlock, itemInHand,
+								detonateBomb );
+						
+//						animationsTask.animatorFactory( bomb, bombBlock, itemInHand, 
+//								detonateBomb, thrower, owner );
 						
 
 						
 						
-						@SuppressWarnings( "unused" )
-						PlacedMineBombItemTask submitPlacedMineBombItem = 
-								submitPlacedMineBombItemTask( bomb, bombBlock, bombs );
+//						@SuppressWarnings( "unused" )
+//						PlacedMineBombItemTask submitPlacedMineBombItem = 
+//								submitPlacedMineBombItemTask( bomb, bombBlock, bombs );
 //    						placeMineBombItem( bomb, bombBlock, bombs );
 						
 						// This places the item so it will float:
@@ -995,7 +1562,7 @@ public class PrisonUtilsMineBombs
 						
 						// Submit the bomb's task to go off:
 						
-						setoffBombDelayed( sPlayer, bomb, bombBlock );
+//						setoffBombDelayed( sPlayer, bomb, bombBlock );
 						
 						
 						
@@ -1005,24 +1572,47 @@ public class PrisonUtilsMineBombs
 					}
 				}
 				
-				else {
-					
-					mineBombsCoolDownMsg( sPlayer, cooldownTicks );
-					
-//					float cooldownSeconds = cooldownTicks / 20.0f;
-//					DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0" );
+//				else {
 //					
-//					String message = 
-//							String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
-//									dFmt.format( cooldownSeconds ) );
-//					sPlayer.sendMessage( message );
-					
-				}
+//					mineBombsCoolDownMsg( sPlayer, cooldownTicks );
+//					
+//				}
 				
 			}
 		}
     	
     	return isABomb;
+	}
+
+	private SpigotBlock getNextBlockInTheMine(Mine mine, SpigotBlock bombBlock, int adjustY) {
+		
+		int yMin = (int) mine.getBounds().getyMin();
+		int yMax = (int) mine.getBounds().getyMax();
+		
+		int y = bombBlock.getLocation().getBlockY();
+		
+		int deltaY = adjustY( y, yMin, yMax, adjustY );
+		
+		
+		Block tempBlock = (Block) bombBlock.getLocation().getBlockAtDelta( 0, deltaY, 0 );
+		if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
+			bombBlock = (SpigotBlock) tempBlock;
+		}
+		return bombBlock;
+	}
+	
+	protected int adjustY( int y, int yMin, int yMax, int deltaY ) {
+		
+		int y2 = y + deltaY;
+		
+		if ( y2 < yMin ) {
+			deltaY += yMin - y2;
+		}
+		else if ( y2 > yMax ) {
+			deltaY -= y2 - yMax;
+		}
+		
+		return deltaY;
 	}
 	
 	
@@ -1089,7 +1679,83 @@ public class PrisonUtilsMineBombs
 		
 		return results;
 	}
+
 	
+
+	public void validateMineBommbEffect(MineBombEffectsData mineBombEffect) {
+		
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else if ( mineBombEffect == null ) {
+			
+			Output.get().logInfo( "Prison utils MineBomb: MineBombEffect is null. The specified effects cannot include nulls." );
+		}
+		else {
+			
+			switch ( mineBombEffect.getEffectType() ) {
+			
+			case sounds:
+				
+				{
+					mineBombEffect.setValid( false );
+					
+					for ( XSound p : XSound.values() ) {
+						if ( p.name().equalsIgnoreCase( mineBombEffect.getEffectName() ) ) {
+							mineBombEffect.setValid( true );
+							break;
+						}
+					}
+				}
+				
+				break;
+				
+			case visuals:
+
+				{
+					mineBombEffect.setValid( false );
+					
+					// bukkit 1.8.8:
+//					Effect.values()
+					
+					// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
+					boolean is1_8 = new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+
+					if ( is1_8 ) {
+						for ( Effect p : Effect.values() ) {
+							if ( p.name().equalsIgnoreCase( mineBombEffect.getEffectName() ) ) {
+								mineBombEffect.setValid( true );
+								break;
+							}
+						}
+						
+					}
+					else {
+						
+						for ( Particle p : Particle.values() ) {
+							if ( p.name().equalsIgnoreCase( mineBombEffect.getEffectName() ) ) {
+								mineBombEffect.setValid( true );
+								break;
+							}
+						}
+					}	
+				}
+				
+				break;
+
+			default:
+				break;
+			}
+			
+			if ( mineBombEffect.getEffectType() == EffectType.sounds ) {
+				
+			}
+			if ( mineBombEffect.getEffectType() == EffectType.visuals ) {
+				
+			}
+		}
+	}
 
 	public boolean utilsMineBombsValidate( String mbObjectType,
 			String name
@@ -1141,7 +1807,7 @@ public class PrisonUtilsMineBombs
 //				Effect.values()
 				
 				// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
-				boolean is1_8 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+				boolean is1_8 = new BluesSemanticVersionComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
 
 				if ( is1_8 ) {
 					for ( Effect p : Effect.values() ) {

@@ -54,17 +54,17 @@ public class PluginCommand {
 
     @Override
     public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	sb.append( getUsage() )
-    			.append( "  alias: " ).append( getAliases().size() )
-    			.append( "  hasRegCmd: " ).append( getRegisteredCommand() != null );
-    	
-    	if ( getRegisteredCommand() != null ) {
-    		sb.append( " (" ).append( getRegisteredCommand().getUsage() ).append( ")" );
-    	}
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	sb.append( getUsage() )
+	    			.append( "  alias: " ).append( getAliases().size() )
+	    			.append( "  hasRegCmd: " ).append( getRegisteredCommand() != null );
+	    	
+	    	if ( getRegisteredCommand() != null ) {
+	    		sb.append( " (" ).append( getRegisteredCommand().getUsage() ).append( ")" );
+	    	}
+	    	
+	    	return sb.toString();
     }
     
     public String getLabel() {
@@ -72,16 +72,15 @@ public class PluginCommand {
     }
 
     public String getLabelRegistered() {
-    	return labelRegistered;
+    		return labelRegistered;
     }
     public void setLabelRegistered( String labelRegistered ) {
-    	this.labelRegistered = labelRegistered;
+    		this.labelRegistered = labelRegistered;
     }
     
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -89,7 +88,6 @@ public class PluginCommand {
     public String getUsage() {
         return  getLabelRegistered() == null ? usage : "/" + getLabelRegistered();
     }
-
     public void setUsage(String usage) {
         this.usage = usage;
     }

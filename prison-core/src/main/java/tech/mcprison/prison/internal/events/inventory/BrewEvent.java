@@ -23,8 +23,6 @@ import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.inventory.BrewerInventory;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class BrewEvent implements Cancelable {

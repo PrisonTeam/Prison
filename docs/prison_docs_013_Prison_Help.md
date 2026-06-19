@@ -7,7 +7,7 @@
 This document provides some important information on how to find help in setting up your prison server, and ultimately, how and where to ask for help.
 
 
-*Documented updated: 2021-12-03*
+*Documented updated: 2024-08-30*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -15,9 +15,13 @@ This document provides some important information on how to find help in setting
 
 We take support seriously.  We realize that being a Prison plugin, we are working with a lot of different aspects of minecraft, and that there are many other plugins that may cross paths with Prison.  We cannot support every single plugin out there, but we will try to resolve and identify all problems that are brought to our attention..
 
-Because we are so very concerned with your server's functionality, we have put a lot of effort in trying to create support tools to better understand what is happening. We cannot control other plugins, but prison is capable of tracking and reporting many fine-grained details about how it works and what is happening step-by-step.  This can allow us to figure out difficult problems.  
+Because we are so very concerned with your server's functionality, we have put a lot of effort in trying to create support tools to better understand what is happening. We cannot control other plugins, but prison is capable of tracking and reporting many fine-grained details about how it works and what is happening step-by-step.  This can allow us to figure out difficult problems.
+
+We have gone out of our way, many times, to try to provide the best support that we can.  We've made custom changes to prison to support specific needs, and to help solve specific problems.  Many of these new features have become a standard part of prison too.  So the bottom line here is, we take support seriously, and we're willing to find a solution to your challenges even if we have to some times go out of our way.
+
 
 If you are having problem, please take a quick look at the following documents as found in the Table of Contents:
+
 
 * Setting up prison and various plugins - If special conditions for their configurations become apparent in order for prison to work, notes will be added there.  If you notice there is a special configuration consideration that we did not document, please share with us so we can update the documents.
 * Review topics that may address your issue
@@ -136,14 +140,20 @@ You can also submit a help ticket on the Prison github Issues tab, but the respo
 
 # Prison Support Submit Information
 
-Prison now has a built in way to share your configurations and settings with support personnel.
+Prison has a built in way to share your configurations and settings with support personnel.
 
-More information will be documented in the future, but for now, here are the basics on how to use it.
+The way this works, is that when you generate a report, prison gathers all of the various data, and creates a single page (a very long page) document which it uploads to a 3rd party server.  This information is very detailed and can help us better support everyone since we can see exactly how prison is configured. The service prison uses, is called PrivateBin.  The reports are encrypted on the client (not at the server) and is held for only 7 days.  Only people with the password can read the these documents.  Prison defaults to a standard password for the encryption so we're able to read the reports when they are posted for us.  That password, and time to live can be changed in the prison's config.yml file, but you probably do not need to change it.
+
+
+We went with this service since the other paste bin that we were using in the past would never delete any of the documents. Generally they are only needed for a few hours, and worst case a few days.  Any older than that, then they probably are not current and new docs need to be generated. So having a service that would auto-delete these was critical to find.  Plus with it being encrypted on the client, no one can stumble across them and read them. So they are extra secure.  Of course, with the URLs being posted within prison, anyone there can access them, and they probably can lookup the default password.  Generally we're not too concerned about the Prison community seeing these documents, since they would not contain anything sensitive (except for logs maybe?) but it's your choice.  You can DM them to us, change the password and DM us the password, or request that we delete the link as soon as we open it.  If it's a concern to you, please let us know and ask questions and we'll figure out a procedure that will work for you.
+
 
 When requested by the Prison support team, you would first enter the following command to set your name that will be included on all reports to help identify who the are related to.  It doesn't have to be your full discord name, but enough characters to allow us to identify who you are.
 
 
-These commands will collect all of the related information from your Prison setup, and send it to the website `https://paste.helpch.at`.  It will provide you with an URL.  All you need to do is to copy and paste that URL in to the discord chat so the Prison support team can help with your issue.
+These commands will collect all of the related information from your Prison setup, and send it to the website `https://privatebin.net`.  The older website that would not purge them or encrypt them is  `https://paste.helpch.at`, and that is still available as a standby service.  
+
+These commands will provide you with an URL.  All you need to do is to copy and paste that URL in to the discord chat so the Prison support team can help with your issue.
 
 
 `/prison support setSupportName <yourName>`
@@ -156,20 +166,16 @@ Once entered, it will enable the following submit tools:
 /prison support submit version
 /prison support submit ranks
 /prison support submit mines
-/prison support submit configs
-/prison support submit listeners
 /prison support submit latestLogs
 ```
 
-**Version** This is generally the most requested information needed for support.  Provides general overall information on Prison and it's environment on the server.  This is similar to the command `/prison version all` plus a few other features such as listeners, and the command cache.
+**Version** This is generally the most requested information needed for support.  Provides general overall information on Prison and it's environment on the server.  This is similar to the command `/prison version all` plus a few other features such as configs, listeners, and the command cache. This support page has expanded to include more details so there are fewer items to submit, if needed.
+Listeners are dumps of the event listeners for BlockBreak, chat, and playerinteract. The blockbreak listeners include any that you have enabled.  These can be used to identify problems with priorities and other possible conflicts.
+
 
 **Ranks** This is everything related to ranks.  Includes ladders, ranks lists, and rank details.  It also includes all of the raw save file for these items too.
 
 **Mines** This is everything related to mines.  Includes the mine list, mine info, and the related files for each mine.
-
-**Configs** These are all of the other config files that are within prison.  These do not include any of the files included in ranks or mines.
-
-**Listeners** These are dumps of the event listeners for BlockBreak, chat, and playerinteract.  See the command `/prison support listeners help` for more detailed information.
 
 **LatestLogs** This will send the latest log file, up to a max allowed amount.
 
@@ -181,7 +187,9 @@ Here are two examples that I generated from one of my test servers on 2021-12-03
 
 # Prison Support HTML Output Files
 
-As a brand new feature, Prison now is able to generate HTML files that are stored within the `plugins/Prison/backups/` directory.  It includes information from version, ranks, mines, listeners, and configs.  See above.  The nice thing about this support format is that it reproduces all of the colors as found in the console version of these commands.
+**As a brand new feature, Prison now is able to generate HTML files** that are stored within the `plugins/Prison/backups/` directory.  It includes information from version, ranks, mines, listeners, and configs.  See above.  The nice thing about this support format is that it reproduces all of the colors as found in the console version of these commands.
+
+The reason why this format is not used with the privatebin.net service is because style sheets cannot be embedded in to a markdown document.  HTML can be placed in a markdown document, which is what this version of support files are based upon, but without the style sheets and the simple javascript, these do not work and will not be formatted correctly.
 
 This file format is also good for server owners who do not want to post their server information on another website.
 
@@ -198,7 +206,7 @@ If an existing file exists, it will generate the next one in the series.  When r
 If you want to use this format instead of the above file that are sent to paste.helpch.at, then generate the file and you can DM it to either Blue or Madog.  It's best to ask before sending to confirm we are available to respond to your needs.
 
 
-NOTE: Hyperlinks and table of contents will be added to this HTML support document.
+NOTE: Hyperlinks and table of contents will be added to this HTML support document in the near-ish future.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -219,27 +227,32 @@ To enable the debugger, you can toggle them all on with `/prison debug` once to 
 To review the options available, use the command `/prison debug help`.  There are also debug targets that only enable specific debug statements and the list of the available targets can be displayed with `/prison debug targets`.
 
 
+Please note, on busy servers, hundreds of messages can be logged in a very short amount of time.  Therefore, one feature of the debug command is that it can target a specific user and only log a specified number of statements.  That way, if you need to collect logs for sellall or block break events, you can enable it for yourself, or another player, do a few transactions, and it will auto shutoff.  Please see the help text below for more information on how to use that feature.
+
+
 ```
 >prison debug help
-[12:16:39 INFO]: ---------- < Cmd: /prison debug > ------------- (3.2.11-alpha.9)
-[12:16:39 INFO]: Enables debugging and trouble shooting information. For internal use only. Do not use unless instructed.
-[12:16:39 INFO]: /prison debug [targets]
-[12:16:39 INFO]: [targets] Optional. Enable or disable a debugging target. [on, off, targets, jarScan, testPlayerUtil, testLocale, rankup] Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle on and off individual targets, or all targets if no target is specified.  jarScan will identify what Java version compiled the class files within the listed jars
-[12:16:39 INFO]: Permissions:
-[12:16:39 INFO]:    prison.debug
+[23:02:19 INFO]: ---------- < Cmd: /prison debug > ------------- (3.3.0-alpha.18d)
+[23:02:19 INFO]: Enables debugging and trouble shooting information. For internal use only. Do not use unless instructed. This will add a lot of data to the console.
+[23:02:19 INFO]: /prison debug [targets]
+[23:02:19 INFO]: [targets] Optional. Enable or disable a debugging target, or set a count down timer. [on, off, targets, (count-down-timer), selective, jarScan, testPlayerUtil, testLocale, rankup, blockConstraints, player=<playerName> ] Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle on and off individual targets, or 'all' targets if no target is specified. If any targets are enabled, then debug in general will be enabled. Selective will only activate debug with the specified targets. A positive integer value will enable the count down timer mode to enable debug mode for a number of loggings, then debug mode will be turned off. jarScan will identify what Java version compiled the class files within the listed jars. If a player name is given, all debug messages that are tracked by player name will only be logged for that player.  Example: `/debug playerName=RoyalBlueRanger 5` will log only 5 debug messages for that player, then debug mode will be disabled.
+[23:02:19 INFO]: Permissions:
+[23:02:19 INFO]:    prison.debug
+[23:02:19 INFO]: Aliases:
+[23:02:19 INFO]:    [prison support debug]
 
 
 >prison debug targets
-[12:17:19 INFO]: Global Debug Logging is enabled
-[12:17:19 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, rankup, support
+[23:03:19 INFO]: Global Debug Logging is disabled
+[23:03:19 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 
 >prison debug
 [12:18:18 INFO]: Global Debug Logging is enabled
-[12:18:18 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, rankup, support
+[12:18:18 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 
 >prison debug
 [12:18:20 INFO]: Global Debug Logging is disabled
-[12:18:20 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, rankup, support
+[12:18:20 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 ```
 
 It should be noted that every time you use the command, other than with the help keyword, it will always show the current status of the debugging information.  It will show if the global logging is enabled or not, and if any targets are enabled, it will list all of the active ones.  Plus it will show all of the available targets too.
@@ -250,10 +263,10 @@ The following shows toggling the global settings:
 ```
 >prison debug
 [21:12:10 INFO]: Global Debug Logging is enabled
-[21:12:10 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:12:10 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 >prison debug
 [21:12:15 INFO]: Global Debug Logging is disabled
-[21:12:15 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:12:15 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 ```
 
 The following will show how you can toggle on a few features.  Without using the actions 'on' or 'off' it will toggle the specified targets.  The use of 'on' and 'off' can occur anywhere in the list of targets, and if both 'on' and 'off' are specified, then 'on' will take precedence over 'off'.
@@ -266,13 +279,13 @@ First notice two targets are activated with two different uses of the `/prison d
 [21:17:23 INFO]: Global Debug Logging is disabled
 [21:17:23 INFO]: . Active Debug Targets:
 [21:17:23 INFO]: . . Target: blockBreak
-[21:17:23 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:17:23 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 >prison debug blockBreakFortune
 [21:17:30 INFO]: Global Debug Logging is disabled
 [21:17:30 INFO]: . Active Debug Targets:
 [21:17:30 INFO]: . . Target: blockBreak
 [21:17:30 INFO]: . . Target: blockBreakFortune
-[21:17:30 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:17:30 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 ```
 
 Then using both of the same targets, they are toggled off.
@@ -280,7 +293,7 @@ Then using both of the same targets, they are toggled off.
 ```
 >prison debug blockBreakFortune blockBreak
 [21:17:42 INFO]: Global Debug Logging is disabled
-[21:17:42 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:17:42 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 ```
 
 Next, this is showing multiple targets being used, with the 'on' keyword mixed in.  Notice it lists all of these active targets.  Then `/prison debug` is used to globally turn on all features, which removes any individual targets. Then the global is used again to turn them all off.
@@ -292,13 +305,13 @@ Next, this is showing multiple targets being used, with the 'on' keyword mixed i
 [21:18:31 INFO]: . . Target: durability
 [21:18:31 INFO]: . . Target: blockBreak
 [21:18:31 INFO]: . . Target: blockBreakFortune
-[21:18:31 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:18:31 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 >prison debug
 [21:18:38 INFO]: Global Debug Logging is enabled
-[21:18:38 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:18:38 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 >prison debug
 [21:18:43 INFO]: Global Debug Logging is disabled
-[21:18:43 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[21:18:43 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, targetBlockMismatch, rankup, blockConstraints
 ```
 
 
@@ -307,6 +320,9 @@ Next, this is showing multiple targets being used, with the 'on' keyword mixed i
 
 
 # Prison v3.2.1 and it's Pre-Release Versions
+
+
+NOTE: A lot has been added and changed since v3.2.1. This should be updated in the near future, but for now, view the current version in the console.
 
 
 The Prison startup screen contains a lot of information that can be used help identify issues that are detected by Prison on start up, and can provide useful information about the general environment.  See the screen prints below.
@@ -410,6 +426,14 @@ These screen prints may not contain the most recent enhancements to prison, sinc
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+# Prison - Older versions
+
+We're happy to help support prison, but we cannot support older versions of prison.  If a problem was found, we have tried to fix it, or to replace the faulty command.  We also no long have the source code to go back, make a change, and produce a custom build for you.  We encourage upgrading to the latest release of prison since we can better support you with those newer features, and we can make changes to the source code if needed.
+
+Generally, when you upgrade prison, you could always revert to an older version of prison.  New features will be lost, but the data saved in the save files should be backwards compatible.  This is no longer possible with Prison v3.3.0-alpha.18.  That is because we are starting to change the save file formats so we can usher in newer features and also start to support database storage.  
+
+Whenever prison upgrades, there was a new feature added a couple of years ago, to auto backup all of prison's config settings and store them in a zip file within the directory: `plugins/Prison/backups/`  So although the newest versions of prison cannot be down-graded automatically, you can restore the older save files that have been backedup.
+	
 
 # Prison v3.1.0 and Earlier - General Information
 

@@ -34,6 +34,8 @@ public class TopNPlayersData
 {
 	
 	private String name;
+	private String uuid;
+	
 	private String playerFileName;
 	
 	private PlayerState playerState;
@@ -53,12 +55,21 @@ public class TopNPlayersData
 	private int rankPositionDefault;
 	private int rankPositionPrestiges;
 	
+	private long blocks;
+	private long timeMining;
+	private long timeOnline;
+	private long tokens;
+	
+
 	private static transient SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd kk:mm:ss" );
 	
 	public TopNPlayersData() {
 		super();
 		
 		this.playerState = PlayerState.offline;
+		
+		this.rankPositionDefault = -1;
+		this.rankPositionPrestiges = -1;
 	}
 
 	public TopNPlayersData( RankPlayer rPlayer) {
@@ -67,17 +78,10 @@ public class TopNPlayersData
 		this.rPlayer = rPlayer;
 		
 		this.name = rPlayer.getName();
-		this.playerFileName = rPlayer.getPlayerFileName();
-		
-//		// Note: the nextPlayer rank could be in either the default ladder, 
-//		//       or the next prestige rank if at end of default ladder.
-//		PlayerRank nextRank = rPlayer.getNextPlayerRank();
-		
+		this.uuid = rPlayer.getUUID().toString();
 		
 		// This may be expensive getting lastSeen from the player's cache data:
-		setLastSeen( rPlayer.getPlayerCachePlayerData().getLastSeenDate() );
-		
-//		this.lastSeenFormatted = sdFmt.format( new Date( this.lastSeen ) );
+		setLastSeen( rPlayer.getLastSeenDateTemp() );
 		
 		updateRankPlayer( rPlayer );
 		
@@ -93,6 +97,12 @@ public class TopNPlayersData
 		
 		setRankPositionDefault( rPlayer.getRankPositonDefault() );
 		setRankPositionPrestiges( rPlayer.getRankPositonPrestiges() );
+		
+		
+		setBlocks( rPlayer.getTotalBlocksTemp() );
+		setTokens( rPlayer.getTotalTokensTemp() );
+		
+		
 	}
 	
 	@Override
@@ -140,7 +150,8 @@ public class TopNPlayersData
 	}
 	
 	public String getKey() {
-		return getPlayerFileName();
+		
+		return getUuid() != null ? getUuid() : getPlayerFileName();
 	}
 
 	public String getName() {
@@ -148,6 +159,13 @@ public class TopNPlayersData
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public String getPlayerFileName() {
@@ -230,5 +248,32 @@ public class TopNPlayersData
 		this.rankPositionPrestiges = rankPositionPrestiges;
 	}
 
+	public long getBlocks() {
+		return blocks;
+	}
+	public void setBlocks(long blocks) {
+		this.blocks = blocks;
+	}
+
+	public long getTimeMining() {
+		return timeMining;
+	}
+	public void setTimeMining(long timeMining) {
+		this.timeMining = timeMining;
+	}
+
+	public long getTimeOnline() {
+		return timeOnline;
+	}
+	public void setTimeOnline(long timeOnline) {
+		this.timeOnline = timeOnline;
+	}
+
+	public long getTokens() {
+		return tokens;
+	}
+	public void setTokens(long tokens) {
+		this.tokens = tokens;
+	}
 
 }

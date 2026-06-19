@@ -42,11 +42,13 @@ public class FancyMessageComponent extends DisplayComponent {
         return message;
     }
 
-    @Override public String text() {
+    @Override 
+    public String text() {
         return message.toOldMessageFormat();
     }
 
-    @Override public void send(CommandSender sender) {
+    @Override 
+    public void send(CommandSender sender) {
         message.send(sender);
     }
 

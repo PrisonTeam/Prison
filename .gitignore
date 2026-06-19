@@ -138,3 +138,5 @@ gradle-app.setting
 
 build.gradle.deploy
 prison-spigot/lib/old/
+prison-spigot/lib/disabled/
+zip_snapshots/

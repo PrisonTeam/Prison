@@ -54,7 +54,6 @@ public class PrisonItemsAdderWrapper {
 		org.bukkit.block.Block spigotBlock = ((SpigotBlock) block).getWrapper();
 		
 		return getCustomBlockId( spigotBlock );
-		//return CustomItemsAPI.getCustomItemIDAtBlock( spigotBlock );
 	}
 	
 	public String getCustomBlockId( org.bukkit.block.Block spigotBlock ) {
@@ -62,7 +61,6 @@ public class PrisonItemsAdderWrapper {
 		CustomBlock cBlock = CustomBlock.byAlreadyPlaced(spigotBlock);
 		
 		return ( cBlock == null ? null : cBlock.getDisplayName() );
-		//return CustomItemsAPI.getCustomItemIDAtBlock( spigotBlock );
 	}
 
 
@@ -84,16 +82,6 @@ public class PrisonItemsAdderWrapper {
 		CustomBlock cBlock = CustomBlock.place( cBlockId, sBlock.getWrapper().getLocation() );
 		
 		return SpigotBlock.getSpigotBlock( cBlock.getBlock() );
-		
-
-//		org.bukkit.block.Block spigotBlock = ((SpigotBlock) block).getWrapper();
-		
-		// So to prevent this from causing lag, we will only get back the block with no updates
-		// This will allow this function to exit:
-//		org.bukkit.block.Block resultBlock = 
-//				CustomItemsAPI.setCustomItemIDAtBlock( spigotBlock, customId, doBlockUpdate );
-		
-//		return SpigotBlock.getSpigotBlock( resultBlock );
 	}
 	
 	
@@ -123,17 +111,6 @@ public class PrisonItemsAdderWrapper {
 				@SuppressWarnings("unused")
 				CustomBlock cBlock = CustomBlock.place( cBlockId, sBlock.getWrapper().getLocation() );
 				
-				
-				// No physics update:
-				
-//				SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
-//				
-//				org.bukkit.block.Block spigotBlock = sBlock.getWrapper();
-				//org.bukkit.block.Block spigotBlock = ((SpigotBlock) prisonBlock).getWrapper();
-				
-				// Request the block change, but we don't need the results so ignore it
-//				org.bukkit.block.Block resultBlock = 
-//				CustomItemsAPI.setCustomItemIDAtBlock( spigotBlock, prisonBlock.getBlockName(), true );
 				
 			}
 		}.runTaskLater( getPlugin(), 0 );
@@ -225,9 +202,6 @@ public class PrisonItemsAdderWrapper {
 	
 	public List<String> getCustomBlockList() {
 		List<String> customList = new ArrayList<>();
-		
-//		List<String> customListx = new ArrayList<>( CustomBlock.getNamespacedIdsInRegistry() );
-		
 		
 		List<CustomStack> allItems = ItemsAdder.getAllItems();
 		

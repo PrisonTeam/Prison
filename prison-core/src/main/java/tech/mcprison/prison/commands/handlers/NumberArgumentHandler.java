@@ -23,9 +23,12 @@ import tech.mcprison.prison.commands.*;
 import tech.mcprison.prison.commands.VerifyError;
 import tech.mcprison.prison.internal.CommandSender;
 
-public abstract class NumberArgumentHandler<T extends Number> extends ArgumentHandler<T> {
+public abstract class NumberArgumentHandler<T extends Number> 
+	extends ArgumentHandler<T> {
 
     public NumberArgumentHandler() {
+    		super();
+    	
         addVerifier("min", new ArgumentVerifier<T>() {
             @Override
             public void verify(CommandSender sender, CommandArgument argument, String verifyName,

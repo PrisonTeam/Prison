@@ -7,7 +7,7 @@
 This document provides a quick overview on how to install Prison and get it running.
 
 
-*Documented updated: 2023-07-24*
+*Documented updated: 2024-08-30*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -86,6 +86,30 @@ We say an economy is required, but it's still optional.  Without an economy, you
   Background: CMI "tries" to load last, so it can ensure all of it's dependencies and hooks are in place before it starts up.  That's understandable, but Prison also has similar requirements and expectations. Unfortunately, this also causes a conflict with Prison, since Prison must perform validation on startup, and if there is no economy, then Prison could fail to start the Ranks module.
   
   The document, [Setting up CMI Economy](prison_docs_028_setting_up_CMI_economy.md), explains in detail how to get everything working perfectly.  
+
+
+**Coins Engine** is supported.  A multi-currency economy.
+*Need to provide more details*
+
+
+**Gems Econommy** is supported.  A multi-currency economy.
+*Need to provide more details*
+
+
+**EdPrison Economy** is supported.
+*Need to provide more details*
+
+
+**ESS Economy** is supported.
+*Need to provide more details*
+
+
+**The New Economy** is supported.
+*Need to provide more details*
+
+
+**Sane Economy** is supported.
+*Need to provide more details*
   
 
 ### Chat Prefix Plugins - Optional
@@ -200,6 +224,8 @@ But perhaps the biggest reason why I dropped support for MVdW is because it's 10
 
 ### Enchantment Plugins
 
+*NOTE: this section needs more work.  It's not up to date, and does not list all of the various features.*
+
 
 * **CustomItems** - Recommended - *A Premium Plugin* - Allows for the use of custom blocks within Prison.  This provides for a great deal of customizations, including custom textures for your custom blocks. Prison supports CI at about 95% or more.  If you need additional support added for CI, please contact Blue and he will add it for you.  
 [https://polymart.org/resource/custom-items.1](https://polymart.org/resource/custom-items.1)
@@ -239,8 +265,20 @@ Or if you are not using Prison Block Events, then just MONITOR should be used fo
 **Please note:** These settings may also apply to the other enchantment plugins if you do not want to use Prison's block handling.
 
 
+* **EntityExplodeEvents** - This is a built in bukkit explosion event that lists multiple blocks.  Some other enchantment plugins may support this event for their enchantments, and if they do, then prison will be able to support those plugins without the need of custom handlers.
+*NOTE: This enchantment cannot identify the original block that triggered the explosion.  Therefore there could be possible issues once in a while.*
+
+
+
+* **ExcellentEnchants** - Uses EntityExplodeEvents.
+
+
+* **XPrison** - Prison supports some features form XPrison.  This could allow you to continue to use XPrison for enchantment, but switch over to use prison for managing your ranks and mines.
+
+
 
 * **Zenchantments** - Optional - Some support is provided for zen, but it may not be 100%.  More work needs to be done to improve the integration in to prison.  This is an open source project.  It identifies that it supports spigot 1.9 through 1.14 (different versions).  [https://www.spigotmc.org/resources/zenchantments.12948/](https://www.spigotmc.org/resources/zenchantments.12948/).
+
 
 
 * **Tokens** - **NOT SUPPORTED!!**  

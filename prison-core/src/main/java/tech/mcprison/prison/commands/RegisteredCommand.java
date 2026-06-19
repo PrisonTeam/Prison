@@ -32,6 +32,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 
 
 public class RegisteredCommand
@@ -43,6 +44,7 @@ public class RegisteredCommand
     private boolean alias = false;
     
     private int usageCount;
+    private int usageCountAlias;
     private long usageRunTimeNanos;
     
     private String junitTest = null;
@@ -83,6 +85,7 @@ public class RegisteredCommand
         this.registeredAliases = new ArrayList<>();
         
         this.usageCount = 0;
+        this.usageCountAlias = 0;
         this.usageRunTimeNanos = 0;
     }
 
@@ -91,36 +94,36 @@ public class RegisteredCommand
      */
     private RegisteredCommand( String jUnitUsage ) {
     	
-    	this.junitTest = jUnitUsage;
-    	
-    	this.label = "junitTest";
-    	this.handler = null;
-    	this.parent = null;
-    	
-    	this.registeredAliases = new ArrayList<>();
+	    	this.junitTest = jUnitUsage;
+	    	
+	    	this.label = "junitTest";
+	    	this.handler = null;
+	    	this.parent = null;
+	    	
+	    	this.registeredAliases = new ArrayList<>();
     }
     
     protected static RegisteredCommand junitTest( String jUnitUsage ) {
-    	RegisteredCommand results = new RegisteredCommand( jUnitUsage );
-    	
-    	return results;
+	    	RegisteredCommand results = new RegisteredCommand( jUnitUsage );
+	    	
+	    	return results;
     }
     
     @Override
     public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	sb.append( getUsage() )
-    			.append( "  isRoot: " ).append( isRoot() )
-    			.append( "  isAlias: " ).append( isAlias() )
-    			.append( "  suffixCnt: " ).append( getSuffixes().size() )
-    			.append( "  hasAliasParent: " ).append( getParentOfAlias() != null );
-    	
-    	if ( getParentOfAlias() != null ) {
-    		sb.append( " (" ).append( getParentOfAlias().getUsage() ).append( ")" );
-    	}
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	sb.append( getUsage() )
+	    			.append( "  isRoot: " ).append( isRoot() )
+	    			.append( "  isAlias: " ).append( isAlias() )
+	    			.append( "  suffixCnt: " ).append( getSuffixes().size() )
+	    			.append( "  hasAliasParent: " ).append( getParentOfAlias() != null );
+	    	
+	    	if ( getParentOfAlias() != null ) {
+	    		sb.append( " (" ).append( getParentOfAlias().getUsage() ).append( ")" );
+	    	}
+	    	
+	    	return sb.toString();
     }
     
     /**
@@ -145,8 +148,8 @@ public class RegisteredCommand
     }
     
     public String getCompleteLabel() {
-    	return (parent == null ? "" : parent.getCompleteLabel() + " " ) + 
-    			(label == null ? "-noCommandLabelDefined-" : label) ;
+	    	return (parent == null ? "" : parent.getCompleteLabel() + " " ) + 
+	    			(label == null ? "-noCommandLabelDefined-" : label) ;
     }
 
     /**
@@ -160,11 +163,47 @@ public class RegisteredCommand
      * @param args
      */
     protected void execute(CommandSender sender, String[] args) {
+    		execute( sender, args, true );
+    }
+    
+	protected void execute(CommandSender sender, String[] args, boolean allowDebug ) {
     	
-    	// First ensure the player is not locked out of this command:
-    	if ( !handler.hasCommandAccess(sender, this, getLabel(), args) ) {
-    		return;
-    	}
+	    	// Only enable debug mode if the selective debug target is commandHanlder.
+	    	// To enable this use ...
+	    	boolean debug = Output.get().isActiveTarget( DebugTarget.commandHandler );
+	    	
+	    	// First ensure the player is not locked out of this command:
+	    	if ( !handler.hasCommandAccess(sender, this, getLabel(), args) ) {
+	    		
+	    		if ( debug ) {
+	    			String argz = "";
+	    			for (String arg : args) {
+	    				argz += arg + " ";
+	    			}
+	    			
+	    			String msg = String.format( 
+	    					"RegisteredCommand.execute: Player %s does not have access to a command: [%s]",
+	    					sender.getName(), 
+	    					(getLabel() + " " + argz).trim()
+	    					);
+	    			Output.get().logInfo( msg );
+	    		}
+	    		return;
+	    	}
+	    	
+	    	if ( debug ) {
+	    		String argz = "";
+	    		for (String arg : args) {
+	    			argz += arg + " ";
+	    		}
+	    		
+	    		String msg = String.format( 
+	    				"RegisteredCommand.execute: Player %s is attempting to run command: [%s]",
+	    				sender.getName(), 
+	    				(getLabel() + " " + argz).trim()
+	    				);
+	    		Output.get().logInfo( msg );
+	    	}
     	
         if (!testPermission(sender)) {
             Prison.get().getLocaleManager().getLocalizable("noPermission")
@@ -202,7 +241,7 @@ public class RegisteredCommand
             	// Strip first arg, then recursively try again
                 String[] nargs = new String[args.length - 1];
                 System.arraycopy(args, 1, nargs, 0, args.length - 1);
-                command.execute( sender, nargs );
+                command.execute( sender, nargs, false );
             }
         } 
         else {
@@ -247,12 +286,17 @@ public class RegisteredCommand
 
         try {
             try {
-            	// The command is ran here with the invoke...
-            	
-            	// Record that the command has been "ran", which does not mean it was successful:
-            	incrementUsageCount();
-            	nanosStart = System.nanoTime();
-            	
+	            	// The command is ran here with the invoke...
+	            	
+	            	// Record that the command has been "ran", which does not mean it was successful:
+	            	incrementUsageCount();
+	            	
+	            	if ( isAlias() && getParentOfAlias() != null ) {
+	            		getParentOfAlias().incrementUsageCountAlias();
+	            		
+	            	}
+	            	nanosStart = System.nanoTime();
+	            	
                 method.invoke(getMethodInstance(), resultArgs.toArray());
                 
                 nanosEnd = System.nanoTime();
@@ -263,48 +307,49 @@ public class RegisteredCommand
             } 
             catch ( IllegalArgumentException | InvocationTargetException e) {
 
-            	nanosEnd = System.nanoTime();
-                
-            	long nanosDuration = nanosEnd - nanosStart;
-            	this.usageRunTimeNanos += nanosDuration;
-            	
-            	if (e.getCause() instanceof CommandError) {
-                    CommandError ce = (CommandError) e.getCause();
-                    Output.get().sendError(sender, ce.getColorizedMessage());
-                    if (ce.showUsage()) {
-                        sender.sendMessage(getUsage());
-                    }
-                } 
-                else {
-    				StringBuilder sb = new StringBuilder();
-    				
-    				for ( Object arg : resultArgs ) {
-    					sb.append( "[" );
-    					sb.append( arg.toString() );
-    					sb.append( "] " );
-    				}
+	            	nanosEnd = System.nanoTime();
+	                
+	            	long nanosDuration = nanosEnd - nanosStart;
+	            	this.usageRunTimeNanos += nanosDuration;
+	            	
+	            	if (e.getCause() instanceof CommandError) {
+	            		
+	                    CommandError ce = (CommandError) e.getCause();
+	                    Output.get().sendError(sender, ce.getColorizedMessage());
+	                    if (ce.showUsage()) {
+	                        sender.sendMessage(getUsage());
+	                    }
+	            }
+	            else {
+	    				StringBuilder sb = new StringBuilder();
+	    				
+	    				for ( Object arg : resultArgs ) {
+	    					sb.append( "[" );
+	    					sb.append( arg.toString() );
+	    					sb.append( "] " );
+	    				}
+	
+	                	String message = "RegisteredCommand.executeMethod(): Invoke error: [" +
+	                				e.getMessage() + "] cause: [" +
+	                				(e.getCause() == null ? "" : e.getCause().getMessage()) + "] " + 
+	                				" target instance: [methodName= " +
+	                				method.getName() + "  parmCnt=" + method.getParameterCount() + "  methodInstance=" + 
+	                				getMethodInstance().getClass().getCanonicalName() + "] " +
+	                				"command arguments: " + sb.toString()
+	                				;
 
-                	String message = "RegisteredCommand.executeMethod(): Invoke error: [" +
-                				e.getMessage() + "] cause: [" +
-                				(e.getCause() == null ? "" : e.getCause().getMessage()) + "] " + 
-                				" target instance: [methodName= " +
-                				method.getName() + "  parmCnt=" + method.getParameterCount() + "  methodInstance=" + 
-                				getMethodInstance().getClass().getCanonicalName() + "] " +
-                				"command arguments: " + sb.toString()
-                				;
-
-                	// Warning: if the args contains a % then the following sendError will fail because 
-                	//          the % will be treated as String.format() placeholders.  So to be safe and
-                	//          to prevent this failure, escape all % with a double % such as %%.
-                	message = message.replace( "%", "%%" );
-                	
-                	Output.get().logError( message );
-                	
-                	Output.get().sendError( sender, "An exception has occurred. Details have been " +
-                			"logged to the server's console." );
-
-                	// Generally these errors are major and require program fixes, so throw
-                	// the exception so the stacklist is logged.
+	                	// Warning: if the args contains a % then the following sendError will fail because 
+	                	//          the % will be treated as String.format() placeholders.  So to be safe and
+	                	//          to prevent this failure, escape all % with a double % such as %%.
+	                	message = message.replace( "%", "%%" );
+	                	
+	                	Output.get().logError( message );
+	                	
+	                	Output.get().sendError( sender, "An exception has occurred. Details have been " +
+	                			"logged to the server's console." );
+	
+	                	// Generally these errors are major and require program fixes, so throw
+	                	// the exception so the stacklist is logged.
                     throw e;
                 }
             }
@@ -419,20 +464,17 @@ public class RegisteredCommand
         return set;
     }
 
-//    public boolean onlyPlayers() {
-//        return onlyPlayers;
-//    }
-
     public void sendHelpMessage(CommandSender sender) {
     	
-    	ChatDisplay chatDisp = getHelpMessage( sender );
-    	
-    	if ( chatDisp != null ) {
-    		chatDisp.send( sender );
-    	}
+	    	ChatDisplay chatDisp = getHelpMessage( sender );
+	    	
+	    	if ( chatDisp != null ) {
+	    		chatDisp.send( sender );
+	    	}
     }
 
     void set(Object methodInstance, Method method) {
+    	
         this.methodInstance = methodInstance;
         this.method = method;
         method.setAccessible(true);
@@ -442,11 +484,9 @@ public class RegisteredCommand
         this.permissions = command.permissions();
         this.altPermissions = command.altPermissions();
         
-    	String[] aliases = CommandHandler.addConfigAliases( command.identifier(), command.aliases() );
-    			//addConfigAliases( command.identifier(), command.aliases() );
+        String[] aliases = CommandHandler.addConfigAliases( command.identifier(), command.aliases() );
         this.aliases = aliases;
         
-//        this.aliases = command.aliases();
         this.docURLs = command.docURLs();
         
         this.onlyPlayers = command.onlyPlayers();
@@ -568,33 +608,6 @@ public class RegisteredCommand
     }
 
 
-//    private String[] addConfigAliases( String label, String[] aliases )
-//	{
-//    	String[] results = aliases;
-//    	
-//    	String configKey = "prisonCommandHandler.aliases." + label.replace( " ", "." );
-//    	
-//    	List<?> ca = Prison.get().getPlatform().getConfigStringArray( configKey );
-//    	if ( ca != null && ca.size() > 0 && ca.get( 0 ) instanceof String ) {
-//    		
-//			List<String> configAliases = new ArrayList<>();
-//			
-//			for ( String alias : aliases ) {
-//				configAliases.add( alias );
-//			}
-//					
-//			for ( Object aliasObj : ca ) {
-//				if ( aliasObj instanceof String ) {
-//					configAliases.add( aliasObj.toString() );
-//				}
-//			}
-//			
-//    		results = configAliases.toArray( new String[0] );
-//    		
-//    	}
-//		return results;
-//	}
-    
     public boolean testPermission(CommandSender sender) {
         if (!set) {
             return true;
@@ -615,10 +628,20 @@ public class RegisteredCommand
 		usageCount++;
 	}
     public int getUsageCount() {
-    	return usageCount;
+    		return usageCount;
     }
 	public void setUsageCount(int usageCount) {
 		this.usageCount = usageCount;
+	}
+	
+	public void incrementUsageCountAlias() {
+		usageCountAlias++;
+	}
+	public int getUsageCountAlias() {
+		return usageCountAlias;
+	}
+	public void setUsageCountAlilas(int usageCountAlias) {
+		this.usageCountAlias = usageCountAlias;
 	}
 
 	public long getUsageRunTimeNanos() {

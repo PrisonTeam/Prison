@@ -12,7 +12,7 @@ public abstract class BackpackCacheTask
 	
 		this.backpackData = backpackData;
 	}
-
+	
 	public BackpackCachePlayerData getBackpackData() {
 		return backpackData;
 	}

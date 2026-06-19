@@ -27,9 +27,9 @@ public class PrisonTaskSubmitter {
      * @return The task ID.
      */
     public static int runTaskLaterAsync(Runnable task, long delayInTicks) {
-    	int taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(task, delayInTicks);
-    	
-    	return taskId;
+	    	int taskId = Prison.get().getPlatform().getScheduler().runTaskLaterAsync(task, delayInTicks);
+	    	
+	    	return taskId;
     }
 
     /**
@@ -41,10 +41,10 @@ public class PrisonTaskSubmitter {
      * @return The task ID.
      */
     public static int runTaskTimer(Runnable task, long delayInTicks, long intervalInTicks){
-    	int taskId = Prison.get().getPlatform().getScheduler().runTaskTimer(task, delayInTicks, 
-    								intervalInTicks);
-    	
-    	return taskId;
+	    	int taskId = Prison.get().getPlatform().getScheduler().runTaskTimer(task, delayInTicks, 
+	    								intervalInTicks);
+	    	
+	    	return taskId;
     }
 
     /**
@@ -56,10 +56,10 @@ public class PrisonTaskSubmitter {
      * @return The task ID.
      */
     public static int runTaskTimerAsync(Runnable task, long delayInTicks, long intervalInTicks){
-    	int taskId = Prison.get().getPlatform().getScheduler().runTaskTimerAsync(task, delayInTicks, 
-    								intervalInTicks);
-    	
-    	return taskId;
+	    	int taskId = Prison.get().getPlatform().getScheduler().runTaskTimerAsync(task, delayInTicks, 
+	    								intervalInTicks);
+	    	
+	    	return taskId;
     }
 
     /**
@@ -68,14 +68,14 @@ public class PrisonTaskSubmitter {
      * @param taskId The task's ID.
      */
     public static void cancelTask(int taskId) {
-    	Prison.get().getPlatform().getScheduler().cancelTask( taskId );
+    		Prison.get().getPlatform().getScheduler().cancelTask( taskId );
     }
 
     /**
      * Cancels all tasks registered through this scheduler.
      */
     public static void cancelAll(){
-    	Prison.get().getPlatform().getScheduler().cancelAll();
+    		Prison.get().getPlatform().getScheduler().cancelAll();
     }
     
     /**
@@ -85,7 +85,7 @@ public class PrisonTaskSubmitter {
      * @return
      */
     public static boolean isPrimaryThread() {
-    	return Prison.get().getPlatform().getScheduler().isPrimaryThread();
+    		return Prison.get().getPlatform().getScheduler().isPrimaryThread();
     }
 	
 }

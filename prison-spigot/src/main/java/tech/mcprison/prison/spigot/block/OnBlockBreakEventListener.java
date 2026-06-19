@@ -12,6 +12,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerEntityExplodeEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsExplosiveEvent;
@@ -105,6 +106,8 @@ public class OnBlockBreakEventListener
 
 	private AutoManagerBlockBreakEvents bbEvents;
 	private AutoManagerPrisonsExplosiveBlockBreakEvents pebbEvents;
+	private AutoManagerEntityExplodeEvents eeEvents;
+	
 	private AutoManagerCrazyEnchants ceEvents;
 	
 	private AutoManagerPrisonEnchants peEvents;
@@ -221,7 +224,8 @@ public class OnBlockBreakEventListener
 		// Prison's own internal event and listener:
 		pebbEvents = new AutoManagerPrisonsExplosiveBlockBreakEvents();
 
-		ceEvents = new AutoManagerCrazyEnchants();
+		eeEvents = new AutoManagerEntityExplodeEvents();
+		
 
 		ceEvents = new AutoManagerCrazyEnchants();
 		
@@ -251,6 +255,11 @@ public class OnBlockBreakEventListener
 			
 			// Prison's own internal event and listener:
 			pebbEvents.registerEvents();
+			
+			
+			// Bukkit's EntityExplodeEvent:
+			eeEvents.registerEvents();
+			
 			
 			ceEvents.registerEvents();
 			

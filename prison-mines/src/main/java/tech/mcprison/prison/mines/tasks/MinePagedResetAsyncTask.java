@@ -73,9 +73,6 @@ public class MinePagedResetAsyncTask
 	}
 	
 	
-//	public void submitTaskSync() {
-//		submitTaskAsync();
-//	}
 	public void submitTaskAsync() {
 		
 		// Prevent the task from being submitted if it is a virtual mine:
@@ -199,7 +196,6 @@ public class MinePagedResetAsyncTask
 			for ( int i = position; i < endIndex; i++ ) {
 				subList.add( targetBlocks.get( i ) );
 			}
-//										targetBlocks.subList( position, endIndex ) );
 			
 			List<MineTargetPrisonBlock> tBlocks = new ArrayList<>();
 			for (MineTargetPrisonBlock mtpb : subList ) {

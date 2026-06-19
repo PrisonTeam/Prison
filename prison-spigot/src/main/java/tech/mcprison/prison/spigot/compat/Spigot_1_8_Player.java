@@ -43,7 +43,6 @@ public abstract class Spigot_1_8_Player
 	 */
 	@Override
 	public void sendTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
-		//player.sendTitle( title, subtitle );
 		
 		title = title == null ? null : Text.translateAmpColorCodes( title );
 		subtitle = subtitle == null ? null : Text.translateAmpColorCodes( subtitle );
@@ -66,12 +65,6 @@ public abstract class Spigot_1_8_Player
 		String message = Text.translateAmpColorCodes( actionBar );
 		ActionBar.sendActionBar( player, message );
 		
-		// Was using the following until it was replaced with XSeries' ActionBar:
-//		player.sendTitle( "", actionBar );
-
-		// The following class does not exist under spigot 1.8.8
-//		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
-//						new TextComponent( actionBar ) );
 	}
 	
 

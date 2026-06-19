@@ -20,6 +20,7 @@ package tech.mcprison.prison.util;
 
 import tech.mcprison.prison.internal.World;
 
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
@@ -616,7 +617,8 @@ public class Vector implements Cloneable {
      * to account for floating point errors. The epsilon can be retrieved
      * with epsilon.
      */
-    @Override public boolean equals(Object obj) {
+    @Override 
+    public boolean equals(Object obj) {
         if (!(obj instanceof Vector)) {
             return false;
         }
@@ -632,7 +634,8 @@ public class Vector implements Cloneable {
      *
      * @return hash code
      */
-    @Override public int hashCode() {
+    @Override 
+    public int hashCode() {
         int hash = 7;
 
         hash = 79 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x)
@@ -649,7 +652,8 @@ public class Vector implements Cloneable {
      *
      * @return vector
      */
-    @Override public Vector clone() {
+    @Override 
+    public Vector clone() {
         try {
             return (Vector) super.clone();
         } catch (CloneNotSupportedException e) {
@@ -660,8 +664,19 @@ public class Vector implements Cloneable {
     /**
      * Returns this vector's components as x,y,z.
      */
-    @Override public String toString() {
-        return x + "," + y + "," + z;
+    @Override 
+    public String toString() {
+    	
+	    	DecimalFormat dFmt = new DecimalFormat( "##0.0000" );
+	    	
+	    	String msg = String.format(
+	    			"x: %8s  y: %8s  z: %8s", 
+	    			dFmt.format( getX() ),
+	    			dFmt.format( getY() ),
+	    			dFmt.format( getZ() )
+	    			);
+	
+	    	return msg;
     }
 
     /**

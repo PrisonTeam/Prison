@@ -159,9 +159,9 @@ public class LocaleManager {
     
     public void reload() {
     	
-    	// Reset configs:
-    	configs.clear();
-    	
+	    	// Reset configs:
+	    	configs.clear();
+	    	
     	
         // Always get the config's default-language settings to ensure we are always
         // accessing the correct files.
@@ -193,38 +193,38 @@ public class LocaleManager {
 
 	@Override
     public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	sb.append( "LocalManager: " ).append( module.getName() )
-    		.append( "  Internal Path: " ).append( internalPath )
-    		.append( "  Local Folder:" ).append( getLocalFolder().getAbsolutePath() );
-    	
-    	return sb.toString();
+	    	StringBuilder sb = new StringBuilder();
+	    	
+	    	sb.append( "LocalManager: " ).append( module.getName() )
+	    		.append( "  Internal Path: " ).append( internalPath )
+	    		.append( "  Local Folder:" ).append( getLocalFolder().getAbsolutePath() );
+	    	
+	    	return sb.toString();
     }
     
     public File getLocalDataFolder() {
-    	// Setup the local folders:
-    	File dataFolder = fixPrisonCoreLanguagePath( getOwningPlugin().getModuleDataFolder() );
-    	File localeDirectory = new File(dataFolder, LOCALE_FOLDER);
-    	
-    	// if the folder does not exist, try to create it:
-    	if ( !localeDirectory.exists() ) {
-    		localeDirectory.mkdirs();
-    		
-        	// Now copy all of the default language files that are in the prison jar to this new directory.
-        	// This will make it a lot easier for admins to modify the language files.
-        	extractShippedLocales( localeDirectory );
-
-    	}
-    	if ( !localeDirectory.isDirectory() ) {
-            Output.get().logWarn( 
-                "The Locale Folder is not a directory. [" +
-            		localeDirectory.getAbsolutePath() + "]  Plugin: " +
-                    getOwningPlugin() +
-                    " Not able to load custom locales");
-        }
-    	
-    	return localeDirectory;
+	    	// Setup the local folders:
+	    	File dataFolder = fixPrisonCoreLanguagePath( getOwningPlugin().getModuleDataFolder() );
+	    	File localeDirectory = new File(dataFolder, LOCALE_FOLDER);
+	    	
+	    	// if the folder does not exist, try to create it:
+	    	if ( !localeDirectory.exists() ) {
+	    		localeDirectory.mkdirs();
+	    		
+	        	// Now copy all of the default language files that are in the prison jar to this new directory.
+	        	// This will make it a lot easier for admins to modify the language files.
+	        	extractShippedLocales( localeDirectory );
+	
+	    	}
+	    	if ( !localeDirectory.isDirectory() ) {
+	            Output.get().logWarn( 
+	                "The Locale Folder is not a directory. [" +
+	            		localeDirectory.getAbsolutePath() + "]  Plugin: " +
+	                    getOwningPlugin() +
+	                    " Not able to load custom locales");
+	        }
+	    	
+	    	return localeDirectory;
     }
 
 	protected class PropertyFileFilter 
@@ -246,22 +246,22 @@ public class LocaleManager {
 	
     private void refreshLocalLocales() {
     	
-    	// Setup the local folders:
-    	File localeFolder = getLocalDataFolder();
-    	
-    	// Get a Map of all properties files in the selected directory:
-    	TreeMap<String, LocalManagerPropertyFileData> localFilesByName = new TreeMap<>();
-    	File[] localFiles = localeFolder.listFiles( new PropertyFileFilter() );
-    	
-    	for ( File file : localFiles ) {
-    		LocalManagerPropertyFileData pfd = new LocalManagerPropertyFileData( file );
-    		localFilesByName.put( pfd.getLocalPropertiesName(), pfd );
-    		
-    		checkLocalPropertiesStatus( pfd );
+	    	// Setup the local folders:
+	    	File localeFolder = getLocalDataFolder();
+	    	
+	    	// Get a Map of all properties files in the selected directory:
+	    	TreeMap<String, LocalManagerPropertyFileData> localFilesByName = new TreeMap<>();
+	    	File[] localFiles = localeFolder.listFiles( new PropertyFileFilter() );
+	    	
+	    	for ( File file : localFiles ) {
+	    		LocalManagerPropertyFileData pfd = new LocalManagerPropertyFileData( file );
+	    		localFilesByName.put( pfd.getLocalPropertiesName(), pfd );
+	    		
+	    		checkLocalPropertiesStatus( pfd );
 		}
     	
     	
-    	// Prison's module properties files in the Prison jar that need to be scanned:
+	    	// Prison's module properties files in the Prison jar that need to be scanned:
         CodeSource cs = getOwningPlugin().getClass().getProtectionDomain().getCodeSource();
         if (cs != null) {
         	
@@ -271,87 +271,87 @@ public class LocaleManager {
                 
                 ZipEntry entry;
                 try (
-                	ZipInputStream zip = new ZipInputStream(jar.openStream());
+                		ZipInputStream zip = new ZipInputStream(jar.openStream());
                 	) {
                 	
-                	while ( (entry = zip.getNextEntry()) != null) {
-                		String entryName = entry.getName();
-                		
-                		if (entryName.startsWith(internalPath) && entryName.endsWith(".properties")) {
-                			
-                			String[] arr = entryName.split("/");
-                			String jarResourceName = arr[arr.length - 1];
-                			
-                			LocalManagerPropertyFileData pfd = localFilesByName.get( jarResourceName );
-                			
-                			BufferedInputStream inStream = new BufferedInputStream( zip );
-                			
-                			if ( pfd != null ) {
-                				// Need to check to see if there the local needs to be updated:
-                				
-                				// Read the whole properties file since it may need to be used more than once
-                				String propertiesData = readInputStream( inStream );
-                				
-                				
-                				
-                				checkJarPropertiesStatus( pfd, propertiesData, jarResourceName );
-                				
-                				
-                				if ( pfd.replaceLocalWithJar() ) {
-                					// Replace the local with what's in the jar:
-                					
-                					// Archive the existing file:
-                					archiveOldPropertiesFile( pfd.getLocalPropFile() );
-                					
-                					File newFile = new File( localeFolder, jarResourceName );
-                					
-                					
-                					
-                					Files.copy( new ByteArrayInputStream( 
-                							propertiesData.getBytes( StandardCharsets.UTF_8 ) ), newFile.toPath() );
-                					
-                					Output.get().logInfo( "### LocalManager refreshLocalLocales(): Replace Local " +
-                							"Jar. " + pfd.toString() + "  Replaced.");
-                					
-                				}
-                				else {
-                					// Do not replace:
-//                						Output.get().logInfo( "### LocalManager refreshLocalLocales(): Keep existing " +
-//                								"local jar. " + pfd.toString() );
-                				}
-                				
-                			}
-                			else {
-                				// The current Zip Entry does not exist in the local directory.
-                				// Need to extract it.
-                				
-                				File newFile = new File( localeFolder, jarResourceName );
-                				
-                				if ( newFile.exists() ) {
-                					// Not really sure why the pfd would fail find a resource, but the File exists, 
-                					// so archive it since there must be an issue with it.
-                					archiveOldPropertiesFile( newFile );
-                				}
-                				
-                				Files.copy( inStream, newFile.toPath() );
-                				
-                				Output.get().logInfo( "### LocalManager refreshLocalLocales(): Local did not exist. " +
-                						"Jar copied to local. " );
-                			}
-                		}
-                		else {
-                			
-                		}
-                		// Need to close the entry to position to the next entry:
-                		zip.closeEntry();
-                		
-                	}
+	                	while ( (entry = zip.getNextEntry()) != null) {
+	                		String entryName = entry.getName();
+	                		
+	                		if (entryName.startsWith(internalPath) && entryName.endsWith(".properties")) {
+	                			
+	                			String[] arr = entryName.split("/");
+	                			String jarResourceName = arr[arr.length - 1];
+	                			
+	                			LocalManagerPropertyFileData pfd = localFilesByName.get( jarResourceName );
+	                			
+	                			BufferedInputStream inStream = new BufferedInputStream( zip );
+	                			
+	                			if ( pfd != null ) {
+	                				// Need to check to see if there the local needs to be updated:
+	                				
+	                				// Read the whole properties file since it may need to be used more than once
+	                				String propertiesData = readInputStream( inStream );
+	                				
+	                				
+	                				
+	                				checkJarPropertiesStatus( pfd, propertiesData, jarResourceName );
+	                				
+	                				
+	                				if ( pfd.replaceLocalWithJar() ) {
+	                					// Replace the local with what's in the jar:
+	                					
+	                					// Archive the existing file:
+	                					archiveOldPropertiesFile( pfd.getLocalPropFile() );
+	                					
+	                					File newFile = new File( localeFolder, jarResourceName );
+	                					
+	                					
+	                					
+	                					Files.copy( new ByteArrayInputStream( 
+	                							propertiesData.getBytes( StandardCharsets.UTF_8 ) ), newFile.toPath() );
+	                					
+	                					Output.get().logInfo( "### LocalManager refreshLocalLocales(): Replace Local " +
+	                							"Jar. " + pfd.toString() + "  Replaced.");
+	                					
+	                				}
+	                				else {
+	                					// Do not replace:
+	//                						Output.get().logInfo( "### LocalManager refreshLocalLocales(): Keep existing " +
+	//                								"local jar. " + pfd.toString() );
+	                				}
+	                				
+	                			}
+	                			else {
+	                				// The current Zip Entry does not exist in the local directory.
+	                				// Need to extract it.
+	                				
+	                				File newFile = new File( localeFolder, jarResourceName );
+	                				
+	                				if ( newFile.exists() ) {
+	                					// Not really sure why the pfd would fail find a resource, but the File exists, 
+	                					// so archive it since there must be an issue with it.
+	                					archiveOldPropertiesFile( newFile );
+	                				}
+	                				
+	                				Files.copy( inStream, newFile.toPath() );
+	                				
+	                				Output.get().logInfo( "### LocalManager refreshLocalLocales(): Local did not exist. " +
+	                						"Jar copied to local. " );
+	                			}
+	                		}
+	                		else {
+	                			
+	                		}
+	                		// Need to close the entry to position to the next entry:
+	                		zip.closeEntry();
+	                		
+	                	}
                 	
                 }
                 
             }
             catch ( Exception e ) {
-            	e.printStackTrace();
+            		e.printStackTrace();
             }
         }
 
@@ -391,13 +391,13 @@ public class LocaleManager {
 
 	private void archiveOldPropertiesFile( File localPropFile ) {
 		
-    	String name = localPropFile.getName();
-    	
-    	String newName = "_archived_"  + name + "_" + getDateTime() + ".txt";
-    	
-    	File targetName = new File( localPropFile.getParentFile(), newName );
-    	
-    	localPropFile.renameTo( targetName );
+	    	String name = localPropFile.getName();
+	    	
+	    	String newName = "_archived_"  + name + "_" + getDateTime() + ".txt";
+	    	
+	    	File targetName = new File( localPropFile.getParentFile(), newName );
+	    	
+	    	localPropFile.renameTo( targetName );
 	}
     
     private String getDateTime() {
@@ -412,7 +412,6 @@ public class LocaleManager {
 		
 		try (
 				FileReader fr = new FileReader( pfd.getLocalPropFile() );
-//				FileReader fr = new FileReader( pfd.getLocalPropFile(), StandardCharsets.UTF_8 ); // Java 11
 				) {
 			prop.load( fr );
 			
@@ -439,132 +438,132 @@ public class LocaleManager {
     private void checkJarPropertiesStatus( LocalManagerPropertyFileData pfd, String propertiesData, 
     					String jarPath )
     {
-    	Properties prop = new Properties();
-    	
-    	try {
-    		
-    		prop.load( new StringReader( propertiesData ) );
-    		
-    		boolean hasVersion = prop.containsKey( "messages__version" );
-    		String version = prop.getProperty( "messages__version" );
-    		
-    		boolean hasAutoRefresh = prop.containsKey( "messages__auto_refresh" );
-    		String autoRefresh = prop.getProperty( "messages__auto_refresh" );
-    		
-    		if ( hasVersion && version != null && !version.trim().isEmpty() ) {
-    			pfd.setJarVersion( version );
-    		}
-    		pfd.setJarHasAutoReplace( hasAutoRefresh );
-    		pfd.setJarAutoReplace( autoRefresh != null && "true".equalsIgnoreCase( autoRefresh ) );
-    	}
-    	catch ( IOException e ) {
-    		Output.get().logWarn( "Unable to open and read a property file within the jar file. " +
-    				"[" + jarPath + "]", e );
-    	}
+	    	Properties prop = new Properties();
+	    	
+	    	try {
+	    		
+	    		prop.load( new StringReader( propertiesData ) );
+	    		
+	    		boolean hasVersion = prop.containsKey( "messages__version" );
+	    		String version = prop.getProperty( "messages__version" );
+	    		
+	    		boolean hasAutoRefresh = prop.containsKey( "messages__auto_refresh" );
+	    		String autoRefresh = prop.getProperty( "messages__auto_refresh" );
+	    		
+	    		if ( hasVersion && version != null && !version.trim().isEmpty() ) {
+	    			pfd.setJarVersion( version );
+	    		}
+	    		pfd.setJarHasAutoReplace( hasAutoRefresh );
+	    		pfd.setJarAutoReplace( autoRefresh != null && "true".equalsIgnoreCase( autoRefresh ) );
+	    	}
+	    	catch ( IOException e ) {
+	    		Output.get().logWarn( "Unable to open and read a property file within the jar file. " +
+	    				"[" + jarPath + "]", e );
+	    	}
     	
     }
 
 	private void loadCustomLocales() {
 		
 		// Setup the local folders:
-    	File localeFolder = getLocalDataFolder();
-		
-    	File[] contents = localeFolder.listFiles( new PropertyFileFilter() );
-    	
-    	if (contents != null) {
-    		for (File locale : contents) {
-    			if (!locale.isDirectory()) {
-    				try (
-    					InputStream is = new FileInputStream(locale);
-    					) {
-    					
-    					loadLocale(locale.getName().replace(".properties", ""), is, false);
-    				} 
-    				catch (IOException ex) {
-    					Output.get().logWarn(
-    							"Failed to load custom locale " + locale.getName() +
-    							" for plugin " + getOwningPlugin() + " (" + 
-    							ex.getMessage() + ")");
-    				}
-    			} 
-    			else {
-    				Output.get().logWarn("Found subfolder " + locale.getName() +
-			    				" within locale folder " + LOCALE_FOLDER +
-			    				" in data folder for plugin " + getOwningPlugin() +
-			    				" - not loading");
-    			}
-    		}
-    		
-    		
-    		// Get the English properties, and use that to ensure entries exist for all of the other
-    		// languages... if not, then copy over the english value.
-    		Properties enUS = configs.get( DEFAULT_LOCALE );
-    		if ( enUS != null ) {
-    			boolean forceDefault = false;
-    			
-    			// If the config.yml default lang does not exist in this module, copy enUS to 
-    			// be used in it's place:
-    			if ( !configs.containsKey( defaultLocale ) ) {
-    				configs.put( defaultLocale, enUS );
-    				
-    				// log it
-    				Prison.get().getLocaleLoadInfo().add( String.format( 
-    						"&3Module: &7%s  &3Locale: &7%s  &3Warning: Locale specific file does not exist for this " +
-    						"module so defaulting to &7%s.properties&3.", 
-    						module.getName(), defaultLocale, DEFAULT_LOCALE ) );
-    				forceDefault = true;
-    			}
-    			
-    			Set<String> keys = configs.keySet();
-    			for ( String key : keys )
-    			{
-    				if ( !key.equalsIgnoreCase( DEFAULT_LOCALE ) ) {
-    					Properties otherLang = configs.get( key );
-    					if ( otherLang != null ) {
-    						
-    						int fallbackCount = 0;
-    						
-    						
-    						
-    						for ( String enUSKey : enUS.stringPropertyNames() )
-							{
-    							String propValueOther = otherLang.getProperty( enUSKey );
-    							
-								if ( propValueOther == null || propValueOther.trim().length() == 0
-										) {
-									
-									// Add the english value since it is missing:
-									otherLang.put( enUSKey, enUS.getProperty( enUSKey ) );
-									fallbackCount++;
-									
+	    	File localeFolder = getLocalDataFolder();
+			
+	    	File[] contents = localeFolder.listFiles( new PropertyFileFilter() );
+	    	
+	    	if (contents != null) {
+	    		for (File locale : contents) {
+	    			if (!locale.isDirectory()) {
+	    				try (
+	    					InputStream is = new FileInputStream(locale);
+	    					) {
+	    					
+	    					loadLocale(locale.getName().replace(".properties", ""), is, false);
+	    				} 
+	    				catch (IOException ex) {
+	    					Output.get().logWarn(
+	    							"Failed to load custom locale " + locale.getName() +
+	    							" for plugin " + getOwningPlugin() + " (" + 
+	    							ex.getMessage() + ")");
+	    				}
+	    			} 
+	    			else {
+	    				Output.get().logWarn("Found subfolder " + locale.getName() +
+				    				" within locale folder " + LOCALE_FOLDER +
+				    				" in data folder for plugin " + getOwningPlugin() +
+				    				" - not loading");
+	    			}
+	    		}
+	    		
+	    		
+	    		// Get the English properties, and use that to ensure entries exist for all of the other
+	    		// languages... if not, then copy over the english value.
+	    		Properties enUS = configs.get( DEFAULT_LOCALE );
+	    		if ( enUS != null ) {
+	    			boolean forceDefault = false;
+	    			
+	    			// If the config.yml default lang does not exist in this module, copy enUS to 
+	    			// be used in it's place:
+	    			if ( !configs.containsKey( defaultLocale ) ) {
+	    				configs.put( defaultLocale, enUS );
+	    				
+	    				// log it
+	    				Prison.get().getLocaleLoadInfo().add( String.format( 
+	    						"&3Module: &7%s  &3Locale: &7%s  &3Warning: Locale specific file does not exist for this " +
+	    						"module so defaulting to &7%s.properties&3.", 
+	    						module.getName(), defaultLocale, DEFAULT_LOCALE ) );
+	    				forceDefault = true;
+	    			}
+	    			
+	    			Set<String> keys = configs.keySet();
+	    			for ( String key : keys )
+	    			{
+	    				if ( !key.equalsIgnoreCase( DEFAULT_LOCALE ) ) {
+	    					Properties otherLang = configs.get( key );
+	    					if ( otherLang != null ) {
+	    						
+	    						int fallbackCount = 0;
+	    						
+	    						
+	    						
+	    						for ( String enUSKey : enUS.stringPropertyNames() )
+								{
+	    							String propValueOther = otherLang.getProperty( enUSKey );
+	    							
+									if ( propValueOther == null || propValueOther.trim().length() == 0
+											) {
+										
+										// Add the english value since it is missing:
+										otherLang.put( enUSKey, enUS.getProperty( enUSKey ) );
+										fallbackCount++;
+										
+									}
 								}
-							}
-    						
-    						if ( defaultLocale.equalsIgnoreCase( key ) && !forceDefault ) {
-    							
-    							if (  fallbackCount > 0 ) {
-    				   				// log it
-    			    				Prison.get().getLocaleLoadInfo().add( String.format( 
-    			    						"&3Module: &7%s  &3Locale: &7%s  &3Warning: Locale had &7%d &3missing entries " +
-    			    						"and will fallback to settings from &7%s.properties&3.", 
-    			    						module.getName(), defaultLocale, fallbackCount, DEFAULT_LOCALE ) );
-    								
-    							}
-    							else {
-    								Prison.get().getLocaleLoadInfo().add( String.format( 
-    										"&3Module: &7%s  &3Locale language file: &7%s.properties", 
-    												module.getName(), defaultLocale ) );
-    								
-    								
-    							}
-    						}
-    					
-    					}
-    				}
-    			}
-    			
-    		}
-    	}
+	    						
+	    						if ( defaultLocale.equalsIgnoreCase( key ) && !forceDefault ) {
+	    							
+	    							if (  fallbackCount > 0 ) {
+	    				   				// log it
+	    			    				Prison.get().getLocaleLoadInfo().add( String.format( 
+	    			    						"&3Module: &7%s  &3Locale: &7%s  &3Warning: Locale had &7%d &3missing entries " +
+	    			    						"and will fallback to settings from &7%s.properties&3.", 
+	    			    						module.getName(), defaultLocale, fallbackCount, DEFAULT_LOCALE ) );
+	    								
+	    							}
+	    							else {
+	    								Prison.get().getLocaleLoadInfo().add( String.format( 
+	    										"&3Module: &7%s  &3Locale language file: &7%s.properties", 
+	    												module.getName(), defaultLocale ) );
+	    								
+	    								
+	    							}
+	    						}
+	    					
+	    					}
+	    				}
+	    			}
+	    			
+	    		}
+	    	}
     }
 
     /**
@@ -589,7 +588,7 @@ public class LocaleManager {
 		if ( !targetPath.getAbsolutePath().startsWith( 
 				ModuleManager.getModuleRootDefault().getAbsolutePath() ) ) {
 			targetPath = Module.setupModuleDataFolder( Prison.PSEDUO_MODLE_NAME );
-    	}
+		}
 		return targetPath;
 	}
 
@@ -603,7 +602,7 @@ public class LocaleManager {
 	 */
     private void extractShippedLocales( File targetPath ) {
     	
-    	targetPath = fixPrisonCoreLanguagePath( targetPath );
+    		targetPath = fixPrisonCoreLanguagePath( targetPath );
     	
         CodeSource cs = getOwningPlugin().getClass().getProtectionDomain().getCodeSource();
         if (cs != null) {
@@ -649,15 +648,6 @@ public class LocaleManager {
     	
     }
     
-//    private void copyStreams(InputStream inStream, OutputStream outStream) 
-//    		throws IOException {
-//	    byte[] buf = new byte[8192];
-//	    int length;
-//	    while ((length = inStream.read(buf)) > 0) {
-//	        outStream.write(buf, 0, length);
-//	    }
-//	}
-    
     
     private void loadShippedLocales() {
         CodeSource cs = getOwningPlugin().getClass().getProtectionDomain().getCodeSource();
@@ -671,15 +661,15 @@ public class LocaleManager {
                 		ZipInputStream zip = new ZipInputStream(jar.openStream());
                 	) {
                 	
-                	while ((entry = zip.getNextEntry()) != null) {
-                		String entryName = entry.getName();
-                		if (entryName.startsWith(internalPath) && entryName
-                				.endsWith(".properties")) {
-                			String[] arr = entryName.split("/");
-                			String localeName = arr[arr.length - 1].replace(".properties", "");
-                			loadLocale(localeName, zip, true);
-                		}
-                	}
+	                	while ((entry = zip.getNextEntry()) != null) {
+	                		String entryName = entry.getName();
+	                		if (entryName.startsWith(internalPath) && entryName
+	                				.endsWith(".properties")) {
+	                			String[] arr = entryName.split("/");
+	                			String localeName = arr[arr.length - 1].replace(".properties", "");
+	                			loadLocale(localeName, zip, true);
+	                		}
+	                	}
                 }
             } 
             catch (IOException ex) {
@@ -697,32 +687,28 @@ public class LocaleManager {
     private void loadLocale(String name, InputStream is, boolean printStackTrace) {
     	
         try {
-
-        	Properties temp = new Properties();
-        	
-//            temp.load(is);
-
-        	// The InputStream is part of a zipEntry so it cannot be closed, or it will close the zip stream
-            BufferedReader br = new BufferedReader( new InputStreamReader( is, Charset.forName("UTF-8") ));
-            String line = br.readLine();
-            
-            while ( line != null ) {
-            	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
-            		
-            		String[] keyValue = line.split( "\\=" );
-            		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
-            		
-//            		if ( IGNORE_TEXT_NO_MESSAGE_INTENDED.equalsIgnoreCase(value) ) {
-//            			value = "";
-//            		}
-            		
-            		temp.put( keyValue[0], value );
-            	}
-            	
-            	line = br.readLine();
-            }
-            
-            
+	
+	        	Properties temp = new Properties();
+	        	
+	
+	        	// The InputStream is part of a zipEntry so it cannot be closed, or it will close the zip stream
+	            BufferedReader br = new BufferedReader( new InputStreamReader( is, Charset.forName("UTF-8") ));
+	        String line = br.readLine();
+	        
+	        while ( line != null ) {
+		        	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
+		        		
+		        		String[] keyValue = line.split( "\\=" );
+		        		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
+		        		
+		        		
+		        		temp.put( keyValue[0], value );
+		        	}
+		        	
+		        	line = br.readLine();
+	        }
+	        
+	            
             Properties config;
             if (configs.containsKey(name)) {
                 config = configs.get(name);
@@ -763,12 +749,12 @@ public class LocaleManager {
      * @since 1.0
      */
     public String getDefaultLocale() {
-    	if ( defaultLocale == null ) {
-    		defaultLocale = Prison.get().getPlatform().getConfigString( "default-language", "en_US" );
-    		if ( defaultLocale == null ) {
-    			defaultLocale = "en_US";
-    		}
-    	}
+	    	if ( defaultLocale == null ) {
+	    		defaultLocale = Prison.get().getPlatform().getConfigString( "default-language", "en_US" );
+	    		if ( defaultLocale == null ) {
+	    			defaultLocale = "en_US";
+	    		}
+	    	}
         return defaultLocale;
     }
 

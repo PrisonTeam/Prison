@@ -88,10 +88,8 @@ public class CustomItemsWrapper {
 				SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
 				
 				org.bukkit.block.Block spigotBlock = sBlock.getWrapper();
-				//org.bukkit.block.Block spigotBlock = ((SpigotBlock) prisonBlock).getWrapper();
 				
 				// Request the block change, but we don't need the results so ignore it
-//				org.bukkit.block.Block resultBlock = 
 				CustomItemsAPI.setCustomItemIDAtBlock( spigotBlock, prisonBlock.getBlockName(), true );
 				
 			}
@@ -154,7 +152,6 @@ public class CustomItemsWrapper {
 				catch (Exception e) {
 					Output.get().logError( "Failed: CustomItemsWrapper.getDrops: breakCustomItemBlockWithoutDrops: ", 
 							e );
-//					e.printStackTrace();
 				}
 				
 				if ( cuiDropResults != null ) {

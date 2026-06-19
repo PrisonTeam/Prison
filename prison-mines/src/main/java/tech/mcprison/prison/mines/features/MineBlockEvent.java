@@ -33,6 +33,13 @@ public class MineBlockEvent {
 		
 		all,
 		blockBreak,
+		
+		/**
+		 * The EntityExplodeEvent is a bukkit event, but other plugins, such as ExcellentEnchants
+		 * will use it too.
+		 */
+		EntityExplodeEvent, 
+		
 		TEXplosion,
 		CEXplosion,
 		PEExplosive, // PrisonEnchant: Pulsi_'s plugin
@@ -110,32 +117,6 @@ public class MineBlockEvent {
 	}
 	
 	
-//	public enum TaskMode {
-//		inline, 
-//		inlinePlayer, 
-//		
-//		sync,
-//		syncPlayer;
-//		
-//		public static TaskMode fromString( String taskMode ) {
-//			TaskMode results = inline;
-//			
-//			if ( taskMode != null ) {
-//				
-//				for ( TaskMode mode : values() ) {
-//					if ( mode.name().equalsIgnoreCase( taskMode ) ) {
-//						results = mode;
-//						
-//						break;
-//					}
-//				}
-//			}
-//			
-//			return results;
-//		}
-//		
-//	}
-	
 	public MineBlockEvent( double chance, String permission, 
 								String command, TaskMode taskMode, 
 								BlockEventType eventType, String triggered ) {
@@ -169,8 +150,6 @@ public class MineBlockEvent {
 		}
 		nFmt.format( getChance() );
 		
-//		DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
-		
 		String cmd = getCommand().replace( "|", ENCODED_PIPE );
 		
 		return nFmt.format( getChance() ) + "|" + 
@@ -189,38 +168,6 @@ public class MineBlockEvent {
 			
 			results = fromStringV1( blockEventString, mineName );
 		}
-		
-//		if ( chancePermCommand != null && chancePermCommand.trim().length() > 0 ) {
-//			String[] cpc = chancePermCommand.split( "\\|" );
-//			
-//			double  chance = cpc.length >= 1 ? Double.parseDouble( cpc[0] ) : 0d;
-//			
-//			String permission = cpc.length >= 2 ? cpc[1] : "";
-//			if ( permission == null || "none".equalsIgnoreCase( permission) ) {
-//				permission = "";
-//			}
-//			
-//			String command = cpc.length >= 3 ? cpc[2] : "";
-//
-//			String mode = cpc.length >= 4 ? cpc[3] : "inline";
-//			
-//			if ( !"sync".equalsIgnoreCase( mode ) && !"inline".equalsIgnoreCase( mode ) ) {
-//				mode = "sync";
-//			}
-////			boolean async = (asyncStr != null && 
-////											"true".equalsIgnoreCase( asyncStr ) );
-//			
-//			BlockEventType eventType = cpc.length >= 5 ? BlockEventType.fromString( cpc[4] ) :
-//											BlockEventType.eventTypeAll;
-//			
-//			String triggered = cpc.length >= 6 && !"none".equals(cpc[5]) ? cpc[5] : null;
-//			
-//			
-//			if ( command != null && command.trim().length() > 0 ) {
-//				
-//				results = new MineBlockEvent( chance, permission, command, mode, eventType, triggered );
-//			}
-//		}
 		
 		return results;
 	}
@@ -247,7 +194,6 @@ public class MineBlockEvent {
 					chance = nDbl.doubleValue();
 				}
 				
-//				chance = cpc.length >= 1 ? Double.parseDouble( cpc[0] ) : 0d;
 			}
 			catch ( ParseException | NumberFormatException e ) {
 				Output.get().logError( "Failure parsing a mine " + mineName + 
@@ -397,28 +343,6 @@ public class MineBlockEvent {
 			}
 		}
 				
-		
-//		// First check chance, since that's perhaps the quickest check:
-//		if ( chance <= getChance() &&
-//				
-//				isValidBlock( targetBlock ) &&
-//				
-//				// Make sure we have the correct eventTypes:
-//			(eventType == BlockEventType.TEXplosion && 
-//				eventType == getEventType() && 
-//					( getTriggered() == null || 
-//						getTriggered().equalsIgnoreCase( triggered )) ||
-//					
-//				getEventType() == BlockEventType.all || 
-//				getEventType() == eventType) ) {
-//			
-//			// The check for the player's perms will have to be done outside of this 
-//			// function.
-//			
-//			results = true;
-//		}
-		
-		
 		return results;
 	}
 	
@@ -430,8 +354,6 @@ public class MineBlockEvent {
 	}
 	
 	private boolean hasBlockType( MineTargetPrisonBlock targetBlock ) {
-//		PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
-//    	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
     	
 		return getPrisonBlocks().contains( targetBlock.getPrisonBlock() );
 	}
@@ -501,14 +423,4 @@ public class MineBlockEvent {
 		this.prisonBlocks = prisonBlocks;
 	}
 
-
-
-//	public boolean isInline() {
-//		return "inline".equalsIgnoreCase( getMode() );
-//	}
-//	public boolean isSync() {
-//		return "sync".equalsIgnoreCase( getMode() );
-//	}
-
-	
 }

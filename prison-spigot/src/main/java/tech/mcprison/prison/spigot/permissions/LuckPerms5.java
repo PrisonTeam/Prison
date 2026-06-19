@@ -67,27 +67,27 @@ public class LuckPerms5
 	
     @Override 
     public void addGroupPermission(Player holder, String groupPermission) {
-    	if ( permsWrapper != null ) {
-    		permsWrapper.addGroupPermission( holder, groupPermission );
-    	}
+	    	if ( permsWrapper != null ) {
+	    		permsWrapper.addGroupPermission( holder, groupPermission );
+	    	}
     }
     
     @Override 
     public void removeGroupPermission(Player holder, String groupPermission) {
-    	if ( permsWrapper != null ) {
-    		permsWrapper.removeGroupPermission( holder, groupPermission );
-    	}
+	    	if ( permsWrapper != null ) {
+	    		permsWrapper.removeGroupPermission( holder, groupPermission );
+	    	}
     }
     
     @Override
     public List<String> getPermissions(Player holder, boolean detailed) {
-    	List<String> results = new ArrayList<>();
-    	
-    	if ( permsWrapper != null ) {
-    		results = permsWrapper.getPermissions(holder, detailed);
-    	}
-    	
-    	return results;
+	    	List<String> results = new ArrayList<>();
+	    	
+	    	if ( permsWrapper != null ) {
+	    		results = permsWrapper.getPermissions(holder, detailed);
+	    	}
+	    	
+	    	return results;
     }
     
 	@Override
@@ -97,7 +97,7 @@ public class LuckPerms5
     
     @Override
     public void disableIntegration() {
-    	permsWrapper = null;
+    		permsWrapper = null;
     }
     
 	@Override

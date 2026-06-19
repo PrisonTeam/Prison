@@ -32,20 +32,12 @@ import tech.mcprison.prison.error.ErrorManager;
  */
 public abstract class Module implements PluginEntity {
 
-    /*
-     * Fields & Constants
-     */
-
     private String name, version;
     private File moduleDataFolder;
     
     private int apiTarget;
     private ModuleStatus status;
     private ErrorManager errorManager;
-
-    /*
-     * Constructor
-     */
 
     /**
      * Initialize your module.
@@ -93,9 +85,6 @@ public abstract class Module implements PluginEntity {
      * @return
      */
     abstract public String getBaseCommands();
-    /*
-     * Methods, to be overridden
-     */
 
     /**
      * Called when the module is to be enabled.
@@ -126,9 +115,6 @@ public abstract class Module implements PluginEntity {
         getStatus().toFailed(reason);
     }
 
-    /*
-     * Getters & Setters
-     */
 
     public String getName() {
         return name;
@@ -164,7 +150,13 @@ public abstract class Module implements PluginEntity {
     }
 
     public boolean isEnabled() {
-        return status.getStatus() == ModuleStatus.Status.ENABLED;
+    	boolean results = false;
+    	
+    	if ( status != null && status.getStatus() != null ) {
+    		results = status.getStatus() == ModuleStatus.Status.ENABLED;
+    	}
+        
+        return results;
     }
 
     public void setEnabled(boolean enabled) {
@@ -189,5 +181,18 @@ public abstract class Module implements PluginEntity {
     public File getModuleDataFolder() {
         return moduleDataFolder;
     }
+    
+    
+    /**
+     * For modules that have elements, this will return the count.  If a module has no
+     * elements, then it will return a -1.  Otherwise a zero would indicate that a module
+     * should have elements, but it currently has none.
+     * 
+     * Example would be ranks and mines.  For these, if it returns a zero, then they have 
+     * no ranks or mines defined.  If it return a -1 then the module is not active.
+     * 
+     * @return
+     */
+    abstract public int getElementCount();
 
 }

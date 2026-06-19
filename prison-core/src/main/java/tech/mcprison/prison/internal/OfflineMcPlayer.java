@@ -7,23 +7,24 @@ public interface OfflineMcPlayer
     /**
      * Returns the unique identifier for this player.
      */
-    UUID getUUID();
+    public UUID getUUID();
 
     /**
      * Returns the player's display name (nickname), which may include colors.
      */
-    String getDisplayName();
+    public String getDisplayName();
 
     /**
      * Sets the player's display name (nickname).
      *
      * @param newDisplayName The new display name. May include colors, amp-prefixed.
      */
-    void setDisplayName(String newDisplayName);
+    public void setDisplayName(String newDisplayName);
 
     /**
      * @return Returns true if the player is online, false otherwise.
      */
-    boolean isOnline();
-    
+    public boolean isOnline();
+
+
 }

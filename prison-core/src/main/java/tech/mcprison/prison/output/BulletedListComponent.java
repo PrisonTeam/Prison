@@ -40,13 +40,15 @@ public class BulletedListComponent extends DisplayComponent {
         this.messages = messages;
     }
 
-    @Override public String text() {
+    @Override 
+    public String text() {
         List<String> messageStrs = new ArrayList<>(messages.size());
         messages.forEach(message -> messageStrs.add(message.toOldMessageFormat()));
         return Text.implode(messageStrs, "\n");
     }
 
-    @Override public void send(CommandSender sender) {
+    @Override 
+    public void send(CommandSender sender) {
         messages.forEach(message -> message.send(sender));
     }
 
@@ -59,8 +61,8 @@ public class BulletedListComponent extends DisplayComponent {
         }
         
         public BulletedListBuilder add(FancyMessage message) {
-        	bullets.add(message);
-        	return this;
+	        	bullets.add(message);
+	        	return this;
         }
 
         public BulletedListBuilder add(RowComponent row) {

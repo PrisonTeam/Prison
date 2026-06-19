@@ -23,7 +23,6 @@ import java.util.Map;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.output.Output;
 
@@ -32,9 +31,6 @@ import tech.mcprison.prison.output.Output;
  */
 public class SelectionManager {
 
-    public static final ItemStack SELECTION_TOOL =
-        new ItemStack("&6Selection Wand", 1, PrisonBlock.BLAZE_ROD, "&7Corner 1 - Left click",
-            "&7Corner 2 - Right click");
     private Map<String, Selection> selectionMap;
 
     public SelectionManager() {
@@ -51,7 +47,7 @@ public class SelectionManager {
     public void bestowSelectionTool(Player player) {
     	int countBefore = selectionWandCount( player );
     	
-        player.give(SELECTION_TOOL);
+        player.give( ItemStack.SELECTION_WAND );
 
         int countAfter = selectionWandCount( player );
         
@@ -66,9 +62,8 @@ public class SelectionManager {
 		
 		for (ItemStack is : inv.getItems()) {
 			if ( is != null && 
-					// is.getName().toLowerCase().contains( "selection wand" ) && 
-					// is.getDisplayName().toLowerCase().contains( "selection wand" ) && 
-					is.getMaterial().compareTo( PrisonBlock.BLAZE_ROD ) == 0 ) {
+					is.getMaterial().compareTo( ItemStack.SELECTION_WAND.getMaterial() ) == 0 
+					) {
 				count += is.getAmount();
 			}
 		}

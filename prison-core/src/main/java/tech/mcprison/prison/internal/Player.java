@@ -105,7 +105,7 @@ public interface Player
      *
      * @param location The new {@link Location}.
      */
-    public void teleport(Location location);
+    public boolean teleport(Location location);
 
     /**
      * @return Returns true if the player is online, false otherwise.
@@ -177,6 +177,14 @@ public interface Player
 	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity );
 	
 	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity);
+
+    /**
+     * Returns the bukkit's last seen date as a long.
+     * 
+     * @return
+     */
+	public long getLastSeenDate();
+    
 
 //	public RankPlayer getRankPlayer();
 	

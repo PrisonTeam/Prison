@@ -23,9 +23,11 @@ import tech.mcprison.prison.commands.CommandArgument;
 import tech.mcprison.prison.commands.TransformError;
 import tech.mcprison.prison.internal.CommandSender;
 
-public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
+public class DoubleArgumentHandler 
+	extends NumberArgumentHandler<Double> {
 
     public DoubleArgumentHandler() {
+    		super();
     }
 
     @Override 
@@ -33,9 +35,6 @@ public class DoubleArgumentHandler extends NumberArgumentHandler<Double> {
         throws TransformError {
         value = value.replaceAll( "$|%", "" );
         try {
-//        	if ( value == null || value.trim().length() == 0 ) {
-//        		return null;
-//        	}
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
             throw new TransformError(

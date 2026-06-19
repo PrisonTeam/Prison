@@ -52,33 +52,33 @@ public class SpigotMinesBlocksGUI
         // For every block makes a button
         for (PrisonBlock block : m.getPrisonBlocks()) {
         	
-        	// Get the block material as a string and displayname
-        	String blockmaterial = block.getBlockName();
-        	String blockmaterialdisplay = blockmaterial;
-        	
-        	// Check if a block's air and changed the item of it to BARRIER
-        	if (blockmaterial.equalsIgnoreCase("air")){
-        		blockmaterial = "BARRIER";
-        		blockmaterialdisplay = blockmaterial;
-        	}
-        	
-        	// Get XMaterial.
-        	XMaterial xMat = SpigotUtil.getXMaterial(blockmaterial);
-        	if (PrisonBlock.IGNORE.getBlockName().equalsIgnoreCase(blockmaterial)) {
-        		xMat = XMaterial.BARRIER;
-        	}
-        	if (xMat == null ) {
-        		xMat = XMaterial.STONE;
-        	}
-        	
-        	ButtonLore blocksLore = new ButtonLore(createLore(loreClickToEditBlock, loreShiftRightClickToDelete), createLore(loreInfo));
-        	
-        	// Add a lore
-        	blocksLore.addLineLoreDescription( loreChance + block.getChance() + "%" );
-        	blocksLore.addLineLoreDescription( loreBlockType + blockmaterial );
-        	
-        	// Add the button to the GUI.
-        	gui.addButton(new Button(null, xMat, blocksLore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
+	        	// Get the block material as a string and displayname
+	        	String blockmaterial = block.getBlockName();
+	        	String blockmaterialdisplay = blockmaterial;
+	        	
+	        	// Check if a block's air and changed the item of it to BARRIER
+	        	if (blockmaterial.equalsIgnoreCase("air")){
+	        		blockmaterial = "BARRIER";
+	        		blockmaterialdisplay = blockmaterial;
+	        	}
+	        	
+	        	// Get XMaterial.
+	        	XMaterial xMat = SpigotUtil.getXMaterial(blockmaterial);
+	        	if (PrisonBlock.IGNORE.getBlockName().equalsIgnoreCase(blockmaterial)) {
+	        		xMat = XMaterial.BARRIER;
+	        	}
+	        	if (xMat == null ) {
+	        		xMat = XMaterial.STONE;
+	        	}
+	        	
+	        	ButtonLore blocksLore = new ButtonLore(createLore(loreClickToEditBlock, loreShiftRightClickToDelete), createLore(loreInfo));
+	        	
+	        	// Add a lore
+	        	blocksLore.addLineLoreDescription( loreChance + block.getChance() + "%" );
+	        	blocksLore.addLineLoreDescription( loreBlockType + blockmaterial );
+	        	
+	        	// Add the button to the GUI.
+	        	gui.addButton(new Button(null, xMat, blocksLore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         }
 
         // Open the inventory

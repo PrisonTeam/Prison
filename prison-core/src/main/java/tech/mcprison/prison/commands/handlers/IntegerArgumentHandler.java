@@ -27,15 +27,16 @@ public class IntegerArgumentHandler
 		extends NumberArgumentHandler<Integer> {
 
     public IntegerArgumentHandler() {
+    		super();
     }
 
     @Override 
     public Integer transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
     	
-    	if ( value != null ) {
-    		value = value.replaceAll( "$|%", "" );
-    	}
+	    	if ( value != null ) {
+	    		value = value.replaceAll( "$|%", "" );
+	    	}
     	
         try {
             return Integer.parseInt(value);

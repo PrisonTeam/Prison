@@ -18,6 +18,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.api.InventoryFullEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
@@ -295,8 +296,8 @@ public class AutoManagerXPrisonExplosionTriggerEvent
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleXPrisonExplosionTriggerEvent ** ### " +
-				"(event: ExplosionTriggerEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleXPrisonExplosionTriggerEvent ** ###&3 " +
+				"(event: &6ExplosionTriggerEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")
@@ -427,7 +428,10 @@ public class AutoManagerXPrisonExplosionTriggerEvent
 //    			}
     		}
 
-
+    		if ( pmEvent.getSpigotPlayer().isInventoryFull() ) {
+    			
+    			InventoryFullEvent.fireInventoryFullEvent( pmEvent.getPlayer() );
+    		}
 		}
     	
     	printDebugInfo( pmEvent, start );

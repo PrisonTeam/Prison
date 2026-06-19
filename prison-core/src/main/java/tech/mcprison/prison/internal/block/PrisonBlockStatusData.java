@@ -42,7 +42,9 @@ public abstract class PrisonBlockStatusData {
 	
 	private boolean gravity = false;
 	
-//	private transient boolean includeInLayerCalculations;
+	
+	private boolean preventDrops = false;
+	
 	
 	
 	private transient String altAlias;
@@ -50,6 +52,10 @@ public abstract class PrisonBlockStatusData {
 	private transient int altCountVirtual;
 	private transient int altCountPhysical;
 	
+	
+	public PrisonBlockStatusData() {
+		super();
+	}
 	
 	public PrisonBlockStatusData( 
 			PrisonBlockType blockType, String blockName, String displayName,
@@ -90,7 +96,8 @@ public abstract class PrisonBlockStatusData {
 		
 		this.gravity = checkGravityAffects( blockName );
 		
-//		this.includeInLayerCalculations = true;
+		this.preventDrops = false;
+		
 	}
 
 	
@@ -144,9 +151,14 @@ public abstract class PrisonBlockStatusData {
 	}
 	
 	public String toSaveFileFormat() {
-		return getBlockName() + "-" + getChance() + "-" + getBlockCountTotal() + "-" + 
-					getConstraintMin() + "-" + getConstraintMax() + "-" + 
-					getConstraintExcludeTopLayers() + "-" + getConstraintExcludeBottomLayers();
+		return getBlockName() + "-" + 
+				getChance() + "-" + 
+				getBlockCountTotal() + "-" + 
+				getConstraintMin() + "-" + 
+				getConstraintMax() + "-" + 
+				getConstraintExcludeTopLayers() + "-" + 
+				getConstraintExcludeBottomLayers() + "-" +
+				Boolean.toString( isPreventDrops() );
 	}
 	
 	
@@ -171,13 +183,6 @@ public abstract class PrisonBlockStatusData {
 				results.parseFromSaveFileFormatStats( blockString );
 				
 			}
-//			else {
-//				if ( blockTypeName.equalsIgnoreCase( "gold_ore" ) ) {
-//					Output.get().logInfo( "### parseFromSaveFile: no results!? [" + 
-//							String.join( ", ", split ) + "]"
-//							);
-//				}
-//			}
 		}
 		
 		return results;
@@ -192,7 +197,6 @@ public abstract class PrisonBlockStatusData {
 			String[] split = blockString.split("-");
 			
 			if ( split != null && split.length > 0 ) {
-//				String blockTypeName = split[0];
 				// The new way to get the PrisonBlocks:  
 				
 				double chance = split.length > 1 ? Double.parseDouble(split[1]) : 0;
@@ -201,6 +205,7 @@ public abstract class PrisonBlockStatusData {
 				int constraintMax = split.length > 4 ? Integer.parseInt(split[4]) : 0;
 				int constraintExcludeTopLayers = split.length > 5 ? Integer.parseInt(split[5]) : 0;
 				int constraintExcludeBottomLayers = split.length > 6 ? Integer.parseInt(split[6]) : 0;
+				boolean preventDrops = split.length > 7 ? Boolean.parseBoolean(split[7]) : false;
 				
 				setChance( chance );
 				setBlockCountTotal( blockCount );
@@ -208,13 +213,8 @@ public abstract class PrisonBlockStatusData {
 				setConstraintMax( constraintMax );
 				setConstraintExcludeTopLayers( constraintExcludeTopLayers );
 				setConstraintExcludeBottomLayers( constraintExcludeBottomLayers );
+				setPreventDrops(preventDrops);
 				
-//				if ( blockTypeName.equalsIgnoreCase( "gold_ore" ) ) {
-//					Output.get().logInfo( "### parseFromSaveFile: [" + 
-//							String.join( ", ", split ) + "]  [" +
-//							block.toSaveFileFormat() + "]"
-//							);
-//				}
 			}
 
 		}
@@ -246,16 +246,18 @@ public abstract class PrisonBlockStatusData {
 
     	String percent = fFmt.format(getChance());
     	
-//    	String spawned = dFmt.format( getResetBlockCount() );
     	String remaining = dFmt.format( getBlockPlacedCount() - getBlockCountUnsaved() );
     	String total = PlaceholdersUtil.formattedKmbtSISize( 1.0d * getBlockCountTotal(), dFmt, "" );
     	
 		sb.append( getBlockName() ).append( " (" )
 			.append( percent ).append( " pct) " )
-//			.append( spawned )
 			.append( "  r: " ).append( remaining )
 			.append( "  T: " ) .append( total )
 			;
+		
+		if ( isPreventDrops() ) {
+			sb.append( "  NoDrops!" );
+		}
 		
 		return sb.toString();
 	}
@@ -387,6 +389,11 @@ public abstract class PrisonBlockStatusData {
 			{
 				case "sand":
 				case "red_sand":
+				case "falling_sand":
+				case "falling_block":
+				case "suspicious_sand":
+				case "suspicious_gravel":
+					
 				case "gravel":
 					
 				case "white_concrete_powder":
@@ -554,14 +561,13 @@ public abstract class PrisonBlockStatusData {
 		this.gravity = gravity;
 	}
 
+	public boolean isPreventDrops() {
+		return preventDrops;
+	}
+	public void setPreventDrops(boolean preventDrops) {
+		this.preventDrops = preventDrops;
+	}
 
-	
-//	public boolean isIncludeInLayerCalculations() {
-//		return includeInLayerCalculations;
-//	}
-//	public void setIncludeInLayerCalculations(boolean includeInLayerCalculations) {
-//		this.includeInLayerCalculations = includeInLayerCalculations;
-//	}
 
 
 	/**

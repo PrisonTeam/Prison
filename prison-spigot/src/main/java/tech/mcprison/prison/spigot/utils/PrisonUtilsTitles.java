@@ -143,126 +143,11 @@ public class PrisonUtilsTitles
 				
 				player.setActionBar( message );
 				
-//				String titleJson = String.format( 
-//						"title %s actionBar {\"text\": \"%s\"}",
-//						player.getName(), message );
-//				
-//				dispatchCommand( titleJson );
 			}
 		}
 	}
 	
-//	@Command(identifier = "prison utils titles clear", 
-//			description = "Clears the screen title from the screens of the specified player.",
-//					onlyPlayers = false, 
-//					permissions = "prison.utils.titles.clear",
-//					altPermissions = "prison.utils.titles.clear.others")
-//	public void utilsTitlesClear( CommandSender sender, 
-//			@Arg(name = "playerName", description = "Player name") String playerName
-//			
-//			) {
-//		
-//		if ( !isEnableTitlesTitle() ) {
-//			
-//			Output.get().logInfo( "Prison's utils command titles clear is disabled in modules.yml." );
-//		}
-//		else {
-//			
-//			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
-//					"prison.utils.titles.clear", "prison.utils.titles.clear.others" );
-//			
-//			if ( player != null ) {
-//				
-//				String titleJson = String.format( 
-//						"title %s clear",
-//						player.getName() );
-//				
-//				dispatchCommand( titleJson );
-//			}
-//
-//		}
-//	}
 	
-	
-//	@Command(identifier = "prison utils titles reset", 
-//			description = "Resets the subtitle text for the specified player to blank text, " +
-//					"and the fade-in, stay and fade-out times to their default values " +
-//					"(defaults to fadeIn 10 ticks, stay 70 ticks, and fadeOut 20 ticks).",
-//					onlyPlayers = false, 
-//					permissions = "prison.utils.titles.reset",
-//					altPermissions = "prison.utils.titles.reset.others")
-//	public void utilsTitlesReset( CommandSender sender, 
-//			@Arg(name = "playerName", description = "Player name") String playerName
-//			
-//			) {
-//		
-//		if ( !isEnableTitlesTitle() ) {
-//			
-//			Output.get().logInfo( "Prison's utils command titles reset is disabled in modules.yml." );
-//		}
-//		else {
-//			
-//			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
-//					"prison.utils.titles.reset", "prison.utils.titles.reset.others" );
-//
-//			if ( player != null ) {
-//				
-//				String titleJson = String.format( 
-//						"title %s reset",
-//						player.getName() );
-//				
-//				dispatchCommand( titleJson );
-//			}
-//
-//		}
-//	}
-	
-	
-//	@Command(identifier = "prison utils titles times ", 
-//			description = "Resets the player's title times for fade in, stay and fade out. " +
-//					"These settings will change the client's settings and they will stay in effect " +
-//					"until they are changed. A value of -1 will use the prior value for that setting. " +
-//					"This change will apply to all future titles for the player, until it is changed. " +
-//					"Use 'titles clear' to remove the titles, or 'titles reset' to restore the default " +
-//					"timings for the fadeIn, stay, and fadeOut values.",
-//					onlyPlayers = false, 
-//					permissions = "prison.utils.titles.fadein",
-//					altPermissions = "prison.utils.titles.fadein.others")
-//	public void utilsTitlesFadeIn( CommandSender sender, 
-//			@Arg(name = "playerName", description = "Player name") String playerName,
-//			@Arg(name = "fadeIn", description = "The the fade in time, in ticks. " +
-//					"A value of -1 will use the prior value. [-1]", def= "-1") int fadeIn,
-//			@Arg(name = "stay", description = "The the fade in time, in ticks. " +
-//					"A value of -1 will use the prior value. [-1]", def= "-1") int stay,
-//			@Arg(name = "fadeOut", description = "The the fade out time, in ticks. " +
-//					"A value of -1 will use the prior value. [-1]", def= "-1") int fadeOut
-//			
-//			) {
-//		
-//		if ( !isEnableTitlesTimes() ) {
-//			
-//			Output.get().logInfo( "Prison's utils command titles times is disabled in modules.yml." );
-//		}
-//		else {
-//			
-//			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
-//					"prison.utils.titles.fadein", "prison.utils.titles.fadein.others" );
-//
-//			if ( player != null ) {
-//				
-//				String titleJson = String.format( 
-//						"title %s times %d %d %d",
-//						player.getName(), fadeIn, stay, fadeOut );
-//				
-//				dispatchCommand( titleJson );
-//			}
-//
-//		}
-//	}
-	
-//	private void dispatchCommand( String command ) {
-//		Prison.get().getPlatform().dispatchCommand( Text.translateAmpColorCodes( command ) );
-//	}
 	
 	public boolean isEnableTitlesTitle() {
 		return enableTitlesTitle;
@@ -271,13 +156,6 @@ public class PrisonUtilsTitles
 		this.enableTitlesTitle = enableTitlesTitle;
 	}
 
-//	public boolean isEnableTitlesSubtitle() {
-//		return enableTitlesSubtitle;
-//	}
-//	public void setEnableTitlesSubtitle( boolean enableTitlesSubtitle ) {
-//		this.enableTitlesSubtitle = enableTitlesSubtitle;
-//	}
-
 	public boolean isEnableTitlesActionBar() {
 		return enableTitlesActionBar;
 	}
@@ -285,25 +163,4 @@ public class PrisonUtilsTitles
 		this.enableTitlesActionBar = enableTitlesActionBar;
 	}
 
-//	public boolean isEnableTitlesClear() {
-//		return enableTitlesClear;
-//	}
-//	public void setEnableTitlesClear( boolean enableTitlesClear ) {
-//		this.enableTitlesClear = enableTitlesClear;
-//	}
-//
-//	public boolean isEnableTitlesReset() {
-//		return enableTitlesReset;
-//	}
-//	public void setEnableTitlesReset( boolean enableTitlesReset ) {
-//		this.enableTitlesReset = enableTitlesReset;
-//	}
-//
-//	public boolean isEnableTitlesTimes() {
-//		return enableTitlesTimes;
-//	}
-//	public void setEnableTitlesTimes( boolean enableTitlesTimes ) {
-//		this.enableTitlesTimes = enableTitlesTimes;
-//	}
-	
 }

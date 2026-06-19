@@ -19,8 +19,6 @@ public class RankFactory
 
 		try
 		{
-			// Object pos = document.get("position");
-			// this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
 
 			int id = ConversionUtil.doubleToInt( document.get( "id" ) );
 			String name = (String) document.get( "name" );
@@ -46,8 +44,6 @@ public class RankFactory
 					}
 				}
 
-				// This was allowing nulls to be added to the live commands...
-				// this.rankUpCommands = (List<String>) cmds;
 			}
 
 			rank.getMines().clear();
@@ -59,33 +55,6 @@ public class RankFactory
 				rank.setMineStrings( mineStrings );
 			}
 
-			// getPermissions().clear();
-			// Object perms = document.get( "permissions" );
-			// if ( perms != null ) {
-			// List<String> permissions = (List<String>) perms;
-			// for ( String permission : permissions ) {
-			// getPermissions().add( permission );
-			// }
-			// }
-			//
-			//
-			// getPermissionGroups().clear();
-			// Object permsGroups = document.get( "permissionGroups" );
-			// if ( perms != null ) {
-			// List<String> permissionGroups = (List<String>) permsGroups;
-			// for ( String permissionGroup : permissionGroups ) {
-			// getPermissionGroups().add( permissionGroup );
-			// }
-			// }
-
-			
-//			// Hook up the ladder if it has not been setup yet:
-//			if ( rank.getLadder() == null ) {
-//				
-//				RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( rank );
-//				
-//				rank.setLadder( ladder );
-//			}
 		}
 		catch ( Exception e )
 		{
@@ -102,8 +71,11 @@ public class RankFactory
 	
     public Document toDocument( Rank rank ) {
         Document ret = new Document();
-//        ret.put("position", this.position );
-        ret.put("id", rank.getId());
+        
+        if ( rank.getId() != -1 ) {
+        	ret.put("id", rank.getId());
+        }
+        
         ret.put("name", rank.getName() );
         ret.put("tag", (rank.getTag() == null ? "none" : rank.getTag()) );
         ret.put("cost", rank.getCost() );
@@ -128,12 +100,8 @@ public class RankFactory
         }
         ret.put("mines", mineStrings);
         
-//        ret.put( "permissions", getPermissions() );
-//        ret.put( "permissionGroups", getPermissionGroups() );
         
         return ret;
     }
-    
-
 
 }

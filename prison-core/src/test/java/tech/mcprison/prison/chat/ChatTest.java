@@ -34,7 +34,9 @@ public class ChatTest {
                 .color(ChatColor.BLACK);
 
         String expected =
-            "{\"text\":\"\",\"extra\":[{\"text\":\"Test\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},{\"text\":\"ing\",\"color\":\"black\"}]}";
+            "{\"text\":\"\",\"extra\":[{\"text\":\"Test\",\"color\":\"aqua\","
+            + "\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://google.com\"}},"
+            + "{\"text\":\"ing\",\"color\":\"black\"}]}";
         String actual = message.toJSONString();
 
         assertEquals(expected, actual);

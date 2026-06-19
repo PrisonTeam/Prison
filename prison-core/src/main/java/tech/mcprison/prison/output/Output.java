@@ -42,7 +42,6 @@ public class Output
 	public static final String PERCENT_ENCODING = "&percnt;";
 	public static final String PERCENT_DECODING = "%";
 	public static final String LINE_SPLITING = "\\{br\\}";
-//	public static final String LINE_SPLITING = "\n";
 
     private static Output instance;
     
@@ -83,7 +82,9 @@ public class Output
     	
     	rankup,
 //    	support
-    	blockConstraints
+    	blockConstraints, 
+    	
+    	commandHandler
     	;
     	
     	public static DebugTarget fromString( String target ) {
@@ -142,12 +143,12 @@ public class Output
 
     public static Output get() {
         if (instance == null) {
-        	synchronized ( Output.class ) {
-        		if (instance == null) {
-        			
-        			new Output();
-        			
-        		}
+	        	synchronized ( Output.class ) {
+	        		if (instance == null) {
+	        			
+	        			new Output();
+	        			
+	        		}
 			}
         }
         return instance;
@@ -187,29 +188,29 @@ public class Output
     }
     
     private String getLogColorCode( LogLevel level) {
-    	String colorCode = null;
-    	
-    	switch ( level )
-    	{
-    		case INFO:
-    			colorCode = colorCodeInfo;
-    			break;
-    		case WARNING:
-    			colorCode = colorCodeWarning;
-    			break;
-    		case ERROR:
-    			colorCode = colorCodeError;
-    			break;
-    		case DEBUG:
-    			colorCode = colorCodeDebug;
-    			break;
-    			
-    		case PLAIN:
-    		default:
-    			colorCode = "";
-    			break;
-    	}
-    	return colorCode;
+	    	String colorCode = null;
+	    	
+	    	switch ( level )
+	    	{
+	    		case INFO:
+	    			colorCode = colorCodeInfo;
+	    			break;
+	    		case WARNING:
+	    			colorCode = colorCodeWarning;
+	    			break;
+	    		case ERROR:
+	    			colorCode = colorCodeError;
+	    			break;
+	    		case DEBUG:
+	    			colorCode = colorCodeDebug;
+	    			break;
+	    			
+	    		case PLAIN:
+	    		default:
+	    			colorCode = "";
+	    			break;
+	    	}
+	    	return colorCode;
     }
     
     public String format(String message, LogLevel level, Object... args) {
@@ -259,89 +260,85 @@ public class Output
      * Log a message with a specified {@link LogLevel}
      */
     public void log(String message, LogLevel level, Object... args) {
-    	if ( message == null || message.trim().isEmpty() ) {
-    		// do not send an empty message... do nothing...
-    	}
-    	else if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
-    		String errorMessage = coreOutputErrorStartupFailureMsg();
-    		if ( errorMessage == null || errorMessage.trim().isEmpty() ) {
-    			// NOTE: The following must remain as is.  This is a fallback for if there
-    			// are major failures in prison.  At least it can prefix the messages so they
-    			// can be identified along with the reasons.
-    			errorMessage = "Prison: (Sending to System.err due to Output.log Logger failure):";
-    		}
-			
-    		StringBuilder sb = new StringBuilder();
-			for ( Object arg : args ) {
-				sb.append( "[" ).append( arg ).append( "] " );
-			}
-			
-    		System.err.println( errorMessage + "   message: [" + message + 
-    				"] params: " + sb.toString() );
-    	} 
-    	else {
-    		try {
-    			
-    			String msg = args == null || args.length == 0 ?
-    					message : 
-    						String.format(message, args);
-    			
-    			msg = decodePercentEncoding( msg );
-//    			if ( msg.contains( PERCENT_ENCODING ) ) {
-//    				msg = msg.replace( PERCENT_ENCODING, PERCENT_DECODING );
-//    			}
-    			
-        		String msgRaw = String.format(msg, args);
-        		boolean includePrefix = true;
-        		for (String  msgSplit : msgRaw.split( LINE_SPLITING )) {
-    				
-        			Prison.get().getPlatform().log(
-        					(includePrefix ? (prefixTemplatePrison + " ") : "") +
-        							getLogColorCode(level) +
-        							msgSplit);
-        			includePrefix = false;
-    			}
-    			
-			}
-			catch ( MissingFormatArgumentException e )
-			{
-				StringBuilder sb = new StringBuilder();
+	    	if ( message == null || message.trim().isEmpty() ) {
+	    		// do not send an empty message... do nothing...
+	    	}
+	    	else if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
+	    		String errorMessage = coreOutputErrorStartupFailureMsg();
+	    		if ( errorMessage == null || errorMessage.trim().isEmpty() ) {
+	    			// NOTE: The following must remain as is.  This is a fallback for if there
+	    			// are major failures in prison.  At least it can prefix the messages so they
+	    			// can be identified along with the reasons.
+	    			errorMessage = "Prison: (Sending to System.err due to Output.log Logger failure):";
+	    		}
 				
+	    		StringBuilder sb = new StringBuilder();
 				for ( Object arg : args ) {
 					sb.append( "[" ).append( arg ).append( "] " );
 				}
 				
-				String errorMessage = coreOutputErrorIncorrectNumberOfParametersMsg(
-						level.name(), e.getMessage(), message, sb.toString() );
-				
-				Prison.get().getPlatform().logCore(
-						prefixTemplatePrison + " " + 
-						getLogColorCode(LogLevel.ERROR) +
-						errorMessage );
-			}
-    		catch ( UnknownFormatConversionException |
-    				FormatFlagsConversionMismatchException e) 
-    		{
-				StringBuilder sb = new StringBuilder();
-				
-				for ( Object arg : args ) {
-					sb.append( "[" ).append( arg ).append( "] " );
+	    		System.err.println( errorMessage + "   message: [" + message + 
+	    				"] params: " + sb.toString() );
+	    	} 
+	    	else {
+	    		try {
+	    			
+	    			String msg = args == null || args.length == 0 ?
+	    					message : 
+	    						String.format(message, args);
+	    			
+	    			msg = decodePercentEncoding( msg );
+	    			
+	        		String msgRaw = String.format(msg, args);
+	        		boolean includePrefix = true;
+	        		for (String  msgSplit : msgRaw.split( LINE_SPLITING )) {
+	    				
+	        			Prison.get().getPlatform().log(
+	        					(includePrefix ? (prefixTemplatePrison + " ") : "") +
+	        							getLogColorCode(level) +
+	        							msgSplit);
+	        			includePrefix = false;
+	    			}
+	    			
 				}
-				
-				String errorMessage = "Error with Java format usage (eg %s): " +
-						" LogLevel: " + level.name() + 
-						" message: [" + message + "] params: [" + sb.toString() + "]" +
-						" error: [" + e.getMessage() + "] " +
-						" Escape with backslash or double percent [\\b \\n \\f \\r \\t \\\\ %%]";
-				
-				Prison.get().getPlatform().logCore(
-						prefixTemplatePrison + " " + 
-						getLogColorCode(LogLevel.ERROR) +
-						errorMessage );
-
-				//e.printStackTrace();
-    		}
-    	}
+				catch ( MissingFormatArgumentException e )
+				{
+					StringBuilder sb = new StringBuilder();
+					
+					for ( Object arg : args ) {
+						sb.append( "[" ).append( arg ).append( "] " );
+					}
+					
+					String errorMessage = coreOutputErrorIncorrectNumberOfParametersMsg(
+							level.name(), e.getMessage(), message, sb.toString() );
+					
+					Prison.get().getPlatform().logCore(
+							prefixTemplatePrison + " " + 
+							getLogColorCode(LogLevel.ERROR) +
+							errorMessage );
+				}
+	    		catch ( UnknownFormatConversionException |
+	    				FormatFlagsConversionMismatchException e) 
+	    		{
+					StringBuilder sb = new StringBuilder();
+					
+					for ( Object arg : args ) {
+						sb.append( "[" ).append( arg ).append( "] " );
+					}
+					
+					String errorMessage = "Error with Java format usage (eg %s): " +
+							" LogLevel: " + level.name() + 
+							" message: [" + message + "] params: [" + sb.toString() + "]" +
+							" error: [" + e.getMessage() + "] " +
+							" Escape with backslash or double percent [\\b \\n \\f \\r \\t \\\\ %%]";
+					
+					Prison.get().getPlatform().logCore(
+							prefixTemplatePrison + " " + 
+							getLogColorCode(LogLevel.ERROR) +
+							errorMessage );
+	
+	    		}
+	    	}
     }
 
     /**
@@ -350,6 +347,7 @@ public class Output
      * @param message The informational message. May include color codes, but the default is white.
      */
     public void logInfo(String message, Object... args) {
+  	
         log(message, LogLevel.INFO, args);
     }
 
@@ -361,8 +359,15 @@ public class Output
      * @param throwable The exceptions thrown, if any.
      */
     public void logWarn(String message, Throwable... throwable) {
-        log(message, LogLevel.WARNING);
 
+        try {
+        	log(message, LogLevel.WARNING);
+		} 
+        catch (Exception e) {
+			log( "Failure: Output.logWarn: failed to log an error message. Retrying without formatting.", LogLevel.ERROR );
+			logRaw( message );
+        }
+        
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
         }
@@ -376,7 +381,14 @@ public class Output
      * @param throwable The exceptions thrown, if any.
      */
     public void logError(String message, Throwable... throwable) {
-        log(message, LogLevel.ERROR);
+    	
+        try {
+			log(message, LogLevel.ERROR);
+		} 
+        catch (Exception e) {
+			log( "Failure: Output.logError: failed to log an error message. Retrying without formatting.", LogLevel.ERROR );
+			logRaw( message );
+        }
 
         if (throwable.length > 0) {
             Arrays.stream(throwable).forEach(Throwable::printStackTrace);
@@ -600,6 +612,18 @@ public class Output
      */
     public boolean isSelectiveTarget( DebugTarget debugTarget ) {
     	return getSelectiveDebugTargets().contains( debugTarget );
+    }
+    
+    /**
+     * <p>This will return a value of true if the debug target was
+     * enabled by the admin/console.
+     * </p>
+     * 
+     * @param debugTarget
+     * @return
+     */
+    public boolean isActiveTarget( DebugTarget debugTarget ) {
+    	return getActiveDebugTargets().contains( debugTarget );
     }
     
     public boolean isDebug() {

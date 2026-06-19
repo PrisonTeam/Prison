@@ -52,9 +52,10 @@ public class PrisonUtilsHealing
                                 		"'-' then that is what the player's health will be set to.") String amount
             ){
 
-        if( !enableHealingHeal ){
+        if ( !enableHealingHeal ) {
             Output.get().logInfo("Prison's utils command heal is disabled in modules.yml.");
-        } else {
+        } 
+        else {
             SpigotPlayer player = checkPlayerPerms( sender, playerName,
                     "prison.utils.healing.heal",
                     "prison.utils.healing.heal.others" );
@@ -82,9 +83,10 @@ public class PrisonUtilsHealing
                                 		"'-' then that is what the player's hunger will be set to." ) String amount
     ){
 
-        if( !enableHealingFeed ){
+        if ( !enableHealingFeed ) {
             Output.get().logInfo("Prison's utils command feed is disabled in modules.yml.");
-        } else {
+        } 
+        else {
             SpigotPlayer player = checkPlayerPerms( sender, playerName,
                     "prison.utils.healing.feed",
                     "prison.utils.healing.feed.others" );
@@ -111,9 +113,10 @@ public class PrisonUtilsHealing
                                 		"'-' then that is what the player's hunger will be set to.") String amount
     ){
 
-        if( !enableHealingBreath ){
+        if ( !enableHealingBreath ) {
             Output.get().logInfo("Prison's utils command breath is disabled in modules.yml.");
-        } else {
+        } 
+        else {
             SpigotPlayer player = checkPlayerPerms( sender, playerName,
                     "prison.utils.healing.breath",
                     "prison.utils.healing.breath.others" );
@@ -123,7 +126,7 @@ public class PrisonUtilsHealing
     }
 
     private void utilHealingHeal( SpigotPlayer player, String amount ) {
-        if(player == null){
+        if (player == null) {
             return;
         }
 

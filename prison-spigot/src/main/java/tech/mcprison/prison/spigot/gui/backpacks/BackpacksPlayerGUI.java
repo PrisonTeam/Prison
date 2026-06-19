@@ -28,7 +28,6 @@ public class BackpacksPlayerGUI extends SpigotGUIComponents {
     public void open(){
 
         BackpacksUtil backpacksUtil = BackpacksUtil.get();
-//        NewBackpacksUtil backpacksUtil = NewBackpacksUtil.get();
 
         if (backpacksUtil == null){
             return;
@@ -37,16 +36,12 @@ public class BackpacksPlayerGUI extends SpigotGUIComponents {
         SpigotPlayer sPlayer = new SpigotPlayer(p);
 
         Inventory inv = backpacksUtil.getBackpack(p, Integer.toString( id ));
-//        Inventory inv = backpacksUtil.getBackpack(p, id);
 
         if (inv != null){
             PrisonGUI gui = new PrisonGUI(p, inv.getSize(), "&3" + p.getName() + " -> Backpack-" + id);
 
             Output.get().sendInfo(sPlayer, "Backpack" + id + " open with success!");
 
-//            if (backpacksUtil.isBackpackOpenSoundEnabled()){
-//                p.playSound(p.getLocation(), backpacksUtil.getBackpackOpenSound(),3,1);
-//            }
 
             gui.open();
         }

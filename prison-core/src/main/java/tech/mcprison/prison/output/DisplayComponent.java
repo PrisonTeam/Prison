@@ -30,15 +30,7 @@ import tech.mcprison.prison.internal.CommandSender;
  */
 public abstract class DisplayComponent {
 
-  /*
-   * Fields & Constants
-   */
-
     protected ChatDisplay display;
-
-  /*
-   * Methods
-   */
 
     /**
      * Returns the text that is being appended to the {@link ChatDisplay}.
@@ -56,10 +48,6 @@ public abstract class DisplayComponent {
      * @param sender The {@link CommandSender} to send this to.
      */
     public abstract void send(CommandSender sender);
-
-    /*
-     * Getters & Setters
-     */
 
     void setDisplay(ChatDisplay display) {
         this.display = display;

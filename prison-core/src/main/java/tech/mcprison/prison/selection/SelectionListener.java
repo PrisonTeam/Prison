@@ -37,7 +37,7 @@ public class SelectionListener {
     @Subscribe 
     public void onPlayerInteract(PrisonPlayerInteractEvent e) {
         ItemStack ourItem = e.getItemInHand();
-        ItemStack toolItem = SelectionManager.SELECTION_TOOL;
+        ItemStack toolItem = ItemStack.SELECTION_WAND;
 
         if ( ourItem == null || !ourItem.equals(toolItem)) {
             return;
@@ -53,7 +53,8 @@ public class SelectionListener {
                 .sendMessage("&7First position set to &8" + e.getClicked().toBlockCoordinates());
 
             checkForEvent(e.getPlayer(), sel);
-        } else if (e.getAction() == PrisonPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        } 
+        else if (e.getAction() == PrisonPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             // Set second position
             Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
             sel.setMax(e.getClicked());

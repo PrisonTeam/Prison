@@ -14,14 +14,14 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.Mine.MineNotificationMode;
 import tech.mcprison.prison.mines.data.Mine.MineType;
-import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
-import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Bounds.Edges;
+import tech.mcprison.prison.util.Location;
 
 public class MinesImportCommands
 	extends MinesBlockCommands {
@@ -31,30 +31,17 @@ public class MinesImportCommands
 		super( cmdGroup );
 	}
 	
-	
-
     
     public void importJetsPrisonMines( CommandSender sender,
     			String options ) {
-
-    	boolean save = false;
-    	boolean addLiner = false;
-    	
-    	String path = "JetsPrisonMines//mines//";
-
-    	String worldForced = "";
-				
-//		if ( options.contains( "testImport" ) ) {
-//			testImport = true;
-//			list = true;
-//			options = options.replace( "testImport", "" ).trim();
-//		}
-//		
-//		if ( options.contains( "list" ) ) {
-//			testImport = false;
-//			list = true;
-//			options = options.replace( "list", "" ).trim();
-//		}
+	
+	    	boolean save = false;
+	    	boolean addLiner = false;
+	    	
+	    	String path = "JetsPrisonMines//mines//";
+	
+	    	String worldForced = "";
+					
 		
 		if ( options.contains( "save" ) ) {
 			save = true;
@@ -158,22 +145,21 @@ public class MinesImportCommands
 	    	
 			mines.addAll( pMines.getMines() );
 	    	
-	    	for ( Mine mine : mines )
-			{
-	    		if ( !mine.isVirtual() ) {
-	    			
-	    			for (Edges edge : Edges.values() ) {
-						
-	    				LinerPatterns linerPattern = LinerPatterns.fromString( 
-	    							mine.getLinerData().getEdge(edge) );
-	    				
-	    				boolean force = mine.getLinerData().getForce(edge);
-	    				boolean useTracer = false;
-	    				
-	    				new MineLinerBuilder( mine, edge, linerPattern, force, useTracer );
+		    	for ( Mine mine : mines ) {
+		    		if ( !mine.isVirtual() ) {
+		    			
+		    			for (Edges edge : Edges.values() ) {
+							
+		    				LinerPatterns linerPattern = LinerPatterns.fromString( 
+		    							mine.getLinerData().getEdge(edge) );
+		    				
+		    				boolean force = mine.getLinerData().getForce(edge);
+		    				boolean useTracer = false;
+		    				
+		    				new MineLinerBuilder( mine, edge, linerPattern, force, useTracer );
 					}
-	    			
-	    		}
+		    			
+		    		}
 			}
 		}
 

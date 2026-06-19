@@ -37,10 +37,6 @@ public class UnbreakableBlockData
 		this.taskId = 0;
 	}
 	
-//	public UnbreakableBlockData( PrisonBlock block, Mine mine ) {
-//		this( block.getLocation(), block, mine );
-//	}
-
 	public Location getKey() {
 		return key;
 	}

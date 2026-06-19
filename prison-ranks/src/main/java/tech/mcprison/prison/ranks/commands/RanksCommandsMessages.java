@@ -142,16 +142,16 @@ public class RanksCommandsMessages
 		DecimalFormat dFmt = Prison.get().getDecimalFormat("0.0000");
 		
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankCommands__auto_config_ladder_rank_cost_multiplier_info" )
-		.withReplacements(
-				dFmt.format( rankCostMultiplier ) )
-		.sendTo( sender );
+				.getLocalizable( "ranks_rankCommands__auto_config_ladder_rank_cost_multiplier_info" )
+				.withReplacements(
+						dFmt.format( rankCostMultiplier ) )
+				.sendTo( sender );
 	}
 	
 	protected void autoConfigLadderRankCostMultiplierCmdMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "ranks_rankCommands__auto_config_ladder_rank_cost_multiplier_command_example" )
-		.sendTo( sender );
+				.getLocalizable( "ranks_rankCommands__auto_config_ladder_rank_cost_multiplier_command_example" )
+				.sendTo( sender );
 	}
 	
 	protected void autoConfigRanksCreatedMsg( CommandSender sender, 
@@ -682,4 +682,18 @@ public class RanksCommandsMessages
 		
 	}
 	
+	
+	protected void ranksRankupFailureToGetRankPlayerMsg( CommandSender sender ) {
+       	PrisonRanks.getInstance().getRanksMessages()
+	    		.getLocalizable( "ranks_rankup__rankup_failure_to_get_rankplayer" )
+	    		.sendTo( sender );
+	}
+	
+	
+	protected void rankupInvalidPlayerNameMsg(CommandSender sender, String playerName) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankup__invalid_player_name" )
+				.withReplacements( playerName )
+				.sendTo(sender);
+	}
 }

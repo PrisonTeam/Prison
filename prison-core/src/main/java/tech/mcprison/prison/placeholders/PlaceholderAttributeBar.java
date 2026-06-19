@@ -219,10 +219,8 @@ public class PlaceholderAttributeBar
 	@Override
 	public String format( String value )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
-	
 	
 
 }

@@ -20,6 +20,7 @@ package tech.mcprison.prison.internal;
 
 import java.util.List;
 
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
@@ -44,6 +45,13 @@ public interface World {
      */
     List<Player> getPlayers();
 
+    
+    /**
+     * Returns a list of all entities in this world.
+     * @return
+     */
+    List<Entity> getEntities();
+    
     /**
      * Returns the {@link Block} at a specified location.
      *
@@ -71,6 +79,19 @@ public interface World {
 	public void setBlocksSynchronously( List<MineTargetPrisonBlock> tBlocks, 
 						MineResetType resetType, 
 								PrisonStatsElapsedTimeNanos nanos );
+
+	
+
+	public Entity spawnEntity( Location loc, EntityType entityType);
+
+	
+	public ArmorStand spawnArmorStand( Location location );
+
+	
+	public ArmorStand spawnArmorStand(Location location, String itemType, 
+							AnimationArmorStandItemLocation asLocation );
+
+	public int getMaxHeight();
 
 
 }

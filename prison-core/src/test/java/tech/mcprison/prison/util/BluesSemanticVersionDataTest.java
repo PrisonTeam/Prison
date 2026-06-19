@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.spiget;
+package tech.mcprison.prison.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -160,12 +160,12 @@ public class BluesSemanticVersionDataTest
 
 		
 		// Test the compareTo function:
-		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.8.0", "1.9.0" ) < 0 );
-		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.8.8", "1.9.0" ) < 0 );
-		assertFalse( new BluesSpigetSemVerComparator().compareTo( "1.9.0", "1.9.0" ) < 0 );
-		assertFalse( new BluesSpigetSemVerComparator().compareTo( "1.15.2", "1.9.0" ) < 0 );
-		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.9.0", "1.9.0" ) == 0 );
-		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.15.2", "1.9.0" ) > 0 );
+		assertTrue( new BluesSemanticVersionComparator().compareTo( "1.8.0", "1.9.0" ) < 0 );
+		assertTrue( new BluesSemanticVersionComparator().compareTo( "1.8.8", "1.9.0" ) < 0 );
+		assertFalse( new BluesSemanticVersionComparator().compareTo( "1.9.0", "1.9.0" ) < 0 );
+		assertFalse( new BluesSemanticVersionComparator().compareTo( "1.15.2", "1.9.0" ) < 0 );
+		assertTrue( new BluesSemanticVersionComparator().compareTo( "1.9.0", "1.9.0" ) == 0 );
+		assertTrue( new BluesSemanticVersionComparator().compareTo( "1.15.2", "1.9.0" ) > 0 );
 		
 		
 		// The following "should" assert to a value of true.

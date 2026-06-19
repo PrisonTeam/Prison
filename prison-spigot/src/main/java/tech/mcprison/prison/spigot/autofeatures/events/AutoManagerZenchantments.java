@@ -18,6 +18,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.api.InventoryFullEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
@@ -65,68 +66,61 @@ public class AutoManagerZenchantments
     		super( bbPriority );
     	}
 	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onBlockShredBreak( BlockShredEvent e, BlockBreakPriority bbPriority ) {
-    		
-    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+		@EventHandler(priority = EventPriority.NORMAL)
+		public void onBlockShredBreak(BlockShredEvent e, BlockBreakPriority bbPriority) {
+
+			if (isDisabled(e.getBlock().getLocation().getWorld().getName())) {
 				return;
 			}
-			
-    		handleZenchantmentsBlockBreakEvent( e, bbPriority );
-			
-//    		genericBlockEventAutoManager( e );
-    	}
+
+			handleZenchantmentsBlockBreakEvent(e, bbPriority);
+
+		}
     }
  
     
     
-    @Override
-    public void initialize() {
-    	
-    	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
-		
-		setBbPriority( bbPriority );
-		
-//		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+	@Override
+	public void initialize() {
 
-    	if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
-    		return;
-    	}
-    	
-    	// Check to see if the class BlastUseEvent even exists:
-    	try {
-    		Output.get().logInfo( "AutoManager: checking if loaded: Zenchantments" );
-    		
-    		Class.forName( "zedly.zenchantments.BlockShredEvent", false, 
-    				this.getClass().getClassLoader() );
-    		
-    		Output.get().logInfo( "AutoManager: Trying to register Zenchantments" );
-    		
-    		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
-    			if ( bbPriority.isComponentCompound() ) {
-    				
-    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
-						
-    					createListener( subBBPriority );
+		String eP = getMessage(AutoFeatures.ZenchantmentsBlockShredEventPriority);
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString(eP);
+
+		setBbPriority(bbPriority);
+
+		if (getBbPriority() == BlockBreakPriority.DISABLED) {
+			return;
+		}
+
+		// Check to see if the class BlastUseEvent even exists:
+		try {
+			Output.get().logInfo("AutoManager: checking if loaded: Zenchantments");
+
+			Class.forName("zedly.zenchantments.BlockShredEvent", false, this.getClass().getClassLoader());
+
+			Output.get().logInfo("AutoManager: Trying to register Zenchantments");
+
+			if (getBbPriority() != BlockBreakPriority.DISABLED) {
+				if (bbPriority.isComponentCompound()) {
+
+					for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+
+						createListener(subBBPriority);
 					}
-    			}
-    			else {
-    				
-    				createListener(bbPriority);
-    			}
-    			
-    		}
-    		
-    	}
-    	catch ( ClassNotFoundException e ) {
-    		// Zenchantments is not loaded... so ignore.
-    		Output.get().logInfo( "AutoManager: Zenchantments is not loaded" );
-    	}
-    	catch ( Exception e ) {
-    		Output.get().logInfo( "AutoManager: Zenchantments failed to load. [%s]", e.getMessage() );
-    	}
-    }
+				} else {
+
+					createListener(bbPriority);
+				}
+
+			}
+
+		} catch (ClassNotFoundException e) {
+			// Zenchantments is not loaded... so ignore.
+			Output.get().logInfo("AutoManager: Zenchantments is not loaded");
+		} catch (Exception e) {
+			Output.get().logInfo("AutoManager: Zenchantments failed to load. [%s]", e.getMessage());
+		}
+	}
 
 	private void createListener( BlockBreakPriority bbPriority ) {
 		
@@ -197,9 +191,8 @@ public class AutoManagerZenchantments
     				this.getClass().getClassLoader() );
     		
 			
-			HandlerList handlers = BlockShredEvent.getHandlerList();
+		HandlerList handlers = BlockShredEvent.getHandlerList();
 			
-//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
     		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
     		dumpEventListenersCore( "BlockBreakEvent", handlers, bbPriority, sb );
@@ -284,8 +277,8 @@ public class AutoManagerZenchantments
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** handleZenchantmentsBlockBreakEvent ** ### " +
-				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
+		debugInfo.append( String.format( "&6### ** handleZenchantmentsBlockBreakEvent ** ###&3 " +
+				"(event: &6BlockBreakEvent&3, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
 				(e.isCancelled() ? "TRUE " : "FALSE")
@@ -400,7 +393,10 @@ public class AutoManagerZenchantments
     			}
     		}
     		
-    		
+    		if ( pmEvent.getSpigotPlayer().isInventoryFull() ) {
+    			
+    			InventoryFullEvent.fireInventoryFullEvent( pmEvent.getPlayer() );
+    		}
     	}
     	
     	printDebugInfo( pmEvent, start );

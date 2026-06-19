@@ -22,8 +22,6 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Viewable;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class InventoryCloseEvent extends InventoryEvent {

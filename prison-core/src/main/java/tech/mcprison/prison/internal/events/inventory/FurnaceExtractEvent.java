@@ -22,8 +22,6 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class FurnaceExtractEvent {
@@ -32,9 +30,6 @@ public class FurnaceExtractEvent {
     private int expToDrop;
     private PrisonBlock prisonBlock;
     
-//    private Block block;
-//    private BlockType blockType;
-
     private PrisonBlock blockType;
     private Player player;
 

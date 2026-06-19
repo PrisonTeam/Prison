@@ -219,9 +219,6 @@ public class MineLevelBlockListData
 		
 		for ( PrisonBlock block : selectedBlocks ) {
 			
-			// NOTE: do not have use this field anymore:
-//			block.isIncludeInLayerCalculations();
-			
 			// If chance falls on this block, then select it as long as it has not
 			// exceed the max count for this block if the max constraint is enabled.
 			// If the block's constraint max is reached, then isIncludedInLayerCalculation will 
@@ -246,8 +243,6 @@ public class MineLevelBlockListData
 		if ( selected != null && 
 				selected.getConstraintMax() > 0 &&
 				(selected.getBlockPlacedCount() + 1) >= selected.getConstraintMax() ) {
-			
-//			selected.setIncludeInLayerCalculations( false );
 			
 			selectedBlocks.remove(selected);
 			

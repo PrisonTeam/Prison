@@ -37,6 +37,7 @@ import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
@@ -207,11 +208,57 @@ public class SpigotInventory implements Inventory {
 
     @Override 
     public void removeItem(ItemStack... itemStack) {
-        ArrayList<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
-        for (ItemStack stack : itemStack) {
-            stacks.add(SpigotUtil.prisonItemStackToBukkit(stack));
-        }
-        wrapper.removeItem(stacks.toArray(new org.bukkit.inventory.ItemStack[]{}));
+    	
+    	int size = wrapper.getSize();
+    	
+    	// This may be sub optimal, but when dealing with modified items, such as with 
+    	// custom names, prison cannot faithfully reproduce them such that the bukkit's 
+    	// ItemStack.removeItem() will work correctly.  We cannot properly reproduce 
+    	// all enchantments, NBTs, and other alterations.  So much match on individual
+    	// field values such as types and display names.
+    	for (ItemStack stack : itemStack) {
+    		
+    		String itemName = stack.getMaterial().getBlockNameSearch();
+    		int amt = stack.getAmount();
+    		
+    		for ( int i = 0; i < size && amt > 0; i++ ) {
+    			org.bukkit.inventory.ItemStack item = wrapper.getItem(i);
+    			
+    			if ( item != null ) {
+    				
+    				SpigotItemStack sItemStack = new SpigotItemStack( item );
+    				String sItemName = sItemStack.getMaterial().getBlockNameSearch();
+    				
+    				if ( itemName.equalsIgnoreCase( sItemName ) ) {
+    					
+    					// We have a match on item's blockNameSearch, so remove the requested
+    					// quantity. Set the current bukkit ItemStack's amount to what we 
+    					// need to remove, then use the bukkit item stack to remove it.
+    					// Exit out of the bukkit for loop by seeing amt to zero.
+    					
+    					// If the amount is more than what can be removed in one item stack,
+    					// bukkit will remove the total requested amount from multiple item stacks,
+    					// so we only need to Process one item stack.
+    					item.setAmount(amt);
+    				
+    					wrapper.remove( item );
+    					
+    					amt = 0;
+    					
+    				}
+    			}
+    		}
+    	}
+    	
+    	
+    	
+//        ArrayList<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
+//        
+//        for (ItemStack stack : itemStack) {
+//            stacks.add(SpigotUtil.prisonItemStackToBukkit(stack));
+//        }
+//        
+//        wrapper.removeItem(stacks.toArray(new org.bukkit.inventory.ItemStack[]{}));
     }
 
     @Override 

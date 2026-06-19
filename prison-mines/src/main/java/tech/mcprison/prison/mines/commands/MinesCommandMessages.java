@@ -70,4 +70,16 @@ public class MinesCommandMessages
 		.sendTo( sender );
 	}
 	
+	
+	protected String teleportSuccessMsg( String mineName ) {
+		// &3Telport failed. Are you sure you're a Player?
+		String msg = PrisonMines.getInstance().getMinesMessages()
+							.getLocalizable( "teleport" )
+							.withReplacements( 
+									mineName )
+							.localize();
+		
+		return msg;
+	}
+	
 }

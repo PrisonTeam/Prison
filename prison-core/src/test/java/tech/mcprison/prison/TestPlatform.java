@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.backpacks.PlayerBackpack;
+import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
@@ -79,6 +80,21 @@ public class TestPlatform implements Platform {
     	
     }
     
+    @Override
+    public Player getPlatformPlayer(RankPlayer rankPlayer) {
+    		return null;
+    }
+    
+    @Override
+	public RankPlayer getRankPlayer(UUID uuid, String name) {
+    		return null;
+    }
+    
+    @Override
+    public boolean saveRankPlayer(RankPlayer rPlayer) {
+    		return false;
+    }
+    
     @Override 
     public Optional<Player> getPlayer(String name) {
         return null;
@@ -93,10 +109,11 @@ public class TestPlatform implements Platform {
     public List<Player> getOnlinePlayers() {
         return new ArrayList<>();
     }
+    
     @Override
     public List<Player> getOfflinePlayers() {
-    	List<Player> players = new ArrayList<>();
-    	return players;
+	    	List<Player> players = new ArrayList<>();
+	    	return players;
     }
     
     @Override
@@ -171,15 +188,15 @@ public class TestPlatform implements Platform {
 
     @Override
     public void logCore( String message ) {
-    	if (suppressOutput) {
-    		return;
-    	}
-    	System.out.println(ChatColor.stripColor(message));
+	    	if (suppressOutput) {
+	    		return;
+	    	}
+	    	System.out.println(ChatColor.stripColor(message));
     }
     
     @Override
     public void logPlain( String message ) {
-    	System.out.println(message);
+    		System.out.println(message);
     }
     
     @Override 
@@ -229,24 +246,24 @@ public class TestPlatform implements Platform {
 
     
     public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
-    	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
-    	
-    	return placeholderDetails;
+	    	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
+	    	
+	    	return placeholderDetails;
     }
     
     public int getPlaceholderCount() {
-    	return 0;
+    		return 0;
     }
     
     
     public int getPlaceholderRegistrationCount() {
-    	return 0;
+    		return 0;
     }
  
     
     @Override
     public Placeholders getPlaceholders() {
-    	return null;
+    		return null;
     }
     
 	
@@ -311,6 +328,11 @@ public class TestPlatform implements Platform {
 		return new ArrayList<String>();
 	}
 
+	@Override
+	public boolean isConfigSection(String section) {
+		return false;
+	}
+	
 	
 	@Override
 	public boolean isWorldExcluded( String worldName ) {
@@ -575,19 +597,21 @@ public class TestPlatform implements Platform {
 
 	@Override
 	public String dumpEventListenersBlockPlaceEvents() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String dumpEventListenersPlayerDropItemEvents() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String dumpEventListenersPlayerPickupItemEvents() {
-		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public MineBombEffectsData validateMineBombEffect(MineBombEffectsData mineBombEffectsData) {
+		return mineBombEffectsData;
+	}
+
 }

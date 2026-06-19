@@ -15,6 +15,18 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.18 2024-05-20
 
 
+
+Prison 3.3.0-alpha.18a 2024-05-21
+
+Bug fix: There was a bug that surfaced that was being triggered by new player joins to the prison server.
+The symptom was the spamming of new player join messages.
+This was actually happening only if there were rank commands that would be ran for the initial rank assignment if it used rank related placeholder.  The resolution of the placeholders were triggering another new player cycle. 
+This was a classic chicken or the egg situation.
+It is unknown when this problem was first "setup", but it's only recently that it's been reported.  It may have been there in the code for a few years, so not sure how many times this was encountered without being reported.
+
+
+
+
 **Prison-3.3.0-alpha.18.jar**
 
 This version of prison works with Spigot v1.20.6 and Paper v1.20.6.

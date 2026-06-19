@@ -82,7 +82,12 @@ public class PrisonCommandTaskData {
 		;
 	}
 	
-	public enum CustomPlaceholders {
+	
+	/**
+	 * <p>These are placeholders used within Block Events.
+	 * </p>
+	 */
+	public enum BlockEventCustomPlaceholders {
 		
 		player(CommandEnvironment.all_commands, 
 				"{player} provides a player's name."),
@@ -107,6 +112,20 @@ public class PrisonCommandTaskData {
 		syncPlayer(CommandEnvironment.all_commands, 
 				"{syncPlayer} runs the command as the payer in a new sync task."),
 
+		
+		range(CommandEnvironment.all_commands, 
+				"{range: <lowNumber> <highNumber>} inserts a randomly choosen number within the "
+				+ "range specified, all inclusive."),
+		
+		ifPerm(CommandEnvironment.all_commands, 
+				"{ifPerm:<perm>} Continues executing commands in the chain if "
+				+ "the player has the perm '<perm>'.",
+				"ifPerm:<perm>" ),
+		ifNotPerm(CommandEnvironment.all_commands, 
+				"{ifNotPerm:<perm>} Stops executing commands in the chain if "
+						+ "the player has the perm '<perm>'.",
+						"ifNotPerm:<perm>" ),
+		
 		
 		firstJoin(CommandEnvironment.rank_commands, 
 				"{firstJoin} runs the command on first join events for new players"),
@@ -203,14 +222,23 @@ public class PrisonCommandTaskData {
 		
 		private final CommandEnvironment environment;
 		private final String description;
+		private final String exampleUsage;
 		
-		private CustomPlaceholders( CommandEnvironment environment ) {
+		private BlockEventCustomPlaceholders( CommandEnvironment environment ) {
 			this.environment = environment;
 			this.description = null;
+			this.exampleUsage = null;
 		}
-		private CustomPlaceholders( CommandEnvironment environment, String description ) {
+		private BlockEventCustomPlaceholders( CommandEnvironment environment, String description ) {
 			this.environment = environment;
 			this.description = description;
+			this.exampleUsage = null;
+		}
+		private BlockEventCustomPlaceholders( CommandEnvironment environment, String description,
+				String exampleUsage ) {
+			this.environment = environment;
+			this.description = description;
+			this.exampleUsage = exampleUsage;
 		}
 
 		public static String listPlaceholders( CommandEnvironment environment ) {
@@ -218,7 +246,7 @@ public class PrisonCommandTaskData {
 			
 			if ( environment != null ) {
 				
-				for ( CustomPlaceholders cp : values() ) {
+				for ( BlockEventCustomPlaceholders cp : values() ) {
 					if ( environment.equals( cp.getEnvironment() ) ) {
 						
 						if ( sb.length() > 0 ) {
@@ -240,7 +268,11 @@ public class PrisonCommandTaskData {
 		 * @return
 		 */
 		public String getPlaceholder() {
-			return "{" + name() + "}";
+			return "{" + 
+					( getExampleUsage() != null ? 
+							getExampleUsage() : 
+								name() )
+					 + "}";
 		}
 		
 		public CommandEnvironment getEnvironment() {
@@ -249,6 +281,10 @@ public class PrisonCommandTaskData {
 
 		public String getDescription() {
 			return description;
+		}
+		
+		public String getExampleUsage() {
+			return exampleUsage;
 		}
 	}
 	
@@ -291,9 +327,58 @@ public class PrisonCommandTaskData {
 			command = command.replace( "{syncPlayer}", "" );
 		}
 		
+		if ( command.contains( "{range:") ) {
+			command = taskInsertRange( command );
+		}
+		
 		this.cmd = command;
 		this.taskMode = taskMode;
 		
+	}
+	
+	protected String taskInsertRange(String command) {
+
+		int idx = command.indexOf("{range:");
+		if ( idx != -1 ) {
+			
+			int idxEnd = command.indexOf("}", idx );
+			if ( idxEnd != -1 ) {
+				try {
+					String oValue = command.substring( idx, idxEnd + 1);
+					String results = "";
+					
+					String nValues = oValue.replace( "{range:", "").replace( "}", "" ).trim();
+					String[] lowHigh = nValues.split( " " );
+					
+					int low = Integer.parseInt( lowHigh[0] );
+					int high = Integer.parseInt( lowHigh[1] );
+					
+					if ( high < low ) {
+						int temp = low;
+						low = high;
+						high = temp;
+					}
+					
+					if ( low == high ) {
+						results = Integer.toString( low );
+					}
+					else {
+						int range = high - low;
+						int rnd = ((int) Math.round(Math.random() * range)); 
+						results = Integer.toString( low + rnd );
+					}
+					
+					command = command.replace( oValue, results );
+				} 
+				catch (NumberFormatException e) {
+					// ignore: invalid numbers
+				}
+				
+			}
+			
+		}
+		
+		return command;
 	}
 	
 	public String getDebugDetails() {
@@ -350,26 +435,6 @@ public class PrisonCommandTaskData {
 	
 	public void runCommandTask( Player player ) {
 		
-//		if ( command.contains( "{inline}" ) ) {
-//			taskMode = TaskMode.inline;
-//			command = command.replace( "{inline}", "" );
-//		}
-//		
-//		if ( command.contains( "{inlinePlayer}" ) ) {
-//			taskMode = TaskMode.inlinePlayer;
-//			command = command.replace( "{inlinePlayer}", "" );
-//		}
-//		
-//		if ( command.contains( "{sync}" ) ) {
-//			taskMode = TaskMode.sync;
-//			command = command.replace( "{sync}", "" );
-//		}
-//		
-//		if ( command.contains( "{syncPlayer}" ) ) {
-//			taskMode = TaskMode.syncPlayer;
-//			command = command.replace( "{syncPlayer}", "" );
-//		}
-//		
 		String commandTranslated = translateCommand( player, getCmd() );
 		
 		// Split multiple commands in to a List of individual tasks:
@@ -386,37 +451,6 @@ public class PrisonCommandTaskData {
 			
 			runTask( player );
 			
-//			PrisonDispatchCommandTask task = 
-//					new PrisonDispatchCommandTask( tasks, errorMessage, 
-//									player, taskMode.isPlayerTask() );
-			
-			
-			// Ignore taskMode since it's already running in a new sync task:
-//			task.run();
-			
-			
-			// NOTE: taskMode is no longer used, since all tasks are being ran 
-			//       within a sync task that has already been submitted.
-//			switch ( taskMode )
-//			{
-//				case inline:
-//				case inlinePlayer:
-//					// Don't submit, but run it here within this thread:
-//					task.run();
-//					break;
-//					
-//				case sync:
-//				case syncPlayer:
-//				//case "async": // async will cause failures so run as sync:
-//					
-//					// submit task: 
-//					setTaskId( PrisonTaskSubmitter.runTaskLater(task, 0) );
-//					break;
-//					
-//				default:
-//					break;
-//			}
-			
 		}
 
 	}
@@ -432,6 +466,28 @@ public class PrisonCommandTaskData {
 				
 				// was failing with leading spaces after spliting after a ";" so trim to fix it:
 				task = task == null ? "" : task.trim();
+
+				
+				// If the task is '{ifPerm:<perm>}' then the player must have the perm to 
+				// continue:
+				if ( task.toLowerCase().startsWith( "{ifperm:" ) ) {
+					String perm = task.substring( 8, task.length() - 1 );
+					
+					boolean hasPerm = player.hasPermission( perm );
+					
+					if ( !hasPerm ) {
+						break;
+					}
+				}
+				if ( task.toLowerCase().startsWith( "{ifnotperm:" ) ) {
+					String perm = task.substring( 11, task.length() - 1 );
+					
+					boolean hasPerm = player.hasPermission( perm );
+					
+					if ( hasPerm ) {
+						break;
+					}
+				}
 				
 				
 				// Apply the custom placeholders:
@@ -514,7 +570,7 @@ public class PrisonCommandTaskData {
 	 * 						characters.
 	 * @param value The value that is used to replace the placeholder.
 	 */
-	public void addCustomPlaceholder( CustomPlaceholders placeholder, String value ) {
+	public void addCustomPlaceholder( BlockEventCustomPlaceholders placeholder, String value ) {
 		PrisonCommandTaskPlaceholderData cph = new PrisonCommandTaskPlaceholderData( placeholder, value);
 		getCustomPlaceholders().add( cph );
 	}

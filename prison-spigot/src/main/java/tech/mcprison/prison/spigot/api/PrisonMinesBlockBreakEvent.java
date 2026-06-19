@@ -11,6 +11,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
@@ -18,9 +19,9 @@ import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.OnBlockBreakMines.MinesEventResults;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.spigot.block.OnBlockBreakMines.MinesEventResults;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
@@ -76,8 +77,6 @@ public class PrisonMinesBlockBreakEvent
 	private MineTargetPrisonBlock targetBlock;
 
 	
-	//private SpigotBlock overRideSpigotBlock;
-	
 	private List<SpigotBlock> explodedBlocks;
 	
 	// The targetBlocks are the blocks that were used to reset the mine with.
@@ -86,6 +85,9 @@ public class PrisonMinesBlockBreakEvent
 	
 	private BlockEventType blockEventType;
 	private String triggered;
+	
+	
+	private MineBombData mineBomb;
 	
 	
 	// If this is set during the validation process, and the validation fails, then this it will 
@@ -137,6 +139,8 @@ public class PrisonMinesBlockBreakEvent
 	
 	private List<SpigotItemStack> bukkitDrops;
 	
+	private int preventedDrops;
+	
 	private List<Block> unprocessedRawBlocks;
 	
 	
@@ -184,12 +188,16 @@ public class PrisonMinesBlockBreakEvent
 		this.blockEventType = blockEventType;
 		this.triggered = triggered;
 		
+		this.mineBomb = null;
+		
 		this.explodedBlocks = new ArrayList<>();
 		this.targetExplodedBlocks = new ArrayList<>();
 
 		this.unprocessedRawBlocks = new ArrayList<>();
 		
 		this.bukkitDrops = new ArrayList<>();
+		
+		this.preventedDrops = 0;
 		
 		this.debugInfo = new StringBuilder();
 		setDebugColorCodeDebug();
@@ -225,7 +233,11 @@ public class PrisonMinesBlockBreakEvent
 
 		this.triggered = triggered;
 		
+		this.mineBomb = null;
+		
 		this.bukkitDrops = new ArrayList<>();
+		
+		this.preventedDrops = 0;
 		
 		this.debugInfo = debugInfo;
 		
@@ -430,6 +442,13 @@ public class PrisonMinesBlockBreakEvent
 		this.bukkitDrops = drops;
 	}
 
+	public int getPreventedDrops() {
+		return preventedDrops;
+	}
+	public void setPreventedDrops(int preventedDrops) {
+		this.preventedDrops = preventedDrops;
+	}
+
 	public BlockEventType getBlockEventType() {
 		return blockEventType;
 	}
@@ -444,13 +463,6 @@ public class PrisonMinesBlockBreakEvent
 		this.triggered = triggered;
 	}
 
-//	public SpigotBlock getOverRideSpigotBlock() {
-//		return overRideSpigotBlock;
-//	}
-//	public void setOverRideSpigotBlock( SpigotBlock overRideSpigotBlock ) {
-//		this.overRideSpigotBlock = overRideSpigotBlock;
-//	}
-	
 	public boolean isCancelOriginalEvent() {
 		return cancelOriginalEvent;
 	}
@@ -486,20 +498,6 @@ public class PrisonMinesBlockBreakEvent
 		this.bbPriority = bbPriority;
 	}
 
-//	public boolean isMonitor() {
-//		return monitor;
-//	}
-//	public void setMonitor( boolean monitor ) {
-//		this.monitor = monitor;
-//	}
-//	
-//	public boolean isBlockEventsOnly() {
-//		return blockEventsOnly;
-//	}
-//	public void setBlockEventsOnly( boolean blockEventsOnly ) {
-//		this.blockEventsOnly = blockEventsOnly;
-//	}
-
 	public List<Block> getUnprocessedRawBlocks() {
 		return unprocessedRawBlocks;
 	}
@@ -528,6 +526,13 @@ public class PrisonMinesBlockBreakEvent
     public static HandlerList getHandlerList() {
         return handlers;
     }
+    
+	public MineBombData getMineBomb() {
+		return mineBomb;
+	}
+	public void setMineBomb( MineBombData mineBomb ) {
+		this.mineBomb = mineBomb;
+	}
 
 	public StringBuilder getDebugInfo() {
 		return debugInfo;

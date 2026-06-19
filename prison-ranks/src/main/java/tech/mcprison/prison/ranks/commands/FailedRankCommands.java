@@ -58,9 +58,6 @@ public class FailedRankCommands
         	display.send( player );
 		}
         
-//        if ( sender.isPlayer() ) {
-//        	display.send( sender );
-//        }
     	
     }
 

@@ -51,7 +51,6 @@ public abstract class CustomBlockIntegration
 	public abstract void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location );
 
 	public abstract List<? extends ItemStack> getDrops( Player player, PrisonBlock prisonBlock, ItemStack tool );
-//	public abstract List<? extends ItemStack> getDrops( PrisonBlock prisonBlock );
 	
 	public abstract List<PrisonBlock> getCustomBlockList();
 

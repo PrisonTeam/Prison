@@ -43,6 +43,25 @@ import tech.mcprison.prison.util.Text;
  *   				</li>
  * </ul>
  * 
+ * <p>Please note that there are a couple of different ways you can enter hex codes 
+ * in prison, and in turn, placeholder attributes.
+ * <p>
+ * 
+ * <p>If you use a hex code of `&#123456` then using 'hex', it will be translated as 
+ * `&x&1&2&3&4&5&6`.  hex2 would get translated as `§x§1§2§3§4§5§5`.  This is actually
+ * somewhat odd, since even `&x&1&2&3&4&5&6` will ultimately be passed to the raw 
+ * underlying bukkit handler as `§x§1§2§3§4§5§5`, but what makes it odd is that sometimes
+ * 'hex' works differently than 'hex2'.  Disclaimer.. I may have misread the source
+ * code that I wrote a few years ago, and `hex2` may be something slightly different.
+ * Too see the actual content, enable `debug` in your attribute and see exactly how 
+ * its passed.
+ * </p>
+ * 
+ * <p>There is another way to use hex codes too, and that is to use them as '#123456'
+ * without the leading '&'.  Without using '&' color code, prison will allow the
+ * raw '#123456' hex code to be passed along, unchanged by prison.  So the target
+ * plugin, or bukkit/spigot/paper will have to be able to handle that natively.
+ * </p>
  *
  */
 public class PlaceholderAttributeText

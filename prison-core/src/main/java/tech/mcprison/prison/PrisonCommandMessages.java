@@ -87,10 +87,10 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 		String amountMsg = dFmt.format( amount );
 		
 		return Prison.get().getLocaleManager()
-				.getLocalizable( "core_tokens__removed_amount" )
-				.setFailSilently()
-				.withReplacements( name, tokensMsg, amountMsg )
-				.localize();
+					.getLocalizable( "core_tokens__removed_amount" )
+					.setFailSilently()
+					.withReplacements( name, tokensMsg, amountMsg )
+					.localize();
 	}
 	
 	protected String coreTokensSetAmountMsg(  
@@ -118,9 +118,9 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 	protected void coreRunCommandCommandRequiredMsg( CommandSender sender ) {
 		
 		Prison.get().getLocaleManager()
-		.getLocalizable( "core_runCmd__command_required" )
-		.setFailSilently()
-		.sendTo( sender );
+					.getLocalizable( "core_runCmd__command_required" )
+					.setFailSilently()
+					.sendTo( sender );
 	}
 	
 	

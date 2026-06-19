@@ -19,7 +19,6 @@ public class PrisonUtilsPotions
 {
 
 	private boolean enablePotionEffects = false;
-//	private boolean enablePotions = false;
 	
 	private List<String> potionEffectsList;
 	
@@ -103,12 +102,6 @@ public class PrisonUtilsPotions
 					sb.append( pType.name().toLowerCase() ).append( ' ' );
 				} 
 				
-//				for ( PotionEffectType effect : PotionEffectType.values() ) {
-//					if ( effect != null && effect.getName() != null ) {
-//						sb.append( effect.getName().toLowerCase() ).append( ' ' );
-//					}
-//				}
-				
 				sender.sendMessage( String.format( "&7Valid potion names: %s", sb.toString() ) );
 				
 				return;
@@ -164,40 +157,12 @@ public class PrisonUtilsPotions
 			int ampliferValue = intValue( amplifier, -256, 0, 1024 );
 			
 			
-//			List<PotionEffectOptions> effects = new ArrayList<>();
-//			
-//			if ( options != null && options.trim().isEmpty() ) {
-//				String[] opts = options.trim().split( " " );
-//				for ( String opt : opts ) {
-//					PotionEffectOptions effect = PotionEffectOptions.fromString( opt );
-//					
-//					if ( effect != null ) {
-//						effects.add( effect );
-//					}
-//				}
-//			}
-//			
-			
-			
-//			boolean isAmbient = effects.contains( PotionEffectOptions.ambient );
-//			boolean isParticles = effects.contains( PotionEffectOptions.particles );
-//			boolean isIcon = effects.contains( PotionEffectOptions.icon );
-			
-//			boolean isForceConfictRemoval = effects.contains( PotionEffectOptions.forceConfictRemoval );
 			
 			if ( player != null && player.getWrapper() != null ) {
 				
 				LivingEntity entity = player.getWrapper();
 				
 				addPotion( entity, potion, durationTicks, ampliferValue );
-				
-//				PotionEffect potionEffect = new PotionEffect( potion, durationTicks, ampliferValue, 
-//						isAmbient, isParticles, isIcon );
-//
-//				if ( potionEffect != null ) {
-//					player.getWrapper().addPotionEffect( potionEffect, isForceConfictRemoval );
-//				}
-				
 				
 			}
 		}
@@ -270,12 +235,5 @@ public class PrisonUtilsPotions
 	public void setEnablePotionEffects( boolean enablePotionEffects ) {
 		this.enablePotionEffects = enablePotionEffects;
 	}
-
-//	public boolean isEnablePotions() {
-//		return enablePotions;
-//	}
-//	public void setEnablePotions( boolean enablePotions ) {
-//		this.enablePotions = enablePotions;
-//	}
 
 }

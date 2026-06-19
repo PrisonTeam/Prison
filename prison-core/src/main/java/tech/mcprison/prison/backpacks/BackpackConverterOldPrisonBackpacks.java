@@ -25,7 +25,6 @@ public class BackpackConverterOldPrisonBackpacks {
 				Output.get().logInfo( "  Old backpack size:", oldBackpacks.size() );
 			}
 			
-			
 		}
 		
 	}

@@ -15,10 +15,13 @@ import org.bukkit.plugin.PluginManager;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombData.BombStatus;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
+import tech.mcprison.prison.spigot.api.InventoryFullEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
@@ -171,27 +174,25 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	
 	
 	@Override
-	public void dumpEventListeners( StringBuilder sb ) {
+	public void dumpEventListeners(StringBuilder sb) {
 
-		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+		String eP = getMessage(AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority);
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase(eP);
 
-    	if ( !isEventEnabled ) {
-    		return;
-    	}
-		
+		if (!isEventEnabled) {
+			return;
+		}
+
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
-			
-			
-			HandlerList handlers = ExplosiveBlockBreakEvent.getHandlerList();
-			
-//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
-    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
-    		dumpEventListenersCore( "ExplosiveBlockBreakEvent", handlers, bbPriority, sb );
-    		
-			
+			HandlerList handlers = ExplosiveBlockBreakEvent.getHandlerList();
+
+//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
+			BlockBreakPriority bbPriority = BlockBreakPriority.fromString(eP);
+
+			dumpEventListenersCore("ExplosiveBlockBreakEvent", handlers, bbPriority, sb);
+
 //    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 //			
 //			String title = String.format( 
@@ -224,193 +225,193 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 //				
 //				sb.append( msg ).append( "\n" );
 //			}
-		}
-		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage() );
+		} catch (Exception e) {
+			Output.get().logInfo("AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage());
 		}
 	}
     
-	protected void handleExplosiveBlockBreakEvent( ExplosiveBlockBreakEvent e, 
-			BlockBreakPriority bbPriority ) {
-		
+	protected void handleExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e, BlockBreakPriority bbPriority) {
+
 		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
-		
-		// If the event is canceled, it still needs to be processed because of the 
+
+		MineBombData mineBomb = e.getMineBomb();
+
+		// If the event is canceled, it still needs to be processed because of the
 		// MONITOR events:
-		// An event will be "canceled" and "ignored" if the block 
+		// An event will be "canceled" and "ignored" if the block
 		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
-		// or if the targetBlock has been set to ignore all block events which 
+		// or if the targetBlock has been set to ignore all block events which
 		// means the block has already been processed.
-    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-										e.getPlayer(), e.getBlock(),
-										bbPriority, true );
-    	
-		if ( eventResults.isIgnoreEvent() ) {
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent(e, e.getPlayer(), e.getBlock(), bbPriority, true);
+
+		if (eventResults.isIgnoreEvent()) {
+			if (mineBomb != null)
+				mineBomb.setBombStatus(BombStatus.event_ignored);
 			return;
 		}
-		
-		
+
 		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** handleExplosiveBlockBreakEvent (Prisons's bombs) ** ### " +
-				"(event: ExplosiveBlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
-				bbPriority.name(),
-				bbPriority.getBukkitEventPriority().name(),
-				(e.isCancelled() ? "TRUE " : "FALSE")
-				) );
-		
-		debugInfo.append( eventResults.getDebugInfo() );
-		
-		
-		// Process all priorities if the event has not been canceled, and 
+
+		debugInfo.append(String.format(
+				"&6### ** handleExplosiveBlockBreakEvent (Prisons's bombs) ** ###&3 "
+						+ "(event: &6ExplosiveBlockBreakEvent&3, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(), bbPriority.getBukkitEventPriority().name(), (e.isCancelled() ? "TRUE " : "FALSE")));
+
+		debugInfo.append(eventResults.getDebugInfo());
+
+		// Process all priorities if the event has not been canceled, and
 		// process the MONITOR priority even if the event was canceled:
-    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
-    			bbPriority.isMonitor() ) {
-		
-			
+		if (!bbPriority.isMonitor() && !e.isCancelled() || bbPriority.isMonitor()) {
+
 			BlockEventType eventType = BlockEventType.PrisonExplosion;
 			String triggered = e.getTriggeredBy();
-			
-			pmEvent = new PrisonMinesBlockBreakEvent( 
-						eventResults,
+
+			pmEvent = new PrisonMinesBlockBreakEvent(eventResults,
 //						e.getBlock(), 
 //						e.getPlayer(),
 //						eventResults.getMine(),
 //						bbPriority, 
-						eventType, triggered,
-    					debugInfo );
-    		
+					eventType, triggered, debugInfo);
 
-        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
-        	//       converted to just ACCESS at this point, and the other part will run under either
-        	//       BLOCKEVENTS or MONITOR.
-    		// This check has to be performed after creating the pmEvent object since it uses
-    		// a lot of the internal variables and objects.  There is not much of an impact since
-    		// the validateEvent() has not been ran yet.
-        	if ( checkIfNoAccess( pmEvent, start ) ) {
-        		
-        		e.setCancelled( true );
-        		return;
-        	}
-			
-			// If this event is fired, but yet there are no exploded blocks, then do not set 
+			// NOTE: Check for the ACCESS priority and if someone does not have access, then
+			// return
+			// with a cancel on the event. Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+			// converted to just ACCESS at this point, and the other part will run under
+			// either
+			// BLOCKEVENTS or MONITOR.
+			// This check has to be performed after creating the pmEvent object since it
+			// uses
+			// a lot of the internal variables and objects. There is not much of an impact
+			// since
+			// the validateEvent() has not been ran yet.
+			if (checkIfNoAccess(pmEvent, start)) {
+
+				e.setCancelled(true);
+				if (mineBomb != null)
+					mineBomb.setBombStatus(BombStatus.no_access);
+				return;
+			}
+
+			// If this event is fired, but yet there are no exploded blocks, then do not set
 			// forceIfAirBlock to true so this event is skipped.
-			if ( e.getExplodedBlocks() != null && e.getExplodedBlocks().size() > 0 ) {
-				
-				pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
-				pmEvent.setForceIfAirBlock( e.isForceIfAirBlock() );
+			if (e.getExplodedBlocks() != null && e.getExplodedBlocks().size() > 0) {
+
+				pmEvent.setUnprocessedRawBlocks(e.getExplodedBlocks());
+				pmEvent.setForceIfAirBlock(e.isForceIfAirBlock());
 			}
-			
-			
-			// Warning: toolInHand really needs to be defined in the event if the source is a
-			//          Mine Bomb, otherwise auto features will detect the player is holding 
-			//          a mine bomb which is not a pickaxe so the drops will be ZERO.  If they
-			//          used their last mine bomb, then auto features will detect only AIR 
-			//          in their hand.
-			if ( e.getToolInHand() != null && e.getToolInHand() instanceof SpigotItemStack ) {
-				pmEvent.setItemInHand( (SpigotItemStack) e.getToolInHand() );
+
+			// Warning: toolInHand really needs to be defined in the event if the source is
+			// a
+			// Mine Bomb, otherwise auto features will detect the player is holding
+			// a mine bomb which is not a pickaxe so the drops will be ZERO. If they
+			// used their last mine bomb, then auto features will detect only AIR
+			// in their hand.
+			if (e.getToolInHand() != null && e.getToolInHand() instanceof SpigotItemStack) {
+				pmEvent.setItemInHand((SpigotItemStack) e.getToolInHand());
 			}
-			
-			
-			
-			// Note: If the mineBomb is set, then the bomb itself uses a pseudo 
-			//       tool in hand, so need to disable durability calculations since
-			//       if the pseudo tool breaks, it will clear the player's in-hand
-			//       inventory stack, which will be more mine bombs if they had more 
-			//       than one.
-			if ( e.getMineBomb() != null ) {
-				pmEvent.setCalculateDurability( false );
-				
+
+			// Note: If the mineBomb is set, then the bomb itself uses a pseudo
+			// tool in hand, so need to disable durability calculations since
+			// if the pseudo tool breaks, it will clear the player's in-hand
+			// inventory stack, which will be more mine bombs if they had more
+			// than one.
+			if (mineBomb != null) {
+
+				pmEvent.setForceIfAirBlock(true);
+
+				pmEvent.setMineBomb(mineBomb);
+
+				pmEvent.setCalculateDurability(false);
+
 				// Set if forced autoSell:
-				pmEvent.setForceAutoSell( e.getMineBomb().isAutosell() );
+				pmEvent.setForceAutoSell(mineBomb.isAutosell());
 			}
-			
-    		
-    		// Check to see if the blockConverter's EventTrigger should have
-    		// it's blocks suppressed from explosion events.  If they should be
-    		// removed, then it's removed within this funciton.
-    		removeEventTriggerBlocksFromExplosions( pmEvent );
-    		
-    		
-    		
-    		pmEvent.setApplyToPlayersBlockCount( 
-    				e.getMineBomb().isApplyToPlayersBlockCount() );
-  
-			
-			if ( !validateEvent( pmEvent ) ) {
-				
-				// The event has not passed validation. All logging and Errors have been recorded
+
+			// Check to see if the blockConverter's EventTrigger should have
+			// it's blocks suppressed from explosion events. If they should be
+			// removed, then it's removed within this function.
+			removeEventTriggerBlocksFromExplosions(pmEvent);
+
+			if (e.getMineBomb() != null) {
+				pmEvent.setApplyToPlayersBlockCount(e.getMineBomb().isApplyToPlayersBlockCount());
+			}
+
+			if (!validateEvent(pmEvent)) {
+
+				// The event has not passed validation. All logging and Errors have been
+				// recorded
 				// so do nothing more. This is to just prevent normal processing from occurring.
-				
-				if ( pmEvent.isCancelOriginalEvent() ) {
-					
-					e.setCancelled( true );
+
+				if (pmEvent.isCancelOriginalEvent()) {
+
+					e.setCancelled(true);
 				}
-				
-				debugInfo.append( "(doAction failed validation) " );
+
+				if (mineBomb != null)
+					mineBomb.setBombStatus(BombStatus.failed_validation);
+
+				debugInfo.append("(doAction failed validation) ");
 			}
-			
-			
 
-    		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
-    		else if ( pmEvent.getBbPriority().isMonitor() ) {
-    			// Stop here, and prevent additional processing. 
-    			// Monitors should never process the event beyond this.
-    		}
-			
-			
-    		// This is where the processing actually happens:
-    		else {
-    			
+			// The validation was successful, but stop processing for the MONITOR
+			// priorities.
+			// Note that BLOCKEVENTS processing occurred already within validateEvent():
+			else if (pmEvent.getBbPriority().isMonitor()) {
+				// Stop here, and prevent additional processing.
+				// Monitors should never process the event beyond this.
+				if (mineBomb != null)
+					mineBomb.setBombStatus(BombStatus.monitor_successful);
+			}
+
+			// This is where the processing actually happens:
+			else {
+
 //    			debugInfo.append( "(normal processing initiating) " );
-    			
-    			// check all external events such as mcMMO and EZBlocks:
-    			if ( e instanceof BlockBreakEvent ) {
-    				processPMBBExternalEvents( pmEvent, e );
-    			}
-    			
-    			
-    			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
-    			
-    			cancelBy = processPMBBEvent( pmEvent );
 
-    			
-    			if ( cancelBy == EventListenerCancelBy.event ) {
-    				
-    				e.setCancelled( true );
-    				debugInfo.append( "(event canceled) " );
-    			}
-    			else if ( cancelBy == EventListenerCancelBy.drops ) {
-					try
-					{
-						e.setDropItems( false );
-						debugInfo.append( "(drop canceled) " );
-					}
-					catch ( NoSuchMethodError e1 )
-					{
-						String message = String.format( 
-								"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-										"is not valid for this version of Spigot. It's only vaid for spigot v1.12.x and higher. " +
-										"Modify the config settings and set this value to `false`.  For now, it is temporarily " +
-										"disabled. [%s]",
-										e1.getMessage() );
-						Output.get().logWarn( message );
-						
+				// check all external events such as mcMMO and EZBlocks:
+				if (e instanceof BlockBreakEvent) {
+					processPMBBExternalEvents(pmEvent, e);
+				}
+
+				EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
+
+				cancelBy = processPMBBEvent(pmEvent);
+
+				if (cancelBy == EventListenerCancelBy.event) {
+
+					e.setCancelled(true);
+
+					debugInfo.append("(event canceled) ");
+				} else if (cancelBy == EventListenerCancelBy.drops) {
+					try {
+						e.setDropItems(false);
+						debugInfo.append("(drop canceled) ");
+					} catch (NoSuchMethodError e1) {
+						String message = String
+								.format("Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` "
+										+ "is not valid for this version of Spigot. It's only vaid for spigot v1.12.x and higher. "
+										+ "Modify the config settings and set this value to `false`.  For now, it is temporarily "
+										+ "disabled. [%s]", e1.getMessage());
+						Output.get().logWarn(message);
+
 						AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
-								.setFeature( AutoFeatures.cancelAllBlockEventBlockDrops, false );
+								.setFeature(AutoFeatures.cancelAllBlockEventBlockDrops, false);
 					}
 
-    			}
-    		}
-			
-			
+				}
+				if (mineBomb != null)
+					mineBomb.setBombStatus(BombStatus.successful);
+			}
+
+			if (pmEvent.getSpigotPlayer().isInventoryFull()) {
+
+				InventoryFullEvent.fireInventoryFullEvent(pmEvent.getPlayer());
+			}
 		}
-		
-    	printDebugInfo( pmEvent, start );
+
+		printDebugInfo(pmEvent, start);
 	}
 
 	@Override

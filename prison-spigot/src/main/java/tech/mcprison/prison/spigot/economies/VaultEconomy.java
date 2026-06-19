@@ -30,7 +30,7 @@ public class VaultEconomy
     private VaultEconomyWrapper econWrapper;
 
     public VaultEconomy() {
-    	super( "VaultEcon", "Vault" );
+    		super( "VaultEcon", "Vault" );
     }
 
 	@Override
@@ -55,22 +55,22 @@ public class VaultEconomy
     
     @Override
     public boolean hasAccount( Player player ) {
-    	boolean sendWarning = false;
-    	return econWrapper.hasAccount( player, sendWarning );
+	    	boolean sendWarning = false;
+	    	return econWrapper.hasAccount( player, sendWarning );
     }
 	
 	@Override 
 	public double getBalance(Player player) {
         if (hasIntegrated()) {
-        	return econWrapper.getBalance( player );
+        		return econWrapper.getBalance( player );
         } else {
-        	return 0;
+        		return 0;
         }
     }
 
     @Override 
     public boolean setBalance(Player player, double amount) {
-    	boolean results = false;
+    		boolean results = false;
         if (hasIntegrated()) {
         	results = econWrapper.setBalance( player, amount );
         }
@@ -88,7 +88,7 @@ public class VaultEconomy
 
     @Override
     public boolean removeBalance(Player player, double amount) {
-    	boolean results = false;
+    		boolean results = false;
         if (hasIntegrated()) {
         	results = econWrapper.removeBalance( player, amount );
         }
@@ -103,7 +103,7 @@ public class VaultEconomy
     @Override
     public String getDisplayName()
     {
-    	return ( !hasIntegrated() ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
+    		return ( !hasIntegrated() ? "Vault Economy" : econWrapper.getName()) + " (Vault)";
     }
     
     /**
@@ -118,7 +118,7 @@ public class VaultEconomy
     
     @Override
     public void disableIntegration() {
-    	econWrapper = null;
+    		econWrapper = null;
     }
     
 	@Override

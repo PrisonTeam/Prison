@@ -31,7 +31,6 @@ public class IntegrationCrazyEnchantmentsPickaxes
 			
 			if ( bukkitPlugin != null ) {
 				
-//				Bukkit.getPluginManager().registerEvents( this, bukkitPlugin);
 				ce = CrazyEnchantments.getInstance();
 			}
 		}

@@ -9,28 +9,28 @@ public class LongClassArgumentHandler
 		extends NumberArgumentHandler<Long> {
 
     public LongClassArgumentHandler() {
+    		super();
     }
 
     @Override 
     public Long transform(CommandSender sender, CommandArgument argument, String value)
     		throws TransformError {
-    	Long results = null;
-    	
-    	if ( value != null ) {
-    		
-    		value = value.replaceAll( "$|%", "" );
-
-    		try {
-    			results = Long.parseLong(value);
-    		} catch (NumberFormatException e) {
-    			throw new TransformError(
-    					Prison.get().getLocaleManager().getLocalizable("numberParseError")
-    					.withReplacements(value).localizeFor(sender));
-    		}
-    	}
+	    	Long results = null;
+	    	
+	    	if ( value != null ) {
+	    		
+	    		value = value.replaceAll( "$|%", "" );
+	
+	    		try {
+	    			results = Long.parseLong(value);
+	    		} catch (NumberFormatException e) {
+	    			throw new TransformError(
+	    					Prison.get().getLocaleManager().getLocalizable("numberParseError")
+	    					.withReplacements(value).localizeFor(sender));
+	    		}
+	    	}
         
         return results;
     }
-
 
 }

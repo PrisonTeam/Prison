@@ -6,6 +6,9 @@ import tech.mcprison.prison.Prison;
 
 public class PrisonCoreGuiMessages {
 	
+	public PrisonCoreGuiMessages() {
+		super();
+	}
 
 	protected String guiClickToDecreaseMsg() {
 		return Prison.get().getLocaleManager()

@@ -23,7 +23,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.PARAMETER) public @interface Arg {
+@Retention(RetentionPolicy.RUNTIME) 
+@Target(ElementType.PARAMETER) 
+public @interface Arg {
 
     /**
      * The default argument to process if the argument is not defined by the user. To make it a

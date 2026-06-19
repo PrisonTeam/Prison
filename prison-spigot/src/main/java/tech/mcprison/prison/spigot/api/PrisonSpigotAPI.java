@@ -26,7 +26,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -51,31 +50,14 @@ import tech.mcprison.prison.util.Location;
  * <p>If you need something special, then please ask on our discord server and we 
  * can probably provide it for you.
  * </p>
- * @param <PrisonItemStack>
- *
  */
-public class PrisonSpigotAPI<PrisonItemStack> {
+public class PrisonSpigotAPI {
 	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
 	private SellAllUtil sellAll;
 	
 	
-	private void junk() {
-		
-//		SpigotPrison.getInstance().isSellAllEnabled();
-//		
-//		SpigotPlayer sPlayer = new SpigotPlayer( Player player );
-//		
-//		sPlayer.getSellAllMulitiplier()
-//		sPlayer.getSellAllMultiplierListings()
-//		sPlayer.checkAutoSellPermsAutoFeatures()
-//		sPlayer.checkAutoSellTogglePerms( sbDebug )
-//		sPlayer.isAutoSellEnabled( sbDebug )
-//		
-		
-	//	PrisonSpigotAPI.sellPlayerItems(Player player );
-	}
 
 //	private void handleAffectedBlocks(Player p, IWrappedRegion region, List<Block> blocksAffected) {
 //        double totalDeposit = 0.0;
@@ -127,57 +109,77 @@ public class PrisonSpigotAPI<PrisonItemStack> {
 //    }
 
 	/**
-	 * <p>This returns all mines that are within prison.
+	 * <p>
+	 * This returns all mines that are within prison.
 	 * </p>
 	 * 
 	 * @return results - List of Mines
 	 */
 	public List<Mine> getMines() {
-		List<Mine> results = new ArrayList<>();
-		
-    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
 
-    		results = mm.getMines();
-    	}
-		
+		List<Mine> results = new ArrayList<>();
+
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+
+			results = mm.getMines();
+		}
+
 		return results;
 	}
 	
 	/**
-	 * <p>Returns all mines within prison, but sorted by the specified sort order.
-	 * Because some sort types omit mines, there are two different collections within the
-	 * PrisonSortableResults.  There is an include and exclude list.
+	 * <p>
+	 * Returns all mines within prison, but sorted by the specified sort order. Because some sort types omit mines, there
+	 * are two different collections within the PrisonSortableResults. There is an include and exclude list.
 	 * </p>
 	 * 
-	 * <p>All sort types that omit mines from the result type has a counter sort type
-	 * that will include all mines and will not omit any.  Those begin with an "x".
+	 * <p>
+	 * All sort types that omit mines from the result type has a counter sort type that will include all mines and will not
+	 * omit any. Those begin with an "x".
 	 * </p>
 	 * 
 	 * @param sortOrder - MineSortOrder
 	 * @return results - PrisonSortableResults
 	 */
 	public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
-		PrisonSortableResults results = null;
-		
-    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
 
-    		results = mm.getMines(sortOrder);
-    	}
-		
+		PrisonSortableResults results = null;
+
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+
+			results = mm.getMines( sortOrder );
+		}
+
 		return results;
 	}
 	
 	
+	/**
+	 * <p>This will get the prison's RankPlayer object, which will trigger adding the
+	 * given player to Prison if they do not already exist.  This is done through the
+	 * SpigotPlayer.
+	 * </p>
+	 * 
+	 * @param bukkitPlayer
+	 * @return
+	 */
 	public RankPlayer getRankPlayer( Player bukkitPlayer ) {
 		RankPlayer results = null;
 		
 		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			
-			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+			SpigotPlayer sPlayer = new SpigotPlayer( bukkitPlayer );
 			
-			results = pm.getPlayer( bukkitPlayer.getUniqueId(), bukkitPlayer.getName() );
+			if ( sPlayer != null ) {
+				
+				results = sPlayer.getRankPlayer();
+			}
+			
+//			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//			
+//			results = pm.getPlayer( bukkitPlayer.getUniqueId(), bukkitPlayer.getName() );
 		}
 		
 		return results;
@@ -361,10 +363,11 @@ public class PrisonSpigotAPI<PrisonItemStack> {
     			// Need to wrap in a Prison block so it can be used with the mines:
     			SpigotBlock spigotBlock = SpigotBlock.getSpigotBlock(block);
     			
-    			Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
+    			String uuid = player.getUniqueId().toString();
+//    			Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
 
     			// Get the cached mine, if it exists:
-    			Mine mine = getPlayerCache().get( playerUUIDLSB );
+    			Mine mine = getPlayerCache().get( uuid );
     			
     			if ( mine == null || !mine.isInMineExact( spigotBlock.getLocation() ) ) {
     				// Look for the correct mine to use. 
@@ -373,7 +376,7 @@ public class PrisonSpigotAPI<PrisonItemStack> {
     				
     				// Store the mine in the player cache if not null:
     				if ( mine != null ) {
-    					getPlayerCache().put( playerUUIDLSB, mine );
+    					getPlayerCache().put( uuid, mine );
     				}
     			}
     			
@@ -450,7 +453,7 @@ public class PrisonSpigotAPI<PrisonItemStack> {
 		return results;
 	}
 
-	private TreeMap<Long, Mine> getPlayerCache() {
+	private TreeMap<String, Mine> getPlayerCache() {
 		return getPrisonMineManager().getPlayerCache();
 	}
 
@@ -781,14 +784,23 @@ public class PrisonSpigotAPI<PrisonItemStack> {
 			boolean completelySilent = notifyPlayerEarned || notifyPlayerDelay || notifyPlayerEarningDelay || playSoundOnSellAll;
 			
 			SpigotPlayer sPlayer = new SpigotPlayer( player );
-			RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+			
+			
+			RankPlayer rankPlayer = sPlayer.getRankPlayer();
+//			RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
 			
 			currency = currency != null && currency.equalsIgnoreCase("default") ? null : currency;
 			
 //        if (!sellInputArrayListOnly) {
 //            removeSellableItems(p);
 //        }
-			rankPlayer.addBalance(currency, amount);
+			if ( rankPlayer != null ) {
+				
+				rankPlayer.addBalance(currency, amount);
+			}
+			else {
+				sPlayer.addBalance(currency, amount);
+			}
 			
 			if ( getPrisonSellAll().isSellAllDelayEnabled ){
 				getPrisonSellAll().addToDelay(player);

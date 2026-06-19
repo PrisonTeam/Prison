@@ -134,6 +134,29 @@ public class TextTest
 		// Test with two complete quote:
 		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test #123456 test test2 #778899 test", replaceColorCodeWithx(
 				translateColorCodes("This &7is #a3b4c5 &Ra test \\Q#123456 test\\E test2 \\Q#778899 test\\E", '&'), '^' ));
+	
+	}
+	
+	@Test
+	public void testHexColorBug() {
+		
+		// Note: These is a problem with hex color codes being used in lore (or elsewhere probably)
+		//       where they are not being translated unless there is another color, such as &7
+		//       Proceeding it.  So try to reproduce the situation...
+		
+		// The problem was that the hex conversion was working perfectly well.  But 
+		// since the "dirty" variable was not getting modified, since the hex colors were
+		// applied before that point in processing, it would always revert back to the original 
+		// unchanged String value because it thought there was nothing that changed.
+		
+		// To fix the problem, I eliminated the dirty variable and am always converting the byte
+		// array back to a String value.  So no need to check if dirty anymore, since it always converts.
+		assertEquals("This is ^x^a^3^b^4^c^5 a test", replaceColorCodeWithx(
+				translateAmpColorCodes("This is #a3b4c5 a test" ), '^' ));
+
+		assertEquals("This is ^x^a^3^b^4^c^5a test", replaceColorCodeWithx(
+				translateAmpColorCodes("This is &#a3b4c5a test" ), '^' ));
+		
 		
 	}
 	

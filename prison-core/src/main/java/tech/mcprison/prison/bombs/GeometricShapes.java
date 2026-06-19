@@ -1,7 +1,8 @@
-package tech.mcprison.prison.spigot.bombs;
+package tech.mcprison.prison.bombs;
 
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.util.Vector;
 
 /**
  * <p>These functions were basically copied from the following post.  They have 
@@ -35,7 +36,6 @@ public class GeometricShapes
 				if ( (int) (getDistance( x, z, xi, zi )) == r )
 				{
 					world.setBlock( block, x, yi, z );
-//					world.setBlock( x, yi, z, Block.stone.blockID );
 				}
 			}
 		}
@@ -51,7 +51,6 @@ public class GeometricShapes
 				if ( (int) (getDistance( x, z, xi, zi )) <= r )
 				{
 					world.setBlock( block, x, yi, z );
-//					world.setBlock( x, yi, z, Block.stone.blockID );
 				}
 			}
 		}
@@ -68,7 +67,6 @@ public class GeometricShapes
 				if ( dist < outerRadius && dist >= innerRadius )
 				{
 					world.setBlock( block, x, yi, z );
-//					world.setBlock( x, yi, z, Block.stone.blockID );
 				}
 			}
 		}
@@ -159,10 +157,6 @@ public class GeometricShapes
 			world.setBlock( block, i, yi, zi + depth - 1 );
 			world.setBlock( block, i, yi + height - 1, zi + depth - 1 );
 			
-//			world.setBlock( i, yi, zi, id );
-//			world.setBlock( i, yi + height - 1, zi, id );
-//			world.setBlock( i, yi, zi + depth - 1, id );
-//			world.setBlock( i, yi + height - 1, zi + depth - 1, id );
 		}
 		for ( int i = yi; i < yi + height; i++ )
 		{
@@ -171,10 +165,6 @@ public class GeometricShapes
 			world.setBlock( block, xi, i, zi + depth - 1 );
 			world.setBlock( block, xi + width - 1, i, zi + depth - 1 );
 			
-//			world.setBlock( xi, i, zi, id );
-//			world.setBlock( xi + width - 1, i, zi, id );
-//			world.setBlock( xi, i, zi + depth - 1, id );
-//			world.setBlock( xi + width - 1, i, zi + depth - 1, id );
 		}
 		for ( int i = zi; i < zi + depth; i++ )
 		{
@@ -183,10 +173,6 @@ public class GeometricShapes
 			world.setBlock( block, xi + width - 1, yi, i );
 			world.setBlock( block, xi + width - 1, yi + height - 1, i );
 			
-//			world.setBlock( xi, yi, i, id );
-//			world.setBlock( xi, yi + height - 1, i, id );
-//			world.setBlock( xi + width - 1, yi, i, id );
-//			world.setBlock( xi + width - 1, yi + height - 1, i, id );
 		}
 	}
 
@@ -231,6 +217,50 @@ public class GeometricShapes
 		}
 	}
 
+	
+	
+	/**
+	 * This will calculate a new Vector based upon the degrees (angle), and the 
+	 * radius (distance from the center);
+	 * 
+	 * Incrementing the degrees, with keeping the same value for radius, should 
+	 * draw a circle on the plane X-Z.
+	 * 
+	 * @param degrees
+	 * @param radius
+	 * @return
+	 */
+	public static Vector getPointsOnCircleXZ( double degrees, double radius ) {
+		Vector results = null;
+		
+		final double angle = Math.toRadians( degrees );
+
+		double x = (Math.cos(angle) * radius);
+		double y = 0d;
+		double z = (Math.sin(angle) * radius);
+		
+	    results = new Vector( x, y, z );
+	    
+	    return results;
+	    
+		
+//		final int NUM_POINTS = 1000;
+//		final double RADIUS = 100d;
+//
+//		final Point[] points = new Point[NUM_POINTS];
+//
+//		for (int i = 0; i < NUM_POINTS; ++i)
+//		{
+//		    final double angle = Math.toRadians(((double) i / NUM_POINTS) * 360d);
+//
+//		    points[i] = new Point(
+//		        Math.cos(angle) * RADIUS, 
+//		        Math.sin(angle) * RADIUS
+//		    );
+//		}
+		
+	}
+	
 //	public void someMethod()
 //	{
 //		{

@@ -153,7 +153,8 @@ public abstract class ArgumentHandler<T> {
         messageNodes.put(node, def);
     }
 
-    @Override public String toString() {
+    @Override 
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ArgumentHandler -> " + getClass().getName() + "\n");
         sb.append("Set messages: \n");

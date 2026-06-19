@@ -23,7 +23,6 @@ public class PlayerBackpack {
 	private BackpackType backpackType;
 	
 	private List<ItemStack> inventory;
-//	private Inventory inventory;
 	private int inventorySize;
 	
 	

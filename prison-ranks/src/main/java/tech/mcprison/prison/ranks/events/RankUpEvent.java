@@ -12,10 +12,6 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
  */
 public class RankUpEvent {
 
-    /*
-     * Fields & Constants
-     */
-
     private RankPlayer player;
     private Rank oldRank;
     private Rank newRank;
@@ -27,9 +23,6 @@ public class RankUpEvent {
     private boolean canceled = false;
     private String cancelReason = null;
     
-    /*
-     * Constructor
-     */
 
     public RankUpEvent(RankPlayer player, 
     		Rank oldRank, Rank newRank, double cost, 
@@ -45,9 +38,6 @@ public class RankUpEvent {
         this.forceCharge = forceCharge;
     }
 
-    /*
-     * Getters & Setters
-     */
 
     public RankPlayer getPlayer() {
         return player;

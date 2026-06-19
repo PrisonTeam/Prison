@@ -23,8 +23,6 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.events.Cancelable;
 
 /**
- * Currently undocumented.
- *
  * @author DMP9
  */
 public class FurnaceBurnEvent implements Cancelable {

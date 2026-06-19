@@ -36,6 +36,7 @@ softdepend:
   - PermissionsEx
   - GroupManagerX
   - GemsEconomy
+  - TheNewEconomy
   - TokenEnchant
   - CMI
   - CMILib
@@ -55,3 +56,7 @@ softdepend:
   - CoinsEngineEconomy
   - SaneEconomy
   - EdPrison
+  - ExcellentEnchants
+  - zEssentials
+  - zMenu
+  

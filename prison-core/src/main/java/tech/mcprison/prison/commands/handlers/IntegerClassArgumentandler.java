@@ -8,29 +8,29 @@ import tech.mcprison.prison.internal.CommandSender;
 public class IntegerClassArgumentandler 
 		extends NumberArgumentHandler<Integer> {
 
-
     public IntegerClassArgumentandler() {
+    		super();
     }
 
-    @Override public Integer transform(CommandSender sender, CommandArgument argument, String value)
+    @Override 
+    public Integer transform(CommandSender sender, CommandArgument argument, String value)
     		throws TransformError {
-    	Integer results = null;
-    
-    	if ( value != null ) {
-    		
-    		value = value.replaceAll( "$|%", "" );
-    		
-    		//value = value.replaceAll("$|%", "");
-    		if ( value.trim().length() > 0 ) {
-    			try {
-    				results = Integer.parseInt(value);
-    			} catch (NumberFormatException e) {
-    				throw new TransformError(
-    						Prison.get().getLocaleManager().getLocalizable("numberParseError")
-    						.withReplacements(value).localizeFor(sender));
-    			}
-    		}
-    	}
-    	return results;
+	    	Integer results = null;
+	    
+	    	if ( value != null ) {
+	    		
+	    		value = value.replaceAll( "$|%", "" );
+	    		
+	    		if ( value.trim().length() > 0 ) {
+	    			try {
+	    				results = Integer.parseInt(value);
+	    			} catch (NumberFormatException e) {
+	    				throw new TransformError(
+	    						Prison.get().getLocaleManager().getLocalizable("numberParseError")
+	    						.withReplacements(value).localizeFor(sender));
+	    			}
+	    		}
+	    	}
+	    	return results;
     }
 }

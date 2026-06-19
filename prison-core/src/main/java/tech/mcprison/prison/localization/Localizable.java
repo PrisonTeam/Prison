@@ -124,8 +124,8 @@ public class Localizable {
      * @return
      */
     public Localizable setFailSilently() {
-    	this.failSilently = true;
-    	return this;
+	    	this.failSilently = true;
+	    	return this;
     }
     
     /**
@@ -135,8 +135,8 @@ public class Localizable {
      * @return
      */
     public Localizable setFailNormally() {
-    	this.failSilently = false;
-    	return this;
+	    	this.failSilently = false;
+	    	return this;
     }
     
     /**
@@ -157,17 +157,17 @@ public class Localizable {
      * @since 1.0
      */
     public Localizable withReplacements(String... replacements) {
-    	if ( replacements == null ) {
-    		replacements = new String[1];
-    		replacements[0] = "";
-    	}
-    	else {
-    		for ( int i = 0; i < replacements.length; i++ ) {
-    			if ( replacements[i] == null ) {
-    				replacements[i] = "";
-    			}
-    		}
-    	}
+	    	if ( replacements == null ) {
+	    		replacements = new String[1];
+	    		replacements[0] = "";
+	    	}
+	    	else {
+	    		for ( int i = 0; i < replacements.length; i++ ) {
+	    			if ( replacements[i] == null ) {
+	    				replacements[i] = "";
+	    			}
+	    		}
+	    	}
         this.replacements = Arrays.copyOf(replacements, replacements.length);
         this.locReplacements = null;
         return this;
@@ -351,14 +351,14 @@ public class Localizable {
      * @since 1.0
      */
     public String localizeFor(CommandSender sender) {
-    	String results = 
-    			sender instanceof Player ?
-		            localizeIn(getParent().getLocale((Player) sender)) :
-		            localize();
-    	
-    	results = applySecondaryPlaceholders( sender, results );
-    	
-    	return results;
+	    	String results = 
+	    			sender instanceof Player ?
+			            localizeIn(getParent().getLocale((Player) sender)) :
+			            localize();
+	    	
+	    	results = applySecondaryPlaceholders( sender, results );
+	    	
+	    	return results;
     }
 
     /**
@@ -376,21 +376,21 @@ public class Localizable {
      * @since 1.0
      */
     public void sendTo(CommandSender sender, LogLevel level) {
-    	String message = localizeFor(sender);
-    	if ( message != null && !message.isEmpty() ) {
-    		
-    		try {
-				Output.get().sendMessage(sender, message, level);
-			} 
-    		catch (Exception e) {
-				Output.get().logRaw( 
-						"Tried to send a formatted mmessage to a player but it ended in "
-						+ "failure. Was the original message edited and an extra parameter added? "
-						+ "raw message: [" +
-							message	
-						+ "]");
-			}
-    	}
+	    	String message = localizeFor(sender);
+	    	if ( message != null && !message.isEmpty() ) {
+	    		
+	    		try {
+					Output.get().sendMessage(sender, message, level);
+				} 
+	    		catch (Exception e) {
+					Output.get().logRaw( 
+							"Tried to send a formatted mmessage to a player but it ended in "
+							+ "failure. Was the original message edited and an extra parameter added? "
+							+ "raw message: [" +
+								message	
+							+ "]");
+				}
+	    	}
     }
 
     /**
@@ -406,23 +406,23 @@ public class Localizable {
      * @param sender The {@link CommandSender} to send this {@link Localizable} to
      */
     public void sendTo(CommandSender sender ) {
-    	PlaceholderStringCoverter placeholderConverter = null;
-    	sendTo( sender, placeholderConverter );
-    }
-    public void sendTo(CommandSender sender, PlaceholderStringCoverter placeholderConverter ) {
-    	
-    	String message = localize();
-    	if ( message != null && !message.isEmpty() ) {
-
-    		if ( placeholderConverter != null ) {
-    			message = placeholderConverter.convertStringPlaceholders(message);
-    		}
-//    		message = applySecondaryPlaceholders( 
-//    				(playerStats != null ? playerStats : sender ),
-//    				message );
-    		
-    		sendTo(sender, LogLevel.PLAIN);
-    	}
+	    	PlaceholderStringCoverter placeholderConverter = null;
+	    	sendTo( sender, placeholderConverter );
+	    }
+	    public void sendTo(CommandSender sender, PlaceholderStringCoverter placeholderConverter ) {
+	    	
+	    	String message = localize();
+	    	if ( message != null && !message.isEmpty() ) {
+	
+	    		if ( placeholderConverter != null ) {
+	    			message = placeholderConverter.convertStringPlaceholders(message);
+	    		}
+	//    		message = applySecondaryPlaceholders( 
+	//    				(playerStats != null ? playerStats : sender ),
+	//    				message );
+	    		
+	    		sendTo(sender, LogLevel.PLAIN);
+	    	}
     }
 
     /**
@@ -432,19 +432,20 @@ public class Localizable {
      * @since 1.0
      */
     public void broadcast() {
-    	PlaceholderStringCoverter placeholderConverter = null;
-    	broadcast( placeholderConverter );
+	    	PlaceholderStringCoverter placeholderConverter = null;
+	    	broadcast( placeholderConverter );
     }
+    
     public void broadcast( PlaceholderStringCoverter placeholderConverter ) {
-    	
-    	String message = localize();
-    	if ( message != null && !message.isEmpty() ) {
-    		
-    		for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
-    			sendTo(player, placeholderConverter);
-    		}
-    		Output.get().logInfo( message );
-    	}
+	    	
+	    	String message = localize();
+	    	if ( message != null && !message.isEmpty() ) {
+	    		
+	    		for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
+	    			sendTo(player, placeholderConverter);
+	    		}
+	    		Output.get().logInfo( message );
+	    	}
     }
 
     /**
@@ -455,16 +456,16 @@ public class Localizable {
      * @since 1.0
      */
     public void broadcast(World... worlds) {
-    	String message = localize();
-    	if ( message != null && !message.isEmpty() ) {
-    		
-    		for (World w : worlds) {
-    			for (Player player : w.getPlayers()) {
-    				sendTo(player);
-    			}
-    		}
-    		Output.get().logInfo( message );
-    	}
+	    	String message = localize();
+	    	if ( message != null && !message.isEmpty() ) {
+	    		
+	    		for (World w : worlds) {
+	    			for (Player player : w.getPlayers()) {
+	    				sendTo(player);
+	    			}
+	    		}
+	    		Output.get().logInfo( message );
+	    	}
     }
 
     /**
@@ -478,10 +479,6 @@ public class Localizable {
         return nullable != null ? nullable : "";
     }
 
-    // Use LogLevel instead since they are the same:
-//    public enum Level {
-//        PLAIN, INFO, WARN, ERROR
-//    }
 
 
     /**

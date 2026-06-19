@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.bombs.MineBombEffectsData.EffectType;
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
+import tech.mcprison.prison.bombs.MineBombs.AnimationPattern;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.Location;
 
-public class MineBombData {
+public class MineBombData
+		implements Comparable<MineBombData> 
+{
 
 	public static final String MINE_BOMB_DEFAULT_ITEM_NAME = "&c-= &7{name}&c =-";
 	
@@ -16,12 +24,6 @@ public class MineBombData {
 	private String description;
 	
 	
-//	/**
-//	 * <p>The 'bombItemId' is first line of the bomb's item lore, and
-//	 * it really needs to be unique and not match any other bomb's id.
-//	 * </p>
-//	 */
-//	private String loreBombItemId;
 	private List<String> lore;
 	
 
@@ -111,7 +113,7 @@ public class MineBombData {
 	 * of the mine too.
 	 * </p>
 	 */
-	private int placementAdjustmentY = -1;
+	private int placementAdjustmentY = 0;
 	
 	/**
 	 * <p>The chance of complete removal.  So if the explosion includes
@@ -151,6 +153,28 @@ public class MineBombData {
 	 * </p>
 	 */
 	private int itemRemovalDelayTicks = 5; // 0.25 seconds
+	
+	
+	/**
+	 * <p>This setting controls the animation while the bomb counts down.
+	 * </p>
+	 */
+	private AnimationPattern animationPattern = AnimationPattern.infinity;
+
+	private double animationOffset = 0;
+	
+	private double animationSpeed = 5;
+	
+	private double animationRadius = 1.0;
+	private double animationRadiusDelta = 0.0;
+	private boolean animationAlternateDirections = false;
+	private float animationSpinSpeed = -35;
+	
+	private AnimationArmorStandItemLocation animationArmorStandItemLocation;
+	
+	
+	private double throwVelocityLow = 1.5;
+	private double throwVelocityHigh = 3;
 	
 	
 	/**
@@ -204,9 +228,27 @@ public class MineBombData {
 	
 	
 	/**
-	 * 
+	 * This feature will allow the player to add all the exploded blocks to
+	 * their block counts.  If set to false, then this will not add bomb
+	 * related block breaks to the player's block counts, which will help 
+	 * keep the payer's counts focused on actual blocks broken.
 	 */
 	private boolean applyToPlayersBlockCount = true;
+	
+	
+	/**
+	 * If small is set to true, then the armor stand that will be generated
+	 * will be a smaller version of the standard size.  This maybe about 1 
+	 * block high, instead of the normal 2 blocks high.  
+	 * 
+	 * Since the armor stand will be reduced in size by half, so will the item
+	 * that it is holding, it too will be reduced in size.
+	 * 
+	 * This feature is dependent upon how bukkit handles this setting, 
+	 * therefore it may or may not work, or it may behave differently than
+	 * what is described here.
+	 */
+	private boolean small = false;
 	
 	
 	/**
@@ -222,8 +264,38 @@ public class MineBombData {
 	
 	private TreeSet<MineBombEffectsData> visualEffects;
 	
-	private Block placedBombBlock;
 	
+	/**
+	 * This is a block that is "closest" to the location where the animation center
+	 * point should be.  But note, since the location is not exact, and there is rounding,
+	 * this block may not be the block that was actually clicked, or where the item
+	 * landed.  For precise location, use placedBombLocation if it is not null.
+	 * this should be used as a back for the location for the animation center point.
+	 */
+	private transient Block placedBombBlock;
+	
+	/**
+	 * If not null, then this should be the animation target's center point.
+	 */
+	private transient Location placedBombLocation;
+	
+	
+	private transient int taskId = -1;
+	
+	
+	private BombStatus bombStatus;
+	
+	public enum BombStatus {
+		unprocessed,
+		event_ignored,
+		event_not_enabled,
+		canceled,
+		no_access,
+		failed_validation,
+		monitor_successful,
+		successful
+		;
+	}
 	
 	public MineBombData() {
 		super();
@@ -234,6 +306,7 @@ public class MineBombData {
 		
 		this.allowedMines = new ArrayList<>();
 		this.preventedMines = new ArrayList<>();
+		
 	}
 	
 	
@@ -251,7 +324,6 @@ public class MineBombData {
 		this.explosionShape = explosionShape;
 		this.radius = radius;
 		
-//		this.loreBombItemId = "PrisonMineBomb: " + name;
 		
 		this.lore = new ArrayList<>();
 		
@@ -274,15 +346,41 @@ public class MineBombData {
 		
 		this.itemRemovalDelayTicks = 5;
 		
+		this.animationPattern = AnimationPattern.infinity;
+		
+		this.animationSpeed = 5.0;
+		
+		this.animationOffset = 0.0;
+		
+		this.animationRadius = 1.0;
+		this.animationRadiusDelta = 0.0;
+		this.animationAlternateDirections = false;
+		this.animationSpinSpeed = -35;
+		
+		this.animationArmorStandItemLocation = AnimationArmorStandItemLocation.hand;
+		
+		
+		this.throwVelocityLow = 1.5;
+		this.throwVelocityHigh = 3;
+		
+		this.animationSpeed = 10.0;
+		
+		
 		this.glowing = false;
 		this.gravity = true;
 		
 		this.autosell = false;
 		this.customModelData = 0;
 		
+		this.small = false;
+		
 		
 		this.applyToPlayersBlockCount = true;
 		
+		this.placedBombBlock = null;
+		this.placedBombLocation = null;
+		
+		this.bombStatus = BombStatus.unprocessed;
 	}
 	
 	
@@ -290,7 +388,6 @@ public class MineBombData {
 		MineBombData cloned = new MineBombData( getName(), getItemType(), getExplosionShape(),
 				getRadius() );
 		
-//		cloned.setLoreBombItemId( getLoreBombItemId() );
 		
 		cloned.setDescription( getDescription() );
 		
@@ -315,12 +412,31 @@ public class MineBombData {
 		cloned.setGlowing( isGlowing() );
 		cloned.setGravity( isGravity() );
 		
+		cloned.setAnimationPattern( getAnimationPattern() );
+		cloned.setAnimationOffset( getAnimationOffset() );
+		cloned.setAnimationSpeed( getAnimationSpeed() );
+		cloned.setAnimationRadius( getAnimationRadius() );
+		cloned.setAnimationRadiusDelta( getAnimationRadiusDelta() );
+		cloned.setAnimationAlternateDirections( isAnimationAlternateDirections() );
+		cloned.setAnimationSpinSpeed( getAnimationSpinSpeed() );
+		cloned.setAnimationArmorStandItemLocation( getAnimationArmorStandItemLocation() );
+		
+		
+		cloned.setThrowVelocityLow( getThrowVelocityLow() );
+		cloned.setThrowVelocityHigh( getThrowVelocityHigh() );
+		
+		
 		cloned.setItemRemovalDelayTicks( getItemRemovalDelayTicks() );
 		
 		cloned.setAutosell( isAutosell() );
 		cloned.setActivated( isActivated() );
 		
 		cloned.setCustomModelData( getCustomModelData() );
+		
+		cloned.setSmall( isSmall() );
+		
+		cloned.setPlacedBombBlock( getPlacedBombBlock() );
+		cloned.setPlacedBombLocation( getPlacedBombLocation() );
 		
 		
 		for ( String l : getLore() ) {
@@ -349,8 +465,80 @@ public class MineBombData {
 		}
 		
 		
+		cloned.setBombStatus( getBombStatus() );
+		
 		return cloned;
 	}
+	
+	
+
+	@Override
+	public int compareTo(MineBombData o) {
+		int results = 0;
+		
+		if ( o == null ) {
+			results = -1;
+		}
+		
+		results = getName().compareTo( o.getName() );
+
+		// This is basically used in unit testing and with JSON conversions.
+		// conversions of numeric values shouldn't be an issue, so do not 
+		// add to this compareTo.
+		
+		
+		if ( results == 0 ) {
+			
+			results = getNameTag().compareTo( o.getNameTag() );
+			if ( results == 0 ) {
+				
+				results = getDescription().compareTo( o.getDescription() );
+				if ( results == 0 ) {
+					
+					results = getAnimationPattern().compareTo( o.getAnimationPattern() );
+					if ( results == 0 ) {
+						
+						results = Integer.compare( getSoundEffects().size(), o.getSoundEffects().size() );
+						if ( results == 0 ) {
+							
+							results = Integer.compare( getVisualEffects().size(), o.getVisualEffects().size());
+							if ( results == 0 ) {
+								
+								results = getExplosionShape().compareTo( o.getExplosionShape() );
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return results;
+	}
+	
+	
+	/**
+	 * <p>This function calculates the throw velocity based upon a randomly generated 
+	 * value between the 'throwValueVelocityLow' and 'throwVelocityHeigh'.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public double getThrowVelocity() {
+		double results = getThrowVelocityLow();
+		
+		if ( getThrowVelocityLow() != getThrowVelocityHigh() ) {
+			
+			double range = getThrowVelocityLow() < getThrowVelocityHigh() ?
+						getThrowVelocityHigh() - getThrowVelocityLow() :
+						getThrowVelocityLow() - getThrowVelocityHigh();
+			double rnd = Math.random() * range;
+			
+			results += rnd;
+		}
+		
+		return results;
+	}
+
 
 	public String getName() {
 		return name;
@@ -372,13 +560,6 @@ public class MineBombData {
 	public void setDescription( String description ) {
 		this.description = description;
 	}
-
-//	public String getLoreBombItemId() {
-//		return loreBombItemId;
-//	}
-//	public void setLoreBombItemId( String loreBombItemId ) {
-//		this.loreBombItemId = loreBombItemId;
-//	}
 
 	public List<String> getLore() {
 		return lore;
@@ -516,6 +697,103 @@ public class MineBombData {
 		this.itemRemovalDelayTicks = itemRemovalDelayTicks;
 	}
 
+
+	/**
+	 * If the animationPatternString is null, this will default to the 
+	 * infinity pattern.
+	 * 
+	 * AnimationPattern should never be null, so it will fall back to it's default
+	 * value which is infinity.
+	 * 
+	 * @return
+	 */
+	public AnimationPattern getAnimationPattern() {
+		if ( animationPattern == null ) {
+			// Note: if animationPatternString is null it will return 'infinity' which
+			//       is the default value.
+			animationPattern = AnimationPattern.infinity;
+		}
+		return animationPattern;
+	}
+	public void setAnimationPattern(AnimationPattern animationPattern) {
+		
+		this.animationPattern = 
+					animationPattern == null ? 
+							AnimationPattern.infinity : 
+							animationPattern;
+	}
+
+	public double getAnimationOffset() {
+		return animationOffset;
+	}
+	public void setAnimationOffset(double animationOffset) {
+		this.animationOffset = animationOffset;
+	}
+
+	public double getAnimationSpeed() {
+		return animationSpeed;
+	}
+	public void setAnimationSpeed(double animationSpeed) {
+		this.animationSpeed = animationSpeed;
+	}
+	
+	public double getAnimationRadius() {
+		return animationRadius;
+	}
+	public void setAnimationRadius(double animationRadius) {
+		this.animationRadius = animationRadius;
+	}
+
+	public double getAnimationRadiusDelta() {
+		return animationRadiusDelta;
+	}
+	public void setAnimationRadiusDelta(double animationRadiusDelta) {
+		this.animationRadiusDelta = animationRadiusDelta;
+	}
+
+	public boolean isAnimationAlternateDirections() {
+		return animationAlternateDirections;
+	}
+	public void setAnimationAlternateDirections(boolean animationAlternateDirections) {
+		this.animationAlternateDirections = animationAlternateDirections;
+	}
+
+	public float getAnimationSpinSpeed() {
+		return animationSpinSpeed;
+	}
+	public void setAnimationSpinSpeed(float animationSpinSpeed) {
+		this.animationSpinSpeed = animationSpinSpeed;
+	}
+
+	public AnimationArmorStandItemLocation getAnimationArmorStandItemLocation() {
+		if ( animationArmorStandItemLocation == null ) {
+			animationArmorStandItemLocation = AnimationArmorStandItemLocation.hand;
+		}
+		return animationArmorStandItemLocation;
+	}
+	public void setAnimationArmorStandItemLocation(AnimationArmorStandItemLocation animationItemLocation) {
+		this.animationArmorStandItemLocation = animationItemLocation == null ?
+					AnimationArmorStandItemLocation.hand : animationItemLocation;
+	}
+
+	public int getTaskId() {
+		return taskId;
+	}
+
+	public double getThrowVelocityLow() {
+		return throwVelocityLow;
+	}
+	public void setThrowVelocityLow(double throwVelocityLow) {
+		this.throwVelocityLow = throwVelocityLow;
+	}
+
+	public double getThrowVelocityHigh() {
+		return throwVelocityHigh;
+	}
+	public void setThrowVelocityHigh(double throwVelocityHigh) {
+		this.throwVelocityHigh = throwVelocityHigh;
+	}
+
 	public boolean isAutosell() {
 		return autosell;
 	}
@@ -558,6 +836,40 @@ public class MineBombData {
 		this.applyToPlayersBlockCount = applyToPlayersBlockCount;
 	}
 
+	public boolean isSmall() {
+		return small;
+	}
+	public void setSmall(boolean small) {
+		this.small = small;
+	}
+
+	public boolean addSoundEffects( MineBombEffectsData effect ) {
+		return addSoundEffects( effect, true );
+	}
+	public boolean addSoundEffects( MineBombEffectsData effect, boolean showWarnings ) {
+		boolean results = false;
+		
+		effect.setEffectType( EffectType.sounds );
+		
+		Prison.get().getPlatform().validateMineBombEffect( effect );
+		
+		if ( effect.isValid() ) {
+			getSoundEffects().add(effect);
+		}
+		else if ( showWarnings ) {
+			String msg = String.format(
+					"MineBombData.addSoundEffects: Invalid effect. "
+					+ "This effect is not valid for the version of Spigot that you're "
+					+ "running and will be excluded. This is not an error. "
+					+ "MineBomb: %s  Effect: [[%s]] ",
+					getName(), 
+					effect.toString()
+					);
+			Output.get().logInfo( msg );
+			results = true;
+		}
+		return results;
+	}
 	public TreeSet<MineBombEffectsData> getSoundEffects() {
 		return soundEffects;
 	}
@@ -565,6 +877,33 @@ public class MineBombData {
 		this.soundEffects = soundEffects;
 	}
 
+	public boolean addVisualEffects( MineBombEffectsData effect ) {
+		return addVisualEffects( effect, true );
+	}
+	public boolean addVisualEffects( MineBombEffectsData effect, boolean showWarnings ) {
+		boolean results = false;
+		
+		effect.setEffectType( EffectType.visuals );
+		
+		Prison.get().getPlatform().validateMineBombEffect( effect );
+		
+		if ( effect.isValid() ) {
+			getVisualEffects().add(effect);
+		}
+		else if ( showWarnings ) {
+			String msg = String.format(
+					"MineBombData.addVisualEffects: Invalid effect. "
+					+ "This effect is not valid for the version of Spigot that you're "
+					+ "running and will be excluded. This is not an error. "
+					+ "MineBomb: %s  Effect: [[%s]] ",
+					getName(), 
+					effect.toString()
+					);
+			Output.get().logInfo( msg );
+			results = true;
+		}
+		return results;
+	}
 	public TreeSet<MineBombEffectsData> getVisualEffects() {
 		return visualEffects;
 	}
@@ -579,5 +918,27 @@ public class MineBombData {
 		this.placedBombBlock = placedBombBlock;
 	}
 
+	public Location getPlacedBombLocation() {
+		return placedBombLocation;
+	}
+	public void setPlacedBombLocation(Location placedBombLocation) {
+		this.placedBombLocation = placedBombLocation;
+	}
+
+
+	public int getTask() {
+		return taskId;
+	}
+	public void setTaskId(int taskId ) {
+		this.taskId = taskId;
+	}
+
+
+	public BombStatus getBombStatus() {
+		return bombStatus;
+	}
+	public void setBombStatus(BombStatus bombStatus) {
+		this.bombStatus = bombStatus;
+	}
 	
 }

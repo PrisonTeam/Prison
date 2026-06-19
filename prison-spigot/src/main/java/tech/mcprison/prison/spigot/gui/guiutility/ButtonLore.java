@@ -110,8 +110,7 @@ public class ButtonLore extends SpigotGUIComponents{
     public void setLoreDescription(List<String> description){
         this.description.clear();
         for (String descriptionLore : description) {
-        	addLineLoreDescription( descriptionLore );
-//            this.description.add( Text.translateAmpColorCodes(colorIDDescription + descriptionLore) );
+        		addLineLoreDescription( descriptionLore );
         }
     }
 

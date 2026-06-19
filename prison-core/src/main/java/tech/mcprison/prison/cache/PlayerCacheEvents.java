@@ -50,21 +50,23 @@ public class PlayerCacheEvents
     @Subscribe
     public void onPlayerJoin(PlayerJoinEvent event) {
     	
-    	Player player = event.getPlayer();
-    	PlayerCache.getInstance().submitAsyncLoadPlayer( player );
+	    	Player player = event.getPlayer();
+	    	
+	    	
+	    	PlayerCache.getInstance().submitAsyncLoadPlayer( player );
     }
 
     @Subscribe
     public void onPlayerQuit(PlayerQuitEvent event) {
     	
      	Player player = event.getPlayer();
-    	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
+     	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
     }
 
     @Subscribe
     public void onPlayerKicked(PlayerKickEvent event) {
     	
-    	Player player = event.getPlayer();
-    	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
+	    	Player player = event.getPlayer();
+	    	PlayerCache.getInstance().submitAsyncUnloadPlayer( player );
     }
 }

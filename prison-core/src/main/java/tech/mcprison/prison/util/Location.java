@@ -18,7 +18,14 @@
 
 package tech.mcprison.prison.util;
 
+import java.text.DecimalFormat;
+import java.util.Optional;
+
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.bombs.MineBombs.AnimationArmorStandItemLocation;
+import tech.mcprison.prison.internal.ArmorStand;
+import tech.mcprison.prison.internal.Entity;
+import tech.mcprison.prison.internal.EntityType;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -31,7 +38,9 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
  */
 public class Location {
 
-    private World world;
+    private transient World world;
+    private String worldName;
+    
     private double x, y, z;
     private float pitch, yaw;
     
@@ -41,34 +50,65 @@ public class Location {
     private boolean isCorner;
 
     public Location(World world, double x, double y, double z, float pitch, float yaw, Vector direction) {
-    	this.world = world;
-    	this.x = x;
-    	this.y = y;
-    	this.z = z;
-    	this.pitch = pitch;
-    	this.yaw = yaw;
-    	this.direction = direction;
+	    	this.world = world;
+	    	this.worldName = world == null ? null : world.getName();
+	    	
+	    	this.x = x;
+	    	this.y = y;
+	    	this.z = z;
+	    	this.pitch = pitch;
+	    	this.yaw = yaw;
+	    	this.direction = direction;
     }
+    
     public Location(World world, double x, double y, double z, float pitch, float yaw) {
-    	this( world, x, y, z, pitch, yaw, new Vector() );
+    		this( world, x, y, z, pitch, yaw, new Vector() );
     }
 
     public Location(World world, double x, double y, double z) {
-    	this( world, x, y, z, 0.0f, 0.0f);
+    		this( world, x, y, z, 0.0f, 0.0f);
     }
 
     public Location(String worldName, int x, int y, int z) {
-    	this( Prison.get().getPlatform().getWorld( worldName ).orElse( null ), (double) x, (double) y, (double) z );
+    		this( Prison.get().getPlatform().getWorld( worldName ).orElse( null ), (double) x, (double) y, (double) z );
     }
     
     public Location(Location clone) {
-    	this( clone.getWorld(), clone.getX(), clone.getY(), clone.getZ(), 
+    		this( clone.getWorld(), clone.getX(), clone.getY(), clone.getZ(), 
     			clone.getPitch(), clone.getYaw(), clone.getDirection());
     }
     
     public Location() {
     }
 
+    public Location clone() {
+    		return new Location( this );
+    }
+    
+    
+	/**
+	 * <p>This function should be called after loading a mine from 
+	 * storage, and this function should reconnect all dynamic objects 
+	 * that could not be stored with the core Mine data.
+	 * </p>
+	 * 
+	 * <p>Examples: World objects.
+	 * </p>
+	 */
+	public void reconnectObects() {
+		if ( getWorld() == null ) {
+			String worldName = getWorldName();
+			
+			Optional<World> worldOpt = Prison.get().getPlatform().getWorld(worldName);
+			
+			if ( worldOpt.isPresent() ) {
+				World world = worldOpt.get();
+				
+				setWorld( world );
+			}
+		}
+	}
+    
     public World getWorld() {
         return world;
     }
@@ -77,7 +117,14 @@ public class Location {
         this.world = world;
     }
 
-    public double getX() {
+    public String getWorldName() {
+		return worldName;
+	}
+	public void setWorldName(String worldName) {
+		this.worldName = worldName;
+	}
+
+	public double getX() {
         return x;
     }
 
@@ -121,20 +168,34 @@ public class Location {
 		return direction;
 	}
     
+    /**
+     * Sets the {@link #getYaw() yaw} and {@link #getPitch() pitch} to point
+     * in the direction of the vector.
+     * 
+     * @param vector the direction vector
+     * @return the same location
+     */
 	public void setDirection( Vector direction ) {
 		this.direction = direction;
 	}
     
+	/**
+	 * <p>Return the integer part of the double, which means
+	 * it should not be rounded; use floor instead.
+	 * </p>
+	 * 
+	 * @return
+	 */
 	public int getBlockX() {
-        return Math.toIntExact(Math.round(getX()));
+        return (int) Math.floor(getX());
     }
 
     public int getBlockY() {
-        return Math.toIntExact(Math.round(getY()));
+        return (int) Math.floor(getY());
     }
 
     public int getBlockZ() {
-        return Math.toIntExact(Math.round(getZ()));
+        return (int) Math.floor(getZ());
     }
 
     public Block getBlockAt() {
@@ -142,11 +203,11 @@ public class Location {
     }
     
     public Block getBlockAt( boolean containsCustomBlocks ) {
-    	return world.getBlockAt( this, containsCustomBlocks );
+    		return world.getBlockAt( this, containsCustomBlocks );
     }
     
     public void setBlockAsync( PrisonBlock prisonBlock ) {
-    	world.setBlockAsync( prisonBlock, this );
+    		world.setBlockAsync( prisonBlock, this );
     }
 
     /**
@@ -171,7 +232,42 @@ public class Location {
 		this.isCorner = isCorner;
 	}
 	
-	@Override public boolean equals(Object o) {
+	/**
+	 * <p>This compares to see if two different locations are the same.
+	 * </p>
+	 * 
+	 * <p>There are a few problems with this function. First we need to 
+	 * figure out if we want to check to see if we have exactly the same 
+	 * object or not, of which we shouldn't expect it to be the same object
+	 * or we could just use the "==" equality test on the two objects.
+	 * Therefore, we know it's not going to be the same object, but we want
+	 * to determine if two objects are at the same location.  This is 
+	 * yet another problem.  What does it mean to be in the same location?
+	 * If item A has an x value of 3.84928 and item B has 3.1489203 should
+	 * that be the same location?  Yes, it should.  Because the two items
+	 * are within the same "block" for that x value (ignoring y and z axis
+	 * for this example).
+	 * </p>
+	 * 
+	 * <p>Therefore, this should check to see if two locations are within
+	 * the same block or not.  Likewise, where the "item" is looking should 
+	 * never be a factor since two items can be looking off in to different
+	 * directions and still be in the same block.  In other words, this
+	 * check of having the same location is for the physical block, and not
+	 * where they are looking.
+	 * </p>
+	 * 
+	 * <p>There may be situations were the pitch and yaw must match, but
+	 * in general, it should not be used for this function.  Also, the float
+	 * values should NOT be used either since an x value of 3.123456 will not
+	 * be considered in the same block if it has a value of 3.123450 since 
+	 * the block is not what that is checking.  So integer values must
+	 * be used in this method.
+	 * </p>
+	 * 
+	 */
+	@Override 
+	public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -181,15 +277,21 @@ public class Location {
 
         Location location = (Location) o;
 
-        return Double.compare(location.x, x) == 0 && Double.compare(location.y, y) == 0
-            && Double.compare(location.z, z) == 0 && Float.compare(location.pitch, pitch) == 0
-            && Float.compare(location.yaw, yaw) == 0 && (world != null ?
-            world.getName().equals(location.world.getName()) :
-            location.world == null);
+        // Must be in the same world:
+        if ( world == null || location.world == null || 
+        		!getWorld().getName().equalsIgnoreCase( location.getWorld().getName()) ) {
+        	return false;
+        }
+        
+        
+        return location.getBlockX() == getBlockX() &&
+        	   location.getBlockY() == getBlockY() &&
+        	   location.getBlockZ() == getBlockZ();
 
     }
 
-    @Override public int hashCode() {
+    @Override 
+    public int hashCode() {
         int result;
         long temp;
         result = world != null ? world.hashCode() : 0;
@@ -204,13 +306,26 @@ public class Location {
         return result;
     }
 
-    @Override public String toString() {
-        return "Location{" + "world=" + world + ", x=" + x + ", y=" + y + ", z=" + z + ", pitch="
-            + pitch + ", yaw=" + yaw + '}';
+    @Override 
+    public String toString() {
+    	
+    		DecimalFormat dFmt = new DecimalFormat( "0.00" );
+    	
+        return "Location{" + "world=" + world.getName() + ", "
+        		+ "x=" + dFmt.format(x) + ", "
+        		+ "y=" + dFmt.format(y) + ", "
+        		+ "z=" + dFmt.format(z) + ", "
+        		+ "pitch=" + dFmt.format(pitch) + ", "
+        		+ "yaw=" + dFmt.format(yaw) + '}';
     }
 
     /**
-     * Returns the values in coordinate (x, y, z) format.
+     * <p>Returns the values in coordinate '(x, y, z)' format.
+     * Uses doubles with no rounding. Has spaces after the commas.
+     * </p>
+     * 
+     * <p>Example: (-15.1, 35.666667, 124.000325)
+     * </p>
      *
      * @return The {@link String} containing coordinates.
      */
@@ -218,29 +333,51 @@ public class Location {
         return "(" + x + ", " + y + ", " + z + ")";
     }
 
-    
+    /**
+     * <p>Returns the values in coordinate '(worldName, x, y, z)' format.
+     * Uses only the integer part of the doubles with no rounding. Has spaces after the commas.
+     * </p>
+     * 
+     * <p>Example: (PrisonWorld, -15, 35, 124)
+     * </p>
+     * @return
+     */
     public String toWorldCoordinates() {
-    	return "(" + world.getName() + "," + ((int) x) + "," + ((int) y) + "," + ((int) z) + ")";
+    		return "(" + world.getName() + "," + ((int) x) + "," + ((int) y) + "," + ((int) z) + ")";
     }
 
+    /**
+     * <p>Using a String value of the WorldCoordinates, decodes the string value
+     * to a Location object.
+     * </p>
+     * 
+     * @param worldCoordinats such as '(PrisonWorld, -15, 35, 124)'
+     * @return
+     */
     public static Location decodeWorldCoordinates( String worldCoordinats ) {
-    	Location results = null;
-    	String[] d = worldCoordinats.replaceAll( "\\(|\\)", "" ).split( "," );
-    	
-    	if ( d != null && d.length == 4 ) {
-    		results = new Location( d[0], Integer.parseInt( d[1] ), Integer.parseInt( d[2] ), Integer.parseInt( d[3] ) );
-    	}
-    	return results;
+	    	Location results = null;
+	    	String[] d = worldCoordinats.replaceAll( "\\(|\\)", "" ).split( "," );
+	    	
+	    	if ( d != null && d.length == 4 ) {
+	    		results = new Location( d[0], Integer.parseInt( d[1] ), Integer.parseInt( d[2] ), Integer.parseInt( d[3] ) );
+	    	}
+	    	return results;
     }
     
     /**
-     * Returns the values in coordinate (x, y, z) format, to the nearest block (i.e. no decimals).
-     *
+     * <p>Returns the values in coordinate '(x, y, z)' format, to the nearest 
+     * block (i.e. no decimals, rounded, spaces after commas).
+     * </p>
+     * 
+     * <p>Example: (-15, 35, 124)
+     * </p>
+     * 
      * @return The {@link String} containing coordinates.
      */
     public String toBlockCoordinates() {
         return "(" + Math.round(x) + ", " + Math.round(y) + ", " + Math.round(z) + ")";
     }
+    
 	public Location add( Vector direction )
 	{
 		Location results = new Location( this );
@@ -250,6 +387,19 @@ public class Location {
 		results.setY( results.getY() + direction.getY() );
 		results.setZ( results.getZ() + direction.getZ() );
 
+		return results;
+	}
+	
+	/** 
+	 * This returns a vector based upon the current location.
+	 * 
+	 * Note that this is based upon org.bucket.location.Location.toVector() and
+	 * it does not use yaw.
+	 * 
+	 * @return
+	 */
+	public Vector toVector() {
+		Vector results = new Vector( getX(), getY(), getZ() );
 		return results;
 	}
 	
@@ -290,5 +440,21 @@ public class Location {
 		
 		return getWorld().getBlockAt( results );
 	}
+	
+	public Entity spawnEntity( EntityType entityType ) {
+		return getWorld().spawnEntity( this, entityType );
+	}
 
+	
+	public ArmorStand spawnArmorStand() {
+		return getWorld().spawnArmorStand( this );
+	}
+	
+	public ArmorStand spawnArmorStand( String itemName, AnimationArmorStandItemLocation asLocation ) {
+		
+		return getWorld().spawnArmorStand( this, itemName, asLocation );
+	}
+	
+	
+	
 }

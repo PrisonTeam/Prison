@@ -33,8 +33,8 @@ public class PrisonSpigotRanksCommands
         
         if ( ranksModule == null || ranksModule != null && !ranksModule.isEnabled() ) {
         	
-        	Output.get().sendWarn( sender, "The command '/ranks' is disabled because the Ranks module is not active." );
-        	return;
+	        	Output.get().sendWarn( sender, "The command '/ranks' is disabled because the Ranks module is not active." );
+	        	return;
         }
 		
 		if (!sender.hasPermission("ranks.admin")) {
@@ -52,15 +52,14 @@ public class PrisonSpigotRanksCommands
 			if ((ladderName.equalsIgnoreCase("default") || ladderName.equalsIgnoreCase("ranks")) &&
 					isConfig("Options.Ranks.GUI_Enabled")) {
 
-            	Object regCommand = Prison.get().getCommandHandler()
-        				.getRegisteredCommandClass( PrisonSpigotGUICommands.class );
-	        	if ( regCommand != null ) {
-	        		PrisonSpigotGUICommands psGUICmd = (PrisonSpigotGUICommands) regCommand;
-	        		psGUICmd.cmdPrisonManagerRanks( sender, page, "ranks", "close" );
-	        		return;
-	        	}
+	            	Object regCommand = Prison.get().getCommandHandler()
+	        				.getRegisteredCommandClass( PrisonSpigotGUICommands.class );
+		        	if ( regCommand != null ) {
+		        		PrisonSpigotGUICommands psGUICmd = (PrisonSpigotGUICommands) regCommand;
+		        		psGUICmd.cmdPrisonManagerRanks( sender, page, "ranks", "close" );
+		        		return;
+		        	}
 				
-//				sender.dispatchCommand("gui ranks");
 			} else if (ladderName.equalsIgnoreCase("prestiges") && 
 					isConfig( "Options.Prestiges.GUI_Enabled")) {
 				
@@ -72,7 +71,6 @@ public class PrisonSpigotRanksCommands
 					return;
 				}
 
-//				sender.dispatchCommand("gui prestiges");
 			} 
 
 			

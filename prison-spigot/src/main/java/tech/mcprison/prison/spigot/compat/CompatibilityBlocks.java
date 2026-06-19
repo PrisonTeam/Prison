@@ -14,21 +14,14 @@ import tech.mcprison.prison.util.Location;
 public interface CompatibilityBlocks
 			extends CompatibilityPlayer {
 
-//	public BlockType getBlockType(Block spigotBlock);
-
 	public SpigotBlock getSpigotBlock(Block spigotBlock);
 	
 	public XMaterial getXMaterial( Block spigotBlock );
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock );
 	
-//	public XMaterial getXMaterial( BlockType blockType );
-
-//	public BlockType getBlockType( ItemStack spigotStack );
 
 	
-	
-//	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
 	
 	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock );
 	
@@ -37,12 +30,6 @@ public interface CompatibilityBlocks
 
 	
 	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Location location );
-	
-//	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock );
-//	
-//	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock );
-//	
-//	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock );
 	
 
 	
@@ -57,10 +44,6 @@ public interface CompatibilityBlocks
     
     public boolean setDurability( SpigotItemStack itemStack, int newDurability );
     
-//	public int getDurability( SpigotItemStack itemInHand );
-//	
-//	public void setDurability( SpigotItemStack itemInHand, int newDurability );
-	
 	public void setBlockFace( Block bBlock, BlockFace blockFace );
 	
     public ItemStack getLapisItemStack();
@@ -102,5 +85,26 @@ public interface CompatibilityBlocks
      */
 	public void setCustomModelData( ItemStack itemStack, int customModelData );
 
+	
+	/**
+	 * <p>With spigot 1.14 and newer, there is a function on a block that
+	 * identifies if a block is passable.  The description in the api docs are:
+	 * </p>
+	 * 
+	 * <pre>
+	 * Checks if this block is passable.
+
+A block is passable if it has no colliding parts that would prevent 
+players from moving through it.
+
+Examples: Tall grass, flowers, signs, etc. are passable, but open doors, 
+fence gates, trap doors, etc. are not because they still have parts that 
+can be collided with.
+	 * </p>
+	 * 
+	 * @param bBlock
+	 * @return
+	 */
+	public boolean isPassable( Block bBlock );
 
 }

@@ -6,7 +6,7 @@
 
 This document provides some highlights to how to setup mines.  It is a work in progress so check back for more information.
 
-*Documented updated: 2024-03-11*
+*Documented updated: 2024-12-14*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -136,6 +136,9 @@ A mine wand will allow you to set the coordinates of a mine by clicking on a blo
 A mine wand can also be used for debugging block break actions within a mine.  If you are having issues with getting mines to work, it's one of the many built-in support tools that can help figure out what's going wrong, since a prison server can become very complex, especially when factoring in other plugins.  Please contact us through our discord server for additional help if needed.
 
 
+Note: You can now test block breakage with the command `/mines debugBlockBreak` while holding the tools of your choice.  This may be a better way to test enchantment plugins, which will probably ignore a plain diamond pickaxe that is used by default with the mine wand.
+
+
 
 <h3>Laying Out the New Mine</h3>
 
@@ -203,13 +206,18 @@ Some of the highlights of these commands are as follows:
 * `/mines set accessPermission help` : Use a mine permission to grant players access to the mine. This will override WG regions and resolve issues with strange behaviors resulting from WG.  This must be a plain permission and cannot be a permission group.
 
 
-* `/mines command` : **Now active!**  **Take your mines to the next level!** See the document on [Mine Commands](prison_docs_111_mine_commands.md) for more information. Every time a mine resets, you can now control what commands run right before a reset, and what runs right after a reset. These commands are similar to the Rank Commands, since they can be any command that you can run from the console.  The idea is that you can have unique mines that have not been possible before, such as randomly spawned forests or specific builds.
+* `/mines command` : **Take your mines to the next level!** See the document on [Mine Commands](prison_docs_111_mine_commands.md) for more information. Every time a mine resets, you can now control what commands run right before a reset, and what runs right after a reset. These commands are similar to the Rank Commands, since they can be any command that you can run from the console.  The idea is that you can have unique mines that have not been possible before, such as randomly spawned forests or specific builds.
 * `/mines delete` : Deletes a mine. You can always undelete a mine by going in to the server file system and rename the deleted mine, then restart the server.
 * `/mines info` : Very useful in viewing all information related to the mine.
 * `/mines list` : Displays all mines on your server.
 * `/mines playerInventory` : Shows your current inventory in the console. Intended strictly for admins.
 * `/mines rename` : Renames a mine.
 
+
+* `/mines debugBlockBreak` if you need to debug what's happening with block breakage on your server, please use this new tool to get detailed account of which plugins are handling, or interfering, with the block breakage.  This works both in side a mine, and outside.  
+    * They way you use this command, is in game, you will look at a block (center the cross-hair on the block), while holding a tool, or weapon of your choice, then issue the command in-game `/mines debugBlockBreak`.  Then look at the console for detailed information on the command's output.  It will be very detailed, and could possibly be a few dozen lines long, or more, if there are a lot of installed plugins on your server.
+    
+ 
 
 * `/mines reset <mineName> <options>` : Resets the mine. Forces a regeneration of all the blocks, even if the mine is in skip reset mode.  `<mineName>` should be the name of the mine, but can also be ** *all* ** to force all the mines to reset one after the other.  If such action is performed, then all mine resets will be done through a submission with a slight delay between each reset, and it will prevent the running of the mine reset commands to prevent possible looping.  `<options>` should not be use directly without understanding what they do. 
 * `/mines stats` : Toggles the display of stats that pertain to how long it takes to reset the mines.  View /mines info or /mines list to see the stats.  Use this command again to turn it off.
@@ -269,7 +277,19 @@ Some of the highlights of these commands are as follows:
 * `/mines set notificationPerm` : Enables or Disables notifications pertaining to mine resets to be seen only by players who have permission to that mine.  The permissions used are `mines.notification.[mineName]` in all lower case.
 * `/mines set notification` : Can turn off the notifications on a per-mine basis.  Or set the notification radius, or only notify players within the mine.  This command cannot change the message.
 * `/mines set rank <rankName>` : Links a mine to a rank, otherwise there is no way within prison to identify which mines should be associated with a given rank. If **rankName** is **none** then it removes the associated rank from the mine (deletes the rank).  This is not yet needed, but it will be used in the near future with new features, or enhancements to existing features.
-* `/mines set resetThreshold` : This allows you to set a percent remaining in the mine to use as a threshold for resets. For example if you set it to 20.5% then the mine will reset when it reaches 25.5% blocks remaining.  When the mine resets, it will initiate the `zeroBlockResetDelay` functionality, of which it's not exactly "zero blocks" anymore.
+
+
+* `/mines set resetThreshold` : This allows you to set a percent remaining in the mine to use as a threshold for resets. For example if you set it to 20.5% then the mine will reset when it reaches 25.5% blocks remaining.  When the mine resets, it will initiate the `zeroBlockResetDelay` functionality, of which it's not exactly "zero blocks" anymore.  
+    * Please be careful if using values that are way too high, such as over 90%, as it could possibly result in such frequent mine resets per second, that the internal mine-locks could become corrupt or stuck.  If this happens, please manually reset the mine with `/mines reset <mine> force`.  
+    * Excessive mine resets can cause lag and other server performance issues.  This would not be considered a bug or a design flaw.  It's more so a configuration issue, so use at your own risk.
+    * To find out how many mined blocks it will take to reset the mine, use this formula, which example of 98% threshold in a mine that is 30 x 15 x 30 (13,500 blocks):
+        * blocks-to-reset = total-blocks * (1.0 - percent-reset-threshold)
+        * blocks-to-reset = 13,500 * (1.0 - 0.98)
+        * blocks-to-reset = 13,500 * 0.02
+        * blocks-to-reset = 270 blocks
+    * You may want to consider how quickly a player can mine blocks with the highest efficiency pickaxe that you allow on your server.  Then multiply that projected value by the number of players that may be mining together in the mine.  In general, you would want to increase the total blocks mined before resetting the mine, which will do a much better job of handling a large number of blocks being removed per interval.
+
+
 * `/mines set resetTime` : Changes the time between resets, as expressed in seconds. Applies to each mine independently.
 * **Removed:** `/mines set resetPaging` :  This no longer is a setting, since Prison always uses a more advanced type of paging that dynamically prevents server lag. This is an advanced feature that can eliminate lag that might be experienced with the resetting of enormous large mines. A mine could be millions of blocks in size and without this setting it may take a few seconds, or longer to reset, and it could cause the ticks to fall far behind, even to the point of forcing a shutdown.  This command instead will breakdown the mine's reset in to very small chunks that will prevent the TPS from slowing down, and it will allow other critical tasks to continue to run.  The total length of time for the rest may be increased, but it will not hurt the server. Prison does not use async resets due to eventual corruption of the bukkit and spigot components.
 * `/mines set size` : Allows you to resize a mine without redefining it with the prison selection wand. Just specify which direction to increase or decrease. It also uses the `/mines set liner <mineName> repair` feature to fill in voids when reducing an edge. 
@@ -478,7 +498,7 @@ The feature zero blocks reset delay identifies what should happen when Prison de
 
 If this feature is enabled, and the delay value is set to Zero, then the mine is forced to reset with no delay.  If there is a light load of jobs running on the server, then it will be instantly reset, otherwise there will be a delay for the job to wait its turn to run.
 
-If the reset delay is non-zero, the value is measured in seconds, with a valid value of 0.01 seconds.  But keep in mind that in reality the seconds are converted to ticks and is scheduled within the Bukkit job queue.  Therefore, since there are 1000 milliseonds within one second, and 20 ticks within one second, one tick is the smaller possible value, which equates to 50 milliseconds.  This is equivalent to 0.05 seconds. When the seconds are converted to ticks, the values will be rounded down to a whole integer value.  So if a value is provide such as 0.049 it will be submitted as 0 ticks, which will result in zero delay (if possible) before running.
+If the reset delay is non-zero, the value is measured in seconds, with a valid value of 0.01 seconds.  But keep in mind that in reality the seconds are converted to ticks and is scheduled within the Bukkit job queue.  Therefore, since there are 1000 milliseconds within one second, and 20 ticks within one second, one tick is the smaller possible value, which equates to 50 milliseconds.  This is equivalent to 0.05 seconds. When the seconds are converted to ticks, the values will be rounded down to a whole integer value.  So if a value is provide such as 0.049 it will be submitted as 0 ticks, which will result in zero delay (if possible) before running.
 
 The bottom line is that this feature can force an earlier reset of the mine when it becomes totally empty of blocks.  A delay may be needed, or desired, to reach your perfection for the mine.  
 
@@ -487,6 +507,9 @@ The bottom line is that this feature can force an earlier reset of the mine when
 
 By using the command `/mines set resetThreshold` it is effectively able to shift when the mine resets. It does not delay when the mine resets, but instead it provides way to trigger a reset based upon a percentage of the mine that remains.  It works in conjunction with Zero Block Reset Delay too, where instead of waiting until zero blocks remain, it then applies a percentage to change the reset level.
 
+A mine that is 10,000 blocks, when the resetThreshold is set to 90%, the mine will reset after about 1,000 blocks are mined (10%).  Setting this value too high, like even over 80%, does not make sense.  It would be far more efficient, and easier on the server's TPS to instead make the mine much, much smaller.  Setting this to a high percentage is bad overall, because the mine will reset with a fraction of it's total blocks being mined, but yet a mine reset will replace all 100% of the blocks in the mine, which can contribute to server lag if the frequency is way too high.  
+
+Very high values can also result in prison resetting the mine many times per second, especially if there are multiple players mining with very high efficiency pickaxes being used. It is also very much possible, that if the mines are being reset a few times per second, or even every few seconds, that the internal mine-locks that are being used could have their state become corrupt and therefore prevent the mine from resetting. If this happens, the locks should auto-release after 5 minutes.  But you can also manually force a reset to fix them with `/mines reset <mine> force`.
 
 
 

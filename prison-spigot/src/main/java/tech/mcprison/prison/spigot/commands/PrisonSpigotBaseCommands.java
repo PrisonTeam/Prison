@@ -27,21 +27,21 @@ public class PrisonSpigotBaseCommands
 
 	protected boolean isConfig( String configId ) {
     	
-    	String config = getConfig().getString( configId );
+		String config = getConfig().getString( configId );
 
 		return config != null && config.equalsIgnoreCase( "true" );
     }
     
     protected boolean isPrisonConfig( String configId ) {
 
-    	return SpigotPrison.getInstance().isPrisonConfig( configId );
+    		return SpigotPrison.getInstance().isPrisonConfig( configId );
     }
     
     protected String getConfig( String configId ) {
     	
-    	String config = getConfig().getString( configId );
-
-    	return config == null ? "" : config;
+	    	String config = getConfig().getString( configId );
+	
+	    	return config == null ? "" : config;
     }
     
     
@@ -57,11 +57,11 @@ public class PrisonSpigotBaseCommands
         Player player = null;
         
         if ( sender instanceof SpigotCommandSender ) {
-        	SpigotCommandSender cmdSender = (SpigotCommandSender) sender;
-        	
-        	if (cmdSender.getWrapper() instanceof Player) {
-        		player = (Player) cmdSender.getWrapper();
-        	}
+	        	SpigotCommandSender cmdSender = (SpigotCommandSender) sender;
+	        	
+	        	if (cmdSender.getWrapper() instanceof Player) {
+	        		player = (Player) cmdSender.getWrapper();
+	        	}
         }
         return player;
 	}

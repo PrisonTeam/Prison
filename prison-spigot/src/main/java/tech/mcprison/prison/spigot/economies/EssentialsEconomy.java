@@ -40,7 +40,7 @@ public class EssentialsEconomy
 	private boolean availableAsAnAlternative = false;
 
     public EssentialsEconomy() {
-    	super( "EssentialsX", "Essentials" );
+    		super( "EssentialsX", "Essentials" );
     	
     }
 	
@@ -102,7 +102,7 @@ public class EssentialsEconomy
     
     @Override
     public boolean hasAccount( Player player ) {
-    	return wrapper.hasAccount( player );
+    		return wrapper.hasAccount( player );
     }
     
     @Override 
@@ -138,14 +138,14 @@ public class EssentialsEconomy
     
     @Override
     public void disableIntegration() {
-    	wrapper = null;
+    		wrapper = null;
     }
     
     @Override
     public String getDisplayName()
     {
-    	return super.getDisplayName() + 
-    			( availableAsAnAlternative ? " (disabled)" : "");
+	    	return super.getDisplayName() + 
+	    			( availableAsAnAlternative ? " (disabled)" : "");
     }
     
 	@Override

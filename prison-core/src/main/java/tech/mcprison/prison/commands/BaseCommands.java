@@ -23,11 +23,6 @@ public abstract class BaseCommands
 	}
 	
 
-//	public Player getPlayer( CommandSender sender ) {
-//		Optional<Player> player = Prison.get().getPlatform().getPlayer( sender.getName() );
-//		return player.isPresent() ? player.get() : null;
-//	}
-    
     /**
      * <p>Gets a player by name.  If the player is not online, then try to get them from 
      * the offline player list. If not one is found, then return a null.
@@ -37,37 +32,44 @@ public abstract class BaseCommands
      * ensure a player is always returned, if its a valid player.
      * </p>
      * 
+     * <p>Never should this function return a Player based upon sender.
+     * </p>
+     * 
      * @param sender
      * @param playerName is optional, if not supplied, then sender will be used
      * @return Player if found, or null.
      */
-	public Player getPlayer( CommandSender sender, String playerName ) {
-		return getPlayer( sender, playerName, null );
+	public Player getPlayerByName( // CommandSender sender, 
+			String playerName ) {
+		return getPlayerByName( // sender, 
+				playerName, null );
 	}
-//	public Player getPlayer( CommandSender sender ) {
-//		return getPlayer( sender, null, null );
-//	}
-	public Player getPlayer( CommandSender sender, String playerName, UUID uuid ) {
+	
+	/**
+	 * <p>This function should only return a Player based upon either the player's name
+	 * or their UUID.  It should never return a Player based upon sender.
+	 * </p>
+	 * 
+	 * <p>Gets a player by name.  If the player is not online, then try to get them from 
+     * the offline player list. If not one is found, then return a null.
+     * </p>
+     * 
+     * <p>The getOfflinePlayer() will now include RankPlayer as a fall back to help
+     * ensure a player is always returned, if its a valid player.
+     * </p>
+     * 
+     * 
+	 * @param sender
+	 * @param playerName
+	 * @param uuid
+	 * @return
+	 */
+	public Player getPlayerByName( // CommandSender sender, 
+			String playerName, UUID uuid ) {
 		Player result = null;
 		
-		playerName = playerName != null && !playerName.trim().isEmpty() ? 
-								playerName : sender != null ? sender.getName() : null;
-		
-		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
-		
-		if ( playerName != null ) {
-			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
-			if ( !opt.isPresent() ) {
-				opt = Prison.get().getPlatform().getOfflinePlayer( playerName );
-			}
-			if ( !opt.isPresent() ) {
-				opt = Prison.get().getPlatform().getOfflinePlayer( uuid );
-			}
-			if ( opt.isPresent() ) {
-				result = opt.get();
-			}
-			
-		}
+		result = Prison.get().getPlatform().getRankPlayer( uuid, playerName );
+
 		return result;
 	}
 	
@@ -76,8 +78,6 @@ public abstract class BaseCommands
 		
 		playerName = playerName != null && !playerName.trim().isEmpty() ? 
 				playerName : sender != null ? sender.getName() : null;
-		
-		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
 		
 		if ( playerName != null ) {
 			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
@@ -89,31 +89,5 @@ public abstract class BaseCommands
 		}
 		return result;
 	}
-	
-	
-//	public double getPlayerBalance( Player player ) {
-//		
-//		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
-//		
-//		return economy.getBalance( player );
-//	}
-//    
-//	public double getPlayerBalance( Player player, String currency ) {
-//		
-//
-//		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-//						.getEconomyForCurrency( currency );
-//		if ( currencyEcon == null ) {
-//			// ERROR: currency is not supported
-//			Output.get().logInfo( "The currency %s is not supported.  Therefore there is no blance.",
-//					currency );
-//			return 0;
-//		}
-//		else {
-//			return currencyEcon.getBalance( player, currency );
-//		}
-//
-//	}
-	
 	
 }

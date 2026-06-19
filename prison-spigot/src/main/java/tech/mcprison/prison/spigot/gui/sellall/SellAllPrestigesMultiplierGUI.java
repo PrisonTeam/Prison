@@ -33,8 +33,6 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         int pageSize = 45;
 
         // Global strings.
-//        String lorePrestigeName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_name);
-//        String lorePrestigeMultiplier = messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier);
         String loreClickToEdit = guiClickToEditMsg();
         String loreClickToDelete =  guiRightClickToDeleteMsg();
 

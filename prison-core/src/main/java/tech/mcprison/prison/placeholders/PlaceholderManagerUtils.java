@@ -266,9 +266,9 @@ public class PlaceholderManagerUtils {
 //    	Output.get().logInfo( "### @@@ ### getProgressBar: barAttribute: " + 
 //    				( barAttribute != null ? "true" : "false"));
     	
-    	PlaceholderProgressBarConfig barConfig = 
-    						attributeBar != null ? attributeBar.getBarConfig() :
-    									getProgressBarConfig();
+	    	PlaceholderProgressBarConfig barConfig = 
+	    						attributeBar != null ? attributeBar.getBarConfig() :
+	    									getProgressBarConfig();
 
 		String lastColorCode = null;
 		int segments = barConfig.getSegments();
@@ -303,7 +303,7 @@ public class PlaceholderManagerUtils {
 		}
 		
     	
-    	return sb.toString();
+    		return sb.toString();
 	}
 	
 	protected void convertPlaceholderSequence( PlaceholderIdentifier pIdentifier ) {
@@ -319,8 +319,8 @@ public class PlaceholderManagerUtils {
 			
 			pIdentifier.setIdentifier( pIdentifier.getIdentifier().replace( group1, "_nnn_" ) );
 			
-//		Output.get().logInfo( "### PlaceHolderKey: seq pattern detected: " + placeholder.name() + 
-//				"  group0= " + group0 + " group1= " + group1 + " group2= " + group2 + "  replacedText: " + textLowercase );
+//			Output.get().logInfo( "### PlaceHolderKey: seq pattern detected: " + placeholder.name() + 
+//					"  group0= " + group0 + " group1= " + group1 + " group2= " + group2 + "  replacedText: " + textLowercase );
 			
 			pIdentifier.setSequencePattern( group1 );
 			
@@ -373,7 +373,7 @@ public class PlaceholderManagerUtils {
 			}
 		}
 		
-		else {
+		else if ( !pIdentifier.getIdentifierRaw().startsWith( "_" ) ) {
 			Matcher matcher = PlaceholderManager.PLACEHOLDER_ESCAPE_CHARACTER_LEFT_PATTERN.matcher( pIdentifier.getIdentifierRaw() );
 			
 			if ( matcher.find() ) {
@@ -394,12 +394,8 @@ public class PlaceholderManagerUtils {
 					int len = pIdentifier.getIdentifierRaw().length();
 					pIdentifier.setIdentifierRaw( pIdentifier.getIdentifierRaw().substring(0, len - group0Right.length() ) );
 				}
-
 			}
-			
 		}
-		
 	}
-	
 
 }

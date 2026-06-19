@@ -89,44 +89,6 @@ public class PlaceholdersUtil
 		
 		return formattedTime;
 		
-//    	StringBuilder sb = new StringBuilder();
-//    	
-//    	long days = (long)(timeSec / TIME_DAY);
-//    	timeSec -= (days * TIME_DAY);
-//    	if ( days > 0 ) {
-//    		sb.append( days );
-//    		// y,m,w,d,h,m,s
-//    		sb.append( prefixesTimeUnits.get(3) ).append( " " );
-////    		sb.append( "d " );
-//    	}
-//    	
-//    	long hours = (long)(timeSec / TIME_HOUR);
-//    	timeSec -= (hours * TIME_HOUR);
-//    	if ( sb.length() > 0 || hours > 0 ) {
-//    		sb.append( hours );
-//    		// y,m,w,d,h,m,s
-//    		sb.append( prefixesTimeUnits.get(4) ).append( " " );
-////    		sb.append( "h " );
-//    	}
-//    	
-//    	long mins = (long)(timeSec / TIME_MINUTE);
-//    	timeSec -= (mins * TIME_MINUTE);
-//    	if ( sb.length() > 0 || mins > 0 ) {
-//    		sb.append( mins );
-//    		// y,m,w,d,h,m,s
-//    		sb.append( prefixesTimeUnits.get(5) ).append( " " );
-////    		sb.append( "m " );
-//    	}
-//    	
-//    	double secs = (double)(timeSec / TIME_SECOND);
-//    	timeSec -= (secs * TIME_SECOND);
-//    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#0");
-//    	sb.append( dFmt.format( secs ));
-//    	// y,m,w,d,h,m,s
-//    	sb.append( prefixesTimeUnits.get(6) ).append( " " );
-////    	sb.append( "s " );
-//    	
-//		return sb.toString();
 	}
 	
 	/**
@@ -147,11 +109,11 @@ public class PlaceholdersUtil
 	}
 	
 	public static String formattedMetricSISize( double amount, DecimalFormat dFmt, String spaces  ) { 
-    	StringBuilder unit = new StringBuilder();
-    	
-    	amount = divBy1000( amount, unit, " kMGTPEZY" );
-    	
-    	String results = dFmt.format( amount ) + spaces + unit.toString();
+	    	StringBuilder unit = new StringBuilder();
+	    	
+	    	amount = divBy1000( amount, unit, " kMGTPEZY" );
+	    	
+	    	String results = dFmt.format( amount ) + spaces + unit.toString();
 
 		return results.trim();
 	}
@@ -167,16 +129,16 @@ public class PlaceholdersUtil
 	}
 	
 	private static double divBy1000( double amount, StringBuilder unit, String units ) {
-    	if ( amount < 1000.0 || units.length() == 1 ) {
-    		unit.append( units.subSequence( 0, 1 ) );
-    	}
-    	else {
-    		// Div amount by 1000.0 and remove the first character of the units:
-    		amount /= 1000.0;
-    		units = units.substring( 1 );
-    		amount = divBy1000( amount, unit, units );
-    	}
-    	return amount;
+	    	if ( amount < 1000.0 || units.length() == 1 ) {
+	    		unit.append( units.subSequence( 0, 1 ) );
+	    	}
+	    	else {
+	    		// Div amount by 1000.0 and remove the first character of the units:
+	    		amount /= 1000.0;
+	    		units = units.substring( 1 );
+	    		amount = divBy1000( amount, unit, units );
+	    	}
+	    	return amount;
 	}
 	
 	
@@ -187,28 +149,28 @@ public class PlaceholdersUtil
 	}
 	
 	public static String formattedIPrefixBinarySize( double amount, DecimalFormat dFmt, String spaces  ) { 
-    	StringBuilder unit = new StringBuilder();
-    	
-    	amount = divBy1024( amount, unit, 0 );
-    	
-    	String results = dFmt.format( amount ) + spaces + unit.toString();
+	    	StringBuilder unit = new StringBuilder();
+	    	
+	    	amount = divBy1024( amount, unit, 0 );
+	    	
+	    	String results = dFmt.format( amount ) + spaces + unit.toString();
 
 		return results.trim();
 	}
 	
 	private static double divBy1024( double amount, StringBuilder unit, int prefixesBinaryPos ) {
-    	if ( prefixesBinary.size() == 0) {
-    		// no prefixesBinary units have been defined, so exit returning the original amount:
-    	}
-    	else if ( amount < 1024.0 || prefixesBinary.size() == (prefixesBinaryPos + 1)) {
-    		unit.append( prefixesBinary.get( prefixesBinaryPos ) );
-    	}
-    	else {
-    		// Div amount by 1000.0 and then recursively call this function while adding one to pos:
-    		amount /= 1024.0;
-    		amount = divBy1024( amount, unit, prefixesBinaryPos + 1 );
-    	}
-    	return amount;
+	    	if ( prefixesBinary.size() == 0) {
+	    		// no prefixesBinary units have been defined, so exit returning the original amount:
+	    	}
+	    	else if ( amount < 1024.0 || prefixesBinary.size() == (prefixesBinaryPos + 1)) {
+	    		unit.append( prefixesBinary.get( prefixesBinaryPos ) );
+	    	}
+	    	else {
+	    		// Div amount by 1000.0 and then recursively call this function while adding one to pos:
+	    		amount /= 1024.0;
+	    		amount = divBy1024( amount, unit, prefixesBinaryPos + 1 );
+	    	}
+	    	return amount;
 	}
 
 }

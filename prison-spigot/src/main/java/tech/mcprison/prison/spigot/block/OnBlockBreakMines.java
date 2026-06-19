@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -24,11 +26,12 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
+import tech.mcprison.prison.spigot.game.SpigotLocation;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
-import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 
 public class OnBlockBreakMines
 	extends OnBlockBreakEventCoreMessages
@@ -39,6 +42,7 @@ public class OnBlockBreakMines
 	enum EventResultsReasons {
 		result_reason_not_yet_set,
 		results_passed,
+		cancel_event__block_is_null,
 		cancel_event__block_is_locked, 
 		ignore_event__block_is_not_in_a_mine, 
 		cancel_event__mine_mutex__mine_resetting, 
@@ -46,7 +50,14 @@ public class OnBlockBreakMines
 		ignore_event__block_already_counted, 
 		cancel_event__block_already_counted, 
 		ignore_event__monitor_priority_but_not_AIR, 
-		cancel_event__player_has_no_access
+		cancel_event__player_has_no_access, 
+		cancel_event__block_is_not_mappable_to_target_block, 
+		
+		results_passed__access_priority__player_has_access,
+		cancel_event__access_priority__block_is_not_in_a_mine,
+		cancel_event__access_priority__player_has_no_access, 
+		
+		cancel_event__player_is_vanished
 		;
 		
 	}
@@ -65,7 +76,9 @@ public class OnBlockBreakMines
 		private boolean cancelEvent = false;
 		private boolean ignoreEvent = false;
 		
-		BlockBreakPriority bbPriority;
+		private String eventName;
+		
+		private BlockBreakPriority bbPriority;
 		private Mine mine = null;
 		private SpigotPlayer sPlayer;
 		
@@ -82,9 +95,12 @@ public class OnBlockBreakMines
 		}
 		
 		public void logDebugInfo() {
-			if ( isIgnoreEvent() && 
+			if ( (isIgnoreEvent() || isCancelEvent()) && 
 					Output.get().isDebug() ) {
 				
+				String eventName = getEventName() != null && getEventName().trim().length() > 0 ?
+						"[event: " + getEventName() + "] " : "";
+						
 				String blockName = getSpigotBlock() == null ? 
 						"noPrisonBlock" : 
 						getSpigotBlock().getBlockName();
@@ -92,7 +108,8 @@ public class OnBlockBreakMines
 						"" : 
 						getSpigotBlock().getLocation().toWorldCoordinates();
 				
-				Output.get().logInfo( "Prison AutoFeatures Fast-Fail: %s %s %s %s%s", 
+				Output.get().logInfo( "Prison AutoFeatures Fast-Fail: %s%s %s %s %s%s",
+						eventName,
 						getResultsReason().name(),
 						//getBbPriority().name(),
 						getSpigotPlayer().getName(),
@@ -115,7 +132,7 @@ public class OnBlockBreakMines
 						getSpigotBlock().getLocation().toWorldCoordinates();
 			
 			return String.format( 
-					"{br}||  EventInfo: %s %s Mine: %s %s %s ", 
+					"  EventInfo: %s %s Mine: %s %s %s ", 
 					getResultsReason().name(),
 //					getBbPriority().name(),
 					getSpigotPlayer().getName(),
@@ -132,6 +149,13 @@ public class OnBlockBreakMines
 			this.resultsReason = resultsReason;
 		}
 		
+		public String getEventName() {
+			return eventName;
+		}
+		public void setEventName(String eventName) {
+			this.eventName = eventName;
+		}
+
 		public BlockBreakPriority getBbPriority() {
 			return bbPriority;
 		}
@@ -183,19 +207,38 @@ public class OnBlockBreakMines
 
 	}
 	
-	public Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
+	public Mine findMineIncludeTopBottomOfMine( SpigotPlayer player, SpigotBlock sBlock, 
+			List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
 	{
-		return findMine( player.getUniqueId(), sBlock, altBlocksSource, pmEvent );
+		return findMine( player.getUniqueId(), sBlock, altBlocksSource, pmEvent, false );
 	}
 	
-	public Mine findMine( UUID playerUUID, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
+	public Mine findMine( SpigotPlayer player, SpigotBlock sBlock, 
+								List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
 	{
-		Long playerUUIDLSB = Long.valueOf( playerUUID.getLeastSignificantBits() );
+		return findMine( player.getUniqueId(), sBlock, altBlocksSource, pmEvent, true );
+	}
+	
+	public Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
+	{
+		return findMine( player.getUniqueId(), sBlock, altBlocksSource, pmEvent, true );
+	}
+	
+	public Mine findMine( UUID playerUUID, SpigotBlock sBlock, 
+					List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent ) {
+		return findMine( playerUUID, sBlock, altBlocksSource, pmEvent, true );
+	}
+	public Mine findMine( UUID playerUUID, SpigotBlock sBlock, 
+					List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent, boolean exact )
+	{
+//		Long playerUUIDLSB = Long.valueOf( playerUUID.getLeastSignificantBits() );
 
 		// Get the cached mine, if it exists:
-		Mine mine = getPlayerCache().get( playerUUIDLSB );
+		Mine mine = getPlayerCache().get( playerUUID.toString() );
 		
-		if ( mine == null || sBlock != null && !mine.isInMineExact( sBlock.getLocation() ) )
+		if ( mine == null || sBlock != null && 
+				( exact && !mine.isInMineExact( sBlock.getLocation() ) || 
+				  !exact && !mine.isInMineIncludeTopBottomOfMine( sBlock.getLocation() ) ) )
 		{
 			// Look for the correct mine to use.
 			// Set mine to null so if cannot find the right one it will return a
@@ -214,7 +257,10 @@ public class OnBlockBreakMines
 				for ( Block bBlock : altBlocksSource )
 				{
 					SpigotBlock sBlockAltBlock = SpigotBlock.getSpigotBlock( bBlock );
-					mine = findMineLocation( sBlockAltBlock );
+					
+					mine = exact ? 
+								findMineLocation( sBlockAltBlock ) :
+								findMineLocationIncludeTopBottomOfMine( sBlockAltBlock );
 					if ( mine != null )
 					{
 
@@ -231,7 +277,8 @@ public class OnBlockBreakMines
 			// Store the mine in the player cache if not null:
 			if ( mine != null )
 			{
-				getPlayerCache().put( playerUUIDLSB, mine );
+				getPlayerCache().put( playerUUID.toString(), mine );
+//				getPlayerCache().put( playerUUIDLSB, mine );
 			}
 		}
 
@@ -262,6 +309,203 @@ public class OnBlockBreakMines
 //		return eventResults.isIgnoreEvent();
 //	}
 
+	
+	public List<Block> removeAllInvalidBlocks( Player player, 
+			List<Block> blocks, 
+			BlockBreakPriority bbPriority, 
+			boolean ignoreBlockReuse ) {
+
+		List<Block> goodBlocks = new ArrayList<>();
+		
+		if ( blocks.size() == 0 || getPrisonMineManager() == null ) {
+			// Mines are not enabled, so exit with request to ignore event:
+			return goodBlocks;
+		}
+
+		
+		
+		// searching for mines is expensive because it's has to check each and every block
+		// against all possible mines.  
+		
+		// So first find the "center" of the block list by taking the averages of all blocks's x, y, and z coordinates:
+		Location locAvgBukkit = getCenterLocationOfBlocks(blocks, player);
+		
+		
+		// next we need to find the greatest distance from the average:
+		double locAvgRadius = getGreatestDistanceFromLocation(blocks, locAvgBukkit);
+		
+		
+		SpigotLocation locAvg = new SpigotLocation( locAvgBukkit );
+		
+		
+		// Next we need to find all mines that are within the max distance of the mine, 
+		// to ensure we don't miss the outer corners, take the mine's distance to a corner 
+		// and mult by 1.3 which will potentially include mines that are outside of the
+		// list of blocks:
+		List<Mine> minesShortList = getAllMinesWithinTheRadialDistance( locAvg, locAvgRadius );
+		
+		
+		
+		// If no mines are found, then obviously no blocks will be within the mines:
+		if ( minesShortList.size() == 0 ) {
+			return goodBlocks;
+		}
+			
+		
+//		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+
+		// All blocks must be not be null, and the blocks cannot be identified as an
+		// unbreakable block, which is usually part of an explosion event such as a 
+		// block decay.
+		Mine lastMine = null;
+		
+		for (Block block : blocks) {
+			
+			SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
+			
+			if ( block != null && !BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+
+				// If a block is in the same mine as the 'lastMine', then add it to the
+				// goodBlocks list.
+				if ( lastMine != null && lastMine.isInMine(sBlock) ) {
+					goodBlocks.add(block);
+				}
+				
+				// else if lastMine is null or the block is not in the lastMine, then
+				// need to check all mines in the short list to see if the block is in
+				// mine.  If it is, then capture it in the goodBlocks list.
+				else {
+					
+					for (Mine mine : minesShortList) {
+						if ( mine.isInMineExact(locAvg) ) {
+							lastMine = mine;
+							
+							goodBlocks.add(block);
+							break;
+						}
+					}
+				}
+				
+			}
+		}
+		
+//		// Purge all blocks in the parameter List:
+//		blocks.clear();
+//		
+//		// Add only the goodBlocks back to the parameter's variable:
+//		blocks.addAll( goodBlocks );
+		
+		return goodBlocks;
+	}
+
+
+	/**
+	 * <p>This function will take a list of blocks, and calculate the average location, 
+	 * which will be the center of the group of blocks.  The group of blocks can be
+	 * any shape, and it will still find the center.
+	 * </p>
+	 * 
+	 * <p>The way this function works, is that it adds all x's, all y's, and all z's.
+	 * Then divides all these values by the number of blocks that were summed together.
+	 * Basically finding the common vector or everything.
+	 * </p>
+	 * 
+	 * @param blocks
+	 * @param player
+	 * @return
+	 */
+	private Location getCenterLocationOfBlocks(List<Block> blocks, Player player) {
+		long xT = 0;
+		long yT = 0;
+		long zT = 0;
+		int count = 0;
+		for (Block block : blocks) {
+			xT += block.getX();
+			yT += block.getY();
+			zT += block.getZ();
+			count++;
+		}
+		
+		double xAvg = (double) xT / count;
+		double yAvg = (double) yT / count;
+		double zAvg = (double) zT / count;
+		Location locAvgBukkit = new Location( player.getWorld(), xAvg, yAvg, zAvg );
+		return locAvgBukkit;
+	}
+	
+	
+	/**
+	 * <p>This function, given the a location, which should be the center of all blocks 
+	 * (See function `getCenterLocationOfBlocks()`), will return the greatest distance 
+	 * of all of the included blocks.  This will be the outer radius of all the blocks, 
+	 * based upon the 'centerLocation'.
+	 * </p>
+	 * 
+	 * @param blocks
+	 * @param locAvgBukkit
+	 * @return
+	 */
+	private double getGreatestDistanceFromLocation(List<Block> blocks, Location centerLocation ) {
+		double locAvgRadius = 0;
+		for (Block block : blocks) {
+			double d = centerLocation.distance( block.getLocation() );
+			if ( d > locAvgRadius ) {
+				locAvgRadius = d;
+			}
+		}
+		return locAvgRadius;
+	}
+
+	/**
+	 * <p>This function, given a location, and the radius of a sphere around that location, find all 
+	 * mines that that has at least one block that will fall within the range of this the location's
+	 * sphere.  To ensure a mine is not missed by a block or two, the 'maxPossibleDistance' has 
+	 * four added to it.  This will help ensure that more mines are included in this list, even if it 
+	 * may miss the farthest block by a couple of blocks.  It's far better to be more inclusive, than 
+	 * to exclude too many.
+	 * </p>
+	 * 
+	 * <p>This function basically behaves as if we have two points and spheres around each point.  The
+	 * spheres would be the radius from each location, to form a sphere for each location. Between the
+	 * two spheres, we only need to use in our calculations, the closest point on each sphere, such that
+	 * the two chosen points (one of each sphere) are the closest to each other, out of the whole surface
+	 * of those two spheres.  Basically, these two points, also happen to be on the line that is formed
+	 * from one location to the other location.  And the two points on that line, which represents the 
+	 * spheres surface, would be consider intersecting with each other if the distance between the points
+	 * is less than zero.  If they don't intersect then the distance will be greater than zero.
+	 * </p>
+	 * 
+	 * <p>So basically, the total distance should be less than the two radiuses added together (plus 4.0)
+	 * which indicates there is a probable chance a block may be within that mine.  All mines that 
+	 * meet this requirement is returned in a List<Mine>.
+	 * </p>
+	 * 
+	 * @param locAvg
+	 * @param locAvgRadius
+	 * @return
+	 */
+	private List<Mine> getAllMinesWithinTheRadialDistance( SpigotLocation location, double locationRadius ) {
+		List<Mine> minesShortList = new ArrayList<>();
+		for (Mine m : getPrisonMineManager().getMines() ) {
+			if ( !m.isVirtual() ) {
+				
+				double mineRadius = m.getBounds().getRadius();
+				double maxPossibleDistance = mineRadius + locationRadius + 4;
+
+				double distanceFromMine = m.getBounds().getDistance3d( location );
+				
+				
+				if ( distanceFromMine <= maxPossibleDistance ) {
+					minesShortList.add( m );
+				}
+			}
+		}
+		return minesShortList;
+	}
+
+	
+	
 		
 	/**
 	 * <p> If the event is canceled, it still needs to be processed because of the MONITOR events: 
@@ -271,9 +515,16 @@ public class OnBlockBreakMines
 	 * or if the targetBlock has been set to ignore all block events which 
 	 * means the block has already been processed.
 	 * </p>
-	 * 
-	 * @param player
-	 * @param block
+	 *  
+	 * @param player The player that caused the event by mining or breaking blocks
+	 * @param block The "target" block that was initially broke by the player.  Note that sometimes
+	 *              this is not the actual block, since the event does not preserve that information.
+	 * @param bbPriority The priority that prison was listening at for this event.
+	 * @param ignoreBlockReuse If set to true, then if the block was already counted, then prison 
+	 *  	      will still process the blocks.  Otherwise if the block has been already counted, then
+	 *  	      prison will ignore the event, which can have a huge impact if it's an explosion and
+	 *            there are many other blocks that "should" be processed, but ignoring the whole event 
+	 *            would be skipping a lot of block processing.
 	 * @return
 	 */
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, 
@@ -288,11 +539,76 @@ public class OnBlockBreakMines
 		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
 		results.setSpigotBlock( sBlock );
 		
-		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+		
+		// If player is vanished (ie PremiumVanish) then ignore all actions from player:
+		if ( isVanished( player ) ) {
+			
+			results.setResultsReason( EventResultsReasons.cancel_event__player_is_vanished );
+			
+			results.setCancelEvent( true );
+			results.setIgnoreEvent( true );
+		}
+		else if ( block == null ) {
+			
+			results.setResultsReason( EventResultsReasons.cancel_event__block_is_null );
+			
+			results.setCancelEvent( true );
+			results.setIgnoreEvent( true );
+		}
+		
+		else if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
 			results.setResultsReason( EventResultsReasons.cancel_event__block_is_locked );
 			
 			results.setCancelEvent( true );
 			results.setIgnoreEvent( true );
+		}
+		else if ( bbPriority.isAccess() ) {
+			
+			Mine mine = findMine( player, sBlock,  null, null ); 
+			results.setMine( mine );
+			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				results.setResultsReason( EventResultsReasons
+								.cancel_event__access_priority__block_is_not_in_a_mine );
+				
+				results.setCancelEvent( true );
+				results.setIgnoreEvent( true );
+			}
+			else if ( !mine.hasMiningAccess(sPlayer) ) {
+				
+				results.setResultsReason( EventResultsReasons
+								.cancel_event__access_priority__player_has_no_access );
+				results.setIgnoreEvent( true );
+				results.setCancelEvent( true );
+				
+	    		if ( sPlayer != null &&
+	    				AutoFeaturesWrapper.getInstance()
+	    					.isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+	    			// run the `/mines tp` command for the player which will TP them to a 
+	    			// mine they can access:
+	    			
+					String debugInfo = String.format(
+									"ACCESS failed: teleport %s to valid mine.", 
+									sPlayer.getName() );
+					
+					PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
+									"mines tp", 0 );
+					cmdTask.setTaskMode( TaskMode.syncPlayer );
+
+	    			PrisonCommandTasks.submitTasks( sPlayer, cmdTask );
+	    			
+	    		}
+
+			}
+			else {
+				results.setResultsReason( EventResultsReasons
+								.results_passed__access_priority__player_has_access );
+				
+				// Not sure why that was here?  This looks like they should have access?]
+				results.setIgnoreEvent( true );
+			}
+		
 		}
 		else if ( bbPriority.isMonitor() && !sBlock.isEmpty() && 
 				AutoFeaturesWrapper.getInstance().isBoolean( 
@@ -324,32 +640,34 @@ public class OnBlockBreakMines
 					results.setCancelEvent( true );
 					
 				}
-				else if ( bbPriority.isAccess() && !mine.hasMiningAccess(sPlayer) ) {
+//				else if ( bbPriority.isAccess() && !mine.hasMiningAccess(sPlayer) ) {
+//					
+//					results.setResultsReason( EventResultsReasons.cancel_event__player_has_no_access );
+//					results.setIgnoreEvent( true );
+//					results.setCancelEvent( true );
+//					
+//		    		if ( sPlayer != null &&
+//		    				AutoFeaturesWrapper.getInstance()
+//		    					.isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+//		    			// run the `/mines tp` command for the player which will TP them to a 
+//		    			// mine they can access:
+//		    			
+//						String debugInfo = String.format(
+//										"ACCESS failed: teleport %s to valid mine.", 
+//										sPlayer.getName() );
+//						
+//						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
+//										"mines tp", 0 );
+//						cmdTask.setTaskMode( TaskMode.syncPlayer );
+//
+//		    			PrisonCommandTasks.submitTasks( sPlayer, cmdTask );
+//		    			
+//		    		}
+//
+//				}
+				else if ( AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.validateBlocksWerePlacedByPrison ) ) {
 					
-					results.setResultsReason( EventResultsReasons.cancel_event__player_has_no_access );
-					results.setIgnoreEvent( true );
-					results.setCancelEvent( true );
-					
-		    		if ( sPlayer != null &&
-		    				AutoFeaturesWrapper.getInstance()
-		    					.isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
-		    			// run the `/mines tp` command for the player which will TP them to a 
-		    			// mine they can access:
-		    			
-						String debugInfo = String.format(
-										"ACCESS failed: teleport %s to valid mine.", 
-										sPlayer.getName() );
-						
-						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
-										"mines tp", 0 );
-						cmdTask.setTaskMode( TaskMode.syncPlayer );
-
-		    			PrisonCommandTasks.submitTasks( sPlayer, cmdTask );
-		    			
-		    		}
-
-				}
-				else {
+					// validate if the block being targeted is the one prison placed in the mine:
 					
 					MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 					
@@ -382,6 +700,15 @@ public class OnBlockBreakMines
 							}
 						}
 					}
+					else {
+						// A targetBlock could not be found for the current block.  
+						// So it must be invalid:
+						
+						// Do not cancel the event... 
+						results.setResultsReason( EventResultsReasons.cancel_event__block_is_not_mappable_to_target_block );
+						
+						results.setCancelEvent( true );
+					}
 				}
 				
 				
@@ -392,89 +719,33 @@ public class OnBlockBreakMines
 			results.setResultsReason( EventResultsReasons.results_passed );
 		}
 		
-		results.logDebugInfo();
+		//results.logDebugInfo();
 		
 		return results;
 	}
 	
 	
-//	/**
-//	 * <p>Warning... this is a temp copy of the real function and will be removed
-//	 * if PEExplosionEvent adds the interface Cancellable.
-//	 * </p>
-//	 * 
-//	 * @param event
-//	 * @param player
-//	 * @param block
-//	 * @return
-//	 */
-//	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
-//		boolean processEvent = true;
-//		
-//		SpigotBlock sBlock = new SpigotBlock( block );
-//		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//		
-//		Mine mine = findMine( player, sBlock,  null, null ); 
-//		
-//		if ( mine == null  ) {
-//			// Prison is unable to process blocks outside of mines right now, so exit:
-//			processEvent = false;
-//		}
-//		
-//		// If not minable, then display message and exit.
-//		if ( !mine.getMineStateMutex().isMinable() ) {
-//			
-//			SpigotPlayer sPlayer = new SpigotPlayer( player );
-//			sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//		
-//		// If ignore all block events, then exit this function without logging anything:
-//		if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//
-//		
-//		return processEvent;
-//	}
-	
 	/**
-	 * <p>If mine is not null, then it will check for a zero-block reset (reset-threshold).
+	 * <p>Checks to see if a player is vanished when using PremiumVanish, SuperVanish, 
+	 * EssentialsX, VanishNoPacket and many more vanish plugins.
 	 * </p>
 	 * 
-	 * @param mine
-	 */
-	public void checkZeroBlockReset( Mine mine ) {
-		if ( mine != null ) {
-			
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			mine.checkZeroBlockReset();
-		}
-	}
-	
-	
-	/**
-	 * <p>If mine is not null, then it will perform a mine sweeper 
-	 * for the mine, if it is enabled.
+	 * <p>See the API for Devs section on their spigotmc.org page.
+	 * <a href="https://www.spigotmc.org/resources/premiumvanish-stay-hidden-bungee-velocity-support.14404/">
+	 * 		Premium Vanish at spigotmc.org
+	 * </a>
 	 * </p>
 	 * 
-	 * @param mine
+	 * @param player
+	 * @return
 	 */
-	public void checkMineSweeper( Mine mine ) {
-		if ( mine != null ) {
-			
-			// submit a mine sweeper task.  It will only run if it is enabled and another 
-			// mine sweeper task has not been submitted.
-			mine.submitMineSweeperTask();
-		}
-	}
+	private boolean isVanished(Player player) {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
+}
+	
 	
 	
 	
@@ -537,6 +808,25 @@ public class OnBlockBreakMines
 	 * <p>The function isBlockAMatch() should be used prior to calling this function.
 	 * </p>
 	 * 
+	 * <p>Note, it is now possible that block validation can be disabled.  If that is the case, then
+	 * the blocks may not match the same type as the targetBlock, or may not have been place in the 
+	 * mine by prison (ie.. a player or admin).
+	 * Therefore, actions should be based upon the actual block and not the targetBlock.
+	 * For this function, the targetBlock is only being used to identify if it were a custom
+	 * block type.  May want to remove dependency upon targetBlock for this check.  Like maybe use the
+	 * mined block to get the "core" prison block type to make that determination.
+	 * </p>
+	 * 
+	 * <p>Note: if the target block is a custom block, but yet the actual block is not, calling the
+	 * custom block's getDrop() will not produce the wrong drops.  It depends on the plugin handling
+	 * the drops, but it may return the bukkit drops, or no drops.
+	 * </p>
+	 * 
+	 * <p>NOTE: to better handle the situation where falling sand may not get the correct target block,
+	 * it may make sense to tag all placed blocks with an NBT tag to identify it's original location, 
+	 * then use that location for the correct target block.
+	 * </p>
+	 * 
 	 * @param bukkitDrops
 	 * @param targetBlock
 	 * @param itemInHand
@@ -549,6 +839,7 @@ public class OnBlockBreakMines
 		boolean results = false;
 
 		if ( targetBlock != null && 
+				targetBlock.getPrisonBlock() != null &&
 				targetBlock.getPrisonBlock().getBlockType().isCustomBlockType() ) {
 			
 			List<CustomBlockIntegration> cbIntegrations = 
@@ -569,11 +860,6 @@ public class OnBlockBreakMines
 		
 		
 		
-		// if ( sBlockMined == null && targetBlock.getMinedBlock() != null ) {
-		// sBlockMined = (SpigotBlock) targetBlock.getMinedBlock();
-		// }
-		// SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
-
 		// If in the mine, then need a targetBlock, otherwise if it's null then get drops anyway:
 		if ( !results && sBlockMined != null 
 //				&& ( targetBlock == null ||
@@ -595,12 +881,6 @@ public class OnBlockBreakMines
 			results = true;
 
 		}
-//		else if ( !results && sBlockMined != null )
-//		{
-//			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " + "Block: " +
-//					sBlockMined.getBlockName() + "  expecting: " + 
-//					(targetBlock == null ? "(nothing)" : targetBlock.getPrisonBlock().getBlockName()) );
-//		}
 
 		return results;
 	}
@@ -623,10 +903,14 @@ public class OnBlockBreakMines
 	
 	public void clearBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock )
 	{
+		if ( targetBlock != null ) {
+			SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
 
-		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
-		sBlock.clearDrops();
-
+			if ( sBlock != null ) {
+				
+				sBlock.clearDrops();
+			}
+		}
 	}
 
 	
@@ -670,10 +954,15 @@ public class OnBlockBreakMines
 				null : getPrisonMineManager().findMineLocationExact( block.getLocation() );
 	}
 	
+	private Mine findMineLocationIncludeTopBottomOfMine( SpigotBlock block ) {
+		return getPrisonMineManager() == null || block == null || block.getLocation() == null ? 
+				null : getPrisonMineManager().findMineLocationIncludeTopBottomOfMine( block.getLocation() );
+	}
+	
 
-	private TreeMap<Long, Mine> getPlayerCache() {
+	private TreeMap<String, Mine> getPlayerCache() {
 		return getPrisonMineManager() == null ? 
-				new TreeMap<Long, Mine>() :
+				new TreeMap<String, Mine>() :
 				getPrisonMineManager().getPlayerCache();
 	}
 
