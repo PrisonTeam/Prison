@@ -3,7 +3,8 @@
 ## Prison Build Logs for v3.3.0
 
 ## Change logs
- - **[v3.3.0-alpha - v3.3.0](prison_changelog_v3.3.0.md)**
+ - **[v3.3.0-alpha - v3.3.1](prison_changelog_v3.3.0.md)**
+ - **[v3.3.0-alpha - v3.3.1 - Part 2](prison_changelog_v3.3.0_b.md)**
  - [v3.2.0 through v3.3.0-alpha.17](prison_changelogs.md)
  
 * [Known Issues - Open](knownissues_v3.2.x.md)
