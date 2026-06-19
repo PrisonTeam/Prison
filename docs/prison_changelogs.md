@@ -18,16 +18,19 @@ may be insightful in to some of the evolutionary processes.
 
 These build logs represent the work that has been going on within prison. 
 
- - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
+ - **[v3.3.1 - Current](changelog_v3.3.x.md)**
     - **[v3.3.0-alpha - Current - Part 2](changelog_v3.3.xb.md)**
     - Future updates will be under the v3.3.x release
  
  
- - [v3.3.3-alpha.18 - 2024-05-20](prison_changelog_v3.3.0-alpha.18.md)&nbsp;&nbsp;
- - [v3.3.3-alpha.17 - 2024-04-20](prison_changelog_v3.3.0-alpha.17.md)&nbsp;&nbsp;
- - [v3.3.3-alpha.16 - 2023-11-18](prison_changelog_v3.3.0-alpha.16.md)&nbsp;&nbsp;
- - [v3.3.3-alpha.15 - 2023-07-07](prison_changelog_v3.3.0-alpha.15.md)&nbsp;&nbsp;
- - [v3.3.3-alpha.14 - 2023-01-23](prison_changelog_v3.3.0-alpha.14.md)&nbsp;&nbsp;
+ - [v3.3.0 - 2026-06-19](prison_changelog_v3.3.0.md)&nbsp;&nbsp;
+ - [v3.3.0-alpha.19b - 2026-06-19](prison_changelog_v3.3.0_b.md)&nbsp;&nbsp;
+ 
+ - [v3.3.0-alpha.18 - 2024-05-20](prison_changelog_v3.3.0-alpha.18.md)&nbsp;&nbsp;
+ - [v3.3.0-alpha.17 - 2024-04-20](prison_changelog_v3.3.0-alpha.17.md)&nbsp;&nbsp;
+ - [v3.3.0-alpha.16 - 2023-11-18](prison_changelog_v3.3.0-alpha.16.md)&nbsp;&nbsp;
+ - [v3.3.0-alpha.15 - 2023-07-07](prison_changelog_v3.3.0-alpha.15.md)&nbsp;&nbsp;
+ - [v3.3.0-alpha.14 - 2023-01-23](prison_changelog_v3.3.0-alpha.14.md)&nbsp;&nbsp;
 
  
  - [v3.2.x - v3.2.6 2021-04-11](changelog_v3.2.x.md)
