@@ -117,6 +117,12 @@ Output files are located in [subproject]/build/libs.
 The runnable JAR is usually named Prison-<version>.jar.
 Example: The spigot build artifact is:
 			 prison-spigot/build/libs/Prison-${project.version}.jar
+
+NOTE: Prison is now producing a second runnable jar that supports 
+      both the new blocks in Spigot 1.21.x and Spigot 26 and Paper 26.
+      The spigot 26 build artifact is:
+			 prison26-spigot/build/libs/Prison26-${project.version}.jar
+      
 ==========================================================================
 """
 
@@ -269,7 +275,8 @@ tasks.register('concatSource') {
 			'build.gradle',
 			'settings.gradle',
 			'gradle.properties',
-			'gradle/libs.versions.toml'
+			'gradle/libs.versions.toml',
+			'appveyor.yml'
 		])
 		processTree(rootFiles)
 
@@ -313,7 +320,8 @@ tasks.register('exportGradleConfigs') {
 			"gradle/wrapper/gradle-wrapper.properties",
 			"gradle.properties",
 			"settings.gradle",
-			"build.gradle"
+			"build.gradle",
+			'appveyor.yml'
 		]
 
 		// Helper closure to write a file's content with the requested formatting

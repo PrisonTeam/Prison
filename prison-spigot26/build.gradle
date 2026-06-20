@@ -1,0 +1,98 @@
+base {
+    archivesName = 'Prison26'
+}
+
+group 'tech.mcprison'
+
+//java {
+//    toolchain {
+//        languageVersion.set(JavaLanguageVersion.of(21))
+//    }
+//}
+
+// 1. THE MAGIC TRICK: Use the source code from the legacy module
+sourceSets {
+    main {
+        java.srcDirs = ['../prison-spigot/src/main/java']
+        resources.srcDirs = ['../prison-spigot/src/main/resources']
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
+
+dependencies {
+    implementation project(':prison-core')
+    implementation project(':prison-mines')
+    implementation project(':prison-ranks')
+    implementation project(':prison-sellall')
+    
+    implementation( libs.commons.lang3 )
+    implementation( libs.gson )
+    implementation( libs.spiget )
+    implementation( libs.bundles.bstats )
+    
+    compileOnly( libs.spigotApi )
+    compileOnly( libs.luckperms.v4 )
+    compileOnly( libs.luckperms.v5 )
+    compileOnly( libs.papi )
+    compileOnly( libs.vault )
+    
+    // 2. THE CRITICAL DEPENDENCY SWAP
+    implementation( libs.xseries26 )
+    implementation( libs.nbtApi )
+    
+    compileOnly( libs.itemsAdder )
+    
+
+    // POINT TO THE LOCAL JARS IN THE LEGACY FOLDER
+    compileOnly fileTree(dir: '../prison-spigot/lib', include: ['*.jar'], 
+            exclude: [
+                    'Zenchantments__API_v1.15.2.build4.jar'
+            ])
+            
+    implementation fileTree(dir: '../prison-spigot/lib', 
+            include: [
+                    'Zenchantments__API_v1.15.2.build4.jar'
+            ])
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version
+        include 'plugin.yml'
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+shadowJar {
+    dependencies {
+        include(project(':prison-core'))
+        include(project(':prison-mines'))
+        include(project(':prison-ranks'))
+        include(project(':prison-sellall'))
+        
+        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
+        include(dependency('com.google.code.gson:gson:'))
+        include(dependency('org.bstats:bstats-base:'))
+        include(dependency('org.bstats:bstats-bukkit:'))
+        
+        // 3. SHADOW THE CORRECT XSERIES
+        include(dependency('com.github.cryptomorin:XSeries:'))
+        include(dependency('de.tr7zw:item-nbt-api:'))
+        include(dependency('org.inventivetalent.spiget-update:bukkit:'))
+    }
+
+    relocate 'org.bstats', 'tech.mcprison.prison.libs.bstats'
+    relocate 'com.google.gson', 'tech.mcprison.prison.libs.gson'
+    relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.libs.spiget'
+    relocate 'com.cryptomorin', 'tech.mcprison.prison.libs.cryptomorin'
+    relocate 'de.tr7zw.changeme.nbtapi', 'tech.mcprison.prison.libs.nbtapi'
+    relocate 'nl.kyllian', 'tech.mcprison.prison.libs.privatebin'
+    relocate 'org.json', 'tech.mcprison.prison.libs.orgjson'
+
+    archiveAppendix = ''
+    archiveClassifier = ''
+}
+
+build.dependsOn(shadowJar)

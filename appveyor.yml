@@ -12,6 +12,8 @@ cache:
 artifacts:
   - path: prison-spigot\build\libs\
     name: Prison
+  - path: prison-spigot26\build\libs\
+    name: Prison26
 
 environment:
   matrix:

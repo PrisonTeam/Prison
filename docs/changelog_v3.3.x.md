@@ -1,6 +1,6 @@
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
-## Prison Build Logs for v3.3.1
+## Prison Build Logs for v3.4.0
 
 ## Change logs
  - **[v3.3.1 - Current](changelog_v3.3.x.md)**
@@ -12,6 +12,25 @@
 
 
 These change logs represent the work that has been going on within prison. 
+
+# 3.4.0-alpha.1  2026-06-20
+
+
+** v3.4.0-alpha.1  2026-06-20**
+
+**Build: Establish multi-environment artifact generation for Spigot 26+**
+
+  * Created new prison-spigot26 subproject leveraging shared source code.
+
+  * Successfully bridged local legacy library dependencies (lib/) to compile against modern XSeries v13.8.0.
+
+  * Updated appveyor.yml to track and output the new Prison26 artifact alongside the legacy build.
+
+
+.
+
+.
+
 
 # 3.3.1 2026-06-15
 

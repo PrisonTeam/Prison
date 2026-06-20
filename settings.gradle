@@ -119,6 +119,7 @@ rootProject.name = 'prison'
 
 include 'prison-core'
 include 'prison-spigot'
+include 'prison-spigot26'
 /* include 'prison-sponge' */
 include 'prison-mines'
 include 'prison-ranks'

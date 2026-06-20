@@ -18,9 +18,9 @@
 
 
 ## Build logs
- - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
+ - **[v3.3.0-alpha - Current](changelog_v3.4.x.md)**
  
- - [v3.2.0 through v3.2.18](prison_changelogs.md)
+ - [v3.2.0 through v3.3.1](prison_changelogs.md)
  
 
 
@@ -28,12 +28,10 @@
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Prison Supports Spigot 1.8 through Spigot 1.20.6 and +
-# Prison Supports Java 1.8 though Java 21+
-# Prison is created for the Spigot Platform, and works on other platforms based upon Spigot, tested with Paper 1.20.6 too.
+# Prison Supports Spigot 1.8 through Spigot 26, plus Paper 26
+# Prison Supports Java 1.8 though Java 25+
+# Prison is created for the Spigot Platform, and works on other platforms based upon Spigot, including Paper 26 too.
 
-
-Prison supports Spigot 1.20.x, along with Java 1.8 through Java 21.
 
 Prison is using a library to support the correct blocks for the version of the server that you are running, so we are limited to when updates are released for that library. Generally though, they are quick to get updates posted.
  

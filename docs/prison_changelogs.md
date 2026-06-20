@@ -3,24 +3,15 @@
 ## Prison Change Logs for v3.3.x
 
 
-## Known Issues
-
-These are internal notes that may initially record ideas and issues.  They may not 
-reflect the final actions taken as expressed in the change logs below, so these
-may be insightful in to some of the evolutionary processes.
-
-* [Known Issues - v3.3.x Open](knownissues_v3.3.x.md)
-* [Known Issues - v3.3.x Resolved](knownissues_v3.3.x_resolved.md)
-* [Known Issues - v3.2.x](knownissues_v3.2.x.md)
-
-
 ## Change logs
 
 These build logs represent the work that has been going on within prison. 
 
+ - **[v3.4.0 - Current](changelog_v3.4.x.md)**
+
+
  - **[v3.3.1 - Current](changelog_v3.3.x.md)**
     - **[v3.3.0-alpha - Current - Part 2](changelog_v3.3.xb.md)**
-    - Future updates will be under the v3.3.x release
  
  
  - [v3.3.0 - 2026-06-19](prison_changelog_v3.3.0.md)&nbsp;&nbsp;
@@ -53,4 +44,19 @@ These build logs represent the work that has been going on within prison.
  - [v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)&nbsp;&nbsp;
  - [v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)&nbsp;&nbsp;
 
- 
+
+
+
+## Known Issues
+
+*Please note that these known issues have not been maintained and are out of date.* 
+
+These are internal notes that may initially record ideas and issues.  They may not 
+reflect the final actions taken as expressed in the change logs below, so these
+may be insightful in to some of the evolutionary processes.
+
+* [Known Issues - v3.3.x Open](knownissues_v3.3.x.md)
+* [Known Issues - v3.3.x Resolved](knownissues_v3.3.x_resolved.md)
+* [Known Issues - v3.2.x](knownissues_v3.2.x.md)
+
+

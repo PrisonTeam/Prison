@@ -36,8 +36,9 @@ gson = "2.10.1"
 spiget = "1.4.6-SNAPSHOT"
 
 # NOTE: xseries v13.8.0 is required for spigot v26.1.x, but will fail to run under java 1.8.
-#xseries = "13.8.0"
 xseries = "11.3.0"
+xseries26 = "13.8.0"
+
 junit = "4.12"
 guava = "31.1-jre"
 spigotApi = "1.13.2-R0.1-SNAPSHOT"
@@ -93,7 +94,10 @@ vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 ## VaultUnlocked does not stand by itself.. it's using the vault signatures, but has a vault2 package name:
 ##vaultUnlocked = { module = "com.github.MilkBowl:VaultUnlockedAPI", version.ref = "vaultUnlocked" }
 
+
+
 xseries = { module = "com.github.cryptomorin:XSeries", version.ref = "xseries" }
+xseries26 = { module = "com.github.cryptomorin:XSeries", version.ref = "xseries26" }
 
 
 
